@@ -66,11 +66,13 @@ import { Users, UserCheck, DollarSign, GraduationCap, RefreshCw } from 'lucide-v
 import type { Student } from '~/types'
 import StatCard from '~/components/shared/StatCard.vue'
 import StudentTable from '~/components/students/StudentTable.vue'
+import { useAppToast } from '~/composables/useAppToast'
 
 useHead({
   title: 'Student Management'
 })
 
+const { info, error } = useAppToast()
 const isRefreshing = ref(false)
 const { data, pending, refresh } = await useAsyncData<Student[]>('students-list', () =>
   $fetch(`/api/students?_t=${Date.now()}`)
@@ -80,6 +82,9 @@ async function handleRefresh() {
   isRefreshing.value = true
   try {
     await refresh()
+    info('Students Synced', `${students.value.length} learner records synced from server.`)
+  } catch (err: unknown) {
+    error('Refresh Failed', (err as Error).message || 'Could not refresh student data')
   } finally {
     setTimeout(() => {
       isRefreshing.value = false

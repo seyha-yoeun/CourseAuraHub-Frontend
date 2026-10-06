@@ -321,6 +321,12 @@ function handleSubmit() {
   box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(124, 58, 237, 0.15);
 }
 
+html.light .modal-dialog {
+  background: #ffffff;
+  border-color: rgba(124, 58, 237, 0.3);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.15), 0 0 35px rgba(124, 58, 237, 0.12);
+}
+
 .modal-top {
   display: flex;
   align-items: flex-start;
@@ -328,6 +334,10 @@ function handleSubmit() {
   gap: 16px;
   padding-bottom: 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+html.light .modal-top {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
 }
 
 .header-info {
@@ -354,10 +364,18 @@ function handleSubmit() {
   color: #f8fafc;
 }
 
+html.light .modal-title {
+  color: #0f172a;
+}
+
 .modal-sub {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.45);
   margin-top: 2px;
+}
+
+html.light .modal-sub {
+  color: #64748b;
 }
 
 .close-btn {
@@ -389,16 +407,25 @@ function handleSubmit() {
 .form-row {
   display: flex;
   gap: 14px;
+  flex-wrap: wrap;
 }
 
-.flex-1 { flex: 1; }
-.flex-2 { flex: 2; }
+@media (max-width: 640px) {
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.flex-1 { flex: 1 1 180px; }
+.flex-2 { flex: 2 1 280px; }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  flex: 1;
+  flex: 1 1 180px;
+  min-width: 0;
 }
 
 .form-label {
@@ -407,6 +434,10 @@ function handleSubmit() {
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.6);
   letter-spacing: 0.5px;
+}
+
+html.light .form-label {
+  color: #475569;
 }
 
 .form-input,
@@ -424,9 +455,22 @@ function handleSubmit() {
   transition: all 0.2s;
 }
 
+html.light .form-input,
+html.light .form-select,
+html.light .form-textarea {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
 .form-select {
   background-color: #12131f;
   color: #e2e8f0;
+}
+
+html.light .form-select {
+  background-color: #ffffff;
+  color: #0f172a;
 }
 
 .form-input:focus,
@@ -434,6 +478,14 @@ function handleSubmit() {
 .form-textarea:focus {
   border-color: rgba(124, 58, 237, 0.5);
   background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
+}
+
+html.light .form-input:focus,
+html.light .form-select:focus,
+html.light .form-textarea:focus {
+  background: #ffffff;
+  border-color: #7c3aed;
   box-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
 }
 

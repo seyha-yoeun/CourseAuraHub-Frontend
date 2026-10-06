@@ -1,6 +1,59 @@
 {
   "courses": [
     {
+      "id": 1791277653296,
+      "slug": "testing-2",
+      "title": "Testing 2 ",
+      "description": "",
+      "instructor": "Alex Chen",
+      "price": 99.99,
+      "originalPrice": 149.99,
+      "status": "draft",
+      "category": "Web Development",
+      "level": "Intermediate",
+      "thumbnail": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=450&fit=crop",
+      "rating": 0,
+      "totalStudents": 0,
+      "totalLessons": 40,
+      "totalHours": 12,
+      "revenue": 0,
+      "completionRate": 0,
+      "tags": [
+        "Nuxt 3",
+        "Vue 3"
+      ],
+      "createdAt": "2026-10-06",
+      "updatedAt": "2026-10-06",
+      "monthlyEnrollments": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "monthlyRevenue": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
       "id": 1791276250761,
       "slug": "advanced-pinia-patterns-state-architectures",
       "title": "Advanced Pinia Patterns & State Architectures",
@@ -62,7 +115,7 @@
       "instructor": "Alex Chen",
       "price": 99.99,
       "originalPrice": 149.99,
-      "status": "draft",
+      "status": "published",
       "category": "Web Development",
       "level": "Intermediate",
       "thumbnail": "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&h=450&fit=crop",
@@ -639,7 +692,7 @@
     }
   ],
   "settings": {
-    "platformName": "LearnFlow Academy",
+    "platformName": "CourseAuraHub Academy",
     "platformTagline": "Master modern web development",
     "currency": "USD",
     "defaultLanguage": "en",
@@ -651,7 +704,7 @@
     },
     "profile": {
       "name": "Alex Chen",
-      "email": "alex.chen@learnflow.io",
+      "email": "alex.chen@courseaurahub.io",
       "role": "Platform Admin",
       "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4",
       "bio": "Full-stack developer and course creator with 8+ years of experience in Vue and Nuxt ecosystems.",

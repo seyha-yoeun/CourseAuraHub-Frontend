@@ -1,18 +1,21 @@
 <template>
-  <UApp>
+  <UApp :toaster="{ position: 'bottom-right' }">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
+    <ExperimentNoticeModal />
   </UApp>
 </template>
 
 <script setup lang="ts">
+import ExperimentNoticeModal from '~/components/shared/ExperimentNoticeModal.vue'
+
 useHead({
   titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} - LearnFlow Academy` : 'LearnFlow Academy - Course Sales Dashboard'
+    return titleChunk ? `${titleChunk} - CourseAuraHub Academy` : 'CourseAuraHub Academy - Course Sales Dashboard'
   },
   meta: [
-    { name: 'description', content: 'Production-ready Online Course Sales Dashboard built with Nuxt 3, Nuxt UI, and Vue 3' },
+    { name: 'description', content: 'Production-ready CourseAuraHub Academy course sales dashboard built with Nuxt 3, Nuxt UI, and Vue 3' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     { name: 'theme-color', content: '#0a0a0f' }
   ],

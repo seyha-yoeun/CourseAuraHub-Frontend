@@ -1,5 +1,9 @@
 <template>
-  <div ref="dropdownRef" class="custom-dropdown">
+  <div
+    ref="dropdownRef"
+    class="custom-dropdown"
+    :class="{ 'is-open': isOpen }"
+  >
     <!-- Trigger Button -->
     <button
       type="button"
@@ -61,6 +65,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', val: string | number): void
   (e: 'change', val: string | number): void
+  (e: 'toggle', open: boolean): void
 }>()
 
 const isOpen = ref(false)
@@ -73,18 +78,23 @@ const selectedLabel = computed(() => {
 
 function toggleDropdown() {
   isOpen.value = !isOpen.value
+  emit('toggle', isOpen.value)
 }
 
 function selectOption(val: string | number) {
   emit('update:modelValue', val)
   emit('change', val)
   isOpen.value = false
+  emit('toggle', false)
 }
 
 // Click outside handler
 function handleClickOutside(e: MouseEvent) {
   if (dropdownRef.value && !dropdownRef.value.contains(e.target as Node)) {
-    isOpen.value = false
+    if (isOpen.value) {
+      isOpen.value = false
+      emit('toggle', false)
+    }
   }
 }
 
@@ -101,19 +111,24 @@ onUnmounted(() => {
 .custom-dropdown {
   position: relative;
   width: 100%;
+  z-index: 10;
+}
+
+.custom-dropdown.is-open {
+  z-index: 90;
 }
 
 .dropdown-trigger {
   width: 100%;
-  height: 40px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: var(--bg-input, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.09));
   border-radius: 10px;
-  color: #e2e8f0;
+  color: var(--text-primary, #e2e8f0);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -122,15 +137,32 @@ onUnmounted(() => {
   user-select: none;
 }
 
+html.light .dropdown-trigger {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
 .dropdown-trigger:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(124, 58, 237, 0.35);
+  background: var(--bg-surface-hover, rgba(255, 255, 255, 0.07));
+  border-color: rgba(124, 58, 237, 0.4);
+}
+
+html.light .dropdown-trigger:hover {
+  background: #f8fafc;
+  border-color: #7c3aed;
 }
 
 .dropdown-trigger.is-open {
-  border-color: rgba(124, 58, 237, 0.55);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
+  border-color: rgba(124, 58, 237, 0.7);
+  background: var(--bg-surface-hover, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 0 18px rgba(124, 58, 237, 0.25);
+}
+
+html.light .dropdown-trigger.is-open {
+  border-color: #7c3aed;
+  background: #ffffff;
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
 }
 
 .trigger-content {
@@ -143,8 +175,12 @@ onUnmounted(() => {
 }
 
 .trigger-icon {
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-muted, rgba(255, 255, 255, 0.45));
   flex-shrink: 0;
+}
+
+html.light .trigger-icon {
+  color: #64748b;
 }
 
 .trigger-label {
@@ -154,9 +190,13 @@ onUnmounted(() => {
 }
 
 .trigger-chevron {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-muted, rgba(255, 255, 255, 0.4));
   flex-shrink: 0;
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html.light .trigger-chevron {
+  color: #64748b;
 }
 
 .rotate-180 {
@@ -164,18 +204,28 @@ onUnmounted(() => {
   color: #a78bfa;
 }
 
+html.light .rotate-180 {
+  color: #7c3aed;
+}
+
 .dropdown-menu {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
   right: 0;
-  z-index: 50;
+  z-index: 100;
   background: #0f101b;
-  border: 1px solid rgba(124, 58, 237, 0.25);
+  border: 1px solid rgba(124, 58, 237, 0.35);
   border-radius: 12px;
   padding: 6px;
-  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.7), 0 0 20px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 18px 40px -5px rgba(0, 0, 0, 0.8), 0 0 25px rgba(124, 58, 237, 0.15);
   min-width: 170px;
+}
+
+html.light .dropdown-menu {
+  background: #ffffff;
+  border-color: rgba(124, 58, 237, 0.3);
+  box-shadow: 0 18px 40px -5px rgba(0, 0, 0, 0.15), 0 0 20px rgba(124, 58, 237, 0.1);
 }
 
 .menu-scroll {
@@ -195,7 +245,7 @@ onUnmounted(() => {
   border-radius: 8px;
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--text-secondary, rgba(255, 255, 255, 0.75));
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -204,15 +254,29 @@ onUnmounted(() => {
   text-align: left;
 }
 
+html.light .dropdown-item {
+  color: #334155;
+}
+
 .dropdown-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--text-primary, #ffffff);
+}
+
+html.light .dropdown-item:hover {
+  background: #f5f3ff;
+  color: #0f172a;
 }
 
 .dropdown-item.is-selected {
-  background: rgba(124, 58, 237, 0.2);
+  background: rgba(124, 58, 237, 0.25);
   color: #c4b5fd;
   font-weight: 600;
+}
+
+html.light .dropdown-item.is-selected {
+  background: #ede9fe;
+  color: #6d28d9;
 }
 
 .item-left {
@@ -222,11 +286,15 @@ onUnmounted(() => {
 }
 
 .item-icon {
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-muted, rgba(255, 255, 255, 0.45));
 }
 
 .check-icon {
   color: #a78bfa;
+}
+
+html.light .check-icon {
+  color: #7c3aed;
 }
 
 .item-badge {
@@ -234,13 +302,18 @@ onUnmounted(() => {
   padding: 1px 6px;
   border-radius: 99px;
   background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted, rgba(255, 255, 255, 0.5));
+}
+
+html.light .item-badge {
+  background: #e2e8f0;
+  color: #64748b;
 }
 
 /* Dropdown animation */
 .dropdown-anim-enter-active,
 .dropdown-anim-leave-active {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dropdown-anim-enter-from {

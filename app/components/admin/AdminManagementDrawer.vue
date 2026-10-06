@@ -301,6 +301,7 @@ import {
   Download
 } from 'lucide-vue-next'
 import type { Course, Student } from '~/types'
+import { useAppToast } from '~/composables/useAppToast'
 
 const props = defineProps<{
   isOpen: boolean
@@ -311,6 +312,8 @@ const emit = defineEmits<{
   (e: 'open-create-course'): void
   (e: 'data-changed'): void
 }>()
+
+const { crud, success, error, info } = useAppToast()
 
 const activeTab = ref<'courses' | 'students' | 'tools'>('courses')
 
@@ -378,21 +381,22 @@ async function updateCourseStatus(slug: string, status: string) {
     })
     await loadData()
     emit('data-changed')
+    crud('status', 'Course', slug)
   } catch (err: unknown) {
-    alert((err as Error).message || 'Failed to update course status')
+    error('Status Update Failed', (err as Error).message || 'Failed to update course status')
   }
 }
 
 async function deleteCourseAction(slug: string) {
-  if (!confirm(`Are you sure you want to delete course "${slug}"?`)) return
   try {
     await $fetch(`/api/courses/${slug}`, {
       method: 'DELETE'
     })
     await loadData()
     emit('data-changed')
+    crud('delete', 'Course', slug)
   } catch (err: unknown) {
-    alert((err as Error).message || 'Failed to delete course')
+    error('Delete Failed', (err as Error).message || 'Failed to delete course')
   }
 }
 
@@ -405,27 +409,28 @@ async function toggleStudentStatus(student: Student) {
     })
     await loadData()
     emit('data-changed')
+    crud('status', 'Student', student.name)
   } catch (err: unknown) {
-    alert((err as Error).message || 'Failed to update student status')
+    error('Student Status Failed', (err as Error).message || 'Failed to update student status')
   }
 }
 
 async function deleteStudentAction(id: number) {
-  if (!confirm('Are you sure you want to delete this student record?')) return
   try {
     await $fetch(`/api/students/${id}`, {
       method: 'DELETE'
     })
     await loadData()
     emit('data-changed')
+    crud('delete', 'Student', `ID: ${id}`)
   } catch (err: unknown) {
-    alert((err as Error).message || 'Failed to delete student')
+    error('Delete Failed', (err as Error).message || 'Failed to delete student')
   }
 }
 
 async function submitNewStudent() {
   if (!newStudent.name || !newStudent.email) {
-    alert('Please provide student name and email')
+    error('Missing Fields', 'Please provide student name and email')
     return
   }
   creatingStudent.value = true
@@ -439,13 +444,15 @@ async function submitNewStudent() {
         status: newStudent.status,
       }
     })
+    const createdName = newStudent.name
     newStudent.name = ''
     newStudent.email = ''
     showAddStudent.value = false
     await loadData()
     emit('data-changed')
+    crud('create', 'Student', createdName)
   } catch (err: unknown) {
-    alert((err as Error).message || 'Failed to create student')
+    error('Create Student Failed', (err as Error).message || 'Failed to create student')
   } finally {
     creatingStudent.value = false
   }
@@ -460,6 +467,7 @@ async function seedSampleCourse() {
     'Micro-Frontends with Nuxt 4 & Module Federation'
   ]
   const title = randomTitles[Math.floor(Math.random() * randomTitles.length)]
+
   try {
     await $fetch('/api/courses', {
       method: 'POST',
@@ -480,9 +488,9 @@ async function seedSampleCourse() {
     })
     await loadData()
     emit('data-changed')
-    alert(`Course "${title}" created successfully!`)
+    crud('create', 'Course', title)
   } catch (err: unknown) {
-    alert((err as Error).message || 'Failed to seed course')
+    error('Seed Failed', (err as Error).message || 'Failed to seed course')
   } finally {
     seeding.value = false
   }
@@ -867,6 +875,59 @@ function openCreateCourse() {
 .btn-action-tool:hover {
   background: rgba(124, 58, 237, 0.3);
   color: #fff;
+}
+
+/* Light mode overrides */
+html.light .admin-drawer {
+  background: #ffffff;
+  border-left-color: rgba(124, 58, 237, 0.25);
+  box-shadow: -15px 0 50px rgba(0, 0, 0, 0.15), -5px 0 25px rgba(124, 58, 237, 0.1);
+}
+
+html.light .drawer-header {
+  background: #f8fafc;
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+html.light .drawer-title {
+  color: #0f172a;
+}
+
+html.light .drawer-sub {
+  color: #64748b;
+}
+
+html.light .close-btn {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #64748b;
+}
+
+html.light .close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+html.light .search-mini {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+html.light .item-title {
+  color: #0f172a;
+}
+
+html.light .item-meta {
+  color: #64748b;
+}
+
+html.light .tool-name {
+  color: #0f172a;
+}
+
+html.light .tool-desc {
+  color: #64748b;
 }
 
 /* Drawer transitions */

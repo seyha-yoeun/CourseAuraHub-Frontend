@@ -402,4 +402,76 @@ function formatRevenue(val: number) {
   color: #fff;
   border-color: rgba(124, 58, 237, 0.6);
 }
+
+/* Light mode overrides */
+html.light .course-card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+html.light .course-card:hover {
+  background: #ffffff;
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.1);
+}
+
+html.light .instructor-row {
+  color: #64748b;
+}
+
+html.light .course-title {
+  color: #0f172a;
+}
+
+html.light .course-title:hover {
+  color: #7c3aed;
+}
+
+html.light .course-desc {
+  color: #475569;
+}
+
+html.light .metrics-grid {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+html.light .metric-lbl {
+  color: #64748b;
+}
+
+html.light .metric-val {
+  color: #0f172a;
+}
+
+html.light .current-price {
+  color: #0f172a;
+}
+
+html.light .original-price {
+  color: #94a3b8;
+}
+
+html.light .action-btn {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+html.light .action-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+html.light .details-btn {
+  background: rgba(124, 58, 237, 0.1);
+  border-color: rgba(124, 58, 237, 0.25);
+  color: #6d28d9;
+}
+
+html.light .details-btn:hover {
+  background: rgba(124, 58, 237, 0.2);
+  color: #5b21b6;
+}
 </style>

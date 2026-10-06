@@ -26,7 +26,7 @@
         </div>
         <Transition name="fade-text">
           <div v-if="!collapsed" class="logo-text">
-            <span class="logo-name">LearnFlow</span>
+            <span class="logo-name">CourseAuraHub</span>
             <span class="logo-tag">Academy</span>
           </div>
         </Transition>
@@ -369,5 +369,54 @@ function isActive(to: string) {
     transform: translateX(0);
     box-shadow: 10px 0 30px rgba(0, 0, 0, 0.7);
   }
+}
+
+/* Light mode overrides */
+html.light .sidebar {
+  background: rgba(255, 255, 255, 0.98);
+  border-right-color: rgba(0, 0, 0, 0.08);
+}
+
+html.light .sidebar-logo {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+html.light .logo-name {
+  color: #0f172a;
+}
+
+html.light .nav-section-label {
+  color: #94a3b8;
+}
+
+html.light .nav-item {
+  color: #475569;
+}
+
+html.light .nav-item:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+html.light .sidebar-active {
+  background: rgba(124, 58, 237, 0.12) !important;
+  border-color: rgba(124, 58, 237, 0.3) !important;
+  color: #7c3aed !important;
+}
+
+html.light .sidebar-profile {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+html.light .sidebar-profile:hover {
+  background: #f8fafc;
+}
+
+html.light .profile-name {
+  color: #0f172a;
+}
+
+html.light .profile-role {
+  color: #64748b;
 }
 </style>

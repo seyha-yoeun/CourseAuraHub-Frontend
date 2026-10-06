@@ -338,4 +338,57 @@ const filteredStudents = computed(() => {
   padding: 40px !important;
   color: rgba(255, 255, 255, 0.4);
 }
+
+/* Light mode overrides */
+html.light .student-table-wrap {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+html.light .search-input {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+html.light .search-icon {
+  color: #94a3b8;
+}
+
+html.light .student-table th {
+  color: #64748b;
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+html.light .student-table td {
+  color: #334155;
+  border-bottom-color: rgba(0, 0, 0, 0.04);
+}
+
+html.light .student-row:hover {
+  background: #f8fafc;
+}
+
+html.light .student-name {
+  color: #0f172a;
+}
+
+html.light .student-email {
+  color: #64748b;
+}
+
+html.light .country-pill {
+  color: #334155;
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+html.light .date-text {
+  color: #64748b;
+}
+
+html.light .empty-state {
+  color: #94a3b8;
+}
 </style>

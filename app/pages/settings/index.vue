@@ -209,10 +209,13 @@ import {
   Loader2
 } from 'lucide-vue-next'
 import type { PlatformSettings } from '~/types'
+import { useAppToast } from '~/composables/useAppToast'
 
 useHead({
   title: 'Platform Settings'
 })
+
+const { success, error } = useAppToast()
 
 const { data: initialSettings, pending } = await useAsyncData<PlatformSettings>(
   'platform-settings',
@@ -220,7 +223,7 @@ const { data: initialSettings, pending } = await useAsyncData<PlatformSettings>(
 )
 
 const form = reactive<PlatformSettings>({
-  platformName: 'LearnFlow Academy',
+  platformName: 'CourseAuraHub Academy',
   platformTagline: 'Master modern web development',
   currency: 'USD',
   defaultLanguage: 'en',
@@ -232,7 +235,7 @@ const form = reactive<PlatformSettings>({
   },
   profile: {
     name: 'Alex Chen',
-    email: 'alex.chen@learnflow.io',
+    email: 'alex.chen@courseaurahub.io',
     role: 'Platform Admin',
     avatar: 'https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4',
     bio: 'Full-stack developer and course creator with 8+ years of experience.',
@@ -263,11 +266,12 @@ async function saveSettings() {
       body: form,
     })
     saveSuccess.value = true
+    success('Settings Saved', 'Platform branding and profile details updated successfully.')
     setTimeout(() => {
       saveSuccess.value = false
     }, 4000)
   } catch (err: unknown) {
-    alert((err as Error).message || 'Failed to save settings')
+    error('Save Failed', (err as Error).message || 'Failed to save settings')
   } finally {
     saving.value = false
   }
