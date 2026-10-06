@@ -39,36 +39,32 @@
 
       <!-- Category Filter -->
       <div class="filter-item">
-        <select v-model="selectedCategory" class="filter-select" @change="onFilterChange">
-          <option value="all">All Categories</option>
-          <option value="Web Development">Web Development</option>
-          <option value="Programming">Programming</option>
-          <option value="Design">Design</option>
-          <option value="Backend">Backend</option>
-          <option value="DevOps">DevOps</option>
-        </select>
+        <AppDropdown
+          v-model="selectedCategory"
+          :options="categoryOptions"
+          placeholder="All Categories"
+          @change="onFilterChange"
+        />
       </div>
 
       <!-- Status Filter -->
       <div class="filter-item">
-        <select v-model="selectedStatus" class="filter-select" @change="onFilterChange">
-          <option value="all">All Statuses</option>
-          <option value="published">Published</option>
-          <option value="draft">Draft</option>
-          <option value="archived">Archived</option>
-        </select>
+        <AppDropdown
+          v-model="selectedStatus"
+          :options="statusOptions"
+          placeholder="All Statuses"
+          @change="onFilterChange"
+        />
       </div>
 
       <!-- Sort By -->
       <div class="filter-item">
-        <select v-model="selectedSort" class="filter-select" @change="onSortChange">
-          <option value="createdAt:desc">Newest First</option>
-          <option value="revenue:desc">Highest Revenue</option>
-          <option value="totalStudents:desc">Most Enrolled</option>
-          <option value="rating:desc">Top Rated</option>
-          <option value="price:asc">Price: Low to High</option>
-          <option value="price:desc">Price: High to Low</option>
-        </select>
+        <AppDropdown
+          v-model="selectedSort"
+          :options="sortOptions"
+          placeholder="Sort By"
+          @change="onSortChange"
+        />
       </div>
     </div>
 
@@ -141,6 +137,7 @@
 import { Plus, Search, X, BookOpen } from 'lucide-vue-next'
 import type { Course, CourseFormData } from '~/types'
 import { useCourses } from '~/composables/useCourses'
+import AppDropdown from '~/components/shared/AppDropdown.vue'
 import CourseCard from '~/components/courses/CourseCard.vue'
 import CourseFormModal from '~/components/courses/CourseFormModal.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
@@ -155,6 +152,31 @@ const searchQuery = ref('')
 const selectedCategory = ref('all')
 const selectedStatus = ref('all')
 const selectedSort = ref('createdAt:desc')
+
+const categoryOptions = [
+  { value: 'all', label: 'All Categories' },
+  { value: 'Web Development', label: 'Web Development' },
+  { value: 'Programming', label: 'Programming' },
+  { value: 'Design', label: 'Design' },
+  { value: 'Backend', label: 'Backend' },
+  { value: 'DevOps', label: 'DevOps' }
+]
+
+const statusOptions = [
+  { value: 'all', label: 'All Statuses' },
+  { value: 'published', label: 'Published' },
+  { value: 'draft', label: 'Draft' },
+  { value: 'archived', label: 'Archived' }
+]
+
+const sortOptions = [
+  { value: 'createdAt:desc', label: 'Newest First' },
+  { value: 'revenue:desc', label: 'Highest Revenue' },
+  { value: 'totalStudents:desc', label: 'Most Enrolled' },
+  { value: 'rating:desc', label: 'Top Rated' },
+  { value: 'price:asc', label: 'Price: Low to High' },
+  { value: 'price:desc', label: 'Price: High to Low' }
+]
 
 // Modal states
 const isFormModalOpen = ref(false)
@@ -295,23 +317,37 @@ onMounted(() => {
 }
 
 .filters-bar {
-  border-radius: 14px;
-  padding: 14px 18px;
-  display: flex;
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: minmax(260px, 2fr) 1.2fr 1fr 1.3fr;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 14px;
+}
+
+@media (max-width: 1024px) {
+  .filters-bar {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .filters-bar {
+    grid-template-columns: 1fr;
+    padding: 14px;
+    gap: 10px;
+  }
 }
 
 .search-box {
   position: relative;
-  flex: 2;
-  min-width: 240px;
+  width: 100%;
 }
 
 .search-icon {
   position: absolute;
-  left: 12px;
+  left: 14px;
   top: 50%;
   transform: translateY(-50%);
   color: rgba(255, 255, 255, 0.4);
@@ -319,49 +355,47 @@ onMounted(() => {
 
 .search-input {
   width: 100%;
-  padding: 9px 34px 9px 36px;
+  height: 40px;
+  padding: 0 36px 0 40px;
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 10px;
   color: #f1f5f9;
   font-size: 13px;
   outline: none;
   font-family: inherit;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-input:focus {
-  border-color: rgba(124, 58, 237, 0.5);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(124, 58, 237, 0.55);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
 }
 
 .clear-search {
   position: absolute;
-  right: 10px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   color: rgba(255, 255, 255, 0.4);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+
+.clear-search:hover {
+  color: #fff;
 }
 
 .filter-item {
-  flex: 1;
-  min-width: 160px;
-}
-
-.filter-select {
   width: 100%;
-  padding: 9px 14px;
-  background: #11121d;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 10px;
-  color: #e2e8f0;
-  font-size: 13px;
-  outline: none;
-  cursor: pointer;
-  font-family: inherit;
 }
 
 .summary-pills {

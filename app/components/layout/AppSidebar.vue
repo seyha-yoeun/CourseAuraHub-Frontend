@@ -1,75 +1,116 @@
 <template>
-  <aside class="sidebar" :class="{ collapsed }">
-    <!-- Logo -->
-    <div class="sidebar-logo">
-      <div class="logo-icon">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-          <path d="M14 2L26 9V19L14 26L2 19V9L14 2Z" fill="url(#logoGrad)" />
-          <path d="M14 8L20 11.5V18.5L14 22L8 18.5V11.5L14 8Z" fill="rgba(255,255,255,0.15)" />
-          <defs>
-            <linearGradient id="logoGrad" x1="2" y1="2" x2="26" y2="26" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#7c3aed"/>
-              <stop offset="1" stop-color="#2563eb"/>
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-      <Transition name="fade-text">
-        <div v-if="!collapsed" class="logo-text">
-          <span class="logo-name">LearnFlow</span>
-          <span class="logo-tag">Academy</span>
-        </div>
-      </Transition>
-    </div>
+  <div>
+    <!-- Mobile Backdrop -->
+    <Transition name="fade-backdrop">
+      <div
+        v-if="mobileOpen"
+        class="sidebar-backdrop"
+        @click="$emit('close-mobile')"
+      ></div>
+    </Transition>
 
-    <nav class="sidebar-nav">
-      <div v-for="section in navSections" :key="section.label" class="nav-section">
+    <aside class="sidebar" :class="{ collapsed, 'mobile-open': mobileOpen }">
+      <!-- Logo -->
+      <div class="sidebar-logo">
+        <div class="logo-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M14 2L26 9V19L14 26L2 19V9L14 2Z" fill="url(#logoGrad)" />
+            <path d="M14 8L20 11.5V18.5L14 22L8 18.5V11.5L14 8Z" fill="rgba(255,255,255,0.15)" />
+            <defs>
+              <linearGradient id="logoGrad" x1="2" y1="2" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#7c3aed"/>
+                <stop offset="1" stop-color="#2563eb"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
         <Transition name="fade-text">
-          <p v-if="!collapsed" class="nav-section-label">{{ section.label }}</p>
+          <div v-if="!collapsed" class="logo-text">
+            <span class="logo-name">LearnFlow</span>
+            <span class="logo-tag">Academy</span>
+          </div>
         </Transition>
-        <NuxtLink
-          v-for="item in section.items"
-          :key="item.to"
-          :to="item.to"
-          class="nav-item"
-          :class="{ 'sidebar-active': isActive(item.to) }"
-        >
-          <component :is="item.icon" :size="20" class="nav-icon" :stroke-width="1.5" />
-          <Transition name="fade-text">
-            <span v-if="!collapsed" class="nav-label">{{ item.label }}</span>
-          </Transition>
-          <Transition name="fade-text">
-            <span v-if="!collapsed && item.badge" class="nav-badge">{{ item.badge }}</span>
-          </Transition>
-        </NuxtLink>
       </div>
-    </nav>
 
-    <!-- Bottom profile -->
-    <div class="sidebar-profile">
-      <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4" alt="Avatar" class="profile-avatar" />
-      <Transition name="fade-text">
-        <div v-if="!collapsed" class="profile-info">
-          <p class="profile-name">Alex Chen</p>
-          <p class="profile-role">Platform Admin</p>
+      <nav class="sidebar-nav">
+        <div v-for="section in navSections" :key="section.label" class="nav-section">
+          <Transition name="fade-text">
+            <p v-if="!collapsed" class="nav-section-label">{{ section.label }}</p>
+          </Transition>
+          <NuxtLink
+            v-for="item in section.items"
+            :key="item.to"
+            :to="item.to"
+            class="nav-item"
+            :class="{ 'sidebar-active': isActive(item.to) }"
+            @click="$emit('close-mobile')"
+          >
+            <component :is="item.icon" :size="20" class="nav-icon" :stroke-width="1.5" />
+            <Transition name="fade-text">
+              <span v-if="!collapsed" class="nav-label">{{ item.label }}</span>
+            </Transition>
+            <Transition name="fade-text">
+              <span v-if="!collapsed && item.badge" class="nav-badge">{{ item.badge }}</span>
+            </Transition>
+          </NuxtLink>
         </div>
-      </Transition>
-    </div>
-  </aside>
+      </nav>
+
+      <!-- Admin Quick Console Trigger -->
+      <div class="sidebar-admin-section">
+        <button
+          type="button"
+          class="admin-trigger-btn"
+          :class="{ 'admin-collapsed': collapsed }"
+          title="Open Admin Management Console"
+          @click="$emit('open-admin')"
+        >
+          <ShieldAlert :size="18" class="text-violet-400 flex-shrink-0" />
+          <Transition name="fade-text">
+            <span v-if="!collapsed" class="admin-trigger-text">Admin Console</span>
+          </Transition>
+        </button>
+      </div>
+
+      <!-- Bottom profile -->
+      <div class="sidebar-profile" @click="$emit('open-admin')">
+        <img
+          src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4"
+          alt="Avatar"
+          class="profile-avatar"
+        />
+        <Transition name="fade-text">
+          <div v-if="!collapsed" class="profile-info">
+            <p class="profile-name">Alex Chen</p>
+            <p class="profile-role">Platform Admin</p>
+          </div>
+        </Transition>
+      </div>
+    </aside>
+  </div>
 </template>
 
 <script setup lang="ts">
 import {
   LayoutDashboard,
   BookOpen,
-  Users,
   Settings,
   BarChart3,
   GraduationCap,
+  ShieldAlert
 } from 'lucide-vue-next'
 
-defineProps<{ collapsed: boolean }>()
-defineEmits(['toggle'])
+withDefaults(
+  defineProps<{
+    collapsed: boolean
+    mobileOpen?: boolean
+  }>(),
+  {
+    mobileOpen: false
+  }
+)
+
+defineEmits(['toggle', 'close-mobile', 'open-admin'])
 
 const route = useRoute()
 
@@ -98,6 +139,14 @@ function isActive(to: string) {
 </script>
 
 <style scoped>
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 45;
+}
+
 .sidebar {
   position: fixed;
   left: 0;
@@ -109,7 +158,7 @@ function isActive(to: string) {
   border-right: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 50;
   overflow: hidden;
 }
@@ -219,6 +268,42 @@ function isActive(to: string) {
   padding: 1px 7px;
 }
 
+/* Admin trigger */
+.sidebar-admin-section {
+  padding: 10px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.admin-trigger-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  color: #c4b5fd;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.admin-trigger-btn:hover {
+  background: rgba(124, 58, 237, 0.25);
+  color: #fff;
+  border-color: rgba(124, 58, 237, 0.5);
+}
+
+.admin-trigger-btn.admin-collapsed {
+  justify-content: center;
+  padding: 9px;
+}
+
 /* Profile */
 .sidebar-profile {
   display: flex;
@@ -227,6 +312,12 @@ function isActive(to: string) {
   padding: 16px 18px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   min-height: 72px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sidebar-profile:hover {
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .profile-avatar {
@@ -258,5 +349,25 @@ function isActive(to: string) {
 .fade-text-enter-from,
 .fade-text-leave-to {
   opacity: 0;
+}
+
+.fade-backdrop-enter-active,
+.fade-backdrop-leave-active {
+  transition: opacity 0.25s ease;
+}
+.fade-backdrop-enter-from,
+.fade-backdrop-leave-to {
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    width: var(--sidebar-width) !important;
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.7);
+  }
 }
 </style>

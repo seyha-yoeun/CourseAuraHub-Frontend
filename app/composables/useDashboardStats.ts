@@ -1,8 +1,11 @@
 import type { DashboardStats } from '~/types'
 
 export function useDashboardStats() {
-  const { data, pending, refresh, error } = useAsyncData<DashboardStats>('dashboard-stats', () =>
-    $fetch('/api/stats')
+  const isRefreshing = ref(false)
+
+  const { data, pending, refresh: baseRefresh, error } = useAsyncData<DashboardStats>(
+    'dashboard-stats',
+    () => $fetch(`/api/stats?_t=${Date.now()}`)
   )
 
   const kpis = computed(() => data.value?.kpis ?? {
@@ -25,5 +28,25 @@ export function useDashboardStats() {
   const topCourses = computed(() => data.value?.topCourses ?? [])
   const recentEnrollments = computed(() => data.value?.recentEnrollments ?? [])
 
-  return { kpis, charts, topCourses, recentEnrollments, pending, refresh, error }
+  async function refresh() {
+    isRefreshing.value = true
+    try {
+      await baseRefresh()
+    } finally {
+      setTimeout(() => {
+        isRefreshing.value = false
+      }, 600)
+    }
+  }
+
+  return {
+    kpis,
+    charts,
+    topCourses,
+    recentEnrollments,
+    pending,
+    isRefreshing,
+    refresh,
+    error,
+  }
 }

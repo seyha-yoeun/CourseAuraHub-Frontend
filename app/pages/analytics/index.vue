@@ -11,11 +11,11 @@
       <button
         type="button"
         class="refresh-btn"
-        :disabled="pending"
+        :disabled="isRefreshing"
         @click="refresh()"
       >
-        <RefreshCw :size="15" :class="{ 'animate-spin': pending }" />
-        <span>Refresh Metrics</span>
+        <RefreshCw :size="15" :class="{ 'animate-spin': isRefreshing }" />
+        <span>{{ isRefreshing ? 'Refreshing...' : 'Refresh Metrics' }}</span>
       </button>
     </div>
 
@@ -143,7 +143,7 @@ useHead({
   title: 'Sales & Learner Analytics'
 })
 
-const { kpis, charts, pending, refresh } = useDashboardStats()
+const { kpis, charts, pending, isRefreshing, refresh } = useDashboardStats()
 
 const avgOrderValue = computed(() => {
   if (!kpis.value.totalStudents) return 99.99

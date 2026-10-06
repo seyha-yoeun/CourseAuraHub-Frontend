@@ -12,11 +12,11 @@
       <button
         type="button"
         class="refresh-btn"
-        :disabled="pending"
-        @click="refresh()"
+        :disabled="isRefreshing"
+        @click="handleRefresh"
       >
-        <RefreshCw :size="15" :class="{ 'animate-spin': pending }" />
-        <span>Refresh Data</span>
+        <RefreshCw :size="15" :class="{ 'animate-spin': isRefreshing }" />
+        <span>{{ isRefreshing ? 'Refreshing...' : 'Refresh Data' }}</span>
       </button>
     </div>
 
@@ -71,9 +71,21 @@ useHead({
   title: 'Student Management'
 })
 
+const isRefreshing = ref(false)
 const { data, pending, refresh } = await useAsyncData<Student[]>('students-list', () =>
-  $fetch('/api/students')
+  $fetch(`/api/students?_t=${Date.now()}`)
 )
+
+async function handleRefresh() {
+  isRefreshing.value = true
+  try {
+    await refresh()
+  } finally {
+    setTimeout(() => {
+      isRefreshing.value = false
+    }, 600)
+  }
+}
 
 const students = computed(() => data.value || [])
 

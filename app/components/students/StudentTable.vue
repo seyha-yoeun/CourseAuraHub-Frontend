@@ -13,11 +13,11 @@
       </div>
 
       <div class="filter-group">
-        <select v-model="statusFilter" class="status-select">
-          <option value="all">All Statuses</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </select>
+        <AppDropdown
+          v-model="statusFilter"
+          :options="statusOptions"
+          placeholder="All Statuses"
+        />
       </div>
     </div>
 
@@ -111,6 +111,7 @@
 <script setup lang="ts">
 import { Search, BookOpen, CheckCircle2 } from 'lucide-vue-next'
 import type { Student } from '~/types'
+import AppDropdown from '~/components/shared/AppDropdown.vue'
 
 const props = defineProps<{
   students: Student[]
@@ -118,6 +119,12 @@ const props = defineProps<{
 
 const searchQuery = ref('')
 const statusFilter = ref('all')
+
+const statusOptions = [
+  { value: 'all', label: 'All Statuses' },
+  { value: 'active', label: 'Active' },
+  { value: 'inactive', label: 'Inactive' }
+]
 
 const filteredStudents = computed(() => {
   let list = props.students || []

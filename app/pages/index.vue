@@ -15,11 +15,11 @@
         <button
           type="button"
           class="banner-btn-secondary"
-          :disabled="pending"
+          :disabled="isRefreshing"
           @click="refresh()"
         >
-          <RefreshCw :size="15" :class="{ 'animate-spin': pending }" />
-          <span>Refresh</span>
+          <RefreshCw :size="15" :class="{ 'animate-spin': isRefreshing }" />
+          <span>{{ isRefreshing ? 'Refreshing...' : 'Refresh' }}</span>
         </button>
 
         <NuxtLink to="/courses" class="banner-btn-primary">
@@ -190,7 +190,7 @@ useHead({
   title: 'Dashboard Overview'
 })
 
-const { kpis, charts, topCourses, recentEnrollments, pending, refresh } = useDashboardStats()
+const { kpis, charts, topCourses, recentEnrollments, pending, isRefreshing, refresh } = useDashboardStats()
 
 function getCategoryColor(cat: string) {
   const map: Record<string, string> = {

@@ -1,6 +1,60 @@
 {
   "courses": [
     {
+      "id": 1791276250761,
+      "slug": "advanced-pinia-patterns-state-architectures",
+      "title": "Advanced Pinia Patterns & State Architectures",
+      "description": "Comprehensive advanced masterclass exploring cutting-edge architecture and patterns.",
+      "instructor": "Alex Chen",
+      "price": 119.99,
+      "originalPrice": 179.99,
+      "status": "published",
+      "category": "Web Development",
+      "level": "Advanced",
+      "thumbnail": "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&h=450&fit=crop",
+      "rating": 0,
+      "totalStudents": 0,
+      "totalLessons": 45,
+      "totalHours": 15,
+      "revenue": 0,
+      "completionRate": 0,
+      "tags": [
+        "Vue 3",
+        "Nuxt 4",
+        "Advanced"
+      ],
+      "createdAt": "2026-10-06",
+      "updatedAt": "2026-10-06",
+      "monthlyEnrollments": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "monthlyRevenue": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
       "id": 1791275462207,
       "slug": "test",
       "title": "Test updated",
