@@ -7,7 +7,8 @@
           Welcome back, <span class="gradient-text">Alex</span> 👋
         </h1>
         <p class="welcome-desc">
-          Here is your online academy sales summary and student activity for this month.
+          Here is your online academy sales summary and student activity for
+          this month.
         </p>
       </div>
 
@@ -19,7 +20,7 @@
           @click="refresh()"
         >
           <RefreshCw :size="15" :class="{ 'animate-spin': isRefreshing }" />
-          <span>{{ isRefreshing ? 'Refreshing...' : 'Refresh' }}</span>
+          <span>{{ isRefreshing ? "Refreshing..." : "Refresh" }}</span>
         </button>
 
         <NuxtLink to="/courses" class="banner-btn-primary">
@@ -97,19 +98,25 @@
           >
             <div class="cat-header">
               <span class="cat-name">{{ cat }}</span>
-              <span class="cat-amount">${{ Number(amount).toLocaleString() }}</span>
+              <span class="cat-amount"
+                >${{ Number(amount).toLocaleString() }}</span
+              >
             </div>
             <div class="progress-track">
               <div
                 class="progress-fill"
                 :style="{
                   width: `${kpis.totalRevenue ? Math.min(100, Math.round((Number(amount) / kpis.totalRevenue) * 100)) : 0}%`,
-                  background: getCategoryColor(String(cat))
+                  background: getCategoryColor(String(cat)),
                 }"
               ></div>
             </div>
             <div class="cat-percentage">
-              {{ kpis.totalRevenue ? Math.round((Number(amount) / kpis.totalRevenue) * 100) : 0 }}% of total revenue
+              {{
+                kpis.totalRevenue
+                  ? Math.round((Number(amount) / kpis.totalRevenue) * 100)
+                  : 0
+              }}% of total revenue
             </div>
           </div>
         </div>
@@ -155,7 +162,9 @@
               </div>
             </div>
             <div class="course-revenue">
-              <span class="rev-val">${{ (course.revenue / 1000).toFixed(1) }}K</span>
+              <span class="rev-val"
+                >${{ (course.revenue / 1000).toFixed(1) }}K</span
+              >
               <span class="rev-lbl">Revenue</span>
             </div>
           </NuxtLink>
@@ -179,28 +188,36 @@ import {
   RefreshCw,
   Plus,
   Tag,
-  ArrowRight
-} from 'lucide-vue-next'
-import KpiCard from '~/components/dashboard/KpiCard.vue'
-import SalesChart from '~/components/dashboard/SalesChart.vue'
-import RecentEnrollmentsTable from '~/components/dashboard/RecentEnrollmentsTable.vue'
-import { useDashboardStats } from '~/composables/useDashboardStats'
+  ArrowRight,
+} from "lucide-vue-next";
+import KpiCard from "~/components/dashboard/KpiCard.vue";
+import SalesChart from "~/components/dashboard/SalesChart.vue";
+import RecentEnrollmentsTable from "~/components/dashboard/RecentEnrollmentsTable.vue";
+import { useDashboardStats } from "~/composables/useDashboardStats";
 
 useHead({
-  title: 'Dashboard Overview'
-})
+  title: "Dashboard Overview",
+});
 
-const { kpis, charts, topCourses, recentEnrollments, pending, isRefreshing, refresh } = useDashboardStats()
+const {
+  kpis,
+  charts,
+  topCourses,
+  recentEnrollments,
+  pending,
+  isRefreshing,
+  refresh,
+} = useDashboardStats();
 
 function getCategoryColor(cat: string) {
   const map: Record<string, string> = {
-    'Web Development': 'linear-gradient(90deg, #7c3aed, #6366f1)',
-    'Programming': 'linear-gradient(90deg, #2563eb, #38bdf8)',
-    'Design': 'linear-gradient(90deg, #ec4899, #f43f5e)',
-    'DevOps': 'linear-gradient(90deg, #10b981, #34d399)',
-    'Backend': 'linear-gradient(90deg, #f59e0b, #fbbf24)',
-  }
-  return map[cat] || 'linear-gradient(90deg, #8b5cf6, #3b82f6)'
+    "Web Development": "linear-gradient(90deg, #7c3aed, #6366f1)",
+    Programming: "linear-gradient(90deg, #2563eb, #38bdf8)",
+    Design: "linear-gradient(90deg, #ec4899, #f43f5e)",
+    DevOps: "linear-gradient(90deg, #10b981, #34d399)",
+    Backend: "linear-gradient(90deg, #f59e0b, #fbbf24)",
+  };
+  return map[cat] || "linear-gradient(90deg, #8b5cf6, #3b82f6)";
 }
 </script>
 
@@ -220,7 +237,11 @@ function getCategoryColor(cat: string) {
   flex-wrap: wrap;
   gap: 16px;
   border: 1px solid rgba(124, 58, 237, 0.2);
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(37, 99, 235, 0.04) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.08) 0%,
+    rgba(37, 99, 235, 0.04) 100%
+  );
 }
 
 .welcome-title {
