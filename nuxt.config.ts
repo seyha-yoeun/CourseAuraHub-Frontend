@@ -13,4 +13,16 @@ export default defineNuxtConfig({
     preference: 'dark',
     fallback: 'dark',
   },
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_API_BASE || 'http://localhost:8080/api/v1',
+      siteUrl: process.env.NUXT_SITE_URL || 'http://localhost:3000'
+    }
+  },
+  nitro: {
+    routeRules: {
+      '/auth/**': { cors: true },
+      '/api/auth/**': { cors: true }
+    }
+  }
 })

@@ -123,10 +123,14 @@ const EXPIRY_DURATION_MS = 30 * 60 * 1000 // 30 minutes in milliseconds
 
 const isOpen = ref(false)
 const router = useRouter()
+const route = useRoute()
 const { info } = useAppToast()
 
 function checkStorageStatus() {
   if (!import.meta.client) return
+
+  // Never interrupt the authentication screens with the notice
+  if (route.path.startsWith('/auth')) return
 
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -171,6 +175,16 @@ function exploreCatalog() {
   dismissNotice()
   router.push('/courses')
 }
+
+// If the visitor navigates to an auth page while the notice is open, close it
+watch(
+  () => route.path,
+  (path) => {
+    if (path.startsWith('/auth')) {
+      isOpen.value = false
+    }
+  }
+)
 
 onMounted(() => {
   // Give a tiny delay for smooth initial entrance after mount
