@@ -258,21 +258,12 @@
       <!-- Avatar with User Dropdown -->
       <div ref="avatarContainerRef" class="relative">
         <div
-<<<<<<< HEAD
-          class="header-avatar"
-          :class="{ 'avatar-active': isAvatarOpen }"
+          class="size-9 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-violet-500/50 transition-all duration-200 hover:scale-105 hover:border-violet-500 hover:shadow-[0_0_14px_rgba(124,58,237,0.5)] light:border-violet-300"
+          :class="{ 'scale-105 border-violet-500 shadow-[0_0_14px_rgba(124,58,237,0.5)] light:border-violet-600': isAvatarOpen }"
           :title="`${auth.userName} (${auth.roleLabel})`"
           @click="toggleAvatar"
         >
-          <img :src="auth.userAvatar" :alt="`${auth.userName} profile`" />
-=======
-          class="size-9 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-violet-500/50 transition-all duration-200 hover:scale-105 hover:border-violet-500 hover:shadow-[0_0_14px_rgba(124,58,237,0.5)] light:border-violet-300"
-          :class="{ 'scale-105 border-violet-500 shadow-[0_0_14px_rgba(124,58,237,0.5)] light:border-violet-600': isAvatarOpen }"
-          title="Alex Chen (Platform Administrator)"
-          @click="toggleAvatar"
-        >
-          <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4" alt="Alex Chen Profile" class="size-full object-cover" >
->>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
+          <img :src="auth.userAvatar" :alt="`${auth.userName} profile`" class="size-full object-cover" >
         </div>
 
         <!-- Avatar Dropdown Menu -->
@@ -285,29 +276,16 @@
             <div class="flex items-center gap-3 px-2.5 pt-2.5 pb-3">
               <div class="relative">
                 <img
-<<<<<<< HEAD
                   :src="auth.userAvatar"
                   :alt="auth.userName"
-                  class="user-card-avatar"
-                />
-                <span class="online-indicator"></span>
-              </div>
-              <div class="user-card-meta">
-                <span class="user-card-name">{{ auth.userName }}</span>
-                <span class="user-card-email">{{ auth.userEmail }}</span>
-                <span class="user-card-badge">{{ auth.roleLabel }}</span>
-=======
-                  src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4"
-                  alt="Alex Chen"
                   class="size-11 rounded-full border-2 border-violet-500/40"
                 >
                 <span class="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-zinc-950 bg-emerald-500 light:border-white" />
               </div>
               <div class="min-w-0 flex-1">
-                <span class="block text-sm font-bold text-slate-100 light:text-slate-900">Alex Chen</span>
-                <span class="block truncate text-[11px] text-white/45 light:text-slate-500">alex.chen@courseaurahub.io</span>
-                <span class="mt-0.75 inline-block rounded-full border border-violet-500/30 bg-violet-500/18 px-1.5 py-px text-[9px] font-bold tracking-wider text-violet-300 uppercase light:border-violet-200 light:bg-violet-50 light:text-violet-700">Platform Administrator</span>
->>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
+                <span class="block text-sm font-bold text-slate-100 light:text-slate-900">{{ auth.userName }}</span>
+                <span class="block truncate text-[11px] text-white/45 light:text-slate-500">{{ auth.userEmail }}</span>
+                <span class="mt-0.75 inline-block rounded-full border border-violet-500/30 bg-violet-500/18 px-1.5 py-px text-[9px] font-bold tracking-wider text-violet-300 uppercase light:border-violet-200 light:bg-violet-50 light:text-violet-700">{{ auth.roleLabel }}</span>
               </div>
             </div>
 

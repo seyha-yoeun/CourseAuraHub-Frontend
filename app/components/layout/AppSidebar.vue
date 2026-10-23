@@ -72,11 +72,7 @@
       </nav>
 
       <!-- Admin Quick Console Trigger -->
-<<<<<<< HEAD
-      <div v-if="auth.isAdmin" class="sidebar-admin-section">
-=======
-      <div class="border-t border-white/4 p-3 light:border-slate-200">
->>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
+      <div v-if="auth.isAdmin" class="border-t border-white/4 p-3 light:border-slate-200">
         <button
           type="button"
           class="flex w-full items-center gap-2.5 overflow-hidden rounded-[10px] border border-violet-500/25 bg-violet-500/12 px-3 py-2.25 text-[13px] font-semibold whitespace-nowrap text-violet-300 transition-colors hover:border-violet-500/50 hover:bg-violet-500/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:border-violet-400 light:hover:bg-violet-100 light:hover:text-violet-900"
@@ -92,32 +88,19 @@
       </div>
 
       <!-- Bottom profile -->
-<<<<<<< HEAD
-      <div class="sidebar-profile" @click="handleProfileClick">
+      <div
+        class="flex min-h-18 cursor-pointer items-center gap-2.5 border-t border-white/6 px-4.5 py-4 transition-colors hover:bg-white/3 light:border-slate-200 light:hover:bg-slate-50"
+        @click="handleProfileClick"
+      >
         <img
           :src="auth.userAvatar"
           :alt="`${auth.userName} profile`"
-          class="profile-avatar"
-        />
-        <Transition name="fade-text">
-          <div v-if="!collapsed" class="profile-info">
-            <p class="profile-name">{{ auth.userName }}</p>
-            <p class="profile-role">{{ auth.roleLabel }}</p>
-=======
-      <div
-        class="flex min-h-18 cursor-pointer items-center gap-2.5 border-t border-white/6 px-4.5 py-4 transition-colors hover:bg-white/3 light:border-slate-200 light:hover:bg-slate-50"
-        @click="$emit('open-admin')"
-      >
-        <img
-          src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4"
-          alt="Avatar"
           class="size-9 shrink-0 rounded-full border-2 border-violet-500/40 bg-[#1a1a2e] light:border-violet-300 light:bg-violet-50"
         >
         <Transition v-bind="fadeText">
           <div v-if="!collapsed" class="min-w-0">
-            <p class="truncate text-[13px] font-semibold text-slate-200 light:text-slate-900">Alex Chen</p>
-            <p class="mt-px truncate text-[11px] text-white/40 light:text-slate-500">Platform Admin</p>
->>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
+            <p class="truncate text-[13px] font-semibold text-slate-200 light:text-slate-900">{{ auth.userName }}</p>
+            <p class="mt-px truncate text-[11px] text-white/40 light:text-slate-500">{{ auth.roleLabel }}</p>
           </div>
         </Transition>
       </div>
