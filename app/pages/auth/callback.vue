@@ -20,7 +20,7 @@
         <p class="callback-description">You have been successfully signed in.</p>
         <div class="success-redirect">
           <Loader2 :size="18" class="animate-spin" />
-          <span>Redirecting to dashboard...</span>
+          <span>Redirecting...</span>
         </div>
       </div>
 
@@ -39,7 +39,7 @@
           >
             Try Again
           </button>
-          <NuxtLink to="/auth/login" class="btn btn-secondary">
+          <NuxtLink :to="loginLink" class="btn btn-secondary">
             Back to Sign In
           </NuxtLink>
         </div>
@@ -49,10 +49,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuth } from '~/composables/useAuth'
 import { toApiError } from '~/utils/apiError'
+import {
+  clearPendingOAuth,
+  consumePendingRedirect,
+  getOAuthErrorMessage,
+  getPendingRedirect,
+  getRememberedOAuthProvider,
+  getSafeRedirect,
+} from '~/utils/authRedirect'
 import {
   CheckCircle,
   AlertCircle,
@@ -73,20 +81,15 @@ const cardMotion = {
   enter: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }
 }
 
-function getOAuthErrorMessage() {
-  const error = route.query.error
-  if (!error) return ''
-
-  const value = Array.isArray(error) ? error[0] : error
-  if (value === 'access_denied') {
-    return 'Sign-in was cancelled or access was denied.'
-  }
-
-  return 'The authentication provider could not complete the sign-in.'
-}
+const loginLink = computed(() => {
+  const redirect = getSafeRedirect(route.query.redirect) || getPendingRedirect()
+  return redirect
+    ? { path: '/auth/login', query: { redirect } }
+    : '/auth/login'
+})
 
 async function handleCallback() {
-  const oauthError = getOAuthErrorMessage()
+  const oauthError = getOAuthErrorMessage(route.query.error)
   if (oauthError) {
     status.value = 'error'
     errorMessage.value = oauthError
@@ -94,11 +97,20 @@ async function handleCallback() {
   }
 
   try {
+    // Always re-read the session here: the cookies may have just been replaced
+    // by the OAuth provider and the store could still hold a previous user.
     await auth.fetchUser()
+
     status.value = 'success'
 
+    const redirect = getSafeRedirect(route.query.redirect)
+      || consumePendingRedirect()
+      || auth.homeRoute
+
+    clearPendingOAuth()
+
     redirectTimer = setTimeout(() => {
-      router.push(auth.homeRoute)
+      router.push(redirect)
     }, 1200)
   } catch (error) {
     status.value = 'error'
@@ -110,6 +122,14 @@ async function handleCallback() {
 }
 
 function retryLogin() {
+  const provider = getRememberedOAuthProvider()
+
+  // Restart the provider flow when we know which one was used.
+  if (provider) {
+    auth.initiateOAuth2(provider)
+    return
+  }
+
   status.value = 'loading'
   errorMessage.value = ''
   handleCallback()

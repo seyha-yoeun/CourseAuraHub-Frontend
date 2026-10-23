@@ -3,6 +3,14 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppToast } from '~/composables/useAppToast'
 import { ApiError, toApiError } from '~/utils/apiError'
+import {
+  clearPendingOAuth,
+  getPendingRedirect,
+  getSafeRedirect,
+  rememberOAuthProvider,
+  rememberPendingRedirect,
+  type OAuthProvider,
+} from '~/utils/authRedirect'
 
 export interface AuthUser {
   userId: string
@@ -16,16 +24,7 @@ export interface AuthUser {
 
 export type User = AuthUser
 
-type OAuthProvider = 'google' | 'github' | 'facebook'
-
 const ADMIN_ROLE = 'ROLE_ADMIN'
-
-function getSafeRedirect(value: unknown) {
-  if (typeof value !== 'string') return null
-  if (!value.startsWith('/') || value.startsWith('//')) return null
-  if (value.startsWith('/auth/')) return null
-  return value
-}
 
 function getDefaultAvatar(seed: string) {
   return `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(seed || 'CourseAura')}&backgroundColor=b6e3f4`
@@ -41,6 +40,8 @@ export const useAuthStore = defineStore('auth', () => {
   const initializing = ref<Promise<void> | null>(null)
   const initializationError = ref<string | null>(null)
   const lastError = ref<ApiError | null>(null)
+  const hadSession = ref(false)
+  const sessionExpired = ref(false)
 
   const isAuthenticated = computed(() => Boolean(user.value))
   const isAdmin = computed(() => user.value?.role === ADMIN_ROLE)
@@ -84,11 +85,12 @@ export const useAuthStore = defineStore('auth', () => {
   })
 
   const homeRoute = computed(() => isAdmin.value ? '/' : '/courses')
-  const sessionExpired = computed(() => lastError.value?.status === 401 || lastError.value?.code === 'SESSION_EXPIRED')
 
   function setUser(userData: AuthUser) {
     user.value = userData
     lastError.value = null
+    sessionExpired.value = false
+    hadSession.value = true
   }
 
   function updateUser(patch: Partial<AuthUser>) {
@@ -162,6 +164,7 @@ export const useAuthStore = defineStore('auth', () => {
       const apiError = handleError(error, 'Unable to restore your session')
 
       if (apiError.status === 401) {
+        if (hadSession.value) sessionExpired.value = true
         clearAuth()
       }
 
@@ -172,6 +175,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function login(email: string, password: string, rememberMe = false) {
     loading.value = true
     lastError.value = null
+    sessionExpired.value = false
 
     try {
       const response = await $fetch<AuthUser>('/api/auth/login', {
@@ -186,6 +190,7 @@ export const useAuthStore = defineStore('auth', () => {
 
       setUser(response)
       initialized.value = true
+      clearPendingOAuth()
 
       success('Welcome Back!', `Hello ${response.firstName || response.email}`)
 
@@ -203,6 +208,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function register(firstName: string, lastName: string, email: string, password: string) {
     loading.value = true
     lastError.value = null
+    sessionExpired.value = false
 
     try {
       const response = await $fetch<AuthUser>('/api/auth/register', {
@@ -217,9 +223,12 @@ export const useAuthStore = defineStore('auth', () => {
 
       setUser(response)
       initialized.value = true
+      clearPendingOAuth()
 
       success('Account Created!', `Welcome to CourseAuraHub, ${response.firstName || response.email}`)
-      await router.push(homeRoute.value)
+
+      const redirect = getSafeRedirect(router.currentRoute.value.query.redirect)
+      await router.push(redirect || homeRoute.value)
 
       return response
     } catch (error) {
@@ -247,6 +256,7 @@ export const useAuthStore = defineStore('auth', () => {
       const apiError = handleError(error, 'Session expired')
 
       if (apiError.status === 401) {
+        sessionExpired.value = true
         clearAuth()
       }
 
@@ -257,6 +267,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function logout() {
     loading.value = true
     lastError.value = null
+    sessionExpired.value = false
 
     try {
       await $fetch('/api/auth/logout', {
@@ -268,6 +279,8 @@ export const useAuthStore = defineStore('auth', () => {
       warning('Signed Out Locally', 'The server could not be reached, but your local session was cleared.')
     } finally {
       clearAuth()
+      clearPendingOAuth()
+      hadSession.value = false
       initialized.value = true
       loading.value = false
       await router.push('/auth/login')
@@ -276,6 +289,13 @@ export const useAuthStore = defineStore('auth', () => {
 
   function initiateOAuth2(provider: OAuthProvider) {
     if (!import.meta.client) return
+
+    const redirect = getSafeRedirect(router.currentRoute.value.query.redirect)
+      || getPendingRedirect()
+
+    rememberPendingRedirect(redirect)
+    rememberOAuthProvider(provider)
+
     window.location.href = `/api/auth/oauth2/${provider}`
   }
 

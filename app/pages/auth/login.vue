@@ -92,15 +92,16 @@
     <!-- Footer -->
     <p class="auth-footer">
       Don't have an account? 
-      <NuxtLink to="/auth/register" class="auth-link">Create one</NuxtLink>
+      <NuxtLink :to="registerLink" class="auth-link">Create one</NuxtLink>
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useAuth } from '~/composables/useAuth'
 import { toApiError } from '~/utils/apiError'
+import { getOAuthErrorMessage, getSafeRedirect } from '~/utils/authRedirect'
 import {
   Mail,
   Lock,
@@ -128,8 +129,19 @@ const errors = reactive({
 const pageError = ref('')
 const showPassword = ref(false)
 
+const registerLink = computed(() => {
+  const redirect = getSafeRedirect(route.query.redirect)
+  return redirect
+    ? { path: '/auth/register', query: { redirect } }
+    : '/auth/register'
+})
+
+const oauthError = getOAuthErrorMessage(route.query.error)
+
 if (route.query.session === 'expired') {
   pageError.value = 'Your session has expired. Please sign in again.'
+} else if (oauthError) {
+  pageError.value = oauthError
 }
 
 onMounted(() => {

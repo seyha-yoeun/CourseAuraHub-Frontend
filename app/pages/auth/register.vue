@@ -170,7 +170,7 @@
     <!-- Footer -->
     <p class="auth-footer">
       Already have an account? 
-      <NuxtLink to="/auth/login" class="auth-link">Sign in</NuxtLink>
+      <NuxtLink :to="loginLink" class="auth-link">Sign in</NuxtLink>
     </p>
   </div>
 </template>
@@ -179,6 +179,7 @@
 import { computed, reactive, ref } from 'vue'
 import { useAuth } from '~/composables/useAuth'
 import { toApiError } from '~/utils/apiError'
+import { getOAuthErrorMessage, getSafeRedirect } from '~/utils/authRedirect'
 import {
   User,
   Mail,
@@ -190,6 +191,7 @@ import {
 import SocialLoginButtons from '~/components/auth/SocialLoginButtons.vue'
 import PasswordStrengthMeter from '~/components/auth/PasswordStrengthMeter.vue'
 
+const route = useRoute()
 const auth = useAuth()
 const { register, initiateOAuth2, loading } = auth
 const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
@@ -215,6 +217,19 @@ const errors = reactive({
 const pageError = ref('')
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
+
+const loginLink = computed(() => {
+  const redirect = getSafeRedirect(route.query.redirect)
+  return redirect
+    ? { path: '/auth/login', query: { redirect } }
+    : '/auth/login'
+})
+
+const oauthError = getOAuthErrorMessage(route.query.error)
+
+if (oauthError) {
+  pageError.value = oauthError
+}
 
 const cardMotion = {
   initial: { opacity: 0, y: 30 },

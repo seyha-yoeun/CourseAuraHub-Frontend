@@ -1,7 +1,19 @@
+import { getSafeRedirect } from '~/utils/authRedirect'
+
 const PUBLIC_PATHS = ['/auth/login', '/auth/register', '/auth/callback']
 
+function normalizePath(path: string) {
+  const normalized = path.replace(/\/+$/, '')
+  return normalized || '/'
+}
+
 function isPublicPath(path: string) {
-  return PUBLIC_PATHS.includes(path)
+  return PUBLIC_PATHS.includes(normalizePath(path))
+}
+
+function isAuthEntryPath(path: string) {
+  const normalized = normalizePath(path)
+  return normalized === '/auth/login' || normalized === '/auth/register'
 }
 
 function hasSessionCookie() {
@@ -40,16 +52,18 @@ export default defineNuxtRouteMiddleware(async (to) => {
     })
   }
 
-  if (auth.isAuthenticated && (to.path === '/auth/login' || to.path === '/auth/register')) {
-    return navigateTo(auth.homeRoute)
+  if (auth.isAuthenticated && isAuthEntryPath(to.path)) {
+    // Honour a requested destination (e.g. a protected page the user was
+    // originally trying to reach) instead of always going to the home page.
+    return navigateTo(getSafeRedirect(to.query.redirect, auth.homeRoute))
   }
 
   // Let the callback page finish its fetch/redirect flow.
-  if (to.path === '/auth/callback') {
+  if (normalizePath(to.path) === '/auth/callback') {
     return
   }
 
   if (to.meta.requiresAdmin === true && !auth.isAdmin) {
-    return navigateTo('/courses')
+    return navigateTo(auth.homeRoute)
   }
 })
