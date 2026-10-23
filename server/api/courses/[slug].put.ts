@@ -1,29 +1,31 @@
-import { readDb, writeDb } from '../../utils/db'
+import type { Course, CourseFormData } from '~/types'
 
 export default defineEventHandler(async (event) => {
   const slug = getRouterParam(event, 'slug')
-  const body = await readBody(event)
-  const db = await readDb()
 
-  const idx = (db.courses as Record<string, unknown>[]).findIndex(c => c.slug === slug)
-  if (idx === -1) {
-    throw createError({ statusCode: 404, statusMessage: 'Course not found' })
+  if (!slug) {
+    throw createError({ statusCode: 400, statusMessage: 'Course slug is required' })
   }
 
-  const existing = db.courses[idx]
-  const updated = {
-    ...existing,
-    ...body,
-    tags: Array.isArray(body.tags) ? body.tags : (body.tags ? String(body.tags).split(',').map((t: string) => t.trim()) : existing.tags),
-    price: body.price !== undefined ? Number(body.price) : existing.price,
-    originalPrice: body.originalPrice !== undefined ? Number(body.originalPrice) : existing.originalPrice,
-    totalLessons: body.totalLessons !== undefined ? Number(body.totalLessons) : existing.totalLessons,
-    totalHours: body.totalHours !== undefined ? Number(body.totalHours) : existing.totalHours,
-    updatedAt: new Date().toISOString().split('T')[0],
-  }
+  const body = await readBody<Partial<CourseFormData>>(event)
 
-  db.courses[idx] = updated
-  await writeDb(db)
-
-  return updated
+  return await backendRequest<Course>(event, `/courses/${encodeURIComponent(slug)}`, {
+    method: 'PUT',
+    body: {
+      title: body?.title,
+      description: body?.description,
+      instructor: body?.instructor,
+      price: body?.price,
+      originalPrice: body?.originalPrice,
+      status: body?.status,
+      category: body?.category,
+      level: body?.level,
+      thumbnail: body?.thumbnail,
+      totalLessons: body?.totalLessons,
+      totalHours: body?.totalHours,
+      tags: body?.tags,
+    },
+    csrf: true,
+    fallbackMessage: 'Unable to update course',
+  })
 })
