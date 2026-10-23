@@ -78,22 +78,24 @@
         </div>
 
         <div class="flex items-center gap-1.5">
-          <button
-            type="button"
-            class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
-            title="Edit Course"
-            @click.stop="$emit('edit', course)"
-          >
-            <Edit3 :size="15" />
-          </button>
-          <button
-            type="button"
-            class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-rose-400 transition-all hover:bg-rose-500/10 hover:text-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:border-slate-200 light:bg-slate-100 light:text-rose-600 light:hover:bg-rose-50 light:hover:text-rose-700"
-            title="Delete Course"
-            @click.stop="$emit('delete', course)"
-          >
-            <Trash2 :size="15" />
-          </button>
+          <template v-if="canManage">
+            <button
+              type="button"
+              class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
+              title="Edit Course"
+              @click.stop="$emit('edit', course)"
+            >
+              <Edit3 :size="15" />
+            </button>
+            <button
+              type="button"
+              class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-rose-400 transition-all hover:bg-rose-500/10 hover:text-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:border-slate-200 light:bg-slate-100 light:text-rose-600 light:hover:bg-rose-50 light:hover:text-rose-700"
+              title="Delete Course"
+              @click.stop="$emit('delete', course)"
+            >
+              <Trash2 :size="15" />
+            </button>
+          </template>
           <NuxtLink
             :to="`/courses/${course.slug}`"
             class="flex items-center gap-1 rounded-lg border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold text-violet-300 no-underline transition-all hover:border-violet-500/60 hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
@@ -113,9 +115,15 @@ import { Star, Clock, Users, Edit3, Trash2, ArrowRight } from 'lucide-vue-next'
 import type { Course } from '~/types'
 import CourseStatusBadge from './CourseStatusBadge.vue'
 
-defineProps<{
-  course: Course
-}>()
+withDefaults(
+  defineProps<{
+    course: Course
+    canManage?: boolean
+  }>(),
+  {
+    canManage: true
+  }
+)
 
 defineEmits(['edit', 'delete'])
 

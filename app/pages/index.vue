@@ -5,7 +5,7 @@
       <div>
         <h1 class="text-xl font-extrabold tracking-tight text-slate-50 sm:text-2xl light:text-slate-900">
           Welcome back,
-          <span class="bg-linear-to-r from-violet-400 via-blue-400 to-emerald-400 bg-clip-text text-transparent light:from-violet-600 light:via-blue-600 light:to-emerald-600">Alex</span>
+          <span class="bg-linear-to-r from-violet-400 via-blue-400 to-emerald-400 bg-clip-text text-transparent light:from-violet-600 light:via-blue-600 light:to-emerald-600">{{ auth.userName || 'Account' }}</span>
           👋
         </h1>
         <p class="mt-1 text-[13px] text-white/50 light:text-slate-600">
@@ -201,6 +201,8 @@ definePageMeta({ requiresAdmin: true })
 useHead({
   title: "Dashboard Overview",
 });
+
+const auth = useAuth()
 
 const {
   kpis,

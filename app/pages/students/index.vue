@@ -76,8 +76,10 @@ useHead({
 
 const { info, error } = useAppToast()
 const isRefreshing = ref(false)
-const { data, pending, refresh } = await useAsyncData<Student[]>('students-list', () =>
-  $fetch(`/api/students?_t=${Date.now()}`)
+const { data, pending, refresh } = await useAsyncData<Student[]>(
+  'students-list',
+  () => $fetch(`/api/students?_t=${Date.now()}`),
+  { server: false }
 )
 
 async function handleRefresh() {
