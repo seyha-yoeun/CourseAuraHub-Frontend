@@ -1,3 +1,9 @@
+declare module '#app' {
+  interface PageMeta {
+    requiresAdmin?: boolean
+  }
+}
+
 export interface Course {
   id: number
   slug: string

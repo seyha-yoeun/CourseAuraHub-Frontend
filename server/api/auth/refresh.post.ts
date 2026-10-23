@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+export default defineEventHandler(async (event) => {
+  const data = await refreshSession(event)
+
+  return toAuthUser(data)
+})
+=======
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const apiBase = config.public.apiBase || 'http://localhost:8080/api/v1'
@@ -54,3 +61,4 @@ export default defineEventHandler(async (event) => {
     })
   }
 })
+>>>>>>> 076405e19b4b47918fed9943946c790916c61e2b

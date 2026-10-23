@@ -62,10 +62,17 @@
               <div class="flex size-9 shrink-0 items-center justify-center rounded-[10px] border border-emerald-500/30 bg-emerald-500/15">
                 <Database :size="18" class="text-emerald-400" />
               </div>
+<<<<<<< HEAD
+              <div class="item-text">
+                <h4 class="item-heading">Simulated Mock Catalog & Live CRUD</h4>
+                <p class="item-desc">
+                  Authentication and account/profile settings are connected to the real backend. Courses, pricing figures, revenue charts, and student accounts remain simulated demo data for this phase.
+=======
               <div class="flex-1">
                 <h4 class="text-[13px] leading-snug font-semibold text-slate-100 light:text-slate-900">Simulated Mock Catalog &amp; Live CRUD</h4>
                 <p class="mt-0.75 text-xs leading-relaxed text-white/50 light:text-slate-500">
                   All courses, pricing figures, revenue charts, and student accounts are simulated mock data. Feel free to create, modify, publish, or delete courses safely.
+>>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
                 </p>
               </div>
             </div>

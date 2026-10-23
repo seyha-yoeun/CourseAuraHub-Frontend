@@ -137,6 +137,8 @@ import StatCard from '~/components/shared/StatCard.vue'
 import SalesChart from '~/components/dashboard/SalesChart.vue'
 import { useDashboardStats } from '~/composables/useDashboardStats'
 
+definePageMeta({ requiresAdmin: true })
+
 useHead({
   title: 'Sales & Learner Analytics'
 })

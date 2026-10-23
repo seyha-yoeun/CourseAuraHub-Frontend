@@ -1,3 +1,33 @@
+<<<<<<< HEAD
+import type { BackendAuthData } from '../../utils/apiClient'
+
+export default defineEventHandler(async (event) => {
+  const body = await readBody<{
+    email: string
+    password: string
+    rememberMe?: boolean
+  }>(event)
+
+  const rememberMe = Boolean(body?.rememberMe)
+
+  const data = await backendRequest<BackendAuthData>(event, '/auth/login', {
+    method: 'POST',
+    body: {
+      email: body.email,
+      password: body.password,
+      rememberMe,
+    },
+    auth: false,
+    retryOn401: false,
+    fallbackMessage: 'Login failed',
+  })
+
+  setSessionCookies(event, data, rememberMe)
+  await ensureCsrfToken(event).catch(() => null)
+
+  return toAuthUser(data)
+})
+=======
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const config = useRuntimeConfig()
@@ -51,3 +81,4 @@ function setAuthCookies(event: ReturnType<typeof defineEventHandler>, response: 
     })
   }
 }
+>>>>>>> 076405e19b4b47918fed9943946c790916c61e2b

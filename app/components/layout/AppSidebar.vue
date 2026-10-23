@@ -72,7 +72,11 @@
       </nav>
 
       <!-- Admin Quick Console Trigger -->
+<<<<<<< HEAD
+      <div v-if="auth.isAdmin" class="sidebar-admin-section">
+=======
       <div class="border-t border-white/4 p-3 light:border-slate-200">
+>>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
         <button
           type="button"
           class="flex w-full items-center gap-2.5 overflow-hidden rounded-[10px] border border-violet-500/25 bg-violet-500/12 px-3 py-2.25 text-[13px] font-semibold whitespace-nowrap text-violet-300 transition-colors hover:border-violet-500/50 hover:bg-violet-500/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:border-violet-400 light:hover:bg-violet-100 light:hover:text-violet-900"
@@ -88,6 +92,18 @@
       </div>
 
       <!-- Bottom profile -->
+<<<<<<< HEAD
+      <div class="sidebar-profile" @click="handleProfileClick">
+        <img
+          :src="auth.userAvatar"
+          :alt="`${auth.userName} profile`"
+          class="profile-avatar"
+        />
+        <Transition name="fade-text">
+          <div v-if="!collapsed" class="profile-info">
+            <p class="profile-name">{{ auth.userName }}</p>
+            <p class="profile-role">{{ auth.roleLabel }}</p>
+=======
       <div
         class="flex min-h-18 cursor-pointer items-center gap-2.5 border-t border-white/6 px-4.5 py-4 transition-colors hover:bg-white/3 light:border-slate-200 light:hover:bg-slate-50"
         @click="$emit('open-admin')"
@@ -101,6 +117,7 @@
           <div v-if="!collapsed" class="min-w-0">
             <p class="truncate text-[13px] font-semibold text-slate-200 light:text-slate-900">Alex Chen</p>
             <p class="mt-px truncate text-[11px] text-white/40 light:text-slate-500">Platform Admin</p>
+>>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
           </div>
         </Transition>
       </div>
@@ -128,27 +145,42 @@ withDefaults(
   }
 )
 
-defineEmits(['toggle', 'close-mobile', 'open-admin'])
+const emit = defineEmits(['toggle', 'close-mobile', 'open-admin'])
 
 const route = useRoute()
+const router = useRouter()
+const auth = useAuth()
 
-const navSections = [
-  {
-    label: 'Overview',
-    items: [
-      { to: '/', label: 'Dashboard', icon: LayoutDashboard },
-      { to: '/analytics', label: 'Analytics', icon: BarChart3 },
-    ],
-  },
-  {
-    label: 'Management',
-    items: [
-      { to: '/courses', label: 'Courses', icon: BookOpen, badge: '6' },
-      { to: '/students', label: 'Students', icon: GraduationCap, badge: '10' },
-      { to: '/settings', label: 'Settings', icon: Settings },
-    ],
-  },
-]
+const navSections = computed(() => {
+  if (!auth.isAdmin) {
+    return [
+      {
+        label: 'Learning',
+        items: [
+          { to: '/courses', label: 'Courses', icon: BookOpen },
+        ],
+      },
+    ]
+  }
+
+  return [
+    {
+      label: 'Overview',
+      items: [
+        { to: '/', label: 'Dashboard', icon: LayoutDashboard },
+        { to: '/analytics', label: 'Analytics', icon: BarChart3 },
+      ],
+    },
+    {
+      label: 'Management',
+      items: [
+        { to: '/courses', label: 'Courses', icon: BookOpen },
+        { to: '/students', label: 'Students', icon: GraduationCap },
+        { to: '/settings', label: 'Settings', icon: Settings },
+      ],
+    },
+  ]
+})
 
 const fadeText = {
   enterActiveClass: 'transition-opacity duration-200 ease-out',
@@ -167,5 +199,14 @@ const fadeBackdrop = {
 function isActive(to: string) {
   if (to === '/') return route.path === '/'
   return route.path.startsWith(to)
+}
+
+function handleProfileClick() {
+  if (auth.isAdmin) {
+    emit('open-admin')
+    return
+  }
+
+  router.push('/courses')
 }
 </script>

@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+export default defineEventHandler(async (event) => {
+  await logoutBackend(event)
+  clearSessionCookies(event)
+
+  return { success: true }
+})
+=======
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const apiBase = config.public.apiBase || 'http://localhost:8080/api/v1'
@@ -26,3 +34,4 @@ export default defineEventHandler(async (event) => {
   
   return { success: true, message: 'Logged out successfully' }
 })
+>>>>>>> 076405e19b4b47918fed9943946c790916c61e2b

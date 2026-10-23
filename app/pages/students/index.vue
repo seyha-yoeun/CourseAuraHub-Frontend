@@ -68,6 +68,8 @@ import StatCard from '~/components/shared/StatCard.vue'
 import StudentTable from '~/components/students/StudentTable.vue'
 import { useAppToast } from '~/composables/useAppToast'
 
+definePageMeta({ requiresAdmin: true })
+
 useHead({
   title: 'Student Management'
 })

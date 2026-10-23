@@ -45,6 +45,7 @@
     <div class="flex items-center gap-2.5">
       <!-- Admin Management Trigger -->
       <button
+        v-if="auth.isAdmin"
         type="button"
         class="flex cursor-pointer items-center gap-1.5 rounded-lg border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold whitespace-nowrap text-violet-300 transition-all hover:border-violet-500/60 hover:bg-violet-500/30 hover:text-white hover:shadow-[0_0_15px_rgba(124,58,237,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
         title="Open Admin Management Console (Live CRUD)"
@@ -257,12 +258,21 @@
       <!-- Avatar with User Dropdown -->
       <div ref="avatarContainerRef" class="relative">
         <div
+<<<<<<< HEAD
+          class="header-avatar"
+          :class="{ 'avatar-active': isAvatarOpen }"
+          :title="`${auth.userName} (${auth.roleLabel})`"
+          @click="toggleAvatar"
+        >
+          <img :src="auth.userAvatar" :alt="`${auth.userName} profile`" />
+=======
           class="size-9 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-violet-500/50 transition-all duration-200 hover:scale-105 hover:border-violet-500 hover:shadow-[0_0_14px_rgba(124,58,237,0.5)] light:border-violet-300"
           :class="{ 'scale-105 border-violet-500 shadow-[0_0_14px_rgba(124,58,237,0.5)] light:border-violet-600': isAvatarOpen }"
           title="Alex Chen (Platform Administrator)"
           @click="toggleAvatar"
         >
           <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4" alt="Alex Chen Profile" class="size-full object-cover" >
+>>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
         </div>
 
         <!-- Avatar Dropdown Menu -->
@@ -275,6 +285,18 @@
             <div class="flex items-center gap-3 px-2.5 pt-2.5 pb-3">
               <div class="relative">
                 <img
+<<<<<<< HEAD
+                  :src="auth.userAvatar"
+                  :alt="auth.userName"
+                  class="user-card-avatar"
+                />
+                <span class="online-indicator"></span>
+              </div>
+              <div class="user-card-meta">
+                <span class="user-card-name">{{ auth.userName }}</span>
+                <span class="user-card-email">{{ auth.userEmail }}</span>
+                <span class="user-card-badge">{{ auth.roleLabel }}</span>
+=======
                   src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4"
                   alt="Alex Chen"
                   class="size-11 rounded-full border-2 border-violet-500/40"
@@ -285,6 +307,7 @@
                 <span class="block text-sm font-bold text-slate-100 light:text-slate-900">Alex Chen</span>
                 <span class="block truncate text-[11px] text-white/45 light:text-slate-500">alex.chen@courseaurahub.io</span>
                 <span class="mt-0.75 inline-block rounded-full border border-violet-500/30 bg-violet-500/18 px-1.5 py-px text-[9px] font-bold tracking-wider text-violet-300 uppercase light:border-violet-200 light:bg-violet-50 light:text-violet-700">Platform Administrator</span>
+>>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
               </div>
             </div>
 
@@ -293,6 +316,7 @@
             <!-- Navigation Links -->
             <div class="flex flex-col gap-0.5">
               <button
+                v-if="auth.isAdmin"
                 type="button"
                 class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
                 @click="handleOpenAdmin"
@@ -312,6 +336,7 @@
               </NuxtLink>
 
               <NuxtLink
+                v-if="auth.isAdmin"
                 to="/students"
                 class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
@@ -321,6 +346,7 @@
               </NuxtLink>
 
               <NuxtLink
+                v-if="auth.isAdmin"
                 to="/analytics"
                 class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
@@ -330,6 +356,7 @@
               </NuxtLink>
 
               <NuxtLink
+                v-if="auth.isAdmin"
                 to="/settings"
                 class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
@@ -414,6 +441,7 @@ import {
 } from 'lucide-vue-next'
 import AppHelpModal from '~/components/shared/AppHelpModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
+import { useAuth } from '~/composables/useAuth'
 import type { Course, Student } from '~/types'
 
 defineProps<{ sidebarCollapsed: boolean }>()
@@ -422,7 +450,8 @@ const emit = defineEmits(['toggle-sidebar', 'open-admin'])
 const route = useRoute()
 const router = useRouter()
 const colorMode = useColorMode()
-const { info, success } = useAppToast()
+const auth = useAuth()
+const { info } = useAppToast()
 
 // Dropdown and modal states
 const isNotifOpen = ref(false)
@@ -580,9 +609,9 @@ function handleOpenHelp() {
   isHelpOpen.value = true
 }
 
-function handleLogout() {
+async function handleLogout() {
   isAvatarOpen.value = false
-  success('Logged Out Successfully', 'Your demo administrator session has been reset.')
+  await auth.logout()
 }
 
 // Fetch search datasets (courses & students)
@@ -591,18 +620,24 @@ const allStudents = ref<Student[]>([])
 
 async function loadSearchData() {
   try {
-    const [cData, sData] = await Promise.all([
-      $fetch<Course[]>('/api/courses').catch(() => []),
-      $fetch<Student[]>('/api/students').catch(() => [])
-    ])
-    allCourses.value = cData || []
-    allStudents.value = sData || []
-  } catch (e) {
-    console.error('Error fetching search indices:', e)
+    const coursesPromise = $fetch<Course[]>('/api/courses').catch(() => [])
+    const studentsPromise = auth.isAdmin
+      ? $fetch<Student[]>('/api/students').catch(() => [])
+      : Promise.resolve([])
+
+    const [courses, students] = await Promise.all([coursesPromise, studentsPromise])
+    allCourses.value = courses || []
+    allStudents.value = students || []
+  } catch (error) {
+    console.error('Unable to load search data:', error)
   }
 }
 
 onMounted(() => {
+  loadSearchData()
+})
+
+watch(() => auth.isAdmin, () => {
   loadSearchData()
 })
 
@@ -642,9 +677,12 @@ const filteredStudents = computed(() => {
 const filteredPages = computed(() => {
   const q = searchQuery.value.toLowerCase().trim()
   if (!q) return []
-  return quickPages.filter(p =>
-    p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)
-  ).slice(0, 3)
+  return quickPages
+    .filter(page => auth.isAdmin || page.to === '/courses')
+    .filter(p =>
+      p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)
+    )
+    .slice(0, 3)
 })
 
 function closeSearch() {
