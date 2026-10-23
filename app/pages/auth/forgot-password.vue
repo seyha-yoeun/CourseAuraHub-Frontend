@@ -24,7 +24,7 @@
             autocomplete="email"
             required
             :disabled="loading || submitted"
-          />
+          >
         </div>
         <p v-if="errors.email" class="min-h-4 text-xs text-red-500">{{ errors.email }}</p>
       </div>

@@ -1,17 +1,17 @@
 <template>
-  <div class="students-page">
+  <div class="flex flex-col gap-6">
     <!-- Header -->
-    <div class="page-header">
+    <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="page-title">Student Management</h1>
-        <p class="page-sub">
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Student Management</h1>
+        <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">
           Monitor learner progress, lifetime value, and global enrollment distribution.
         </p>
       </div>
 
       <button
         type="button"
-        class="refresh-btn"
+        class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-4 py-2.25 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
         :disabled="isRefreshing"
         @click="handleRefresh"
       >
@@ -21,7 +21,7 @@
     </div>
 
     <!-- Student Stats -->
-    <div class="stats-row">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
         label="Total Learners"
         :value="students.length"
@@ -56,7 +56,7 @@
     </div>
 
     <!-- Student Table -->
-    <div v-if="pending" class="shimmer skeleton-table"></div>
+    <div v-if="pending" class="h-100 w-full animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
     <StudentTable v-else :students="students" />
   </div>
 </template>
@@ -108,64 +108,3 @@ const avgCourses = computed(() => {
   return (total / students.value.length).toFixed(1)
 })
 </script>
-
-<style scoped>
-.students-page {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.page-title {
-  font-size: 26px;
-  font-weight: 800;
-  color: #f8fafc;
-  letter-spacing: -0.5px;
-}
-
-.page-sub {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.45);
-  margin-top: 4px;
-}
-
-.refresh-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 16px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.refresh-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.09);
-  color: #fff;
-}
-
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-}
-
-.skeleton-table {
-  width: 100%;
-  height: 400px;
-  border-radius: 18px;
-}
-</style>

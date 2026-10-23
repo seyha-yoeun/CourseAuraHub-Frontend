@@ -1,21 +1,27 @@
 <template>
-  <div class="kpi-card glass glass-hover card-lift" :style="{ '--accent': accentColor }">
-    <div class="kpi-icon-wrap" :style="{ background: `${accentColor}18`, border: `1px solid ${accentColor}35` }">
-      <component :is="icon" :size="22" :stroke-width="1.5" :style="{ color: accentColor }" />
+  <div class="relative flex items-start gap-4 overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/30 hover:bg-white/8 hover:shadow-xl hover:shadow-violet-500/10 light:border-slate-200 light:bg-white light:hover:border-violet-300 light:hover:shadow-violet-500/10">
+    <div class="flex size-12 shrink-0 items-center justify-center rounded-xl border" :class="accent.iconWrap">
+      <component :is="icon" :size="22" :stroke-width="1.5" :class="accent.icon" />
     </div>
-    <div class="kpi-body">
-      <p class="kpi-label">{{ label }}</p>
-      <div class="kpi-value-row">
-        <span class="kpi-value">{{ formattedValue }}</span>
-        <span v-if="trend !== undefined" class="kpi-trend" :class="trend >= 0 ? 'trend-up' : 'trend-down'">
+    <div class="min-w-0 flex-1">
+      <p class="mb-1 text-xs font-medium tracking-wide text-white/45 uppercase light:text-slate-500">{{ label }}</p>
+      <div class="flex flex-wrap items-baseline gap-2">
+        <span class="text-2xl leading-none font-bold tracking-tight text-slate-100 light:text-slate-900">{{ formattedValue }}</span>
+        <span
+          v-if="trend !== undefined"
+          class="flex items-center gap-0.75 rounded-full px-1.75 py-0.5 text-[11px] font-semibold"
+          :class="trend >= 0
+            ? 'bg-emerald-400/12 text-emerald-400 light:bg-emerald-50 light:text-emerald-700'
+            : 'bg-red-400/12 text-red-400 light:bg-red-50 light:text-red-700'"
+        >
           <TrendingUp v-if="trend >= 0" :size="13" />
           <TrendingDown v-else :size="13" />
           {{ Math.abs(trend) }}%
         </span>
       </div>
-      <p class="kpi-sub">{{ sub }}</p>
+      <p class="mt-1 text-[11px] text-white/30 light:text-slate-400">{{ sub }}</p>
     </div>
-    <div class="kpi-sparkline" :style="{ background: `linear-gradient(135deg, ${accentColor}15, transparent)` }"></div>
+    <div class="pointer-events-none absolute -right-5 -bottom-5 size-20 rounded-full opacity-50" :class="accent.glow" />
   </div>
 </template>
 
@@ -35,6 +41,31 @@ const props = defineProps<{
   format?: 'number' | 'currency' | 'percent' | 'rating'
 }>()
 
+const accents: Record<string, { iconWrap: string; icon: string; glow: string }> = {
+  '#8b5cf6': {
+    iconWrap: 'border-violet-500/20 bg-violet-500/10 light:border-violet-300 light:bg-violet-50',
+    icon: 'text-violet-400 light:text-violet-700',
+    glow: 'bg-linear-to-br from-violet-500/15 to-transparent light:from-violet-500/10'
+  },
+  '#3b82f6': {
+    iconWrap: 'border-blue-500/20 bg-blue-500/10 light:border-blue-300 light:bg-blue-50',
+    icon: 'text-blue-400 light:text-blue-700',
+    glow: 'bg-linear-to-br from-blue-500/15 to-transparent light:from-blue-500/10'
+  },
+  '#10b981': {
+    iconWrap: 'border-emerald-500/20 bg-emerald-500/10 light:border-emerald-300 light:bg-emerald-50',
+    icon: 'text-emerald-400 light:text-emerald-700',
+    glow: 'bg-linear-to-br from-emerald-500/15 to-transparent light:from-emerald-500/10'
+  },
+  '#f59e0b': {
+    iconWrap: 'border-amber-500/20 bg-amber-500/10 light:border-amber-300 light:bg-amber-50',
+    icon: 'text-amber-400 light:text-amber-700',
+    glow: 'bg-linear-to-br from-amber-500/15 to-transparent light:from-amber-500/10'
+  }
+}
+
+const accent = computed(() => accents[props.accentColor] ?? accents['#8b5cf6']!)
+
 const formattedValue = computed(() => {
   const v = Number(props.value)
   if (props.format === 'currency') {
@@ -46,92 +77,3 @@ const formattedValue = computed(() => {
   return String(props.value)
 })
 </script>
-
-<style scoped>
-.kpi-card {
-  border-radius: 16px;
-  padding: 20px;
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  position: relative;
-  overflow: hidden;
-  cursor: default;
-}
-
-.kpi-icon-wrap {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.kpi-body {
-  flex: 1;
-  min-width: 0;
-}
-
-.kpi-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.45);
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-
-.kpi-value-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.kpi-value {
-  font-size: 26px;
-  font-weight: 700;
-  color: #f1f5f9;
-  letter-spacing: -0.5px;
-  line-height: 1;
-}
-
-.kpi-trend {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 99px;
-}
-
-.trend-up {
-  color: #34d399;
-  background: rgba(52, 211, 153, 0.12);
-}
-
-.trend-down {
-  color: #f87171;
-  background: rgba(248, 113, 113, 0.12);
-}
-
-.kpi-sub {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.3);
-  margin-top: 4px;
-}
-
-.kpi-sparkline {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  opacity: 0.5;
-  transform: translate(20px, 20px);
-}
-</style>

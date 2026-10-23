@@ -1,21 +1,23 @@
 <template>
-  <div class="dashboard-page">
+  <div class="flex flex-col gap-6">
     <!-- Top Welcome Banner -->
-    <div class="welcome-banner glass">
-      <div class="welcome-text">
-        <h1 class="welcome-title">
-          Welcome back, <span class="gradient-text">Alex</span> 👋
+    <div class="flex flex-wrap items-center justify-between gap-4 rounded-[20px] border border-violet-500/20 bg-linear-to-br from-violet-600/8 to-blue-600/4 p-5 backdrop-blur-md sm:p-6 lg:px-7 light:border-violet-200 light:from-violet-50 light:to-white">
+      <div>
+        <h1 class="text-xl font-extrabold tracking-tight text-slate-50 sm:text-2xl light:text-slate-900">
+          Welcome back,
+          <span class="bg-linear-to-r from-violet-400 via-blue-400 to-emerald-400 bg-clip-text text-transparent light:from-violet-600 light:via-blue-600 light:to-emerald-600">Alex</span>
+          👋
         </h1>
-        <p class="welcome-desc">
+        <p class="mt-1 text-[13px] text-white/50 light:text-slate-600">
           Here is your online academy sales summary and student activity for
           this month.
         </p>
       </div>
 
-      <div class="banner-actions">
+      <div class="flex items-center gap-2.5">
         <button
           type="button"
-          class="banner-btn-secondary"
+          class="flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-4 py-2.25 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
           :disabled="isRefreshing"
           @click="refresh()"
         >
@@ -23,7 +25,10 @@
           <span>{{ isRefreshing ? "Refreshing..." : "Refresh" }}</span>
         </button>
 
-        <NuxtLink to="/courses" class="banner-btn-primary">
+        <NuxtLink
+          to="/courses"
+          class="flex items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4.5 py-2.25 text-[13px] font-semibold text-white no-underline transition-all hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+        >
           <Plus :size="16" />
           <span>New Course</span>
         </NuxtLink>
@@ -31,7 +36,7 @@
     </div>
 
     <!-- KPI Grid -->
-    <div class="kpi-grid">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <KpiCard
         label="Total Revenue"
         :value="kpis.totalRevenue"
@@ -68,9 +73,9 @@
     </div>
 
     <!-- Charts & Category Breakdown -->
-    <div class="charts-grid">
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
       <!-- Main Sales Chart -->
-      <div class="main-chart-col">
+      <div class="min-w-0 lg:col-span-2">
         <SalesChart
           title="Revenue & Enrollment Performance"
           subtitle="Monthly breakdown over the last 12 active billing periods"
@@ -81,37 +86,32 @@
       </div>
 
       <!-- Category Revenue Breakdown -->
-      <div class="category-breakdown-card glass">
-        <div class="card-title-row">
+      <div class="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
+        <div class="mb-5 flex items-start justify-between">
           <div>
-            <h3 class="breakdown-title">Revenue by Category</h3>
-            <p class="breakdown-sub">Category distribution</p>
+            <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Revenue by Category</h3>
+            <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Category distribution</p>
           </div>
           <Tag :size="18" class="text-violet-400" />
         </div>
 
-        <div class="category-list">
+        <div class="flex flex-col gap-4">
           <div
             v-for="(amount, cat) in charts.revenueByCategory"
             :key="cat"
-            class="category-item"
           >
-            <div class="cat-header">
-              <span class="cat-name">{{ cat }}</span>
-              <span class="cat-amount"
-                >${{ Number(amount).toLocaleString() }}</span
-              >
+            <div class="flex justify-between text-[13px] font-semibold text-slate-200 light:text-slate-800">
+              <span>{{ cat }}</span>
+              <span>${{ Number(amount).toLocaleString() }}</span>
             </div>
-            <div class="progress-track">
+            <div class="mt-1.5 mb-1 h-1.5 w-full overflow-hidden rounded-full bg-white/6 light:bg-slate-200">
               <div
-                class="progress-fill"
-                :style="{
-                  width: `${kpis.totalRevenue ? Math.min(100, Math.round((Number(amount) / kpis.totalRevenue) * 100)) : 0}%`,
-                  background: getCategoryColor(String(cat)),
-                }"
-              ></div>
+                class="h-full rounded-full transition-[width] duration-700 ease-out"
+                :class="getCategoryBarClass(String(cat))"
+                :style="{ width: `${kpis.totalRevenue ? Math.min(100, Math.round((Number(amount) / kpis.totalRevenue) * 100)) : 0}%` }"
+              />
             </div>
-            <div class="cat-percentage">
+            <div class="text-[11px] text-white/40 light:text-slate-500">
               {{
                 kpis.totalRevenue
                   ? Math.round((Number(amount) / kpis.totalRevenue) * 100)
@@ -124,55 +124,56 @@
     </div>
 
     <!-- Bottom Section: Top Courses & Recent Enrollments -->
-    <div class="bottom-grid">
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-5">
       <!-- Top Performing Courses -->
-      <div class="top-courses-card glass">
-        <div class="card-title-row">
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 lg:col-span-2 light:border-slate-200 light:bg-white">
+        <div class="mb-5 flex items-start justify-between">
           <div>
-            <h3 class="breakdown-title">Top Performing Courses</h3>
-            <p class="breakdown-sub">Highest revenue generating programs</p>
+            <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Top Performing Courses</h3>
+            <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Highest revenue generating programs</p>
           </div>
-          <NuxtLink to="/courses" class="card-link">
+          <NuxtLink to="/courses" class="flex items-center gap-1 text-xs font-semibold text-violet-300 no-underline transition-colors hover:text-violet-200 light:text-violet-700 light:hover:text-violet-800">
             <span>View All</span>
             <ArrowRight :size="14" />
           </NuxtLink>
         </div>
 
-        <div class="top-courses-list">
+        <div class="flex flex-col gap-2.5">
           <NuxtLink
             v-for="(course, index) in topCourses"
             :key="course.slug"
             :to="`/courses/${course.slug}`"
-            class="top-course-item"
+            class="flex items-center gap-3 rounded-xl border border-white/5 bg-white/2 px-3 py-2.5 no-underline transition-all hover:translate-x-0.75 hover:border-violet-500/30 hover:bg-white/6 light:border-slate-100 light:bg-slate-50 light:hover:bg-slate-100"
           >
-            <div class="rank-badge" :class="`rank-${index + 1}`">
+            <div
+              class="flex size-7 shrink-0 items-center justify-center rounded-lg border text-[11px] font-bold"
+              :class="rankClass(index)"
+            >
               #{{ index + 1 }}
             </div>
-            <div class="course-meta">
-              <span class="top-title">{{ course.title }}</span>
-              <div class="top-sub-meta">
-                <span class="top-students">
+            <div class="min-w-0 flex-1">
+              <span class="block truncate text-[13px] font-semibold text-slate-200 light:text-slate-800">{{ course.title }}</span>
+              <div class="mt-0.5 flex items-center gap-2.5">
+                <span class="flex items-center gap-1 text-[11px] text-white/45 light:text-slate-500">
                   <Users :size="12" />
                   {{ course.totalStudents.toLocaleString() }} students
                 </span>
-                <span class="top-rating">
+                <span class="flex items-center gap-1 text-[11px] text-white/45 light:text-slate-500">
                   <Star :size="12" class="fill-amber-400 text-amber-400" />
                   {{ course.rating }}
                 </span>
               </div>
             </div>
-            <div class="course-revenue">
-              <span class="rev-val"
-                >${{ (course.revenue / 1000).toFixed(1) }}K</span
-              >
-              <span class="rev-lbl">Revenue</span>
+            <div class="flex flex-col items-end">
+              <span class="text-sm font-bold text-emerald-400 light:text-emerald-700">${{ (course.revenue / 1000).toFixed(1) }}K</span>
+              <span class="text-[10px] text-white/40 light:text-slate-500">Revenue</span>
             </div>
           </NuxtLink>
         </div>
       </div>
 
       <!-- Recent Enrollments Table -->
-      <div class="recent-table-col">
+      <div class="min-w-0 lg:col-span-3">
         <RecentEnrollmentsTable :enrollments="recentEnrollments" />
       </div>
     </div>
@@ -204,319 +205,26 @@ const {
   charts,
   topCourses,
   recentEnrollments,
-  pending,
   isRefreshing,
   refresh,
 } = useDashboardStats();
 
-function getCategoryColor(cat: string) {
-  const map: Record<string, string> = {
-    "Web Development": "linear-gradient(90deg, #7c3aed, #6366f1)",
-    Programming: "linear-gradient(90deg, #2563eb, #38bdf8)",
-    Design: "linear-gradient(90deg, #ec4899, #f43f5e)",
-    DevOps: "linear-gradient(90deg, #10b981, #34d399)",
-    Backend: "linear-gradient(90deg, #f59e0b, #fbbf24)",
-  };
-  return map[cat] || "linear-gradient(90deg, #8b5cf6, #3b82f6)";
+const categoryBarClasses: Record<string, string> = {
+  "Web Development": "bg-linear-to-r from-violet-600 to-indigo-500",
+  Programming: "bg-linear-to-r from-blue-600 to-sky-400",
+  Design: "bg-linear-to-r from-pink-500 to-rose-500",
+  DevOps: "bg-linear-to-r from-emerald-500 to-emerald-400",
+  Backend: "bg-linear-to-r from-amber-500 to-amber-400",
+};
+
+function getCategoryBarClass(cat: string) {
+  return categoryBarClasses[cat] ?? "bg-linear-to-r from-violet-500 to-blue-500";
+}
+
+function rankClass(index: number) {
+  if (index === 0) return "border-amber-400/35 bg-amber-400/20 text-amber-300 light:border-amber-300 light:bg-amber-50 light:text-amber-700";
+  if (index === 1) return "border-slate-400/35 bg-slate-400/20 text-slate-300 light:border-slate-300 light:bg-slate-100 light:text-slate-600";
+  if (index === 2) return "border-orange-500/35 bg-orange-500/20 text-orange-300 light:border-orange-200 light:bg-orange-50 light:text-orange-700";
+  return "border-transparent bg-white/5 text-white/60 light:bg-slate-100 light:text-slate-500";
 }
 </script>
-
-<style scoped>
-.dashboard-page {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.welcome-banner {
-  border-radius: 20px;
-  padding: 24px 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-  border: 1px solid rgba(124, 58, 237, 0.2);
-  background: linear-gradient(
-    135deg,
-    rgba(124, 58, 237, 0.08) 0%,
-    rgba(37, 99, 235, 0.04) 100%
-  );
-}
-
-.welcome-title {
-  font-size: 24px;
-  font-weight: 800;
-  color: #f8fafc;
-  letter-spacing: -0.5px;
-}
-
-.welcome-desc {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
-  margin-top: 4px;
-}
-
-.banner-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.banner-btn-secondary {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 16px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.banner-btn-secondary:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.09);
-  color: #fff;
-}
-
-.banner-btn-primary {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 18px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  border: 1px solid rgba(139, 92, 246, 0.4);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.banner-btn-primary:hover {
-  background: linear-gradient(135deg, #8b5cf6, #6366f1);
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.35);
-}
-
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-}
-
-.charts-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
-}
-
-@media (max-width: 1024px) {
-  .charts-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.main-chart-col {
-  min-width: 0;
-}
-
-.category-breakdown-card {
-  border-radius: 16px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-}
-
-.card-title-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.breakdown-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #f1f5f9;
-}
-
-.breakdown-sub {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 2px;
-}
-
-.category-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.cat-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  font-weight: 600;
-  color: #e2e8f0;
-}
-
-.progress-track {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 99px;
-  margin: 6px 0 4px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  border-radius: 99px;
-  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.cat-percentage {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.bottom-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.6fr;
-  gap: 20px;
-}
-
-@media (max-width: 1024px) {
-  .bottom-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.top-courses-card {
-  border-radius: 16px;
-  padding: 24px;
-}
-
-.card-link {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #a78bfa;
-  text-decoration: none;
-}
-
-.card-link:hover {
-  color: #c4b5fd;
-}
-
-.top-courses-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.top-course-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.top-course-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(124, 58, 237, 0.3);
-  transform: translateX(3px);
-}
-
-.rank-badge {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.6);
-  flex-shrink: 0;
-}
-
-.rank-1 {
-  background: rgba(251, 191, 36, 0.2);
-  color: #fbbf24;
-  border: 1px solid rgba(251, 191, 36, 0.35);
-}
-
-.rank-2 {
-  background: rgba(148, 163, 184, 0.2);
-  color: #cbd5e1;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-}
-
-.rank-3 {
-  background: rgba(249, 115, 22, 0.2);
-  color: #fb923c;
-  border: 1px solid rgba(249, 115, 22, 0.35);
-}
-
-.course-meta {
-  flex: 1;
-  min-width: 0;
-}
-
-.top-title {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #e2e8f0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.top-sub-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 2px;
-}
-
-.top-students,
-.top-rating {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.course-revenue {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.rev-val {
-  font-size: 14px;
-  font-weight: 700;
-  color: #34d399;
-}
-
-.rev-lbl {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.4);
-}
-</style>

@@ -1,26 +1,32 @@
 <template>
-  <div class="stat-card glass glass-hover card-lift" :style="{ '--accent': accentColor }">
-    <div class="stat-header">
-      <span class="stat-label">{{ label }}</span>
-      <div class="stat-icon-wrap" :style="{ background: `${accentColor}18`, border: `1px solid ${accentColor}35` }">
-        <component :is="icon" :size="18" :stroke-width="1.8" :style="{ color: accentColor }" />
+  <div class="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/30 hover:bg-white/8 hover:shadow-xl hover:shadow-violet-500/10 light:border-slate-200 light:bg-white light:hover:border-violet-300 light:hover:shadow-violet-500/10">
+    <div class="mb-3.5 flex items-center justify-between">
+      <span class="text-[13px] font-medium tracking-wide text-white/50 light:text-slate-500">{{ label }}</span>
+      <div class="flex size-9 shrink-0 items-center justify-center rounded-xl border" :class="accent.iconWrap">
+        <component :is="icon" :size="18" :stroke-width="1.8" :class="accent.icon" />
       </div>
     </div>
-    
-    <div class="stat-body">
-      <div class="stat-value-row">
-        <span class="stat-value">{{ formattedValue }}</span>
-        <span v-if="trend !== undefined" class="stat-trend" :class="trend >= 0 ? 'trend-up' : 'trend-down'">
+
+    <div class="relative z-1">
+      <div class="flex flex-wrap items-baseline gap-2.5">
+        <span class="text-3xl leading-tight font-extrabold tracking-tight text-slate-50 light:text-slate-900">{{ formattedValue }}</span>
+        <span
+          v-if="trend !== undefined"
+          class="inline-flex items-center gap-0.75 rounded-full border px-2 py-0.5 text-[11px] font-semibold"
+          :class="trend >= 0
+            ? 'border-emerald-400/25 bg-emerald-400/12 text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700'
+            : 'border-red-400/25 bg-red-400/12 text-red-400 light:border-red-300 light:bg-red-50 light:text-red-700'"
+        >
           <TrendingUp v-if="trend >= 0" :size="12" />
           <TrendingDown v-else :size="12" />
           {{ Math.abs(trend) }}%
         </span>
       </div>
-      <p v-if="sub" class="stat-sub">{{ sub }}</p>
+      <p v-if="sub" class="mt-1.5 text-[11px] text-white/35 light:text-slate-400">{{ sub }}</p>
     </div>
 
     <!-- Soft glow backdrop -->
-    <div class="stat-glow" :style="{ background: `radial-gradient(circle, ${accentColor}20, transparent 70%)` }"></div>
+    <div class="pointer-events-none absolute -top-5 -right-5 size-25 rounded-full opacity-60 blur-2xl" :class="accent.glow" />
   </div>
 </template>
 
@@ -46,6 +52,36 @@ const props = withDefaults(
   }
 )
 
+const accents: Record<string, { iconWrap: string; icon: string; glow: string }> = {
+  '#7c3aed': {
+    iconWrap: 'border-violet-500/20 bg-violet-500/10 light:border-violet-300 light:bg-violet-50',
+    icon: 'text-violet-400 light:text-violet-700',
+    glow: 'bg-violet-500/20 light:bg-violet-500/10'
+  },
+  '#8b5cf6': {
+    iconWrap: 'border-violet-500/20 bg-violet-500/10 light:border-violet-300 light:bg-violet-50',
+    icon: 'text-violet-400 light:text-violet-700',
+    glow: 'bg-violet-500/20 light:bg-violet-500/10'
+  },
+  '#3b82f6': {
+    iconWrap: 'border-blue-500/20 bg-blue-500/10 light:border-blue-300 light:bg-blue-50',
+    icon: 'text-blue-400 light:text-blue-700',
+    glow: 'bg-blue-500/20 light:bg-blue-500/10'
+  },
+  '#10b981': {
+    iconWrap: 'border-emerald-500/20 bg-emerald-500/10 light:border-emerald-300 light:bg-emerald-50',
+    icon: 'text-emerald-400 light:text-emerald-700',
+    glow: 'bg-emerald-500/20 light:bg-emerald-500/10'
+  },
+  '#f59e0b': {
+    iconWrap: 'border-amber-500/20 bg-amber-500/10 light:border-amber-300 light:bg-amber-50',
+    icon: 'text-amber-400 light:text-amber-700',
+    glow: 'bg-amber-500/20 light:bg-amber-500/10'
+  }
+}
+
+const accent = computed(() => accents[props.accentColor] ?? accents['#7c3aed']!)
+
 const formattedValue = computed(() => {
   const v = Number(props.value)
   if (isNaN(v)) return String(props.value)
@@ -58,97 +94,3 @@ const formattedValue = computed(() => {
   return String(props.value)
 })
 </script>
-
-<style scoped>
-.stat-card {
-  border-radius: 16px;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.stat-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-
-.stat-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.5);
-  letter-spacing: 0.3px;
-}
-
-.stat-icon-wrap {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.stat-body {
-  position: relative;
-  z-index: 1;
-}
-
-.stat-value-row {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.stat-value {
-  font-size: 28px;
-  font-weight: 800;
-  color: #f8fafc;
-  letter-spacing: -0.8px;
-  line-height: 1.1;
-}
-
-.stat-trend {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 99px;
-}
-
-.trend-up {
-  color: #34d399;
-  background: rgba(52, 211, 153, 0.12);
-  border: 1px solid rgba(52, 211, 153, 0.25);
-}
-
-.trend-down {
-  color: #f87171;
-  background: rgba(248, 113, 113, 0.12);
-  border: 1px solid rgba(248, 113, 113, 0.25);
-}
-
-.stat-sub {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.35);
-  margin-top: 6px;
-}
-
-.stat-glow {
-  position: absolute;
-  top: -20px;
-  right: -20px;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  pointer-events: none;
-}
-</style>
