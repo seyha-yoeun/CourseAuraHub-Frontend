@@ -11,13 +11,8 @@
 
       <button
         type="button"
-<<<<<<< HEAD
-        class="save-btn"
-        :disabled="saving || pending || Boolean(loadErrorMessage)"
-=======
         class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5.5 py-2.5 text-[13px] font-semibold text-white transition-all enabled:hover:from-violet-500 enabled:hover:to-indigo-500 enabled:hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
-        :disabled="saving"
->>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
+        :disabled="saving || pending || Boolean(loadErrorMessage)"
         @click="saveSettings"
       >
         <Loader2 v-if="saving" :size="16" class="animate-spin" />
@@ -35,28 +30,33 @@
       </div>
     </Transition>
 
-<<<<<<< HEAD
-    <div v-if="saveError" class="error-banner" role="alert">
+    <div
+      v-if="saveError"
+      class="flex items-center gap-2.5 rounded-xl border border-red-500/30 bg-red-500/10 px-4.5 py-3 text-[13px] font-medium text-red-300 light:border-red-200 light:bg-red-50 light:text-red-700"
+      role="alert"
+    >
       <span>{{ saveError }}</span>
     </div>
 
-    <div v-if="pending" class="shimmer skeleton-settings"></div>
+    <div v-if="pending" class="h-120 w-full animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
 
-    <div v-else-if="loadErrorMessage" class="settings-error glass">
-      <h3 class="card-title">Unable to load settings</h3>
-      <p class="card-desc">{{ loadErrorMessage }}</p>
-      <button type="button" class="save-btn" @click="refresh()">
+    <div
+      v-else-if="loadErrorMessage"
+      class="flex flex-col items-start gap-3 rounded-[18px] border border-white/10 bg-white/5 p-6 light:border-slate-200 light:bg-white"
+    >
+      <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Unable to load settings</h3>
+      <p class="text-xs text-white/40 light:text-slate-500">{{ loadErrorMessage }}</p>
+      <button
+        type="button"
+        class="mt-1 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5.5 py-2.5 text-[13px] font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+        @click="refresh()"
+      >
         <RefreshCw :size="16" />
         <span>Try Again</span>
       </button>
     </div>
 
-    <div v-else class="settings-grid">
-=======
-    <div v-if="pending" class="h-120 w-full animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
-
     <div v-else class="grid grid-cols-1 gap-5 lg:grid-cols-2">
->>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
       <!-- Profile Settings -->
       <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
         <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
@@ -67,19 +67,15 @@
           </div>
         </div>
 
-<<<<<<< HEAD
-        <div class="avatar-edit-row">
-          <img :src="form.profile.avatar || auth.userAvatar" alt="Avatar" class="avatar-preview" />
-          <div class="avatar-meta">
-            <span class="avatar-label">Profile Avatar</span>
-            <span class="avatar-note">Managed through your account profile</span>
-=======
         <div class="mb-5 flex items-center gap-4">
-          <img :src="form.profile.avatar" alt="Avatar" class="size-13 rounded-full border-2 border-violet-500/40 bg-violet-500/15" >
+          <img
+            :src="form.profile.avatar || auth.userAvatar"
+            alt="Avatar"
+            class="size-13 rounded-full border-2 border-violet-500/40 bg-violet-500/15"
+          >
           <div class="flex flex-col">
             <span class="text-[13px] font-semibold text-slate-100 light:text-slate-900">Profile Avatar</span>
-            <span class="mt-0.5 text-[11px] text-white/40 light:text-slate-500">Using DiceBear animated SVGs for avatars</span>
->>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
+            <span class="mt-0.5 text-[11px] text-white/40 light:text-slate-500">Managed through your account profile</span>
           </div>
         </div>
 
@@ -89,27 +85,15 @@
               <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Full Name</label>
               <input v-model="form.profile.name" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
             </div>
-<<<<<<< HEAD
-            <div class="form-group">
-              <label class="form-label">Email Address</label>
-              <input v-model="form.profile.email" type="email" class="form-input" readonly />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Platform Role</label>
-            <input v-model="form.profile.role" type="text" class="form-input" readonly />
-=======
             <div class="flex flex-1 flex-col gap-1.5">
               <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Email Address</label>
-              <input v-model="form.profile.email" type="email" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
+              <input v-model="form.profile.email" type="email" readonly class="w-full cursor-not-allowed rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 opacity-65 outline-none transition-all duration-200 light:border-slate-300 light:bg-white light:text-slate-900" >
             </div>
           </div>
 
           <div class="flex flex-col gap-1.5">
             <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Platform Role</label>
-            <input v-model="form.profile.role" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
->>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
+            <input v-model="form.profile.role" type="text" readonly class="w-full cursor-not-allowed rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 opacity-65 outline-none transition-all duration-200 light:border-slate-300 light:bg-white light:text-slate-900" >
           </div>
 
           <div class="flex flex-col gap-1.5">
@@ -375,286 +359,3 @@ onUnmounted(() => {
   if (successTimer) clearTimeout(successTimer)
 })
 </script>
-<<<<<<< HEAD
-
-<style scoped>
-.settings-page {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.page-title {
-  font-size: 26px;
-  font-weight: 800;
-  color: #f8fafc;
-  letter-spacing: -0.5px;
-}
-
-.page-sub {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.45);
-  margin-top: 4px;
-}
-
-.save-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 22px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  border: 1px solid rgba(139, 92, 246, 0.4);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.save-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #8b5cf6, #6366f1);
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
-}
-
-.save-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.success-banner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 18px;
-  border-radius: 12px;
-  background: rgba(52, 211, 153, 0.12);
-  border: 1px solid rgba(52, 211, 153, 0.3);
-  color: #34d399;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.error-banner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 18px;
-  border-radius: 12px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.settings-error {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 24px;
-  border-radius: 18px;
-}
-
-.settings-error .save-btn {
-  margin-top: 4px;
-}
-
-.form-input[readonly] {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-.settings-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-@media (max-width: 900px) {
-  .settings-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.settings-card {
-  border-radius: 18px;
-  padding: 24px;
-}
-
-.card-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.card-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #f1f5f9;
-}
-
-.card-desc {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 2px;
-}
-
-.avatar-edit-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.avatar-preview {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 2px solid rgba(124, 58, 237, 0.4);
-  background: rgba(124, 58, 237, 0.15);
-}
-
-.avatar-meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.avatar-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #f1f5f9;
-}
-
-.avatar-note {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 2px;
-}
-
-.form-body {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.form-row {
-  display: flex;
-  gap: 12px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-}
-
-.form-label {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-  letter-spacing: 0.5px;
-}
-
-.form-input,
-.form-select,
-.form-textarea {
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  color: #f1f5f9;
-  font-size: 13px;
-  outline: none;
-  font-family: inherit;
-  transition: all 0.2s;
-}
-
-.form-select {
-  background: #11121d;
-  color: #e2e8f0;
-}
-
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-  border-color: rgba(124, 58, 237, 0.5);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.toggles-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.toggle-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.toggle-item:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.toggle-title {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #e2e8f0;
-}
-
-.toggle-sub {
-  display: block;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 2px;
-}
-
-.toggle-checkbox {
-  width: 18px;
-  height: 18px;
-  accent-color: #7c3aed;
-  cursor: pointer;
-}
-
-.skeleton-settings {
-  width: 100%;
-  height: 480px;
-  border-radius: 18px;
-}
-
-.fade-alert-enter-active,
-.fade-alert-leave-active {
-  transition: opacity 0.3s;
-}
-.fade-alert-enter-from,
-.fade-alert-leave-to {
-  opacity: 0;
-}
-</style>
-=======
->>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
