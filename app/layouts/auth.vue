@@ -1,18 +1,20 @@
 <template>
-  <div class="auth-layout">
+  <div class="relative h-dvh w-full overflow-hidden overscroll-none bg-[linear-gradient(135deg,#0a0a0f_0%,#0f101b_50%,#0a0a0f_100%)] light:bg-[linear-gradient(135deg,#f8fafc_0%,#ffffff_50%,#f8fafc_100%)]">
     <!-- Background orbs -->
-    <div class="bg-orb" style="width:600px;height:600px;background:radial-gradient(circle,rgba(16,185,129,0.08),transparent 70%);top:-200px;left:-200px;"></div>
-    <div class="bg-orb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(5,150,105,0.06),transparent 70%);bottom:-150px;right:-150px;"></div>
+    <div class="pointer-events-none fixed -left-[200px] -top-[200px] z-0 size-[600px] rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.08),transparent_70%)] blur-[80px]" />
+    <div class="pointer-events-none fixed -bottom-[150px] -right-[150px] z-0 size-[500px] rounded-full bg-[radial-gradient(circle,rgba(5,150,105,0.06),transparent_70%)] blur-[80px]" />
 
-    <div class="auth-split">
-      <!-- Left: Hero / media panel (desktop only) -->
-      <div class="auth-hero-side">
+    <!-- Even 50/50 split, locked to the viewport height -->
+    <div class="relative z-[1] grid h-full min-h-0 grid-cols-1 lg:grid-cols-2">
+      <!-- Left: hero / media panel (desktop only) -->
+      <div class="hidden h-full min-h-0 overflow-hidden lg:block">
         <AuthHeroPanel />
       </div>
 
-      <!-- Right: Form panel (scrolls internally on short screens) -->
-      <div class="auth-form-side">
-        <div class="auth-form-inner">
+      <!-- Right: form panel — centers the form card both axes -->
+      <div class="relative z-10 flex h-full min-h-0 items-center justify-center overflow-hidden p-6 sm:p-8 short:px-8 short:py-5">
+        <!-- Capped height; scrolls internally only if the form cannot fit -->
+        <div class="scrollbar-emerald max-h-[min(90dvh,100%)] w-full max-w-[436px] overflow-x-hidden overflow-y-auto p-2">
           <slot />
         </div>
       </div>
@@ -51,110 +53,3 @@ onUnmounted(() => {
   document.body.style.overflow = ''
 })
 </script>
-
-<style scoped>
-/* Locked to the viewport — the page itself never scrolls */
-.auth-layout {
-  height: 100vh;
-  height: 100dvh;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #0a0a0f 0%, #0f101b 50%, #0a0a0f 100%);
-}
-
-/* Background orbs */
-.bg-orb {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Split layout — even 50/50 columns, fixed to the viewport height */
-.auth-split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  height: 100%;
-  min-height: 0;
-  position: relative;
-  z-index: 1;
-}
-
-/* Hero / media side — desktop only */
-.auth-hero-side {
-  display: none;
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
-}
-
-@media (min-width: 1025px) {
-  .auth-hero-side {
-    display: block;
-  }
-}
-
-/* Form side — its own scroll container when the form is taller than the viewport */
-.auth-form-side {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  padding: 2.5rem 2rem;
-  overflow-y: auto;
-  overflow-x: hidden;
-  position: relative;
-  z-index: 10;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(16, 185, 129, 0.35) transparent;
-}
-
-.auth-form-side::-webkit-scrollbar {
-  width: 6px;
-}
-
-.auth-form-side::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.auth-form-side::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.35);
-  border-radius: 99px;
-}
-
-/* Keeps the card centered; margin:auto lets the column scroll (top stays reachable) when content is taller */
-.auth-form-inner {
-  width: 100%;
-  max-width: 420px;
-  margin: auto;
-}
-
-@media (max-width: 1024px) {
-  .auth-split {
-    grid-template-columns: 1fr;
-  }
-
-  .auth-form-side {
-    padding: 2rem 1.5rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .auth-form-side {
-    padding: 1.5rem 1rem;
-  }
-}
-
-/* Shorter viewports: tighter column padding helps forms fit without scrolling */
-@media (max-height: 800px) {
-  .auth-form-side {
-    padding: 1.25rem 2rem;
-  }
-}
-
-html.light .auth-layout {
-  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f8fafc 100%);
-}
-</style>

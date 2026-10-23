@@ -1,100 +1,104 @@
 <template>
-  <div class="auth-card" v-motion="cardMotion">
+  <div
+    v-motion="cardMotion"
+    class="w-full max-w-[420px] rounded-3xl border border-white/10 bg-white/[0.03] p-8 shadow-[0_25px_50px_rgba(0,0,0,0.5),0_0_60px_rgba(16,185,129,0.05)] backdrop-blur-xl short:p-6 light:border-black/10 light:bg-white/90 light:shadow-[0_25px_50px_rgba(0,0,0,0.1),0_0_60px_rgba(16,185,129,0.08)]"
+  >
     <!-- Header -->
-    <div class="auth-header">
-      <h1 class="auth-title">Reset Password</h1>
-      <p class="auth-subtitle">Enter your new password below</p>
+    <div class="mb-7 text-center short:mb-4">
+      <h1 class="mb-2 text-[28px] font-extrabold tracking-[-0.5px] text-slate-100 max-[480px]:text-2xl short:text-2xl light:text-slate-900">Reset Password</h1>
+      <p class="text-[15px] leading-normal text-white/60 light:text-slate-500">Enter your new password below</p>
     </div>
 
     <!-- Form -->
-    <form @submit.prevent="handleResetPassword" class="auth-form">
-      <div class="form-field" v-motion="fieldMotion(0)">
-        <label for="password" class="form-label">New Password</label>
-        <div class="auth-input-wrapper">
-          <Lock class="auth-input-icon" :size="18" />
+    <form class="mt-6 flex flex-col gap-5 short:mt-4 short:gap-3" @submit.prevent="handleResetPassword">
+      <div v-motion="fieldMotion(0)" class="flex flex-col gap-2">
+        <label for="password" class="text-[13px] font-semibold text-slate-200 light:text-slate-700">New Password</label>
+        <div class="group relative flex items-center">
+          <Lock :size="18" class="pointer-events-none absolute left-3.5 z-10 text-white/40 transition-colors group-focus-within:text-emerald-500 light:text-black/40" />
           <input
             id="password"
             v-model="form.password"
             :type="showPassword ? 'text' : 'password'"
-            class="auth-input"
+            :class="errors.password ? inputErrorClass : inputClass"
             placeholder="Create a strong password"
             autocomplete="new-password"
             required
             :disabled="loading"
-            :class="{ 'auth-input-error': errors.password }"
           />
           <button
             type="button"
-            class="auth-toggle-password"
-            @click="showPassword = !showPassword"
+            class="absolute right-3.5 z-10 flex cursor-pointer items-center text-white/40 transition-colors hover:text-emerald-500 light:text-black/40"
             :aria-label="showPassword ? 'Hide password' : 'Show password'"
+            @click="showPassword = !showPassword"
           >
-            <Eye :size="18" v-if="!showPassword" />
-            <EyeOff :size="18" v-else />
+            <Eye v-if="!showPassword" :size="18" />
+            <EyeOff v-else :size="18" />
           </button>
         </div>
-        <p v-if="errors.password" class="form-error">{{ errors.password }}</p>
+        <p v-if="errors.password" class="min-h-4 text-xs text-red-500">{{ errors.password }}</p>
 
         <PasswordStrengthMeter :password="form.password" :show="!!form.password" />
       </div>
 
-      <div class="form-field" v-motion="fieldMotion(0.08)">
-        <label for="confirmPassword" class="form-label">Confirm New Password</label>
-        <div class="auth-input-wrapper">
-          <Lock class="auth-input-icon" :size="18" />
+      <div v-motion="fieldMotion(0.08)" class="flex flex-col gap-2">
+        <label for="confirmPassword" class="text-[13px] font-semibold text-slate-200 light:text-slate-700">Confirm New Password</label>
+        <div class="group relative flex items-center">
+          <Lock :size="18" class="pointer-events-none absolute left-3.5 z-10 text-white/40 transition-colors group-focus-within:text-emerald-500 light:text-black/40" />
           <input
             id="confirmPassword"
             v-model="form.confirmPassword"
             :type="showConfirmPassword ? 'text' : 'password'"
-            class="auth-input"
+            :class="errors.confirmPassword ? inputErrorClass : inputClass"
             placeholder="Confirm your new password"
             autocomplete="new-password"
             required
             :disabled="loading"
-            :class="{ 'auth-input-error': errors.confirmPassword }"
           />
           <button
             type="button"
-            class="auth-toggle-password"
-            @click="showConfirmPassword = !showConfirmPassword"
+            class="absolute right-3.5 z-10 flex cursor-pointer items-center text-white/40 transition-colors hover:text-emerald-500 light:text-black/40"
             :aria-label="showConfirmPassword ? 'Hide password' : 'Show password'"
+            @click="showConfirmPassword = !showConfirmPassword"
           >
-            <Eye :size="18" v-if="!showConfirmPassword" />
-            <EyeOff :size="18" v-else />
+            <Eye v-if="!showConfirmPassword" :size="18" />
+            <EyeOff v-else :size="18" />
           </button>
         </div>
-        <p v-if="errors.confirmPassword" class="form-error">{{ errors.confirmPassword }}</p>
+        <p v-if="errors.confirmPassword" class="min-h-4 text-xs text-red-500">{{ errors.confirmPassword }}</p>
       </div>
 
       <button
         type="submit"
-        class="btn btn-emerald btn-submit"
+        class="mt-2 flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 px-6 py-4 text-[15px] font-semibold text-white transition-all duration-200 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none enabled:hover:-translate-y-0.5 enabled:hover:shadow-[0_8px_25px_rgba(16,185,129,0.4)] enabled:active:translate-y-0 enabled:active:shadow-[0_4px_15px_rgba(16,185,129,0.3)] disabled:cursor-not-allowed disabled:opacity-60 short:py-3"
         :disabled="loading || !isFormValid"
-        :class="{ 'loading': loading }"
+        :class="{ 'pointer-events-none': loading }"
       >
-        <Loader2 :size="20" class="animate-spin" v-if="loading" />
+        <Loader2 v-if="loading" :size="20" class="animate-spin" />
         <span v-else>Reset Password</span>
       </button>
     </form>
 
     <!-- Success State -->
-    <div v-if="success" class="success-state" v-motion="successMotion">
-      <div class="success-icon">
+    <div v-if="success" v-motion="successMotion" class="mt-7 flex flex-col items-center gap-3 text-center">
+      <div class="flex size-18 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/12 text-emerald-400 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-600">
         <CheckCircle :size="48" />
       </div>
-      <h2 class="success-title">Password Reset Complete</h2>
-      <p class="success-description">
+      <h2 class="text-xl font-bold text-slate-100 light:text-slate-900">Password Reset Complete</h2>
+      <p class="text-sm leading-relaxed text-white/60 light:text-slate-600">
         Your password has been successfully updated. You can now sign in with your new password.
       </p>
-      <NuxtLink to="/auth/login" class="btn btn-emerald" style="margin-top: 16px; width: 100%;">
+      <NuxtLink
+        to="/auth/login"
+        class="mt-4 flex w-full items-center justify-center rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 px-6 py-4 text-[15px] font-semibold text-white no-underline transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(16,185,129,0.4)]"
+      >
         Sign In
       </NuxtLink>
     </div>
 
     <!-- Footer -->
-    <p class="auth-footer" v-if="!success">
-      Remember your password? 
-      <NuxtLink to="/auth/login" class="auth-link">Sign in</NuxtLink>
+    <p v-if="!success" class="mt-7 text-center text-sm text-white/60 short:mt-4 light:text-slate-500">
+      Remember your password?
+      <NuxtLink to="/auth/login" class="font-semibold text-emerald-500 no-underline transition-colors hover:text-emerald-400 hover:underline light:text-emerald-600">Sign in</NuxtLink>
     </p>
   </div>
 </template>
@@ -102,12 +106,12 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { 
-  Lock, 
-  Eye, 
-  EyeOff, 
-  Loader2, 
-  CheckCircle 
+import {
+  Lock,
+  Eye,
+  EyeOff,
+  Loader2,
+  CheckCircle
 } from 'lucide-vue-next'
 import PasswordStrengthMeter from '~/components/auth/PasswordStrengthMeter.vue'
 
@@ -130,6 +134,10 @@ const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 
 const token = computed(() => route.query.token as string)
+
+const inputClass = 'w-full rounded-xl border border-white/10 bg-white/4 py-3.5 pr-4 pl-12 text-[15px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-emerald-500 focus:bg-white/[0.07] focus:ring-[3px] focus:ring-emerald-500/15 disabled:opacity-60 short:py-3 light:border-slate-200 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
+
+const inputErrorClass = 'w-full rounded-xl border border-red-500 bg-white/4 py-3.5 pr-4 pl-12 text-[15px] text-slate-100 outline-none ring-[3px] ring-red-500/15 transition-all duration-200 placeholder:text-white/30 focus:border-red-500 focus:ring-red-500/15 disabled:opacity-60 short:py-3 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
 
 const cardMotion = {
   initial: { opacity: 0, y: 30 },
@@ -198,8 +206,8 @@ async function handleResetPassword() {
     })
     success.value = true
   } catch (e: unknown) {
-    const message = (e as { response?: { _data?: { message: string } } }).response?._data?.message 
-      || (e as Error)?.message 
+    const message = (e as { response?: { _data?: { message: string } } }).response?._data?.message
+      || (e as Error)?.message
       || 'Failed to reset password'
     errors.password = message
   } finally {
@@ -218,224 +226,3 @@ definePageMeta({
   layout: 'auth'
 })
 </script>
-
-<style scoped>
-.auth-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.auth-title {
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--text-primary, #f1f5f9);
-  letter-spacing: -0.5px;
-  margin: 0 0 8px;
-}
-
-html.light .auth-title {
-  color: #0f172a;
-}
-
-.auth-subtitle {
-  font-size: 15px;
-  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
-  margin: 0;
-  line-height: 1.5;
-}
-
-html.light .auth-subtitle {
-  color: #64748b;
-}
-
-.auth-form {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary, #e2e8f0);
-}
-
-html.light .form-label {
-  color: #334155;
-}
-
-.form-error {
-  font-size: 12px;
-  color: #ef4444;
-  margin: 0;
-  min-height: 16px;
-}
-
-.btn-submit {
-  width: 100%;
-  padding: 16px 24px;
-  font-size: 15px;
-  font-weight: 600;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 8px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-submit:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
-}
-
-.btn-submit:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.btn-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-submit.loading {
-  pointer-events: none;
-}
-
-.success-state {
-  margin-top: 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 12px;
-}
-
-.success-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: var(--emerald-400);
-}
-
-html.light .success-icon {
-  background: var(--emerald-50);
-  border-color: var(--emerald-200);
-  color: var(--emerald-600);
-}
-
-.success-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary, #f1f5f9);
-  margin: 0;
-}
-
-html.light .success-title {
-  color: #0f172a;
-}
-
-.success-description {
-  font-size: 14px;
-  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
-  line-height: 1.6;
-  margin: 0;
-}
-
-html.light .success-description {
-  color: #475569;
-}
-
-.auth-footer {
-  margin-top: 28px;
-  text-align: center;
-  font-size: 14px;
-  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
-}
-
-html.light .auth-footer {
-  color: #64748b;
-}
-
-.auth-link {
-  color: var(--emerald-500);
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.auth-link:hover {
-  color: var(--emerald-400);
-  text-decoration: underline;
-}
-
-html.light .auth-link {
-  color: var(--emerald-600);
-}
-
-@media (max-width: 480px) {
-  .auth-title {
-    font-size: 24px;
-  }
-}
-
-/* Compact spacing on short viewports — keeps the auth page scroll-free */
-@media (max-height: 900px) {
-  .auth-header {
-    margin-bottom: 22px;
-  }
-
-  .auth-form {
-    margin-top: 18px;
-    gap: 15px;
-  }
-
-  .auth-footer {
-    margin-top: 20px;
-  }
-}
-
-@media (max-height: 800px) {
-  .auth-header {
-    margin-bottom: 14px;
-  }
-
-  .auth-title {
-    font-size: 24px;
-  }
-
-  .auth-subtitle {
-    font-size: 14px;
-  }
-
-  .auth-form {
-    margin-top: 14px;
-    gap: 12px;
-  }
-
-  .form-field {
-    gap: 6px;
-  }
-
-  .btn-submit {
-    padding: 13px 24px;
-  }
-
-  .auth-footer {
-    margin-top: 16px;
-  }
-}
-</style>
