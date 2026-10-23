@@ -1,78 +1,98 @@
 <template>
   <div>
     <!-- Mobile Backdrop -->
-    <Transition name="fade-backdrop">
+    <Transition v-bind="fadeBackdrop">
       <div
         v-if="mobileOpen"
-        class="sidebar-backdrop"
+        class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm md:hidden"
         @click="$emit('close-mobile')"
-      ></div>
+      />
     </Transition>
 
-    <aside class="sidebar" :class="{ collapsed, 'mobile-open': mobileOpen }">
+    <aside
+      class="fixed inset-y-0 left-0 z-50 flex w-65 flex-col overflow-hidden border-r border-white/6 bg-zinc-950/95 backdrop-blur-xl transition-[width,transform] duration-300 ease-out max-md:shadow-2xl max-md:shadow-black/70 light:border-slate-200 light:bg-white/98"
+      :class="[
+        mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
+        collapsed ? 'md:w-18' : 'md:w-65'
+      ]"
+    >
       <!-- Logo -->
-      <div class="sidebar-logo">
-        <div class="logo-icon">
+      <div class="flex min-h-18 items-center gap-3 border-b border-white/6 px-4.5 py-5 light:border-slate-200">
+        <div class="flex size-9 shrink-0 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/15">
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
             <path d="M14 2L26 9V19L14 26L2 19V9L14 2Z" fill="url(#logoGrad)" />
             <path d="M14 8L20 11.5V18.5L14 22L8 18.5V11.5L14 8Z" fill="rgba(255,255,255,0.15)" />
             <defs>
               <linearGradient id="logoGrad" x1="2" y1="2" x2="26" y2="26" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#7c3aed"/>
-                <stop offset="1" stop-color="#2563eb"/>
+                <stop stop-color="#7c3aed" />
+                <stop offset="1" stop-color="#2563eb" />
               </linearGradient>
             </defs>
           </svg>
         </div>
-        <Transition name="fade-text">
-          <div v-if="!collapsed" class="logo-text">
-            <span class="logo-name">CourseAuraHub</span>
-            <span class="logo-tag">Academy</span>
+        <Transition v-bind="fadeText">
+          <div v-if="!collapsed" class="leading-none">
+            <span class="block text-sm font-bold tracking-tight text-slate-200 light:text-slate-900">CourseAuraHub</span>
+            <span class="mt-0.5 block text-[10px] font-medium tracking-widest text-violet-400 uppercase light:text-violet-700">Academy</span>
           </div>
         </Transition>
       </div>
 
-      <nav class="sidebar-nav">
-        <div v-for="section in navSections" :key="section.label" class="nav-section">
-          <Transition name="fade-text">
-            <p v-if="!collapsed" class="nav-section-label">{{ section.label }}</p>
+      <nav class="flex flex-1 flex-col gap-1 overflow-y-auto px-2.5 py-4">
+        <div v-for="section in navSections" :key="section.label" class="mb-2">
+          <Transition v-bind="fadeText">
+            <p v-if="!collapsed" class="px-2.5 pt-2 pb-1 text-[10px] font-semibold tracking-widest text-white/30 uppercase light:text-slate-400">
+              {{ section.label }}
+            </p>
           </Transition>
           <NuxtLink
             v-for="item in section.items"
             :key="item.to"
             :to="item.to"
-            class="nav-item"
-            :class="{ 'sidebar-active': isActive(item.to) }"
+            class="relative flex items-center gap-2.5 overflow-hidden rounded-[10px] border px-3 py-2.5 text-sm font-medium whitespace-nowrap no-underline transition-colors duration-200 ease-out hover:bg-white/5 hover:text-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:hover:bg-slate-100 light:hover:text-slate-900"
+            :class="isActive(item.to)
+              ? 'border-violet-500/40 bg-linear-to-br from-violet-600/25 to-blue-600/15 text-violet-300 light:border-violet-500/30 light:bg-violet-500/10 light:text-violet-700'
+              : 'border-transparent text-white/55 light:text-slate-600'"
             @click="$emit('close-mobile')"
           >
-            <component :is="item.icon" :size="20" class="nav-icon" :stroke-width="1.5" />
-            <Transition name="fade-text">
-              <span v-if="!collapsed" class="nav-label">{{ item.label }}</span>
+            <component :is="item.icon" :size="20" class="shrink-0" :stroke-width="1.5" />
+            <Transition v-bind="fadeText">
+              <span v-if="!collapsed" class="text-sm font-medium">{{ item.label }}</span>
             </Transition>
-            <Transition name="fade-text">
-              <span v-if="!collapsed && item.badge" class="nav-badge">{{ item.badge }}</span>
+            <Transition v-bind="fadeText">
+              <span
+                v-if="!collapsed && item.badge"
+                class="ml-auto rounded-full border border-violet-500/30 bg-violet-500/20 px-1.75 py-px text-[10px] font-semibold text-violet-300 light:border-violet-300 light:bg-violet-100 light:text-violet-700"
+              >
+                {{ item.badge }}
+              </span>
             </Transition>
           </NuxtLink>
         </div>
       </nav>
 
       <!-- Admin Quick Console Trigger -->
+<<<<<<< HEAD
       <div v-if="auth.isAdmin" class="sidebar-admin-section">
+=======
+      <div class="border-t border-white/4 p-3 light:border-slate-200">
+>>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
         <button
           type="button"
-          class="admin-trigger-btn"
-          :class="{ 'admin-collapsed': collapsed }"
+          class="flex w-full items-center gap-2.5 overflow-hidden rounded-[10px] border border-violet-500/25 bg-violet-500/12 px-3 py-2.25 text-[13px] font-semibold whitespace-nowrap text-violet-300 transition-colors hover:border-violet-500/50 hover:bg-violet-500/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:border-violet-400 light:hover:bg-violet-100 light:hover:text-violet-900"
+          :class="{ 'justify-center px-2.25': collapsed }"
           title="Open Admin Management Console"
           @click="$emit('open-admin')"
         >
-          <ShieldAlert :size="18" class="text-violet-400 flex-shrink-0" />
-          <Transition name="fade-text">
-            <span v-if="!collapsed" class="admin-trigger-text">Admin Console</span>
+          <ShieldAlert :size="18" class="shrink-0 text-violet-400" />
+          <Transition v-bind="fadeText">
+            <span v-if="!collapsed" class="text-[13px]">Admin Console</span>
           </Transition>
         </button>
       </div>
 
       <!-- Bottom profile -->
+<<<<<<< HEAD
       <div class="sidebar-profile" @click="handleProfileClick">
         <img
           :src="auth.userAvatar"
@@ -83,6 +103,21 @@
           <div v-if="!collapsed" class="profile-info">
             <p class="profile-name">{{ auth.userName }}</p>
             <p class="profile-role">{{ auth.roleLabel }}</p>
+=======
+      <div
+        class="flex min-h-18 cursor-pointer items-center gap-2.5 border-t border-white/6 px-4.5 py-4 transition-colors hover:bg-white/3 light:border-slate-200 light:hover:bg-slate-50"
+        @click="$emit('open-admin')"
+      >
+        <img
+          src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4"
+          alt="Avatar"
+          class="size-9 shrink-0 rounded-full border-2 border-violet-500/40 bg-[#1a1a2e] light:border-violet-300 light:bg-violet-50"
+        >
+        <Transition v-bind="fadeText">
+          <div v-if="!collapsed" class="min-w-0">
+            <p class="truncate text-[13px] font-semibold text-slate-200 light:text-slate-900">Alex Chen</p>
+            <p class="mt-px truncate text-[11px] text-white/40 light:text-slate-500">Platform Admin</p>
+>>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
           </div>
         </Transition>
       </div>
@@ -147,6 +182,20 @@ const navSections = computed(() => {
   ]
 })
 
+const fadeText = {
+  enterActiveClass: 'transition-opacity duration-200 ease-out',
+  leaveActiveClass: 'transition-opacity duration-200 ease-out',
+  enterFromClass: 'opacity-0',
+  leaveToClass: 'opacity-0'
+}
+
+const fadeBackdrop = {
+  enterActiveClass: 'transition-opacity duration-250 ease-out',
+  leaveActiveClass: 'transition-opacity duration-250 ease-out',
+  enterFromClass: 'opacity-0',
+  leaveToClass: 'opacity-0'
+}
+
 function isActive(to: string) {
   if (to === '/') return route.path === '/'
   return route.path.startsWith(to)
@@ -161,286 +210,3 @@ function handleProfileClick() {
   router.push('/courses')
 }
 </script>
-
-<style scoped>
-.sidebar-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-  z-index: 45;
-}
-
-.sidebar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: var(--sidebar-width);
-  background: rgba(10, 10, 20, 0.95);
-  backdrop-filter: blur(20px);
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
-  display: flex;
-  flex-direction: column;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 50;
-  overflow: hidden;
-}
-
-.sidebar.collapsed {
-  width: 72px;
-}
-
-/* Logo */
-.sidebar-logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 20px 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  min-height: 72px;
-}
-
-.logo-icon {
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(124, 58, 237, 0.15);
-  border-radius: 10px;
-  border: 1px solid rgba(124, 58, 237, 0.3);
-}
-
-.logo-text { line-height: 1; }
-.logo-name {
-  display: block;
-  font-size: 15px;
-  font-weight: 700;
-  color: #e2e8f0;
-  letter-spacing: -0.3px;
-}
-.logo-tag {
-  display: block;
-  font-size: 10px;
-  font-weight: 500;
-  color: #7c3aed;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-top: 2px;
-}
-
-/* Nav */
-.sidebar-nav {
-  flex: 1;
-  padding: 16px 10px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.nav-section {
-  margin-bottom: 8px;
-}
-
-.nav-section-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.3);
-  padding: 8px 10px 4px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0.55);
-  border: 1px solid transparent;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
-  overflow: hidden;
-  position: relative;
-}
-
-.nav-item:hover {
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.nav-icon { flex-shrink: 0; }
-
-.nav-label {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.nav-badge {
-  margin-left: auto;
-  font-size: 10px;
-  font-weight: 600;
-  background: rgba(124, 58, 237, 0.2);
-  color: #a78bfa;
-  border: 1px solid rgba(124, 58, 237, 0.3);
-  border-radius: 20px;
-  padding: 1px 7px;
-}
-
-/* Admin trigger */
-.sidebar-admin-section {
-  padding: 10px 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.admin-trigger-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: 10px;
-  background: rgba(124, 58, 237, 0.12);
-  border: 1px solid rgba(124, 58, 237, 0.25);
-  color: #c4b5fd;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  overflow: hidden;
-  white-space: nowrap;
-  font-family: inherit;
-}
-
-.admin-trigger-btn:hover {
-  background: rgba(124, 58, 237, 0.25);
-  color: #fff;
-  border-color: rgba(124, 58, 237, 0.5);
-}
-
-.admin-trigger-btn.admin-collapsed {
-  justify-content: center;
-  padding: 9px;
-}
-
-/* Profile */
-.sidebar-profile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 16px 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  min-height: 72px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.sidebar-profile:hover {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.profile-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid rgba(124, 58, 237, 0.4);
-  flex-shrink: 0;
-  background: #1a1a2e;
-}
-
-.profile-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: #e2e8f0;
-}
-
-.profile-role {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 1px;
-}
-
-/* Transitions */
-.fade-text-enter-active,
-.fade-text-leave-active {
-  transition: opacity 0.2s ease;
-}
-.fade-text-enter-from,
-.fade-text-leave-to {
-  opacity: 0;
-}
-
-.fade-backdrop-enter-active,
-.fade-backdrop-leave-active {
-  transition: opacity 0.25s ease;
-}
-.fade-backdrop-enter-from,
-.fade-backdrop-leave-to {
-  opacity: 0;
-}
-
-@media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-    width: var(--sidebar-width) !important;
-  }
-  .sidebar.mobile-open {
-    transform: translateX(0);
-    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.7);
-  }
-}
-
-/* Light mode overrides */
-html.light .sidebar {
-  background: rgba(255, 255, 255, 0.98);
-  border-right-color: rgba(0, 0, 0, 0.08);
-}
-
-html.light .sidebar-logo {
-  border-bottom-color: rgba(0, 0, 0, 0.08);
-}
-
-html.light .logo-name {
-  color: #0f172a;
-}
-
-html.light .nav-section-label {
-  color: #94a3b8;
-}
-
-html.light .nav-item {
-  color: #475569;
-}
-
-html.light .nav-item:hover {
-  color: #0f172a;
-  background: #f1f5f9;
-}
-
-html.light .sidebar-active {
-  background: rgba(124, 58, 237, 0.12) !important;
-  border-color: rgba(124, 58, 237, 0.3) !important;
-  color: #7c3aed !important;
-}
-
-html.light .sidebar-profile {
-  border-top-color: rgba(0, 0, 0, 0.08);
-}
-
-html.light .sidebar-profile:hover {
-  background: #f8fafc;
-}
-
-html.light .profile-name {
-  color: #0f172a;
-}
-
-html.light .profile-role {
-  color: #64748b;
-}
-</style>

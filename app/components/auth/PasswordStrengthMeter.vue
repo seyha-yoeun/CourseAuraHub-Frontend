@@ -1,18 +1,18 @@
 <template>
-  <div v-if="show && password" class="password-strength-meter">
-    <div class="strength-meter" :class="strengthClass">
-      <div 
-        class="strength-bar" 
-        :style="{ width: `${strengthPercent}%`, backgroundColor: strengthColor }"
+  <div v-if="show && password" class="mt-2">
+    <div class="h-1 overflow-hidden rounded-xs bg-white/8 light:bg-slate-200">
+      <div
+        class="h-full rounded-xs transition-all duration-300"
+        :class="barClass"
       />
     </div>
-    <div class="strength-labels">
-      <span :class="{ active: checks[0] }">{{ checks[0] ? '✓' : '○' }} 8+ chars</span>
-      <span :class="{ active: checks[1] }">{{ checks[1] ? '✓' : '○' }} Uppercase</span>
-      <span :class="{ active: checks[2] }">{{ checks[2] ? '✓' : '○' }} Number</span>
-      <span :class="{ active: checks[3] }">{{ checks[3] ? '✓' : '○' }} Symbol</span>
+    <div class="mt-1.5 flex justify-between text-[11px] text-white/40 light:text-slate-400">
+      <span class="flex items-center gap-1 transition-colors duration-200" :class="checks[0] && 'font-semibold text-emerald-500'">{{ checks[0] ? '✓' : '○' }} 8+ chars</span>
+      <span class="flex items-center gap-1 transition-colors duration-200" :class="checks[1] && 'font-semibold text-emerald-500'">{{ checks[1] ? '✓' : '○' }} Uppercase</span>
+      <span class="flex items-center gap-1 transition-colors duration-200" :class="checks[2] && 'font-semibold text-emerald-500'">{{ checks[2] ? '✓' : '○' }} Number</span>
+      <span class="flex items-center gap-1 transition-colors duration-200" :class="checks[3] && 'font-semibold text-emerald-500'">{{ checks[3] ? '✓' : '○' }} Symbol</span>
     </div>
-    <p class="strength-text" :style="{ color: strengthColor }">{{ strengthLabel }}</p>
+    <p class="mt-1.5 text-xs font-medium transition-colors duration-200" :class="textClass">{{ strengthLabel }}</p>
   </div>
 </template>
 
@@ -28,7 +28,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const checks = computed(() => {
   const pwd = props.password
-  if (!pwd) return []
   return [
     pwd.length >= 8,
     /[A-Z]/.test(pwd),
@@ -39,17 +38,27 @@ const checks = computed(() => {
 
 const passedChecks = computed(() => checks.value.filter(Boolean).length)
 
-const strengthPercent = computed(() => {
-  if (!props.password) return 0
-  return Math.max(25, (passedChecks.value / 4) * 100)
+// 0-1 checks => level 0 (25% / red), 2 => fair, 3 => strong, 4 => very strong
+const strengthLevel = computed(() => {
+  if (passedChecks.value <= 1) return 0
+  if (passedChecks.value === 2) return 1
+  if (passedChecks.value === 3) return 2
+  return 3
 })
 
-const strengthColor = computed(() => {
-  if (passedChecks.value <= 1) return '#ef4444'
-  if (passedChecks.value === 2) return '#fbbf24'
-  if (passedChecks.value === 3) return '#34d399'
-  return '#10b981'
-})
+const barClass = computed(() => [
+  'w-1/4 bg-red-500',
+  'w-1/2 bg-amber-400',
+  'w-3/4 bg-emerald-400',
+  'w-full bg-emerald-500'
+][strengthLevel.value])
+
+const textClass = computed(() => [
+  'text-red-500',
+  'text-amber-400',
+  'text-emerald-400',
+  'text-emerald-500'
+][strengthLevel.value])
 
 const strengthLabel = computed(() => {
   if (!props.password) return ''
@@ -58,65 +67,4 @@ const strengthLabel = computed(() => {
   if (passedChecks.value === 3) return 'Strong password'
   return 'Very strong password'
 })
-
-const strengthClass = computed(() => {
-  if (passedChecks.value <= 1) return 'strength-weak'
-  if (passedChecks.value === 2) return 'strength-fair'
-  if (passedChecks.value === 3) return 'strength-strong'
-  return 'strength-very-strong'
-})
 </script>
-
-<style scoped>
-.password-strength-meter {
-  margin-top: 8px;
-}
-
-.strength-meter {
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.08);
-  overflow: hidden;
-}
-
-html.light .strength-meter {
-  background: #e2e8f0;
-}
-
-.strength-bar {
-  height: 100%;
-  border-radius: 2px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.strength-labels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 6px;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-html.light .strength-labels {
-  color: #94a3b8;
-}
-
-.strength-labels span {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: color 0.2s ease;
-}
-
-.strength-labels span.active {
-  color: var(--emerald-500);
-  font-weight: 600;
-}
-
-.strength-text {
-  margin-top: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-</style>

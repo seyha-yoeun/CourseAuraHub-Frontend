@@ -1,19 +1,19 @@
 <template>
-  <div class="social-login-section">
-    <div class="auth-divider">
+  <div class="mt-6 short:mt-4">
+    <div class="mb-4 flex items-center gap-4 text-[13px] text-white/30 before:h-px before:flex-1 before:bg-[linear-gradient(90deg,transparent,rgba(16,185,129,0.3),transparent)] before:content-[''] after:h-px after:flex-1 after:bg-[linear-gradient(90deg,transparent,rgba(16,185,129,0.3),transparent)] after:content-[''] light:text-black/30">
       <span>Or sign in with</span>
     </div>
-    
-    <div class="social-buttons">
+
+    <div class="flex flex-col gap-2.5">
       <button
         v-for="provider in providers"
         :key="provider.id"
-        :class="['social-btn', provider.id]"
-        @click="handleClick(provider.id)"
+        class="flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-white/10 bg-white/3 px-4 py-3 text-sm font-medium text-white/70 transition-all duration-200 enabled:hover:scale-[1.02] enabled:hover:border-emerald-500/40 enabled:hover:bg-emerald-500/8 enabled:hover:text-white enabled:active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 light:border-slate-200 light:bg-slate-50 light:text-slate-700 light:enabled:hover:border-emerald-500 light:enabled:hover:bg-emerald-50 light:enabled:hover:text-slate-900"
         :disabled="loading"
         type="button"
+        @click="handleClick(provider.id)"
       >
-        <component :is="provider.icon" :size="20" class="social-icon" />
+        <component :is="provider.icon" :size="20" class="shrink-0" :class="provider.iconClass" />
         <span>{{ provider.name }}</span>
       </button>
     </div>
@@ -21,10 +21,10 @@
 </template>
 
 <script setup lang="ts">
-import { 
-  Chrome, 
-  Github, 
-  Facebook 
+import {
+  Chrome,
+  Github,
+  Facebook
 } from 'lucide-vue-next'
 
 interface Props {
@@ -40,9 +40,9 @@ const emit = defineEmits<{
 }>()
 
 const providers = [
-  { id: 'google', name: 'Google', icon: Chrome },
-  { id: 'github', name: 'GitHub', icon: Github },
-  { id: 'facebook', name: 'Facebook', icon: Facebook }
+  { id: 'google', name: 'Google', icon: Chrome, iconClass: 'text-[#4285F4]' },
+  { id: 'github', name: 'GitHub', icon: Github, iconClass: 'text-white light:text-[#24292e]' },
+  { id: 'facebook', name: 'Facebook', icon: Facebook, iconClass: 'text-[#1877F2]' }
 ] as const
 
 function handleClick(provider: 'google' | 'facebook' | 'github') {
@@ -51,103 +51,3 @@ function handleClick(provider: 'google' | 'facebook' | 'github') {
   }
 }
 </script>
-
-<style scoped>
-.social-login-section {
-  margin-top: 24px;
-}
-
-.auth-divider {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  color: rgba(255, 255, 255, 0.3);
-  font-size: 13px;
-  margin-bottom: 16px;
-}
-
-html.light .auth-divider {
-  color: rgba(0, 0, 0, 0.3);
-}
-
-.auth-divider::before,
-.auth-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.3), transparent);
-}
-
-html.light .auth-divider::before,
-html.light .auth-divider::after {
-  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.3), transparent);
-}
-
-.social-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.social-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: inherit;
-}
-
-html.light .social-btn {
-  border-color: #e2e8f0;
-  background: #f8fafc;
-  color: #334155;
-}
-
-.social-btn:hover:not(:disabled) {
-  border-color: rgba(16, 185, 129, 0.4);
-  background: rgba(16, 185, 129, 0.08);
-  color: var(--text-primary, #fff);
-  transform: scale(1.02);
-}
-
-html.light .social-btn:hover:not(:disabled) {
-  border-color: var(--emerald-500);
-  background: var(--emerald-50);
-  color: #0f172a;
-}
-
-.social-btn:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
-.social-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.social-btn.google .social-icon {
-  color: #4285F4;
-}
-
-.social-btn.github .social-icon {
-  color: #24292E;
-}
-
-.social-btn.facebook .social-icon {
-  color: #1877F2;
-}
-
-.social-icon {
-  flex-shrink: 0;
-}
-</style>
