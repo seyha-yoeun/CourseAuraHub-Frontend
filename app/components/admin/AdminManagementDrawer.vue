@@ -249,10 +249,10 @@
             <div class="flex flex-col gap-2.5 rounded-[14px] border border-white/6 bg-white/2 p-4.5 light:border-slate-200 light:bg-slate-50">
               <div class="flex items-center gap-2">
                 <Sparkles :size="18" class="text-amber-400" />
-                <span class="text-sm font-bold text-slate-100 light:text-slate-900">Seed Quick Course</span>
+                <span class="text-sm font-bold text-slate-100 light:text-slate-900">Create Sample Course</span>
               </div>
               <p class="text-xs leading-relaxed text-white/45 light:text-slate-500">
-                Generates an instant trending course with mock revenue and lessons into the database.
+                Creates a realistic course record directly in the backend database.
               </p>
               <button
                 type="button"
@@ -261,17 +261,17 @@
                 @click="seedSampleCourse"
               >
                 <Plus :size="14" />
-                <span>Generate Sample Course</span>
+                <span>Create Sample Course</span>
               </button>
             </div>
 
             <div class="flex flex-col gap-2.5 rounded-[14px] border border-white/6 bg-white/2 p-4.5 light:border-slate-200 light:bg-slate-50">
               <div class="flex items-center gap-2">
                 <FileJson :size="18" class="text-blue-400" />
-                <span class="text-sm font-bold text-slate-100 light:text-slate-900">Export Database</span>
+                <span class="text-sm font-bold text-slate-100 light:text-slate-900">Export Data Snapshot</span>
               </div>
               <p class="text-xs leading-relaxed text-white/45 light:text-slate-500">
-                Download a snapshot of the current local mock database as a JSON backup file.
+                Download a JSON snapshot of the active course and student records from the backend.
               </p>
               <button
                 type="button"
@@ -279,7 +279,7 @@
                 @click="downloadDbBackup"
               >
                 <Download :size="14" />
-                <span>Export JSON</span>
+                <span>Export Data Snapshot</span>
               </button>
             </div>
           </div>
@@ -529,7 +529,7 @@ function downloadDbBackup() {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `academy-database-backup-${Date.now()}.json`
+  a.download = `academy-data-snapshot-${Date.now()}.json`
   a.click()
   URL.revokeObjectURL(url)
 }

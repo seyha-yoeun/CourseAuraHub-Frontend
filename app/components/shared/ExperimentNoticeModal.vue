@@ -57,15 +57,15 @@
               </div>
             </div>
 
-            <!-- Point 3: Safe Simulated Sandbox Data -->
+            <!-- Point 3: Live Backend API -->
             <div class="flex items-start gap-3.5 rounded-[14px] border border-white/6 bg-white/3 p-3 transition-all hover:border-violet-500/25 hover:bg-white/5 sm:px-3.5 light:border-slate-200 light:bg-slate-50 light:hover:border-violet-300 light:hover:bg-white">
               <div class="flex size-9 shrink-0 items-center justify-center rounded-[10px] border border-emerald-500/30 bg-emerald-500/15">
                 <Database :size="18" class="text-emerald-400" />
               </div>
               <div class="flex-1">
-                <h4 class="text-[13px] leading-snug font-semibold text-slate-100 light:text-slate-900">Simulated Mock Catalog &amp; Live CRUD</h4>
+                <h4 class="text-[13px] leading-snug font-semibold text-slate-100 light:text-slate-900">Live Spring Boot Backend API</h4>
                 <p class="mt-0.75 text-xs leading-relaxed text-white/50 light:text-slate-500">
-                  Authentication and account/profile settings are connected to the real backend. Courses, pricing figures, revenue charts, and student accounts remain simulated demo data for this phase.
+                  Authentication, platform settings, course catalog management, student records, and analytics are connected to and served live by the real Spring Boot REST API and PostgreSQL database.
                 </p>
               </div>
             </div>

@@ -10,6 +10,7 @@
       </div>
 
       <button
+        v-if="auth.isAdmin"
         type="button"
         class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
         @click="openCreateModal"
@@ -93,10 +94,10 @@
       <span class="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3.5 py-1.25 text-xs text-emerald-500 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-700">
         <strong>{{ courses.filter(c => c.status === 'published').length }}</strong> Published
       </span>
-      <span class="rounded-full border border-amber-500/25 bg-amber-500/10 px-3.5 py-1.25 text-xs text-amber-500 light:border-amber-200 light:bg-amber-50 light:text-amber-700">
+      <span v-if="auth.isAdmin" class="rounded-full border border-amber-500/25 bg-amber-500/10 px-3.5 py-1.25 text-xs text-amber-500 light:border-amber-200 light:bg-amber-50 light:text-amber-700">
         <strong>{{ courses.filter(c => c.status === 'draft').length }}</strong> Drafts
       </span>
-      <span class="rounded-full border border-slate-400/25 bg-slate-400/10 px-3.5 py-1.25 text-xs text-slate-400 light:border-slate-200 light:bg-slate-100 light:text-slate-600">
+      <span v-if="auth.isAdmin" class="rounded-full border border-slate-400/25 bg-slate-400/10 px-3.5 py-1.25 text-xs text-slate-400 light:border-slate-200 light:bg-slate-100 light:text-slate-600">
         <strong>{{ courses.filter(c => c.status === 'archived').length }}</strong> Archived
       </span>
     </div>
@@ -115,6 +116,7 @@
         Try adjusting your search criteria or create a brand new course to get started.
       </p>
       <button
+        v-if="auth.isAdmin"
         type="button"
         class="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
         @click="openCreateModal"
@@ -129,6 +131,7 @@
         v-for="course in courses"
         :key="course.id"
         :course="course"
+        :can-manage="auth.isAdmin"
         @edit="openEditModal"
         @delete="openDeleteConfirm"
       />
@@ -168,6 +171,7 @@ useHead({
   title: 'Course Catalog & Management'
 })
 
+const auth = useAuth()
 const { courses, loading, fetchCourses, createCourse, updateCourse, deleteCourse } = useCourses()
 const { crud, error } = useAppToast()
 
@@ -185,21 +189,33 @@ function handleDropdownToggle(name: string, open: boolean) {
   }
 }
 
-const categoryOptions = [
-  { value: 'all', label: 'All Categories' },
-  { value: 'Web Development', label: 'Web Development' },
-  { value: 'Programming', label: 'Programming' },
-  { value: 'Design', label: 'Design' },
-  { value: 'Backend', label: 'Backend' },
-  { value: 'DevOps', label: 'DevOps' }
-]
+const categoryOptions = computed(() => {
+  const categories = new Set<string>()
+  for (const c of courses.value) {
+    if (c.category) {
+      categories.add(c.category)
+    }
+  }
+  return [
+    { value: 'all', label: 'All Categories' },
+    ...Array.from(categories).sort().map(cat => ({ value: cat, label: cat }))
+  ]
+})
 
-const statusOptions = [
-  { value: 'all', label: 'All Statuses' },
-  { value: 'published', label: 'Published' },
-  { value: 'draft', label: 'Draft' },
-  { value: 'archived', label: 'Archived' }
-]
+const statusOptions = computed(() => {
+  if (!auth.isAdmin) {
+    return [
+      { value: 'all', label: 'All Statuses' },
+      { value: 'published', label: 'Published' }
+    ]
+  }
+  return [
+    { value: 'all', label: 'All Statuses' },
+    { value: 'published', label: 'Published' },
+    { value: 'draft', label: 'Draft' },
+    { value: 'archived', label: 'Archived' }
+  ]
+})
 
 const sortOptions = [
   { value: 'createdAt:desc', label: 'Newest First' },

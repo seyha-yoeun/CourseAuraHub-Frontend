@@ -22,13 +22,13 @@
     <!-- Analytics Stat Cards -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
-        label="Gross Annual Run Rate"
-        :value="kpis.totalRevenue * 1.2"
+        label="Total Gross Revenue"
+        :value="kpis.totalRevenue"
         format="currency"
-        sub="Projected based on current run rate"
+        sub="All-time platform revenue"
         :icon="TrendingUp"
         accent-color="#8b5cf6"
-        :trend="18.4"
+        :trend="kpis.revenueGrowth"
       />
       <StatCard
         label="Average Order Value"
@@ -37,15 +37,15 @@
         sub="Per transaction across all courses"
         :icon="CreditCard"
         accent-color="#3b82f6"
-        :trend="5.2"
       />
       <StatCard
-        label="Student Conversion Rate"
-        value="4.8%"
-        sub="Platform visit to paid enrollment"
+        label="Total Enrolled Students"
+        :value="kpis.totalStudents"
+        format="number"
+        sub="Cumulative learning accounts"
         :icon="Target"
         accent-color="#10b981"
-        :trend="1.2"
+        :trend="kpis.studentGrowth"
       />
       <StatCard
         label="Average Course Rating"
@@ -146,7 +146,10 @@ useHead({
 const { kpis, charts, isRefreshing, refresh } = useDashboardStats()
 
 const avgOrderValue = computed(() => {
-  if (!kpis.value.totalStudents) return 99.99
-  return kpis.value.totalRevenue / 10
+  const totalEnrollments = charts.value.monthlyEnrollments?.reduce((sum, count) => sum + count, 0) || 0
+  if (!totalEnrollments || !kpis.value.totalRevenue) {
+    return kpis.value.totalStudents ? Number((kpis.value.totalRevenue / kpis.value.totalStudents).toFixed(2)) : 0
+  }
+  return Number((kpis.value.totalRevenue / totalEnrollments).toFixed(2))
 })
 </script>
