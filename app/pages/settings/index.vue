@@ -1,17 +1,17 @@
 <template>
-  <div class="settings-page">
+  <div class="flex flex-col gap-5">
     <!-- Header -->
-    <div class="page-header">
+    <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="page-title">Platform Settings</h1>
-        <p class="page-sub">
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Platform Settings</h1>
+        <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">
           Manage academy branding, admin profile, and notification preferences.
         </p>
       </div>
 
       <button
         type="button"
-        class="save-btn"
+        class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5.5 py-2.5 text-[13px] font-semibold text-white transition-all enabled:hover:from-violet-500 enabled:hover:to-indigo-500 enabled:hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
         :disabled="saving"
         @click="saveSettings"
       >
@@ -23,96 +23,96 @@
     </div>
 
     <!-- Alert banner on success -->
-    <Transition name="fade-alert">
-      <div v-if="saveSuccess" class="success-banner">
+    <Transition v-bind="alertAnim">
+      <div v-if="saveSuccess" class="flex items-center gap-2.5 rounded-xl border border-emerald-400/30 bg-emerald-400/12 px-4.5 py-3 text-[13px] font-medium text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700">
         <CheckCircle2 :size="18" class="text-emerald-400" />
         <span>Platform settings and profile have been updated successfully!</span>
       </div>
     </Transition>
 
-    <div v-if="pending" class="shimmer skeleton-settings"></div>
+    <div v-if="pending" class="h-120 w-full animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
 
-    <div v-else class="settings-grid">
+    <div v-else class="grid grid-cols-1 gap-5 lg:grid-cols-2">
       <!-- Profile Settings -->
-      <div class="settings-card glass">
-        <div class="card-head">
+      <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
+        <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
           <User :size="20" class="text-violet-400" />
           <div>
-            <h3 class="card-title">Admin Profile</h3>
-            <p class="card-desc">Personal details displayed across the platform</p>
+            <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Admin Profile</h3>
+            <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Personal details displayed across the platform</p>
           </div>
         </div>
 
-        <div class="avatar-edit-row">
-          <img :src="form.profile.avatar" alt="Avatar" class="avatar-preview" />
-          <div class="avatar-meta">
-            <span class="avatar-label">Profile Avatar</span>
-            <span class="avatar-note">Using DiceBear animated SVGs for avatars</span>
+        <div class="mb-5 flex items-center gap-4">
+          <img :src="form.profile.avatar" alt="Avatar" class="size-13 rounded-full border-2 border-violet-500/40 bg-violet-500/15" >
+          <div class="flex flex-col">
+            <span class="text-[13px] font-semibold text-slate-100 light:text-slate-900">Profile Avatar</span>
+            <span class="mt-0.5 text-[11px] text-white/40 light:text-slate-500">Using DiceBear animated SVGs for avatars</span>
           </div>
         </div>
 
-        <div class="form-body">
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Full Name</label>
-              <input v-model="form.profile.name" type="text" class="form-input" />
+        <div class="flex flex-col gap-3.5">
+          <div class="flex flex-col gap-3 sm:flex-row">
+            <div class="flex flex-1 flex-col gap-1.5">
+              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Full Name</label>
+              <input v-model="form.profile.name" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
             </div>
-            <div class="form-group">
-              <label class="form-label">Email Address</label>
-              <input v-model="form.profile.email" type="email" class="form-input" />
+            <div class="flex flex-1 flex-col gap-1.5">
+              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Email Address</label>
+              <input v-model="form.profile.email" type="email" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Platform Role</label>
-            <input v-model="form.profile.role" type="text" class="form-input" />
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Platform Role</label>
+            <input v-model="form.profile.role" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Bio</label>
-            <textarea v-model="form.profile.bio" rows="3" class="form-textarea"></textarea>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Bio</label>
+            <textarea v-model="form.profile.bio" rows="3" class="w-full resize-y rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" />
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Website</label>
-              <input v-model="form.profile.website" type="url" class="form-input" />
+          <div class="flex flex-col gap-3 sm:flex-row">
+            <div class="flex flex-1 flex-col gap-1.5">
+              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Website</label>
+              <input v-model="form.profile.website" type="url" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
             </div>
-            <div class="form-group">
-              <label class="form-label">Twitter / X Handle</label>
-              <input v-model="form.profile.twitter" type="text" class="form-input" />
+            <div class="flex flex-1 flex-col gap-1.5">
+              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Twitter / X Handle</label>
+              <input v-model="form.profile.twitter" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
             </div>
           </div>
         </div>
       </div>
 
       <!-- Platform & Notification Settings -->
-      <div class="right-col">
+      <div class="flex flex-col gap-4">
         <!-- Platform Branding -->
-        <div class="settings-card glass">
-          <div class="card-head">
+        <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
+          <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
             <Building2 :size="20" class="text-blue-400" />
             <div>
-              <h3 class="card-title">Academy Branding</h3>
-              <p class="card-desc">General storefront details and configuration</p>
+              <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Academy Branding</h3>
+              <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">General storefront details and configuration</p>
             </div>
           </div>
 
-          <div class="form-body">
-            <div class="form-group">
-              <label class="form-label">Platform Name</label>
-              <input v-model="form.platformName" type="text" class="form-input" />
+          <div class="flex flex-col gap-3.5">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Platform Name</label>
+              <input v-model="form.platformName" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
             </div>
 
-            <div class="form-group">
-              <label class="form-label">Platform Tagline</label>
-              <input v-model="form.platformTagline" type="text" class="form-input" />
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Platform Tagline</label>
+              <input v-model="form.platformTagline" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
             </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Default Currency</label>
-                <select v-model="form.currency" class="form-select">
+            <div class="flex flex-col gap-3 sm:flex-row">
+              <div class="flex flex-1 flex-col gap-1.5">
+                <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Default Currency</label>
+                <select v-model="form.currency" class="w-full cursor-pointer rounded-[10px] border border-white/9 bg-zinc-950 px-3 py-2.25 text-[13px] text-slate-200 outline-none transition-all duration-200 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600">
                   <option value="USD">USD ($)</option>
                   <option value="EUR">EUR (€)</option>
                   <option value="GBP">GBP (£)</option>
@@ -120,9 +120,9 @@
                 </select>
               </div>
 
-              <div class="form-group">
-                <label class="form-label">Language</label>
-                <select v-model="form.defaultLanguage" class="form-select">
+              <div class="flex flex-1 flex-col gap-1.5">
+                <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Language</label>
+                <select v-model="form.defaultLanguage" class="w-full cursor-pointer rounded-[10px] border border-white/9 bg-zinc-950 px-3 py-2.25 text-[13px] text-slate-200 outline-none transition-all duration-200 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600">
                   <option value="en">English (US)</option>
                   <option value="es">Español</option>
                   <option value="fr">Français</option>
@@ -134,62 +134,62 @@
         </div>
 
         <!-- Notification Preferences -->
-        <div class="settings-card glass mt-4">
-          <div class="card-head">
+        <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
+          <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
             <Bell :size="20" class="text-emerald-400" />
             <div>
-              <h3 class="card-title">Notification Alerts</h3>
-              <p class="card-desc">Customize which events trigger admin alerts</p>
+              <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Notification Alerts</h3>
+              <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Customize which events trigger admin alerts</p>
             </div>
           </div>
 
-          <div class="toggles-list">
-            <label class="toggle-item">
+          <div class="flex flex-col gap-3.5">
+            <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/2 p-3 transition-colors hover:bg-white/4 light:border-slate-200 light:bg-slate-50 light:hover:bg-slate-100">
               <div>
-                <span class="toggle-title">New Course Enrollment</span>
-                <span class="toggle-sub">Receive instant notice when a student buys a course</span>
+                <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">New Course Enrollment</span>
+                <span class="mt-0.5 block text-[11px] text-white/40 light:text-slate-500">Receive instant notice when a student buys a course</span>
               </div>
               <input
                 v-model="form.notifications.newEnrollment"
                 type="checkbox"
-                class="toggle-checkbox"
-              />
+                class="size-4.5 shrink-0 cursor-pointer accent-violet-600"
+              >
             </label>
 
-            <label class="toggle-item">
+            <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/2 p-3 transition-colors hover:bg-white/4 light:border-slate-200 light:bg-slate-50 light:hover:bg-slate-100">
               <div>
-                <span class="toggle-title">Course Completion Alerts</span>
-                <span class="toggle-sub">Notify when a student finishes all curriculum modules</span>
+                <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">Course Completion Alerts</span>
+                <span class="mt-0.5 block text-[11px] text-white/40 light:text-slate-500">Notify when a student finishes all curriculum modules</span>
               </div>
               <input
                 v-model="form.notifications.courseCompletion"
                 type="checkbox"
-                class="toggle-checkbox"
-              />
+                class="size-4.5 shrink-0 cursor-pointer accent-violet-600"
+              >
             </label>
 
-            <label class="toggle-item">
+            <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/2 p-3 transition-colors hover:bg-white/4 light:border-slate-200 light:bg-slate-50 light:hover:bg-slate-100">
               <div>
-                <span class="toggle-title">Weekly Revenue Summary</span>
-                <span class="toggle-sub">Get an automated weekly analytics report via email</span>
+                <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">Weekly Revenue Summary</span>
+                <span class="mt-0.5 block text-[11px] text-white/40 light:text-slate-500">Get an automated weekly analytics report via email</span>
               </div>
               <input
                 v-model="form.notifications.weeklyReport"
                 type="checkbox"
-                class="toggle-checkbox"
-              />
+                class="size-4.5 shrink-0 cursor-pointer accent-violet-600"
+              >
             </label>
 
-            <label class="toggle-item">
+            <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/2 p-3 transition-colors hover:bg-white/4 light:border-slate-200 light:bg-slate-50 light:hover:bg-slate-100">
               <div>
-                <span class="toggle-title">Product News & Marketing</span>
-                <span class="toggle-sub">Receive updates on new features and course creator tips</span>
+                <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">Product News &amp; Marketing</span>
+                <span class="mt-0.5 block text-[11px] text-white/40 light:text-slate-500">Receive updates on new features and course creator tips</span>
               </div>
               <input
                 v-model="form.notifications.marketingEmails"
                 type="checkbox"
-                class="toggle-checkbox"
-              />
+                class="size-4.5 shrink-0 cursor-pointer accent-violet-600"
+              >
             </label>
           </div>
         </div>
@@ -257,6 +257,13 @@ watch(
 const saving = ref(false)
 const saveSuccess = ref(false)
 
+const alertAnim = {
+  enterActiveClass: 'transition-opacity duration-300 ease-out',
+  leaveActiveClass: 'transition-opacity duration-300 ease-out',
+  enterFromClass: 'opacity-0',
+  leaveToClass: 'opacity-0'
+}
+
 async function saveSettings() {
   saving.value = true
   saveSuccess.value = false
@@ -277,252 +284,3 @@ async function saveSettings() {
   }
 }
 </script>
-
-<style scoped>
-.settings-page {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.page-title {
-  font-size: 26px;
-  font-weight: 800;
-  color: #f8fafc;
-  letter-spacing: -0.5px;
-}
-
-.page-sub {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.45);
-  margin-top: 4px;
-}
-
-.save-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 22px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  border: 1px solid rgba(139, 92, 246, 0.4);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.save-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #8b5cf6, #6366f1);
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
-}
-
-.save-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.success-banner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 18px;
-  border-radius: 12px;
-  background: rgba(52, 211, 153, 0.12);
-  border: 1px solid rgba(52, 211, 153, 0.3);
-  color: #34d399;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.settings-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-@media (max-width: 900px) {
-  .settings-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.settings-card {
-  border-radius: 18px;
-  padding: 24px;
-}
-
-.card-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.card-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #f1f5f9;
-}
-
-.card-desc {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 2px;
-}
-
-.avatar-edit-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.avatar-preview {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 2px solid rgba(124, 58, 237, 0.4);
-  background: rgba(124, 58, 237, 0.15);
-}
-
-.avatar-meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.avatar-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #f1f5f9;
-}
-
-.avatar-note {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 2px;
-}
-
-.form-body {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.form-row {
-  display: flex;
-  gap: 12px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-}
-
-.form-label {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-  letter-spacing: 0.5px;
-}
-
-.form-input,
-.form-select,
-.form-textarea {
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  color: #f1f5f9;
-  font-size: 13px;
-  outline: none;
-  font-family: inherit;
-  transition: all 0.2s;
-}
-
-.form-select {
-  background: #11121d;
-  color: #e2e8f0;
-}
-
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-  border-color: rgba(124, 58, 237, 0.5);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.toggles-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.toggle-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.toggle-item:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.toggle-title {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #e2e8f0;
-}
-
-.toggle-sub {
-  display: block;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 2px;
-}
-
-.toggle-checkbox {
-  width: 18px;
-  height: 18px;
-  accent-color: #7c3aed;
-  cursor: pointer;
-}
-
-.skeleton-settings {
-  width: 100%;
-  height: 480px;
-  border-radius: 18px;
-}
-
-.fade-alert-enter-active,
-.fade-alert-leave-active {
-  transition: opacity 0.3s;
-}
-.fade-alert-enter-from,
-.fade-alert-leave-to {
-  opacity: 0;
-}
-</style>
