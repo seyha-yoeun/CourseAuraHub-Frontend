@@ -178,7 +178,7 @@
       </button>
 
       <!-- Notifications with Dropdown -->
-      <div ref="notifContainerRef" class="relative">
+      <div v-if="auth.isAdmin" ref="notifContainerRef" class="relative">
         <button
           type="button"
           class="relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:border-violet-500/40 hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
@@ -215,6 +215,12 @@
 
             <!-- List -->
             <div class="flex max-h-80 flex-col overflow-y-auto">
+              <div
+                v-if="notifications.length === 0"
+                class="flex flex-col items-center justify-center p-6 text-center text-xs text-white/40 light:text-slate-500"
+              >
+                <span>No recent enrollment activity</span>
+              </div>
               <div
                 v-for="notif in notifications"
                 :key="notif.id"
@@ -420,7 +426,7 @@ import {
 import AppHelpModal from '~/components/shared/AppHelpModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useAuth } from '~/composables/useAuth'
-import type { Course, Student } from '~/types'
+import type { Course, Student, Enrollment } from '~/types'
 
 defineProps<{ sidebarCollapsed: boolean }>()
 const emit = defineEmits(['toggle-sidebar', 'open-admin'])
@@ -509,45 +515,53 @@ const breadcrumbItems = computed(() => {
   ]
 })
 
-// Mock notifications state
-const notifications = ref([
-  {
-    id: 1,
-    title: 'Sarah Miller enrolled in Vue 3 Full-Stack Architecture ($89.99)',
-    time: '5 mins ago',
-    icon: CheckCircle2,
-    iconClass: 'text-emerald-400',
-    bgClass: 'bg-emerald-400/15 light:bg-emerald-50',
-    read: false
-  },
-  {
-    id: 2,
-    title: 'David Kim left a 5-star review on Advanced Pinia Patterns',
-    time: '42 mins ago',
-    icon: Star,
-    iconClass: 'text-amber-400',
-    bgClass: 'bg-amber-400/15 light:bg-amber-50',
-    read: false
-  },
-  {
-    id: 3,
-    title: 'Revenue Milestone: Monthly course sales reached $12,500 target!',
-    time: '2 hours ago',
-    icon: TrendingUp,
-    iconClass: 'text-violet-400',
-    bgClass: 'bg-violet-500/15 light:bg-violet-50',
-    read: false
-  },
-  {
-    id: 4,
-    title: 'Catalog updated: New course drafted in Web Development',
-    time: '1 day ago',
-    icon: RefreshCw,
-    iconClass: 'text-blue-400',
-    bgClass: 'bg-blue-400/15 light:bg-blue-50',
-    read: true
+interface HeaderNotification {
+  id: number
+  title: string
+  time: string
+  icon: any
+  iconClass: string
+  bgClass: string
+  read: boolean
+}
+
+// Live backend notifications
+const notifications = ref<HeaderNotification[]>([])
+
+function formatEnrollmentDate(dateStr?: string) {
+  if (!dateStr) return 'Recently'
+  try {
+    const d = new Date(dateStr)
+    if (isNaN(d.getTime())) return dateStr
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  } catch {
+    return dateStr
   }
-])
+}
+
+async function loadNotifications() {
+  if (!auth.isAdmin) {
+    notifications.value = []
+    return
+  }
+
+  try {
+    const enrollments = await $fetch<Enrollment[]>('/api/enrollments?limit=8').catch(() => [])
+    if (Array.isArray(enrollments)) {
+      notifications.value = enrollments.map(e => ({
+        id: e.id,
+        title: `${e.studentName || 'Learner'} enrolled in ${e.courseTitle || 'Course'} ($${Number(e.amount || 0).toFixed(2)})`,
+        time: formatEnrollmentDate(e.enrolledAt),
+        icon: CheckCircle2,
+        iconClass: 'text-emerald-400',
+        bgClass: 'bg-emerald-400/15 light:bg-emerald-50',
+        read: false
+      }))
+    }
+  } catch (error) {
+    console.error('Unable to load notifications:', error)
+  }
+}
 
 const unreadNotifsCount = computed(() => notifications.value.filter(n => !n.read).length)
 
@@ -613,10 +627,12 @@ async function loadSearchData() {
 
 onMounted(() => {
   loadSearchData()
+  loadNotifications()
 })
 
 watch(() => auth.isAdmin, () => {
   loadSearchData()
+  loadNotifications()
 })
 
 const quickPages = [

@@ -1,33 +1,26 @@
-import { readDb, writeDb } from '../../utils/db'
+import type { Student } from '~/types'
+
+interface StudentCreateBody {
+  name?: string
+  email?: string
+  avatar?: string
+  country?: string
+  status?: Student['status']
+}
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
-  if (!body.name || !body.email) {
-    throw createError({ statusCode: 400, statusMessage: 'Name and email are required' })
-  }
+  const body = await readBody<StudentCreateBody>(event)
 
-  const db = await readDb()
-  const avatarSeed = encodeURIComponent(body.name.trim().replace(/\s+/g, ''))
-  const newStudent = {
-    id: Date.now(),
-    name: body.name.trim(),
-    email: body.email.trim(),
-    avatar: body.avatar || `https://api.dicebear.com/9.x/avataaars/svg?seed=${avatarSeed}&backgroundColor=b6e3f4`,
-    enrolledCourses: Array.isArray(body.enrolledCourses) ? body.enrolledCourses : [],
-    totalSpent: Number(body.totalSpent) || 0,
-    joinedAt: new Date().toISOString().split('T')[0],
-    lastActive: new Date().toISOString().split('T')[0],
-    status: body.status || 'active',
-    completedCourses: [],
-    country: body.country || 'Global',
-  }
-
-  if (!Array.isArray(db.students)) {
-    db.students = []
-  }
-
-  db.students.unshift(newStudent)
-  await writeDb(db)
-
-  return newStudent
+  return await backendRequest<Student>(event, '/students', {
+    method: 'POST',
+    body: {
+      name: body?.name,
+      email: body?.email,
+      avatar: body?.avatar,
+      country: body?.country,
+      status: body?.status,
+    },
+    csrf: true,
+    fallbackMessage: 'Unable to create student',
+  })
 })

@@ -22,7 +22,7 @@
         <span>All Courses</span>
       </NuxtLink>
 
-      <div class="flex items-center gap-2.5">
+      <div v-if="auth.isAdmin" class="flex items-center gap-2.5">
         <button
           type="button"
           class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-4 py-2 text-xs font-semibold text-violet-300 transition-all hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
@@ -67,7 +67,7 @@
         <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/8 pt-4.5 light:border-slate-200">
           <div class="flex items-center gap-2.5">
             <img
-              src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4"
+              :src="`https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(course.instructor || 'Instructor')}&backgroundColor=b6e3f4`"
               alt="Instructor"
               class="size-9 rounded-full border-2 border-violet-500/40"
             >
@@ -269,6 +269,7 @@ import CourseFormModal from '~/components/courses/CourseFormModal.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import { useCourses } from '~/composables/useCourses'
 
+const auth = useAuth()
 const route = useRoute()
 const router = useRouter()
 const slug = computed(() => String(route.params.slug))
@@ -277,7 +278,8 @@ const { updateCourse, deleteCourse } = useCourses()
 
 const { data: course, pending, error, refresh } = await useAsyncData<Course>(
   `course-detail-${slug.value}`,
-  () => $fetch<Course>(`/api/courses/${slug.value}`)
+  () => $fetch<Course>(`/api/courses/${slug.value}`),
+  { server: false }
 )
 
 useHead({

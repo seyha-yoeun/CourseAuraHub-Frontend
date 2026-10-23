@@ -1,24 +1,32 @@
-import { readDb, writeDb } from '../../utils/db'
+import type { Student } from '~/types'
+
+interface StudentUpdateBody {
+  name?: string
+  email?: string
+  avatar?: string
+  country?: string
+  status?: Student['status']
+}
 
 export default defineEventHandler(async (event) => {
-  const id = Number(getRouterParam(event, 'id'))
-  const body = await readBody(event)
-  const db = await readDb()
+  const id = getRouterParam(event, 'id')
 
-  const idx = (db.students as Record<string, unknown>[]).findIndex(s => s.id === id)
-  if (idx === -1) {
-    throw createError({ statusCode: 404, statusMessage: 'Student not found' })
+  if (!id) {
+    throw createError({ statusCode: 400, statusMessage: 'Student id is required' })
   }
 
-  const existing = db.students[idx]
-  const updated = {
-    ...existing,
-    ...body,
-    lastActive: new Date().toISOString().split('T')[0],
-  }
+  const body = await readBody<StudentUpdateBody>(event)
 
-  db.students[idx] = updated
-  await writeDb(db)
-
-  return updated
+  return await backendRequest<Student>(event, `/students/${encodeURIComponent(id)}`, {
+    method: 'PUT',
+    body: {
+      name: body?.name,
+      email: body?.email,
+      avatar: body?.avatar,
+      country: body?.country,
+      status: body?.status,
+    },
+    csrf: true,
+    fallbackMessage: 'Unable to update student',
+  })
 })
