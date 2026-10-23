@@ -1,6 +1,7 @@
-import { readDb } from '../utils/db'
+import type { PlatformSettingsResponse } from '../utils/apiClient'
 
-export default defineEventHandler(async () => {
-  const db = await readDb()
-  return db.settings || {}
+export default defineEventHandler(async (event) => {
+  return await backendRequest<PlatformSettingsResponse>(event, '/settings', {
+    fallbackMessage: 'Unable to load platform settings',
+  })
 })

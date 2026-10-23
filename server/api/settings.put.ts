@@ -1,12 +1,12 @@
-import { readDb, writeDb } from '../utils/db'
+import type { PlatformSettingsResponse } from '../utils/apiClient'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const db = await readDb()
-  db.settings = {
-    ...db.settings,
-    ...body,
-  }
-  await writeDb(db)
-  return db.settings
+
+  return await backendRequest<PlatformSettingsResponse>(event, '/settings', {
+    method: 'PUT',
+    body,
+    csrf: true,
+    fallbackMessage: 'Unable to save platform settings',
+  })
 })

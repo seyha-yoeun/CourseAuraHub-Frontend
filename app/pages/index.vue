@@ -196,6 +196,8 @@ import SalesChart from "~/components/dashboard/SalesChart.vue";
 import RecentEnrollmentsTable from "~/components/dashboard/RecentEnrollmentsTable.vue";
 import { useDashboardStats } from "~/composables/useDashboardStats";
 
+definePageMeta({ requiresAdmin: true })
+
 useHead({
   title: "Dashboard Overview",
 });

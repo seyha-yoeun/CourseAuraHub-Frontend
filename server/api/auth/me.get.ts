@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+import type { BackendUser } from '../../utils/apiClient'
+
+export default defineEventHandler(async (event) => {
+  return await backendRequest<BackendUser>(event, '/auth/me', {
+    fallbackMessage: 'Unable to load your account',
+  })
+})
+=======
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const apiBase = config.public.apiBase || 'http://localhost:8080/api/v1'
@@ -54,3 +63,4 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: status, statusMessage: 'Failed to get user' })
   }
 })
+>>>>>>> 076405e19b4b47918fed9943946c790916c61e2b

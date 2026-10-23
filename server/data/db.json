@@ -165,61 +165,6 @@
       ]
     },
     {
-      "id": 4,
-      "slug": "tailwind-ui-design-system",
-      "title": "Tailwind CSS UI Design Systems",
-      "description": "Build stunning, scalable design systems with Tailwind CSS. Master component architecture, dark mode, custom plugins, animations, and responsive design at enterprise scale.",
-      "instructor": "Sofia Park",
-      "price": 99.99,
-      "originalPrice": 159.99,
-      "status": "draft",
-      "category": "Design",
-      "level": "Intermediate",
-      "thumbnail": "https://images.unsplash.com/photo-1561736778-92e52a7769ef?w=800&h=450&fit=crop",
-      "rating": 4.9,
-      "totalStudents": 2104,
-      "totalLessons": 68,
-      "totalHours": 17,
-      "revenue": 210379.96,
-      "completionRate": 85,
-      "tags": [
-        "Tailwind CSS",
-        "UI Design",
-        "CSS",
-        "Design System"
-      ],
-      "createdAt": "2024-07-01",
-      "updatedAt": "2026-10-06",
-      "monthlyEnrollments": [
-        120,
-        155,
-        180,
-        210,
-        240,
-        270,
-        290,
-        310,
-        300,
-        290,
-        280,
-        270
-      ],
-      "monthlyRevenue": [
-        11999,
-        15499,
-        17999,
-        20999,
-        23999,
-        26999,
-        28999,
-        30999,
-        29999,
-        28999,
-        27999,
-        26999
-      ]
-    },
-    {
       "id": 6,
       "slug": "docker-kubernetes-devops",
       "title": "Docker & Kubernetes for Web Developers",
@@ -530,26 +475,5 @@
       "enrolledAt": "2026-09-28",
       "amount": 129.99
     }
-  ],
-  "settings": {
-    "platformName": "CourseAuraHub Academy",
-    "platformTagline": "Master modern web development",
-    "currency": "USD",
-    "defaultLanguage": "en",
-    "notifications": {
-      "newEnrollment": true,
-      "courseCompletion": true,
-      "weeklyReport": true,
-      "marketingEmails": false
-    },
-    "profile": {
-      "name": "Alex Chen",
-      "email": "seyha.aura@courseaurahub.io",
-      "role": "Platform Admin",
-      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4",
-      "bio": "Full-stack developer and course creator with 8+ years of experience in Vue and Nuxt ecosystems.",
-      "website": "https://alexchen.dev",
-      "twitter": "@alexchendev"
-    }
-  }
+  ]
 }

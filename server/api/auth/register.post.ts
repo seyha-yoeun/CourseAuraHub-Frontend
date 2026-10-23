@@ -1,3 +1,28 @@
+<<<<<<< HEAD
+import type { BackendAuthData } from '../../utils/apiClient'
+
+export default defineEventHandler(async (event) => {
+  const body = await readBody<{
+    firstName: string
+    lastName: string
+    email: string
+    password: string
+  }>(event)
+
+  const data = await backendRequest<BackendAuthData>(event, '/auth/register', {
+    method: 'POST',
+    body,
+    auth: false,
+    retryOn401: false,
+    fallbackMessage: 'Registration failed',
+  })
+
+  setSessionCookies(event, data, false)
+  await ensureCsrfToken(event).catch(() => null)
+
+  return toAuthUser(data)
+})
+=======
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const config = useRuntimeConfig()
@@ -51,3 +76,4 @@ function setAuthCookies(event: ReturnType<typeof defineEventHandler>, response: 
     })
   }
 }
+>>>>>>> 076405e19b4b47918fed9943946c790916c61e2b
