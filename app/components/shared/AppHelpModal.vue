@@ -1,22 +1,22 @@
 <template>
   <Teleport to="body">
-    <Transition name="modal-fade">
-      <div v-if="isOpen" class="modal-overlay" @click.self="$emit('close')">
-        <div class="help-dialog glass" role="dialog" aria-modal="true" aria-labelledby="help-title">
+    <Transition v-bind="modalFade">
+      <div v-if="isOpen" class="fixed inset-0 z-9999 flex items-center justify-center bg-[#03040a]/82 p-4 backdrop-blur-xl sm:p-6" @click.self="$emit('close')">
+        <div class="flex max-h-[88dvh] w-full max-w-162.5 flex-col overflow-hidden rounded-[22px] border border-violet-500/30 bg-[#0f101b] shadow-[0_25px_60px_-10px_rgba(0,0,0,0.9),0_0_40px_rgba(124,58,237,0.18)] light:border-violet-500/25 light:bg-white light:shadow-[0_25px_60px_-10px_rgba(0,0,0,0.15),0_0_35px_rgba(124,58,237,0.12)]" role="dialog" aria-modal="true" aria-labelledby="help-title">
           <!-- Top bar -->
-          <div class="help-top">
-            <div class="help-header-title">
-              <div class="icon-avatar">
+          <div class="flex items-center justify-between gap-3 border-b border-white/8 p-4 sm:px-6 sm:py-5 light:border-slate-200">
+            <div class="flex min-w-0 items-center gap-3">
+              <div class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-violet-500/35 bg-violet-500/16 light:border-violet-200 light:bg-violet-50">
                 <HelpCircle :size="20" class="text-violet-400" />
               </div>
-              <div>
-                <h2 id="help-title" class="dialog-title">CourseAuraHub Academy Help & Guide</h2>
-                <p class="dialog-subtitle">Platform overview, system features, and productivity shortcuts</p>
+              <div class="min-w-0">
+                <h2 id="help-title" class="truncate text-base font-bold text-slate-50 sm:text-[17px] light:text-slate-900">CourseAuraHub Academy Help &amp; Guide</h2>
+                <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">Platform overview, system features, and productivity shortcuts</p>
               </div>
             </div>
             <button
               type="button"
-              class="close-btn"
+              class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900"
               aria-label="Close help modal"
               @click="$emit('close')"
             >
@@ -25,118 +25,118 @@
           </div>
 
           <!-- Body content with tabs/sections -->
-          <div class="help-body">
+          <div class="flex flex-1 flex-col gap-5 overflow-y-auto p-4 sm:p-6">
             <!-- App Architecture & Overview -->
-            <div class="help-section">
-              <h3 class="section-title">
+            <div>
+              <h3 class="mb-2 flex items-center gap-2 text-[13px] font-bold tracking-wider text-slate-200 uppercase light:text-slate-800">
                 <Sparkles :size="15" class="text-violet-400" />
                 <span>About CourseAuraHub Academy</span>
               </h3>
-              <p class="section-desc">
+              <p class="text-[13px] leading-relaxed text-white/60 light:text-slate-600">
                 CourseAuraHub is a production-grade online course sales and learning management console. It enables course creators, educators, and administrators to orchestrate course catalogs, monitor learner progress, analyze sales trends, and execute live CRUD operations in real time.
               </p>
             </div>
 
             <!-- Features Grid -->
-            <div class="features-grid">
-              <div class="feature-item">
-                <div class="feature-icon bg-violet">
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div class="flex items-start gap-3 rounded-xl border border-white/6 bg-white/3 p-3 light:border-slate-200 light:bg-slate-50">
+                <div class="flex size-8 shrink-0 items-center justify-center rounded-lg border border-violet-500/30 bg-violet-500/15">
                   <BookOpen :size="16" class="text-violet-400" />
                 </div>
                 <div>
-                  <h4 class="feature-name">Course Catalog & CRUD</h4>
-                  <p class="feature-text">Create, edit, archive, and publish courses with pricing, difficulty levels, and tags.</p>
+                  <h4 class="text-[13px] font-semibold text-slate-100 light:text-slate-900">Course Catalog &amp; CRUD</h4>
+                  <p class="mt-0.5 text-[11px] leading-snug text-white/45 light:text-slate-500">Create, edit, archive, and publish courses with pricing, difficulty levels, and tags.</p>
                 </div>
               </div>
 
-              <div class="feature-item">
-                <div class="feature-icon bg-blue">
+              <div class="flex items-start gap-3 rounded-xl border border-white/6 bg-white/3 p-3 light:border-slate-200 light:bg-slate-50">
+                <div class="flex size-8 shrink-0 items-center justify-center rounded-lg border border-blue-500/30 bg-blue-500/15">
                   <GraduationCap :size="16" class="text-blue-400" />
                 </div>
                 <div>
-                  <h4 class="feature-name">Student Performance</h4>
-                  <p class="feature-text">Track learner completion rates, lifetime spend, enrollment timestamps, and active status.</p>
+                  <h4 class="text-[13px] font-semibold text-slate-100 light:text-slate-900">Student Performance</h4>
+                  <p class="mt-0.5 text-[11px] leading-snug text-white/45 light:text-slate-500">Track learner completion rates, lifetime spend, enrollment timestamps, and active status.</p>
                 </div>
               </div>
 
-              <div class="feature-item">
-                <div class="feature-icon bg-emerald">
+              <div class="flex items-start gap-3 rounded-xl border border-white/6 bg-white/3 p-3 light:border-slate-200 light:bg-slate-50">
+                <div class="flex size-8 shrink-0 items-center justify-center rounded-lg border border-emerald-500/30 bg-emerald-500/15">
                   <BarChart3 :size="16" class="text-emerald-400" />
                 </div>
                 <div>
-                  <h4 class="feature-name">Live Sales Analytics</h4>
-                  <p class="feature-text">Analyze monthly recurring revenue, course performance charts, and distribution metrics.</p>
+                  <h4 class="text-[13px] font-semibold text-slate-100 light:text-slate-900">Live Sales Analytics</h4>
+                  <p class="mt-0.5 text-[11px] leading-snug text-white/45 light:text-slate-500">Analyze monthly recurring revenue, course performance charts, and distribution metrics.</p>
                 </div>
               </div>
 
-              <div class="feature-item">
-                <div class="feature-icon bg-purple">
+              <div class="flex items-start gap-3 rounded-xl border border-white/6 bg-white/3 p-3 light:border-slate-200 light:bg-slate-50">
+                <div class="flex size-8 shrink-0 items-center justify-center rounded-lg border border-purple-500/30 bg-purple-500/15">
                   <ShieldAlert :size="16" class="text-violet-400" />
                 </div>
                 <div>
-                  <h4 class="feature-name">Admin Quick Console</h4>
-                  <p class="feature-text">Slide-out drawer with one-click course status toggles, student creation, and seed data tools.</p>
+                  <h4 class="text-[13px] font-semibold text-slate-100 light:text-slate-900">Admin Quick Console</h4>
+                  <p class="mt-0.5 text-[11px] leading-snug text-white/45 light:text-slate-500">Slide-out drawer with one-click course status toggles, student creation, and seed data tools.</p>
                 </div>
               </div>
             </div>
 
             <!-- Keyboard Shortcuts Table -->
-            <div class="help-section">
-              <h3 class="section-title">
+            <div>
+              <h3 class="mb-2 flex items-center gap-2 text-[13px] font-bold tracking-wider text-slate-200 uppercase light:text-slate-800">
                 <Command :size="15" class="text-violet-400" />
                 <span>Productivity Keyboard Shortcuts</span>
               </h3>
-              <div class="shortcuts-table">
-                <div class="shortcut-row">
-                  <span class="shortcut-action">Focus Global Search</span>
-                  <div class="keys-wrap">
-                    <kbd class="key-badge">Ctrl</kbd>
+              <div class="overflow-hidden rounded-xl border border-white/6 bg-white/2 light:border-slate-200 light:bg-slate-50">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/4 px-3.5 py-2.5 text-xs last:border-b-0 light:border-slate-200">
+                  <span class="font-medium text-white/70 light:text-slate-700">Focus Global Search</span>
+                  <div class="flex items-center gap-1.5">
+                    <kbd class="rounded-[5px] border border-white/15 bg-white/8 px-1.75 py-0.5 font-mono text-[11px] text-violet-300 shadow-sm light:border-slate-300 light:bg-white light:text-violet-700">Ctrl</kbd>
                     <span>+</span>
-                    <kbd class="key-badge">K</kbd>
-                    <span class="text-muted text-xs">or</span>
-                    <kbd class="key-badge">/</kbd>
+                    <kbd class="rounded-[5px] border border-white/15 bg-white/8 px-1.75 py-0.5 font-mono text-[11px] text-violet-300 shadow-sm light:border-slate-300 light:bg-white light:text-violet-700">K</kbd>
+                    <span class="text-xs text-white/40 light:text-slate-500">or</span>
+                    <kbd class="rounded-[5px] border border-white/15 bg-white/8 px-1.75 py-0.5 font-mono text-[11px] text-violet-300 shadow-sm light:border-slate-300 light:bg-white light:text-violet-700">/</kbd>
                   </div>
                 </div>
-                <div class="shortcut-row">
-                  <span class="shortcut-action">Open / Close Help Guide</span>
-                  <div class="keys-wrap">
-                    <kbd class="key-badge">Ctrl</kbd>
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/4 px-3.5 py-2.5 text-xs last:border-b-0 light:border-slate-200">
+                  <span class="font-medium text-white/70 light:text-slate-700">Open / Close Help Guide</span>
+                  <div class="flex items-center gap-1.5">
+                    <kbd class="rounded-[5px] border border-white/15 bg-white/8 px-1.75 py-0.5 font-mono text-[11px] text-violet-300 shadow-sm light:border-slate-300 light:bg-white light:text-violet-700">Ctrl</kbd>
                     <span>+</span>
-                    <kbd class="key-badge">H</kbd>
+                    <kbd class="rounded-[5px] border border-white/15 bg-white/8 px-1.75 py-0.5 font-mono text-[11px] text-violet-300 shadow-sm light:border-slate-300 light:bg-white light:text-violet-700">H</kbd>
                   </div>
                 </div>
-                <div class="shortcut-row">
-                  <span class="shortcut-action">Close Active Dropdown or Modal</span>
-                  <div class="keys-wrap">
-                    <kbd class="key-badge">Esc</kbd>
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/4 px-3.5 py-2.5 text-xs last:border-b-0 light:border-slate-200">
+                  <span class="font-medium text-white/70 light:text-slate-700">Close Active Dropdown or Modal</span>
+                  <div class="flex items-center gap-1.5">
+                    <kbd class="rounded-[5px] border border-white/15 bg-white/8 px-1.75 py-0.5 font-mono text-[11px] text-violet-300 shadow-sm light:border-slate-300 light:bg-white light:text-violet-700">Esc</kbd>
                   </div>
                 </div>
-                <div class="shortcut-row">
-                  <span class="shortcut-action">Toggle Theme (Dark / Light)</span>
-                  <div class="keys-wrap">
-                    <kbd class="key-badge">Header Toggle Button</kbd>
+                <div class="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2.5 text-xs light:border-slate-200">
+                  <span class="font-medium text-white/70 light:text-slate-700">Toggle Theme (Dark / Light)</span>
+                  <div class="flex items-center gap-1.5">
+                    <kbd class="rounded-[5px] border border-white/15 bg-white/8 px-1.75 py-0.5 font-mono text-[11px] text-violet-300 shadow-sm light:border-slate-300 light:bg-white light:text-violet-700">Header Toggle Button</kbd>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Tech Stack Badges -->
-            <div class="tech-stack-row">
-              <span class="tech-pill">Nuxt 4.5</span>
-              <span class="tech-pill">Vue 3.5</span>
-              <span class="tech-pill">Nuxt UI 4.11</span>
-              <span class="tech-pill">Pinia State</span>
-              <span class="tech-pill">Chart.js</span>
-              <span class="tech-pill">DiceBear Avatars</span>
+            <div class="flex flex-wrap items-center gap-2 pt-2">
+              <span class="rounded-full border border-violet-500/25 bg-violet-500/12 px-2.25 py-0.75 text-[11px] font-medium text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">Nuxt 4.5</span>
+              <span class="rounded-full border border-violet-500/25 bg-violet-500/12 px-2.25 py-0.75 text-[11px] font-medium text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">Vue 3.5</span>
+              <span class="rounded-full border border-violet-500/25 bg-violet-500/12 px-2.25 py-0.75 text-[11px] font-medium text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">Nuxt UI 4.11</span>
+              <span class="rounded-full border border-violet-500/25 bg-violet-500/12 px-2.25 py-0.75 text-[11px] font-medium text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">Pinia State</span>
+              <span class="rounded-full border border-violet-500/25 bg-violet-500/12 px-2.25 py-0.75 text-[11px] font-medium text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">Chart.js</span>
+              <span class="rounded-full border border-violet-500/25 bg-violet-500/12 px-2.25 py-0.75 text-[11px] font-medium text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">DiceBear Avatars</span>
             </div>
           </div>
 
           <!-- Bottom Footer -->
-          <div class="help-footer">
-            <span class="version-tag">Version 2.4.0 (Experimental Showcase)</span>
+          <div class="flex flex-wrap items-center justify-between gap-3 border-t border-white/8 bg-black/20 px-4 py-4 sm:px-6 light:border-slate-200 light:bg-slate-50">
+            <span class="text-[11px] text-white/40 light:text-slate-400">Version 2.4.0 (Experimental Showcase)</span>
             <button
               type="button"
-              class="got-it-btn"
+              class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-[13px] font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_15px_rgba(124,58,237,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
               @click="$emit('close')"
             >
               <Check :size="15" />
@@ -169,356 +169,11 @@ defineProps<{
 defineEmits<{
   (e: 'close'): void
 }>()
+
+const modalFade = {
+  enterActiveClass: 'transition-opacity duration-250 ease-out',
+  leaveActiveClass: 'transition-opacity duration-250 ease-out',
+  enterFromClass: 'opacity-0',
+  leaveToClass: 'opacity-0'
+}
 </script>
-
-<style scoped>
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(3, 4, 10, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  z-index: 9999;
-}
-
-.help-dialog {
-  width: 100%;
-  max-width: 650px;
-  max-height: 88vh;
-  display: flex;
-  flex-direction: column;
-  background: #0f101b;
-  border: 1px solid rgba(139, 92, 246, 0.3);
-  border-radius: 22px;
-  overflow: hidden;
-  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.9), 0 0 40px rgba(124, 58, 237, 0.18);
-}
-
-html.light .help-dialog {
-  background: #ffffff;
-  border-color: rgba(124, 58, 237, 0.25);
-  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.15), 0 0 35px rgba(124, 58, 237, 0.12);
-}
-
-.help-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-html.light .help-top {
-  border-bottom-color: rgba(0, 0, 0, 0.08);
-}
-
-.help-header-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.icon-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgba(124, 58, 237, 0.16);
-  border: 1px solid rgba(124, 58, 237, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.dialog-title {
-  font-size: 17px;
-  font-weight: 700;
-  color: #f8fafc;
-}
-
-html.light .dialog-title {
-  color: #0f172a;
-}
-
-.dialog-subtitle {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.45);
-  margin-top: 2px;
-}
-
-html.light .dialog-subtitle {
-  color: #64748b;
-}
-
-.close-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-html.light .close-btn {
-  background: #f1f5f9;
-  border-color: #e2e8f0;
-  color: #64748b;
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-}
-
-html.light .close-btn:hover {
-  background: #e2e8f0;
-  color: #0f172a;
-}
-
-.help-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 22px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: #e2e8f0;
-  margin-bottom: 8px;
-}
-
-html.light .section-title {
-  color: #1e293b;
-}
-
-.section-desc {
-  font-size: 13px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-html.light .section-desc {
-  color: #475569;
-}
-
-.features-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-@media (max-width: 600px) {
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.feature-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-html.light .feature-item {
-  background: #f8fafc;
-  border-color: #e2e8f0;
-}
-
-.feature-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.bg-violet { background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(124, 58, 237, 0.3); }
-.bg-blue { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); }
-.bg-emerald { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); }
-.bg-purple { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); }
-
-.feature-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: #f1f5f9;
-}
-
-html.light .feature-name {
-  color: #0f172a;
-}
-
-.feature-text {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.45);
-  margin-top: 2px;
-  line-height: 1.4;
-}
-
-html.light .feature-text {
-  color: #64748b;
-}
-
-.shortcuts-table {
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  overflow: hidden;
-}
-
-html.light .shortcuts-table {
-  background: #f8fafc;
-  border-color: #e2e8f0;
-}
-
-.shortcut-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  font-size: 12px;
-}
-
-html.light .shortcut-row {
-  border-bottom-color: #e2e8f0;
-}
-
-.shortcut-row:last-child {
-  border-bottom: none;
-}
-
-.shortcut-action {
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 500;
-}
-
-html.light .shortcut-action {
-  color: #334155;
-}
-
-.keys-wrap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.key-badge {
-  padding: 2px 7px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 5px;
-  font-size: 11px;
-  font-family: monospace;
-  color: #c4b5fd;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-html.light .key-badge {
-  background: #ffffff;
-  border-color: #cbd5e1;
-  color: #7c3aed;
-}
-
-.tech-stack-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  padding-top: 8px;
-}
-
-.tech-pill {
-  font-size: 11px;
-  font-weight: 500;
-  color: #a78bfa;
-  background: rgba(124, 58, 237, 0.12);
-  border: 1px solid rgba(124, 58, 237, 0.25);
-  padding: 3px 9px;
-  border-radius: 99px;
-}
-
-html.light .tech-pill {
-  color: #6d28d9;
-  background: #ede9fe;
-  border-color: #ddd6fe;
-}
-
-.help-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(0, 0, 0, 0.2);
-}
-
-html.light .help-footer {
-  background: #f8fafc;
-  border-top-color: #e2e8f0;
-}
-
-.version-tag {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-html.light .version-tag {
-  color: #94a3b8;
-}
-
-.got-it-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  border: 1px solid rgba(139, 92, 246, 0.4);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.got-it-btn:hover {
-  background: linear-gradient(135deg, #8b5cf6, #6366f1);
-  box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
-}
-
-/* Modal Transition */
-.modal-fade-enter-active,
-.modal-fade-leave-active {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.modal-fade-enter-from,
-.modal-fade-leave-to {
-  opacity: 0;
-  transform: scale(0.96);
-}
-</style>

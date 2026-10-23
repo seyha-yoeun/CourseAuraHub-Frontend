@@ -1,36 +1,36 @@
 <template>
   <Teleport to="body">
     <!-- Backdrop -->
-    <Transition name="drawer-fade">
+    <Transition v-bind="drawerFade">
       <div
         v-if="isOpen"
-        class="admin-backdrop"
+        class="fixed inset-0 z-90 bg-black/70 backdrop-blur-md"
         @click="$emit('close')"
-      ></div>
+      />
     </Transition>
 
     <!-- Side Panel -->
-    <Transition name="drawer-slide">
+    <Transition v-bind="drawerSlide">
       <aside
         v-if="isOpen"
-        class="admin-drawer glass"
+        class="fixed inset-y-0 right-0 z-100 flex w-120 max-w-[90vw] flex-col overflow-hidden border-l border-violet-500/30 bg-[#0d0e18] shadow-[-15px_0_50px_rgba(0,0,0,0.8),-5px_0_25px_rgba(124,58,237,0.15)] light:border-violet-500/25 light:bg-white light:shadow-[-15px_0_50px_rgba(0,0,0,0.15),-5px_0_25px_rgba(124,58,237,0.1)]"
         role="dialog"
         aria-label="Admin Management Panel"
       >
         <!-- Drawer Header -->
-        <div class="drawer-header">
-          <div class="header-title-wrap">
-            <div class="admin-badge-icon">
+        <div class="flex items-center justify-between border-b border-white/8 bg-[#0a0a14]/50 p-4 sm:px-6 sm:py-5 light:border-slate-200 light:bg-slate-50">
+          <div class="flex items-center gap-3">
+            <div class="flex size-9.5 shrink-0 items-center justify-center rounded-[10px] border border-violet-500/30 bg-violet-500/15">
               <ShieldAlert :size="20" class="text-violet-400" />
             </div>
             <div>
-              <h2 class="drawer-title">Admin Management</h2>
-              <p class="drawer-sub">Quick CRUD operations & live data control</p>
+              <h2 class="text-base font-bold text-slate-50 light:text-slate-900">Admin Management</h2>
+              <p class="text-[11px] text-white/40 light:text-slate-500">Quick CRUD operations &amp; live data control</p>
             </div>
           </div>
           <button
             type="button"
-            class="close-btn"
+            class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900"
             aria-label="Close admin drawer"
             @click="$emit('close')"
           >
@@ -39,50 +39,56 @@
         </div>
 
         <!-- Navigation Tabs -->
-        <div class="drawer-tabs">
+        <div class="flex gap-1.5 border-b border-white/6 bg-white/2 px-3 py-2.5 sm:px-4 light:border-slate-200 light:bg-slate-50">
           <button
             type="button"
-            class="drawer-tab"
-            :class="{ active: activeTab === 'courses' }"
+            class="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border px-2 py-2 text-[11px] font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 sm:px-3 sm:text-xs"
+            :class="activeTab === 'courses'
+              ? 'border-violet-500/35 bg-violet-500/15 text-violet-300 light:border-violet-200 light:bg-violet-100 light:text-violet-700'
+              : 'border-transparent text-white/50 hover:bg-white/4 hover:text-white/80 light:text-slate-500 light:hover:bg-slate-100 light:hover:text-slate-800'"
             @click="activeTab = 'courses'"
           >
-            <BookOpen :size="15" />
-            <span>Courses ({{ courses.length }})</span>
+            <BookOpen :size="15" class="hidden shrink-0 sm:block" />
+            <span>Courses <span class="hidden sm:inline">({{ courses.length }})</span></span>
           </button>
           <button
             type="button"
-            class="drawer-tab"
-            :class="{ active: activeTab === 'students' }"
+            class="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border px-2 py-2 text-[11px] font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 sm:px-3 sm:text-xs"
+            :class="activeTab === 'students'
+              ? 'border-violet-500/35 bg-violet-500/15 text-violet-300 light:border-violet-200 light:bg-violet-100 light:text-violet-700'
+              : 'border-transparent text-white/50 hover:bg-white/4 hover:text-white/80 light:text-slate-500 light:hover:bg-slate-100 light:hover:text-slate-800'"
             @click="activeTab = 'students'"
           >
-            <Users :size="15" />
-            <span>Students ({{ students.length }})</span>
+            <Users :size="15" class="hidden shrink-0 sm:block" />
+            <span>Students <span class="hidden sm:inline">({{ students.length }})</span></span>
           </button>
           <button
             type="button"
-            class="drawer-tab"
-            :class="{ active: activeTab === 'tools' }"
+            class="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border px-2 py-2 text-[11px] font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 sm:px-3 sm:text-xs"
+            :class="activeTab === 'tools'
+              ? 'border-violet-500/35 bg-violet-500/15 text-violet-300 light:border-violet-200 light:bg-violet-100 light:text-violet-700'
+              : 'border-transparent text-white/50 hover:bg-white/4 hover:text-white/80 light:text-slate-500 light:hover:bg-slate-100 light:hover:text-slate-800'"
             @click="activeTab = 'tools'"
           >
-            <Sliders :size="15" />
+            <Sliders :size="15" class="hidden shrink-0 sm:block" />
             <span>Quick Ops</span>
           </button>
         </div>
 
         <!-- Drawer Content -->
-        <div class="drawer-body">
+        <div class="flex-1 overflow-y-auto p-4 sm:p-5">
           <!-- TAB 1: COURSES CRUD -->
-          <div v-if="activeTab === 'courses'" class="tab-content">
-            <div class="tab-action-bar">
+          <div v-if="activeTab === 'courses'" class="flex flex-col">
+            <div class="mb-4 flex gap-2.5">
               <input
                 v-model="courseSearch"
                 type="text"
                 placeholder="Search courses..."
-                class="search-mini"
-              />
+                class="min-w-0 flex-1 rounded-lg border border-white/8 bg-white/4 px-3 py-2 text-xs text-slate-100 outline-none transition-colors placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600"
+              >
               <button
                 type="button"
-                class="btn-primary-mini"
+                class="inline-flex shrink-0 cursor-pointer items-center justify-center gap-1 rounded-lg border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-3.5 py-2 text-xs font-semibold whitespace-nowrap text-white transition-all hover:from-violet-500 hover:to-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
                 @click="openCreateCourse"
               >
                 <Plus :size="14" />
@@ -90,28 +96,28 @@
               </button>
             </div>
 
-            <div class="items-list">
+            <div class="flex flex-col gap-2.5">
               <div
                 v-for="c in filteredCourses"
                 :key="c.id"
-                class="item-card glass"
+                class="flex flex-col gap-2.5 rounded-xl border border-white/6 bg-white/2 p-3 light:border-slate-200 light:bg-slate-50"
               >
-                <div class="item-main">
-                  <img :src="c.thumbnail" :alt="c.title" class="item-thumb" />
-                  <div class="item-info">
-                    <span class="item-title">{{ c.title }}</span>
-                    <span class="item-meta">
+                <div class="flex items-center gap-2.5">
+                  <img :src="c.thumbnail" :alt="c.title" class="h-9 w-12 shrink-0 rounded-md object-cover" >
+                  <div class="min-w-0 flex-1">
+                    <span class="block truncate text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ c.title }}</span>
+                    <span class="mt-0.5 block truncate text-[11px] text-white/40 light:text-slate-500">
                       ${{ c.price }} • {{ c.totalStudents }} students • {{ c.category }}
                     </span>
                   </div>
                 </div>
 
-                <div class="item-actions">
+                <div class="flex items-center justify-end gap-2 border-t border-white/4 pt-1.5 light:border-slate-200">
                   <!-- Quick Status Switcher -->
                   <select
                     :value="c.status"
-                    class="status-select-mini"
-                    :class="`status-${c.status}`"
+                    class="cursor-pointer rounded-md border px-2 py-0.75 text-[11px] font-semibold outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+                    :class="courseStatusClass(c.status)"
                     @change="e => updateCourseStatus(c.slug, (e.target as HTMLSelectElement).value)"
                   >
                     <option value="published">Published</option>
@@ -121,7 +127,7 @@
 
                   <NuxtLink
                     :to="`/courses/${c.slug}`"
-                    class="action-icon-btn"
+                    class="flex size-7 items-center justify-center rounded-md border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
                     title="View & Edit Full Course"
                     @click="$emit('close')"
                   >
@@ -130,7 +136,7 @@
 
                   <button
                     type="button"
-                    class="action-icon-btn text-rose-400 hover:bg-rose-500/20"
+                    class="flex size-7 cursor-pointer items-center justify-center rounded-md border border-white/8 bg-white/4 text-rose-400 transition-all hover:bg-rose-500/20 hover:text-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:border-slate-200 light:bg-slate-100 light:text-rose-600 light:hover:bg-rose-50 light:hover:text-rose-700"
                     title="Delete Course"
                     @click="deleteCourseAction(c.slug)"
                   >
@@ -142,17 +148,17 @@
           </div>
 
           <!-- TAB 2: STUDENTS CRUD -->
-          <div v-else-if="activeTab === 'students'" class="tab-content">
-            <div class="tab-action-bar">
+          <div v-else-if="activeTab === 'students'" class="flex flex-col">
+            <div class="mb-4 flex gap-2.5">
               <input
                 v-model="studentSearch"
                 type="text"
                 placeholder="Search students..."
-                class="search-mini"
-              />
+                class="min-w-0 flex-1 rounded-lg border border-white/8 bg-white/4 px-3 py-2 text-xs text-slate-100 outline-none transition-colors placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600"
+              >
               <button
                 type="button"
-                class="btn-primary-mini"
+                class="inline-flex shrink-0 cursor-pointer items-center justify-center gap-1 rounded-lg border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-3.5 py-2 text-xs font-semibold whitespace-nowrap text-white transition-all hover:from-violet-500 hover:to-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
                 @click="showAddStudent = !showAddStudent"
               >
                 <Plus :size="14" />
@@ -161,35 +167,35 @@
             </div>
 
             <!-- Inline Quick Add Student Form -->
-            <div v-if="showAddStudent" class="quick-add-form glass">
-              <h4 class="form-title">Quick Add Student</h4>
-              <div class="form-grid">
+            <div v-if="showAddStudent" class="mb-4 rounded-xl border border-white/8 bg-white/3 p-3.5 light:border-slate-200 light:bg-slate-50">
+              <h4 class="mb-2.5 text-[13px] font-bold text-slate-100 light:text-slate-900">Quick Add Student</h4>
+              <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <input
                   v-model="newStudent.name"
                   type="text"
                   placeholder="Full Name *"
-                  class="search-mini"
-                />
+                  class="w-full rounded-lg border border-white/8 bg-white/4 px-3 py-2 text-xs text-slate-100 outline-none transition-colors placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600"
+                >
                 <input
                   v-model="newStudent.email"
                   type="email"
                   placeholder="Email Address *"
-                  class="search-mini"
-                />
+                  class="w-full rounded-lg border border-white/8 bg-white/4 px-3 py-2 text-xs text-slate-100 outline-none transition-colors placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600"
+                >
                 <input
                   v-model="newStudent.country"
                   type="text"
                   placeholder="Country"
-                  class="search-mini"
-                />
-                <select v-model="newStudent.status" class="search-mini bg-[#12131f]">
+                  class="w-full rounded-lg border border-white/8 bg-white/4 px-3 py-2 text-xs text-slate-100 outline-none transition-colors placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600"
+                >
+                <select v-model="newStudent.status" class="w-full cursor-pointer rounded-lg border border-white/8 bg-zinc-900 px-3 py-2 text-xs text-slate-200 outline-none transition-colors focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600">
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                 </select>
               </div>
               <button
                 type="button"
-                class="btn-primary-mini w-full mt-2"
+                class="mt-2 inline-flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-3.5 py-2 text-xs font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
                 :disabled="creatingStudent"
                 @click="submitNewStudent"
               >
@@ -198,28 +204,28 @@
               </button>
             </div>
 
-            <div class="items-list">
+            <div class="flex flex-col gap-2.5">
               <div
                 v-for="s in filteredStudents"
                 :key="s.id"
-                class="item-card glass"
+                class="flex flex-col gap-2.5 rounded-xl border border-white/6 bg-white/2 p-3 light:border-slate-200 light:bg-slate-50"
               >
-                <div class="item-main">
-                  <img :src="s.avatar" :alt="s.name" class="student-thumb" />
-                  <div class="item-info">
-                    <span class="item-title">{{ s.name }}</span>
-                    <span class="item-meta">
+                <div class="flex items-center gap-2.5">
+                  <img :src="s.avatar" :alt="s.name" class="size-9 shrink-0 rounded-full border border-violet-500/30" >
+                  <div class="min-w-0 flex-1">
+                    <span class="block truncate text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ s.name }}</span>
+                    <span class="mt-0.5 block truncate text-[11px] text-white/40 light:text-slate-500">
                       {{ s.email }} • {{ s.country }} • ${{ s.totalSpent.toFixed(2) }}
                     </span>
                   </div>
                 </div>
 
-                <div class="item-actions">
+                <div class="flex items-center justify-end gap-2 border-t border-white/4 pt-1.5 light:border-slate-200">
                   <!-- Quick Status Toggle -->
                   <button
                     type="button"
-                    class="badge-toggle"
-                    :class="s.status === 'active' ? 'badge-active' : 'badge-inactive'"
+                    class="cursor-pointer rounded-full border px-2.5 py-0.75 text-[11px] font-semibold capitalize focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+                    :class="studentStatusClass(s.status)"
                     @click="toggleStudentStatus(s)"
                   >
                     {{ s.status }}
@@ -227,7 +233,7 @@
 
                   <button
                     type="button"
-                    class="action-icon-btn text-rose-400 hover:bg-rose-500/20"
+                    class="flex size-7 cursor-pointer items-center justify-center rounded-md border border-white/8 bg-white/4 text-rose-400 transition-all hover:bg-rose-500/20 hover:text-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:border-slate-200 light:bg-slate-100 light:text-rose-600 light:hover:bg-rose-50 light:hover:text-rose-700"
                     title="Delete Student"
                     @click="deleteStudentAction(s.id)"
                   >
@@ -239,44 +245,42 @@
           </div>
 
           <!-- TAB 3: QUICK OPERATIONS -->
-          <div v-else class="tab-content">
-            <div class="tools-grid">
-              <div class="tool-card glass">
-                <div class="tool-head">
-                  <Sparkles :size="18" class="text-amber-400" />
-                  <span class="tool-name">Seed Quick Course</span>
-                </div>
-                <p class="tool-desc">
-                  Generates an instant trending course with mock revenue and lessons into the database.
-                </p>
-                <button
-                  type="button"
-                  class="btn-action-tool"
-                  :disabled="seeding"
-                  @click="seedSampleCourse"
-                >
-                  <Plus :size="14" />
-                  <span>Generate Sample Course</span>
-                </button>
+          <div v-else class="flex flex-col gap-3.5">
+            <div class="flex flex-col gap-2.5 rounded-[14px] border border-white/6 bg-white/2 p-4.5 light:border-slate-200 light:bg-slate-50">
+              <div class="flex items-center gap-2">
+                <Sparkles :size="18" class="text-amber-400" />
+                <span class="text-sm font-bold text-slate-100 light:text-slate-900">Seed Quick Course</span>
               </div>
+              <p class="text-xs leading-relaxed text-white/45 light:text-slate-500">
+                Generates an instant trending course with mock revenue and lessons into the database.
+              </p>
+              <button
+                type="button"
+                class="inline-flex w-fit cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-violet-500/35 bg-violet-500/15 px-4 py-2.25 text-xs font-semibold text-violet-300 transition-all hover:bg-violet-500/30 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
+                :disabled="seeding"
+                @click="seedSampleCourse"
+              >
+                <Plus :size="14" />
+                <span>Generate Sample Course</span>
+              </button>
+            </div>
 
-              <div class="tool-card glass">
-                <div class="tool-head">
-                  <FileJson :size="18" class="text-blue-400" />
-                  <span class="tool-name">Export Database</span>
-                </div>
-                <p class="tool-desc">
-                  Download a snapshot of the current local mock database as a JSON backup file.
-                </p>
-                <button
-                  type="button"
-                  class="btn-action-tool"
-                  @click="downloadDbBackup"
-                >
-                  <Download :size="14" />
-                  <span>Export JSON</span>
-                </button>
+            <div class="flex flex-col gap-2.5 rounded-[14px] border border-white/6 bg-white/2 p-4.5 light:border-slate-200 light:bg-slate-50">
+              <div class="flex items-center gap-2">
+                <FileJson :size="18" class="text-blue-400" />
+                <span class="text-sm font-bold text-slate-100 light:text-slate-900">Export Database</span>
               </div>
+              <p class="text-xs leading-relaxed text-white/45 light:text-slate-500">
+                Download a snapshot of the current local mock database as a JSON backup file.
+              </p>
+              <button
+                type="button"
+                class="inline-flex w-fit cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-violet-500/35 bg-violet-500/15 px-4 py-2.25 text-xs font-semibold text-violet-300 transition-all hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
+                @click="downloadDbBackup"
+              >
+                <Download :size="14" />
+                <span>Export JSON</span>
+              </button>
             </div>
           </div>
         </div>
@@ -315,6 +319,20 @@ const { crud, error } = useAppToast()
 
 const activeTab = ref<'courses' | 'students' | 'tools'>('courses')
 
+const drawerFade = {
+  enterActiveClass: 'transition-opacity duration-300 ease-out',
+  leaveActiveClass: 'transition-opacity duration-300 ease-out',
+  enterFromClass: 'opacity-0',
+  leaveToClass: 'opacity-0'
+}
+
+const drawerSlide = {
+  enterActiveClass: 'transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]',
+  leaveActiveClass: 'transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]',
+  enterFromClass: 'translate-x-full',
+  leaveToClass: 'translate-x-full'
+}
+
 // Course management
 const courses = ref<Course[]>([])
 const courseSearch = ref('')
@@ -332,6 +350,17 @@ const newStudent = reactive({
   country: 'United States',
   status: 'active' as 'active' | 'inactive'
 })
+
+function courseStatusClass(status: string) {
+  if (status === 'published') return 'border-emerald-400/30 bg-emerald-400/12 text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700'
+  if (status === 'draft') return 'border-amber-400/30 bg-amber-400/12 text-amber-400 light:border-amber-300 light:bg-amber-50 light:text-amber-700'
+  return 'border-slate-400/30 bg-slate-400/12 text-slate-400 light:border-slate-300 light:bg-slate-100 light:text-slate-600'
+}
+
+function studentStatusClass(status: string) {
+  if (status === 'active') return 'border-emerald-400/30 bg-emerald-400/15 text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700'
+  return 'border-slate-400/30 bg-slate-400/15 text-slate-400 light:border-slate-300 light:bg-slate-100 light:text-slate-600'
+}
 
 async function loadData() {
   try {
@@ -510,440 +539,3 @@ function openCreateCourse() {
   emit('open-create-course')
 }
 </script>
-
-<style scoped>
-.admin-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-  z-index: 90;
-}
-
-.admin-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 480px;
-  max-width: 90vw;
-  background: #0d0e18;
-  border-left: 1px solid rgba(124, 58, 237, 0.3);
-  box-shadow: -15px 0 50px rgba(0, 0, 0, 0.8), -5px 0 25px rgba(124, 58, 237, 0.15);
-  display: flex;
-  flex-direction: column;
-  z-index: 100;
-  overflow: hidden;
-}
-
-.drawer-header {
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(10, 10, 20, 0.5);
-}
-
-.header-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.admin-badge-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: rgba(124, 58, 237, 0.15);
-  border: 1px solid rgba(124, 58, 237, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.drawer-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #f8fafc;
-}
-
-.drawer-sub {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.close-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-}
-
-.drawer-tabs {
-  display: flex;
-  padding: 10px 16px;
-  gap: 6px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.drawer-tab {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: none;
-  border: 1px solid transparent;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-}
-
-.drawer-tab:hover {
-  color: rgba(255, 255, 255, 0.8);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.drawer-tab.active {
-  color: #c4b5fd;
-  background: rgba(124, 58, 237, 0.15);
-  border-color: rgba(124, 58, 237, 0.35);
-}
-
-.drawer-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 18px 20px;
-}
-
-.tab-action-bar {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.search-mini {
-  flex: 1;
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #f1f5f9;
-  font-size: 12px;
-  outline: none;
-  font-family: inherit;
-}
-
-.search-mini:focus {
-  border-color: rgba(124, 58, 237, 0.5);
-}
-
-.btn-primary-mini {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 8px 14px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  border: 1px solid rgba(139, 92, 246, 0.4);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.btn-primary-mini:hover {
-  background: linear-gradient(135deg, #8b5cf6, #6366f1);
-}
-
-.items-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.item-card {
-  padding: 12px;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.item-main {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.item-thumb {
-  width: 48px;
-  height: 36px;
-  border-radius: 6px;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-.student-thumb {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  border: 1px solid rgba(124, 58, 237, 0.3);
-}
-
-.item-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.item-title {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #f1f5f9;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.item-meta {
-  display: block;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 2px;
-}
-
-.item-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.status-select-mini {
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  background: #12131f;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #e2e8f0;
-  outline: none;
-  cursor: pointer;
-}
-
-.action-icon-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-decoration: none;
-}
-
-.action-icon-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-}
-
-.badge-toggle {
-  padding: 3px 10px;
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: capitalize;
-  cursor: pointer;
-  border: none;
-}
-
-.badge-active {
-  background: rgba(52, 211, 153, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.3);
-}
-
-.badge-inactive {
-  background: rgba(148, 163, 184, 0.15);
-  color: #94a3b8;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-}
-
-.quick-add-form {
-  padding: 14px;
-  border-radius: 12px;
-  margin-bottom: 16px;
-}
-
-.form-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #f1f5f9;
-  margin-bottom: 10px;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.tools-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.tool-card {
-  padding: 18px;
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.tool-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.tool-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: #f1f5f9;
-}
-
-.tool-desc {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.45);
-  line-height: 1.5;
-}
-
-.btn-action-tool {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 9px 16px;
-  border-radius: 8px;
-  background: rgba(124, 58, 237, 0.15);
-  border: 1px solid rgba(124, 58, 237, 0.35);
-  color: #c4b5fd;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: fit-content;
-}
-
-.btn-action-tool:hover {
-  background: rgba(124, 58, 237, 0.3);
-  color: #fff;
-}
-
-/* Light mode overrides */
-html.light .admin-drawer {
-  background: #ffffff;
-  border-left-color: rgba(124, 58, 237, 0.25);
-  box-shadow: -15px 0 50px rgba(0, 0, 0, 0.15), -5px 0 25px rgba(124, 58, 237, 0.1);
-}
-
-html.light .drawer-header {
-  background: #f8fafc;
-  border-bottom-color: rgba(0, 0, 0, 0.08);
-}
-
-html.light .drawer-title {
-  color: #0f172a;
-}
-
-html.light .drawer-sub {
-  color: #64748b;
-}
-
-html.light .close-btn {
-  background: #f1f5f9;
-  border-color: #e2e8f0;
-  color: #64748b;
-}
-
-html.light .close-btn:hover {
-  background: #e2e8f0;
-  color: #0f172a;
-}
-
-html.light .search-mini {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  color: #0f172a;
-}
-
-html.light .item-title {
-  color: #0f172a;
-}
-
-html.light .item-meta {
-  color: #64748b;
-}
-
-html.light .tool-name {
-  color: #0f172a;
-}
-
-html.light .tool-desc {
-  color: #64748b;
-}
-
-/* Drawer transitions */
-.drawer-fade-enter-active,
-.drawer-fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-.drawer-fade-enter-from,
-.drawer-fade-leave-to {
-  opacity: 0;
-}
-
-.drawer-slide-enter-active,
-.drawer-slide-leave-active {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.drawer-slide-enter-from,
-.drawer-slide-leave-to {
-  transform: translateX(100%);
-}
-</style>

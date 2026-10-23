@@ -1,24 +1,24 @@
 <template>
-  <div class="course-card glass glass-hover card-lift">
+  <div class="group flex h-full flex-col overflow-hidden rounded-[18px] border border-white/8 bg-zinc-950/65 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/30 hover:bg-zinc-950/80 hover:shadow-xl hover:shadow-violet-500/10 light:border-slate-200 light:bg-white light:hover:border-violet-300 light:hover:bg-white light:hover:shadow-violet-500/10">
     <!-- Thumbnail & Badges -->
-    <div class="card-media">
+    <div class="relative aspect-video w-full overflow-hidden">
       <img
         :src="course.thumbnail || fallbackThumb"
         :alt="course.title"
-        class="media-img"
+        class="size-full object-cover transition-transform duration-500 group-hover:scale-105"
         loading="lazy"
         @error="onImageError"
-      />
-      <div class="media-overlay"></div>
-      
-      <div class="media-top">
+      >
+      <div class="absolute inset-0 bg-linear-to-b from-zinc-950/30 to-zinc-950/70 light:from-white/10 light:to-white/50" />
+
+      <div class="absolute top-3 right-3 left-3 z-2 flex items-center justify-between">
         <CourseStatusBadge :status="course.status" />
-        <span class="level-pill">{{ course.level }}</span>
+        <span class="rounded-md border border-white/12 bg-black/60 px-2 py-0.75 text-[10px] font-bold tracking-wider text-slate-200 uppercase backdrop-blur-md light:border-slate-300 light:bg-white/80 light:text-slate-700">{{ course.level }}</span>
       </div>
 
-      <div class="media-bottom">
-        <span class="category-pill">{{ course.category }}</span>
-        <span v-if="course.rating > 0" class="rating-pill">
+      <div class="absolute bottom-3 right-3 left-3 z-2 flex items-center justify-between">
+        <span class="rounded-md border border-violet-500/50 bg-violet-600/35 px-2 py-0.5 text-[11px] font-semibold text-violet-200 backdrop-blur-md light:border-violet-300 light:bg-violet-100 light:text-violet-700">{{ course.category }}</span>
+        <span v-if="course.rating > 0" class="inline-flex items-center gap-1 rounded-md border border-amber-400/30 bg-black/65 px-1.75 py-0.5 text-[11px] font-bold text-amber-400 light:border-amber-200 light:bg-white/90 light:text-amber-600">
           <Star :size="12" class="fill-amber-400 text-amber-400" />
           {{ course.rating.toFixed(1) }}
         </span>
@@ -26,61 +26,61 @@
     </div>
 
     <!-- Body -->
-    <div class="card-content">
-      <div class="instructor-row">
-        <span class="instructor-name">by {{ course.instructor }}</span>
-        <span class="hours-tag">
+    <div class="flex flex-1 flex-col p-4.5 sm:p-5">
+      <div class="mb-2 flex items-center justify-between gap-2 text-xs text-white/45 light:text-slate-500">
+        <span>by {{ course.instructor }}</span>
+        <span class="flex shrink-0 items-center gap-1">
           <Clock :size="12" />
           {{ course.totalHours }}h ({{ course.totalLessons }} lessons)
         </span>
       </div>
 
-      <NuxtLink :to="`/courses/${course.slug}`" class="course-title-link">
-        <h3 class="course-title">{{ course.title }}</h3>
+      <NuxtLink :to="`/courses/${course.slug}`" class="no-underline">
+        <h3 class="line-clamp-2 text-base leading-snug font-bold text-slate-100 transition-colors hover:text-violet-300 light:text-slate-900 light:hover:text-violet-700">{{ course.title }}</h3>
       </NuxtLink>
 
-      <p class="course-desc">{{ course.description }}</p>
+      <p class="mt-2 line-clamp-2 text-xs leading-relaxed text-white/50 light:text-slate-600">{{ course.description }}</p>
 
       <!-- Tags -->
-      <div v-if="course.tags && course.tags.length" class="tags-row">
-        <span v-for="tag in course.tags.slice(0, 3)" :key="tag" class="tag-pill">
+      <div v-if="course.tags && course.tags.length" class="mt-3 flex flex-wrap gap-1.5">
+        <span v-for="tag in course.tags.slice(0, 3)" :key="tag" class="rounded border border-white/6 bg-white/4 px-1.75 py-0.5 text-[10px] font-medium text-white/50 light:border-slate-200 light:bg-slate-50 light:text-slate-500">
           #{{ tag }}
         </span>
-        <span v-if="course.tags.length > 3" class="tag-pill tag-more">
+        <span v-if="course.tags.length > 3" class="rounded border border-white/6 bg-white/4 px-1.75 py-0.5 text-[10px] font-medium text-white/50 light:border-slate-200 light:bg-slate-50 light:text-slate-500">
           +{{ course.tags.length - 3 }}
         </span>
       </div>
 
       <!-- Metrics -->
-      <div class="metrics-grid">
-        <div class="metric-item">
-          <span class="metric-lbl">Students</span>
-          <span class="metric-val">
+      <div class="mt-3.5 grid grid-cols-2 gap-3 rounded-xl border border-white/5 bg-white/2 px-3.5 py-2.5 light:border-slate-200 light:bg-slate-50">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-[10px] tracking-wider text-white/40 uppercase light:text-slate-500">Students</span>
+          <span class="flex items-center gap-1 text-[13px] font-bold text-slate-100 light:text-slate-900">
             <Users :size="13" class="text-violet-400" />
             {{ course.totalStudents.toLocaleString() }}
           </span>
         </div>
-        <div class="metric-item">
-          <span class="metric-lbl">Revenue</span>
-          <span class="metric-val text-emerald-400">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-[10px] tracking-wider text-white/40 uppercase light:text-slate-500">Revenue</span>
+          <span class="flex items-center gap-1 text-[13px] font-bold text-emerald-400 light:text-emerald-700">
             ${{ formatRevenue(course.revenue) }}
           </span>
         </div>
       </div>
 
       <!-- Footer: Pricing & Actions -->
-      <div class="card-footer">
-        <div class="price-wrap">
-          <span class="current-price">${{ course.price.toFixed(2) }}</span>
-          <span v-if="course.originalPrice > course.price" class="original-price">
+      <div class="mt-4 flex items-center justify-between gap-3 border-t border-white/6 pt-3.5 light:border-slate-200">
+        <div class="flex items-baseline gap-1.5">
+          <span class="text-lg font-extrabold text-slate-50 light:text-slate-900">${{ course.price.toFixed(2) }}</span>
+          <span v-if="course.originalPrice > course.price" class="text-xs text-white/35 line-through light:text-slate-400">
             ${{ course.originalPrice.toFixed(2) }}
           </span>
         </div>
 
-        <div class="actions-wrap">
+        <div class="flex items-center gap-1.5">
           <button
             type="button"
-            class="action-btn"
+            class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
             title="Edit Course"
             @click.stop="$emit('edit', course)"
           >
@@ -88,7 +88,7 @@
           </button>
           <button
             type="button"
-            class="action-btn text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
+            class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-rose-400 transition-all hover:bg-rose-500/10 hover:text-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:border-slate-200 light:bg-slate-100 light:text-rose-600 light:hover:bg-rose-50 light:hover:text-rose-700"
             title="Delete Course"
             @click.stop="$emit('delete', course)"
           >
@@ -96,7 +96,7 @@
           </button>
           <NuxtLink
             :to="`/courses/${course.slug}`"
-            class="details-btn"
+            class="flex items-center gap-1 rounded-lg border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold text-violet-300 no-underline transition-all hover:border-violet-500/60 hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
             title="View Details & Analytics"
           >
             <span>Details</span>
@@ -132,346 +132,3 @@ function formatRevenue(val: number) {
   return val.toFixed(0)
 }
 </script>
-
-<style scoped>
-.course-card {
-  border-radius: 18px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  background: rgba(18, 18, 28, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.card-media {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-}
-
-.media-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.course-card:hover .media-img {
-  transform: scale(1.06);
-}
-
-.media-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(10, 10, 15, 0.3) 0%, rgba(10, 10, 15, 0.7) 100%);
-}
-
-.media-top {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  right: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 2;
-}
-
-.level-pill {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  color: #e2e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.media-bottom {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  right: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 2;
-}
-
-.category-pill {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 6px;
-  background: rgba(124, 58, 237, 0.35);
-  color: #c4b5fd;
-  border: 1px solid rgba(124, 58, 237, 0.5);
-  backdrop-filter: blur(6px);
-}
-
-.rating-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #fbbf24;
-  background: rgba(0, 0, 0, 0.65);
-  padding: 2px 7px;
-  border-radius: 6px;
-  border: 1px solid rgba(251, 191, 36, 0.3);
-}
-
-.card-content {
-  padding: 18px 20px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.instructor-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.45);
-  margin-bottom: 8px;
-}
-
-.hours-tag {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.course-title-link {
-  text-decoration: none;
-}
-
-.course-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #f1f5f9;
-  line-height: 1.35;
-  transition: color 0.2s;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.course-title:hover {
-  color: #a78bfa;
-}
-
-.course-desc {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
-  line-height: 1.5;
-  margin-top: 8px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.tags-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 12px;
-}
-
-.tag-pill {
-  font-size: 10px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 2px 7px;
-  border-radius: 4px;
-}
-
-.metrics-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 10px 14px;
-  margin-top: 14px;
-}
-
-.metric-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.metric-lbl {
-  font-size: 10px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
-  letter-spacing: 0.4px;
-}
-
-.metric-val {
-  font-size: 13px;
-  font-weight: 700;
-  color: #f1f5f9;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.card-footer {
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.price-wrap {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-}
-
-.current-price {
-  font-size: 18px;
-  font-weight: 800;
-  color: #f8fafc;
-}
-
-.original-price {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.35);
-  text-decoration: line-through;
-}
-
-.actions-wrap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.action-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.action-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-}
-
-.details-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 12px;
-  background: rgba(124, 58, 237, 0.15);
-  border: 1px solid rgba(124, 58, 237, 0.35);
-  border-radius: 8px;
-  color: #c4b5fd;
-  font-size: 12px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.details-btn:hover {
-  background: rgba(124, 58, 237, 0.3);
-  color: #fff;
-  border-color: rgba(124, 58, 237, 0.6);
-}
-
-/* Light mode overrides */
-html.light .course-card {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-}
-
-html.light .course-card:hover {
-  background: #ffffff;
-  border-color: rgba(124, 58, 237, 0.35);
-  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.1);
-}
-
-html.light .instructor-row {
-  color: #64748b;
-}
-
-html.light .course-title {
-  color: #0f172a;
-}
-
-html.light .course-title:hover {
-  color: #7c3aed;
-}
-
-html.light .course-desc {
-  color: #475569;
-}
-
-html.light .metrics-grid {
-  background: #f8fafc;
-  border-color: #e2e8f0;
-}
-
-html.light .metric-lbl {
-  color: #64748b;
-}
-
-html.light .metric-val {
-  color: #0f172a;
-}
-
-html.light .current-price {
-  color: #0f172a;
-}
-
-html.light .original-price {
-  color: #94a3b8;
-}
-
-html.light .action-btn {
-  background: #f1f5f9;
-  border-color: #e2e8f0;
-  color: #475569;
-}
-
-html.light .action-btn:hover {
-  background: #e2e8f0;
-  color: #0f172a;
-}
-
-html.light .details-btn {
-  background: rgba(124, 58, 237, 0.1);
-  border-color: rgba(124, 58, 237, 0.25);
-  color: #6d28d9;
-}
-
-html.light .details-btn:hover {
-  background: rgba(124, 58, 237, 0.2);
-  color: #5b21b6;
-}
-</style>
