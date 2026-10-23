@@ -31,7 +31,7 @@
               autocomplete="given-name"
               required
               :disabled="loading"
-            />
+            >
           </div>
           <p v-if="errors.firstName" class="min-h-4 text-xs text-red-500">{{ errors.firstName }}</p>
         </div>
@@ -49,7 +49,7 @@
               autocomplete="family-name"
               required
               :disabled="loading"
-            />
+            >
           </div>
           <p v-if="errors.lastName" class="min-h-4 text-xs text-red-500">{{ errors.lastName }}</p>
         </div>
@@ -68,7 +68,7 @@
             autocomplete="email"
             required
             :disabled="loading"
-          />
+          >
         </div>
         <p v-if="errors.email" class="min-h-4 text-xs text-red-500">{{ errors.email }}</p>
       </div>
@@ -86,7 +86,7 @@
             autocomplete="new-password"
             required
             :disabled="loading"
-          />
+          >
           <button
             type="button"
             class="absolute right-3.5 z-10 flex cursor-pointer items-center text-white/40 transition-colors hover:text-emerald-500 light:text-black/40"
@@ -116,7 +116,7 @@
             autocomplete="new-password"
             required
             :disabled="loading"
-          />
+          >
           <button
             type="button"
             class="absolute right-3.5 z-10 flex cursor-pointer items-center text-white/40 transition-colors hover:text-emerald-500 light:text-black/40"
@@ -138,7 +138,7 @@
             class="peer sr-only"
             required
             :disabled="loading"
-          />
+          >
           <span class="mt-px flex size-5 shrink-0 items-center justify-center rounded-md border border-white/15 bg-white/[0.03] transition-all duration-200 after:-mt-0.5 after:h-2.5 after:w-1.5 after:rotate-45 after:content-[''] peer-checked:border-emerald-500 peer-checked:bg-linear-to-br peer-checked:from-emerald-500 peer-checked:to-emerald-600 peer-checked:after:border-r-2 peer-checked:after:border-b-2 peer-checked:after:border-solid peer-checked:after:border-white peer-focus-visible:ring-[3px] peer-focus-visible:ring-emerald-500/20 light:border-slate-200 light:bg-white" />
           <span class="text-[13px] leading-relaxed text-white/60 light:text-slate-500">
             I agree to the
@@ -289,7 +289,7 @@ async function handleRegister() {
 
   try {
     await register(form.firstName, form.lastName, form.email, form.password)
-  } catch (e) {
+  } catch {
     // Error is handled in the store
   }
 }

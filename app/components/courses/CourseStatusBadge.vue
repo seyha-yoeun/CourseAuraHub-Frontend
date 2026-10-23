@@ -1,7 +1,7 @@
 <template>
-  <span class="status-badge" :class="`badge-${status}`">
-    <span class="status-dot"></span>
-    <span class="status-text">{{ label }}</span>
+  <span class="inline-flex w-fit items-center gap-1.5 rounded-full border px-2.5 py-0.75 text-[11px] font-semibold tracking-wide capitalize" :class="badgeClass">
+    <span class="size-1.5 rounded-full bg-current" :class="{ 'shadow-[0_0_8px_currentColor]': status !== 'archived' }" />
+    <span>{{ label }}</span>
   </span>
 </template>
 
@@ -16,54 +16,11 @@ const label = computed(() => {
   if (props.status === 'archived') return 'Archived'
   return props.status
 })
+
+const badgeClass = computed(() => {
+  if (props.status === 'published') return 'border-emerald-400/30 bg-emerald-400/12 text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700'
+  if (props.status === 'draft') return 'border-amber-400/30 bg-amber-400/12 text-amber-400 light:border-amber-300 light:bg-amber-50 light:text-amber-700'
+  if (props.status === 'archived') return 'border-slate-400/30 bg-slate-400/12 text-slate-400 light:border-slate-300 light:bg-slate-100 light:text-slate-600'
+  return 'border-white/10 bg-white/5 text-white/60 light:border-slate-200 light:bg-slate-100 light:text-slate-500'
+})
 </script>
-
-<style scoped>
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-  text-transform: capitalize;
-  width: fit-content;
-}
-
-.status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-.badge-published {
-  background: rgba(52, 211, 153, 0.12);
-  color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.3);
-}
-.badge-published .status-dot {
-  background: #34d399;
-  box-shadow: 0 0 8px #34d399;
-}
-
-.badge-draft {
-  background: rgba(251, 191, 36, 0.12);
-  color: #fbbf24;
-  border: 1px solid rgba(251, 191, 36, 0.3);
-}
-.badge-draft .status-dot {
-  background: #fbbf24;
-  box-shadow: 0 0 8px #fbbf24;
-}
-
-.badge-archived {
-  background: rgba(148, 163, 184, 0.12);
-  color: #94a3b8;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-}
-.badge-archived .status-dot {
-  background: #94a3b8;
-}
-</style>

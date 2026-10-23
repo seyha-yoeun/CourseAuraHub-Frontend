@@ -1,9 +1,9 @@
 <template>
-  <div class="default-layout">
+  <div class="relative flex min-h-dvh overflow-x-hidden bg-zinc-950 light:bg-slate-50">
     <!-- Background glowing orbs -->
-    <div class="bg-orb" style="width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,237,0.08),transparent 70%);top:-200px;left:-200px;"></div>
-    <div class="bg-orb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(37,99,235,0.06),transparent 70%);top:50%;right:-150px;"></div>
-    <div class="bg-orb" style="width:400px;height:400px;background:radial-gradient(circle,rgba(5,150,105,0.05),transparent 70%);bottom:-100px;left:40%;"></div>
+    <div class="pointer-events-none fixed -top-50 -left-50 z-0 size-150 rounded-full bg-[radial-gradient(circle,rgba(124,58,237,0.08),transparent_70%)] blur-[80px]" />
+    <div class="pointer-events-none fixed top-1/2 -right-[150px] z-0 size-125 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.06),transparent_70%)] blur-[80px]" />
+    <div class="pointer-events-none fixed -bottom-25 left-[40%] z-0 size-100 rounded-full bg-[radial-gradient(circle,rgba(5,150,105,0.05),transparent_70%)] blur-[80px]" />
 
     <!-- Sidebar with desktop collapse + mobile drawer -->
     <AppSidebar
@@ -16,11 +16,8 @@
 
     <!-- Main area -->
     <div
-      class="main-wrapper"
-      :class="{
-        'sidebar-collapsed': sidebarCollapsed,
-        'mobile-view': isMobile
-      }"
+      class="relative z-1 flex min-h-dvh min-w-0 flex-1 flex-col transition-[margin-left] duration-300 ease-out"
+      :class="sidebarCollapsed ? 'md:ml-18' : 'md:ml-65'"
     >
       <AppHeader
         :sidebar-collapsed="sidebarCollapsed"
@@ -28,8 +25,8 @@
         @open-admin="adminDrawerOpen = true"
       />
 
-      <main class="main-content">
-        <div v-motion-fade-visible-once class="content-inner">
+      <main class="min-w-0 flex-1 overflow-x-hidden px-4 py-4 sm:px-6 sm:py-6 lg:p-8">
+        <div v-motion-fade-visible-once class="mx-auto w-full max-w-[1400px]">
           <slot />
         </div>
       </main>
@@ -56,32 +53,11 @@ import AdminManagementDrawer from '~/components/admin/AdminManagementDrawer.vue'
 const sidebarCollapsed = ref(false)
 const mobileSidebarOpen = ref(false)
 const adminDrawerOpen = ref(false)
-const isMobile = ref(false)
 
 const router = useRouter()
 
-function checkMobile() {
-  if (import.meta.client) {
-    isMobile.value = window.innerWidth <= 768
-    if (!isMobile.value) {
-      mobileSidebarOpen.value = false
-    }
-  }
-}
-
-onMounted(() => {
-  checkMobile()
-  window.addEventListener('resize', checkMobile)
-})
-
-onUnmounted(() => {
-  if (import.meta.client) {
-    window.removeEventListener('resize', checkMobile)
-  }
-})
-
 function toggleSidebar() {
-  if (isMobile.value) {
+  if (import.meta.client && window.innerWidth < 768) {
     mobileSidebarOpen.value = !mobileSidebarOpen.value
   } else {
     sidebarCollapsed.value = !sidebarCollapsed.value
@@ -100,59 +76,3 @@ function onDataChanged() {
   }
 }
 </script>
-
-<style scoped>
-.default-layout {
-  display: flex;
-  min-height: 100vh;
-  background: #0a0a0f;
-  position: relative;
-  overflow-x: hidden;
-}
-
-.main-wrapper {
-  flex: 1;
-  margin-left: var(--sidebar-width);
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  z-index: 1;
-  min-width: 0;
-}
-
-.main-wrapper.sidebar-collapsed {
-  margin-left: 72px;
-}
-
-.main-wrapper.mobile-view {
-  margin-left: 0;
-}
-
-.main-content {
-  flex: 1;
-  padding: 2rem;
-  overflow-x: hidden;
-}
-
-.content-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-@media (max-width: 1024px) {
-  .main-content {
-    padding: 1.5rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .main-wrapper {
-    margin-left: 0 !important;
-  }
-  .main-content {
-    padding: 1rem 0.85rem;
-  }
-}
-</style>
