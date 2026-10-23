@@ -1,74 +1,76 @@
 <template>
-  <div class="auth-card" v-motion="cardMotion">
+  <div
+    v-motion="cardMotion"
+    class="w-full max-w-[420px] rounded-3xl border border-white/10 bg-white/[0.03] p-8 shadow-[0_25px_50px_rgba(0,0,0,0.5),0_0_60px_rgba(16,185,129,0.05)] backdrop-blur-xl short:p-6 light:border-black/10 light:bg-white/90 light:shadow-[0_25px_50px_rgba(0,0,0,0.1),0_0_60px_rgba(16,185,129,0.08)]"
+  >
     <!-- Header -->
-    <div class="auth-header">
-      <h1 class="auth-title">Forgot Password</h1>
-      <p class="auth-subtitle">Enter your email and we'll send you a reset link</p>
+    <div class="mb-7 text-center short:mb-4">
+      <h1 class="mb-2 text-[28px] font-extrabold tracking-[-0.5px] text-slate-100 max-[480px]:text-2xl short:text-2xl light:text-slate-900">Forgot Password</h1>
+      <p class="text-[15px] leading-normal text-white/60 light:text-slate-500">Enter your email and we'll send you a reset link</p>
     </div>
 
     <!-- Form -->
-    <form @submit.prevent="handleForgotPassword" class="auth-form">
-      <div class="form-field" v-motion="fieldMotion">
-        <label for="email" class="form-label">Email</label>
-        <div class="auth-input-wrapper">
-          <Mail class="auth-input-icon" :size="18" />
+    <form class="mt-6 flex flex-col gap-5 short:mt-4 short:gap-3" @submit.prevent="handleForgotPassword">
+      <div v-motion="fieldMotion" class="flex flex-col gap-2">
+        <label for="email" class="text-[13px] font-semibold text-slate-200 light:text-slate-700">Email</label>
+        <div class="group relative flex items-center">
+          <Mail :size="18" class="pointer-events-none absolute left-3.5 z-10 text-white/40 transition-colors group-focus-within:text-emerald-500 light:text-black/40" />
           <input
             id="email"
             v-model="form.email"
             type="email"
-            class="auth-input"
+            :class="errors.email ? inputErrorClass : inputClass"
             placeholder="you@example.com"
             autocomplete="email"
             required
             :disabled="loading || submitted"
-            :class="{ 'auth-input-error': errors.email }"
           />
         </div>
-        <p v-if="errors.email" class="form-error">{{ errors.email }}</p>
+        <p v-if="errors.email" class="min-h-4 text-xs text-red-500">{{ errors.email }}</p>
       </div>
 
       <button
         type="submit"
-        class="btn btn-emerald btn-submit"
+        class="mt-2 flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 px-6 py-4 text-[15px] font-semibold text-white transition-all duration-200 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none enabled:hover:-translate-y-0.5 enabled:hover:shadow-[0_8px_25px_rgba(16,185,129,0.4)] enabled:active:translate-y-0 enabled:active:shadow-[0_4px_15px_rgba(16,185,129,0.3)] disabled:cursor-not-allowed disabled:opacity-60 short:py-3"
         :disabled="loading || submitted"
       >
-        <Loader2 :size="20" class="animate-spin" v-if="loading" />
+        <Loader2 v-if="loading" :size="20" class="animate-spin" />
         <span v-else-if="submitted">Email Sent</span>
         <span v-else>Send Reset Link</span>
       </button>
     </form>
 
     <!-- Success State -->
-    <div v-if="submitted" class="success-state" v-motion="successMotion">
-      <div class="success-icon">
+    <div v-if="submitted" v-motion="successMotion" class="mt-7 flex flex-col items-center gap-3 text-center">
+      <div class="flex size-18 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/12 text-emerald-400 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-600">
         <MailCheck :size="48" />
       </div>
-      <h2 class="success-title">Check Your Inbox</h2>
-      <p class="success-description">
+      <h2 class="text-xl font-bold text-slate-100 light:text-slate-900">Check Your Inbox</h2>
+      <p class="text-sm leading-relaxed text-white/60 light:text-slate-600">
         We've sent a password reset link to <strong>{{ form.email }}</strong>.
         The link will expire in 1 hour.
       </p>
-      <p class="success-hint">
-        Didn't receive it? 
-        <button type="button" class="link-btn" @click="resendEmail">Resend email</button>
+      <p class="text-[13px] text-white/45 light:text-slate-400">
+        Didn't receive it?
+        <button type="button" class="cursor-pointer font-semibold text-emerald-500 transition-colors hover:text-emerald-400 hover:underline light:text-emerald-600" @click="resendEmail">Resend email</button>
         or check your spam folder.
       </p>
     </div>
 
     <!-- Footer -->
-    <p class="auth-footer">
-      Remember your password? 
-      <NuxtLink to="/auth/login" class="auth-link">Sign in</NuxtLink>
+    <p class="mt-7 text-center text-sm text-white/60 short:mt-4 light:text-slate-500">
+      Remember your password?
+      <NuxtLink to="/auth/login" class="font-semibold text-emerald-500 no-underline transition-colors hover:text-emerald-400 hover:underline light:text-emerald-600">Sign in</NuxtLink>
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { 
-  Mail, 
-  Loader2, 
-  MailCheck 
+import {
+  Mail,
+  Loader2,
+  MailCheck
 } from 'lucide-vue-next'
 
 const loading = ref(false)
@@ -81,6 +83,10 @@ const form = reactive({
 const errors = reactive({
   email: ''
 })
+
+const inputClass = 'w-full rounded-xl border border-white/10 bg-white/4 py-3.5 pr-4 pl-12 text-[15px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-emerald-500 focus:bg-white/[0.07] focus:ring-[3px] focus:ring-emerald-500/15 disabled:opacity-60 short:py-3 light:border-slate-200 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
+
+const inputErrorClass = 'w-full rounded-xl border border-red-500 bg-white/4 py-3.5 pr-4 pl-12 text-[15px] text-slate-100 outline-none ring-[3px] ring-red-500/15 transition-all duration-200 placeholder:text-white/30 focus:border-red-500 focus:ring-red-500/15 disabled:opacity-60 short:py-3 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
 
 const cardMotion = {
   initial: { opacity: 0, y: 30 },
@@ -122,8 +128,8 @@ async function handleForgotPassword() {
     })
     submitted.value = true
   } catch (e: unknown) {
-    const message = (e as { response?: { _data?: { message: string } } }).response?._data?.message 
-      || (e as Error)?.message 
+    const message = (e as { response?: { _data?: { message: string } } }).response?._data?.message
+      || (e as Error)?.message
       || 'Failed to send reset email'
     errors.email = message
   } finally {
@@ -147,204 +153,3 @@ definePageMeta({
   layout: 'auth'
 })
 </script>
-
-<style scoped>
-.auth-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.auth-title {
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--text-primary, #f1f5f9);
-  letter-spacing: -0.5px;
-  margin: 0 0 8px;
-}
-
-html.light .auth-title {
-  color: #0f172a;
-}
-
-.auth-subtitle {
-  font-size: 15px;
-  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
-  margin: 0;
-  line-height: 1.5;
-}
-
-html.light .auth-subtitle {
-  color: #64748b;
-}
-
-.auth-form {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary, #e2e8f0);
-}
-
-html.light .form-label {
-  color: #334155;
-}
-
-.form-error {
-  font-size: 12px;
-  color: #ef4444;
-  margin: 0;
-  min-height: 16px;
-}
-
-.btn-submit {
-  width: 100%;
-  padding: 16px 24px;
-  font-size: 15px;
-  font-weight: 600;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 8px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-submit:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
-}
-
-.btn-submit:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.btn-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.success-state {
-  margin-top: 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 12px;
-}
-
-.success-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: var(--emerald-400);
-}
-
-html.light .success-icon {
-  background: var(--emerald-50);
-  border-color: var(--emerald-200);
-  color: var(--emerald-600);
-}
-
-.success-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary, #f1f5f9);
-  margin: 0;
-}
-
-html.light .success-title {
-  color: #0f172a;
-}
-
-.success-description {
-  font-size: 14px;
-  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
-  line-height: 1.6;
-  margin: 0;
-}
-
-html.light .success-description {
-  color: #475569;
-}
-
-.success-hint {
-  font-size: 13px;
-  color: var(--text-muted, rgba(255, 255, 255, 0.45));
-  margin: 0;
-}
-
-html.light .success-hint {
-  color: #94a3b8;
-}
-
-.link-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--emerald-500);
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.link-btn:hover {
-  color: var(--emerald-400);
-  text-decoration: underline;
-}
-
-html.light .link-btn {
-  color: var(--emerald-600);
-}
-
-.auth-footer {
-  margin-top: 28px;
-  text-align: center;
-  font-size: 14px;
-  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
-}
-
-html.light .auth-footer {
-  color: #64748b;
-}
-
-.auth-link {
-  color: var(--emerald-500);
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.auth-link:hover {
-  color: var(--emerald-400);
-  text-decoration: underline;
-}
-
-html.light .auth-link {
-  color: var(--emerald-600);
-}
-
-@media (max-width: 480px) {
-  .auth-title {
-    font-size: 24px;
-  }
-}
-</style>
