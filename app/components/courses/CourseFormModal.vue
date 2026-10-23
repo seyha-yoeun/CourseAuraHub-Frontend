@@ -1,45 +1,45 @@
 <template>
   <Teleport to="body">
-    <Transition name="modal-fade">
-      <div v-if="isOpen" class="modal-overlay" @click.self="$emit('close')">
-        <div class="modal-dialog glass" role="dialog" aria-modal="true">
+    <Transition v-bind="modalFade">
+      <div v-if="isOpen" class="fixed inset-0 z-100 flex items-center justify-center bg-[#05050c]/82 p-4 backdrop-blur-xl sm:p-6" @click.self="$emit('close')">
+        <div class="max-h-[90dvh] w-full max-w-170 overflow-y-auto rounded-[20px] border border-violet-500/25 bg-[#0f1019] p-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_40px_rgba(124,58,237,0.15)] sm:p-6 light:border-violet-500/30 light:bg-white light:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15),0_0_35px_rgba(124,58,237,0.12)]" role="dialog" aria-modal="true">
           <!-- Header -->
-          <div class="modal-top">
-            <div class="header-info">
-              <div class="modal-badge-icon">
+          <div class="flex items-start justify-between gap-4 border-b border-white/8 pb-4.5 light:border-slate-200">
+            <div class="flex items-center gap-3">
+              <div class="flex size-10 shrink-0 items-center justify-center rounded-[10px] border border-violet-500/30 bg-violet-500/15">
                 <BookPlus v-if="!isEdit" :size="20" class="text-violet-400" />
                 <FileEdit v-else :size="20" class="text-violet-400" />
               </div>
               <div>
-                <h2 class="modal-title">{{ isEdit ? 'Edit Course' : 'Create New Course' }}</h2>
-                <p class="modal-sub">
+                <h2 class="text-lg font-bold text-slate-50 light:text-slate-900">{{ isEdit ? 'Edit Course' : 'Create New Course' }}</h2>
+                <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">
                   {{ isEdit ? 'Update course curriculum, pricing, and status.' : 'Fill in the details to publish or draft a new course.' }}
                 </p>
               </div>
             </div>
-            <button type="button" class="close-btn" @click="$emit('close')">
+            <button type="button" class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900" @click="$emit('close')">
               <X :size="18" />
             </button>
           </div>
 
           <!-- Form -->
-          <form class="modal-form" @submit.prevent="handleSubmit">
+          <form class="mt-5 flex flex-col gap-4" @submit.prevent="handleSubmit">
             <!-- Row: Title & Category -->
-            <div class="form-row">
-              <div class="form-group flex-2">
-                <label class="form-label">Course Title *</label>
+            <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-3">
+              <div class="flex min-w-0 flex-col gap-1.5 sm:col-span-2">
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Course Title *</label>
                 <input
                   v-model="form.title"
                   type="text"
                   required
                   placeholder="e.g. Master Nuxt 3 Full-Stack Architecture"
-                  class="form-input"
-                />
+                  class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
+                >
               </div>
 
-              <div class="form-group flex-1">
-                <label class="form-label">Category</label>
-                <select v-model="form.category" class="form-select">
+              <div class="flex min-w-0 flex-col gap-1.5">
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Category</label>
+                <select v-model="form.category" class="w-full cursor-pointer rounded-[10px] border border-white/10 bg-zinc-900 px-3.5 py-2.5 text-[13px] text-slate-200 outline-none transition-all duration-200 focus:border-violet-500/50 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600">
                   <option value="Web Development">Web Development</option>
                   <option value="Programming">Programming</option>
                   <option value="Design">Design</option>
@@ -51,29 +51,29 @@
             </div>
 
             <!-- Row: Instructor, Level, Status -->
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Instructor Name</label>
+            <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-3">
+              <div class="flex min-w-0 flex-col gap-1.5">
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Instructor Name</label>
                 <input
                   v-model="form.instructor"
                   type="text"
                   placeholder="e.g. Alex Chen"
-                  class="form-input"
-                />
+                  class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
+                >
               </div>
 
-              <div class="form-group">
-                <label class="form-label">Difficulty Level</label>
-                <select v-model="form.level" class="form-select">
+              <div class="flex min-w-0 flex-col gap-1.5">
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Difficulty Level</label>
+                <select v-model="form.level" class="w-full cursor-pointer rounded-[10px] border border-white/10 bg-zinc-900 px-3.5 py-2.5 text-[13px] text-slate-200 outline-none transition-all duration-200 focus:border-violet-500/50 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600">
                   <option value="Beginner">Beginner</option>
                   <option value="Intermediate">Intermediate</option>
                   <option value="Advanced">Advanced</option>
                 </select>
               </div>
 
-              <div class="form-group">
-                <label class="form-label">Publishing Status</label>
-                <select v-model="form.status" class="form-select">
+              <div class="flex min-w-0 flex-col gap-1.5">
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Publishing Status</label>
+                <select v-model="form.status" class="w-full cursor-pointer rounded-[10px] border border-white/10 bg-zinc-900 px-3.5 py-2.5 text-[13px] text-slate-200 outline-none transition-all duration-200 focus:border-violet-500/50 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600">
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
                   <option value="archived">Archived</option>
@@ -82,9 +82,9 @@
             </div>
 
             <!-- Row: Pricing & Volume -->
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Price ($ USD) *</label>
+            <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+              <div class="flex min-w-0 flex-col gap-1.5">
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Price ($ USD) *</label>
                 <input
                   v-model.number="form.price"
                   type="number"
@@ -92,96 +92,96 @@
                   min="0"
                   required
                   placeholder="99.99"
-                  class="form-input"
-                />
+                  class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
+                >
               </div>
 
-              <div class="form-group">
-                <label class="form-label">Original Price ($ USD)</label>
+              <div class="flex min-w-0 flex-col gap-1.5">
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Original Price ($ USD)</label>
                 <input
                   v-model.number="form.originalPrice"
                   type="number"
                   step="0.01"
                   min="0"
                   placeholder="149.99"
-                  class="form-input"
-                />
+                  class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
+                >
               </div>
 
-              <div class="form-group">
-                <label class="form-label">Total Lessons</label>
+              <div class="flex min-w-0 flex-col gap-1.5">
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Total Lessons</label>
                 <input
                   v-model.number="form.totalLessons"
                   type="number"
                   min="0"
                   placeholder="45"
-                  class="form-input"
-                />
+                  class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
+                >
               </div>
 
-              <div class="form-group">
-                <label class="form-label">Duration (Hours)</label>
+              <div class="flex min-w-0 flex-col gap-1.5">
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Duration (Hours)</label>
                 <input
                   v-model.number="form.totalHours"
                   type="number"
                   step="0.5"
                   min="0"
                   placeholder="12.5"
-                  class="form-input"
-                />
+                  class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
+                >
               </div>
             </div>
 
             <!-- Row: Thumbnail URL with preview -->
-            <div class="form-group">
-              <label class="form-label">Thumbnail Image URL</label>
-              <div class="thumb-input-row">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Thumbnail Image URL</label>
+              <div class="flex flex-col gap-2.5 sm:flex-row">
                 <input
                   v-model="form.thumbnail"
                   type="url"
                   placeholder="https://images.unsplash.com/..."
-                  class="form-input"
-                />
+                  class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
+                >
                 <button
                   type="button"
-                  class="sample-thumb-btn"
+                  class="shrink-0 cursor-pointer rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap text-violet-300 transition-all hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
                   @click="generateSampleThumb"
                 >
                   Random Tech Photo
                 </button>
               </div>
-              <div v-if="form.thumbnail" class="thumb-preview-wrap">
-                <img :src="form.thumbnail" alt="Preview" class="thumb-preview" />
+              <div v-if="form.thumbnail" class="mt-2 aspect-video max-w-55 overflow-hidden rounded-[10px] border border-white/10 light:border-slate-200">
+                <img :src="form.thumbnail" alt="Preview" class="size-full object-cover" >
               </div>
             </div>
 
             <!-- Row: Description -->
-            <div class="form-group">
-              <label class="form-label">Course Description</label>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Course Description</label>
               <textarea
                 v-model="form.description"
                 rows="3"
                 placeholder="Comprehensive course overview covering key learning milestones and techniques..."
-                class="form-textarea"
-              ></textarea>
+                class="w-full resize-y rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
+              />
             </div>
 
             <!-- Row: Tags -->
-            <div class="form-group">
-              <label class="form-label">Tags (comma-separated)</label>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Tags (comma-separated)</label>
               <input
                 v-model="rawTags"
                 type="text"
                 placeholder="Nuxt 3, Vue, TypeScript, Tailwind"
-                class="form-input"
-              />
+                class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
+              >
             </div>
 
             <!-- Footer Actions -->
-            <div class="form-footer">
+            <div class="mt-2 flex flex-col-reverse gap-3 border-t border-white/8 pt-4 sm:flex-row sm:justify-end light:border-slate-200">
               <button
                 type="button"
-                class="btn-secondary"
+                class="w-full cursor-pointer rounded-[10px] border border-white/10 bg-white/5 px-5 py-2.5 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 sm:w-auto light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
                 :disabled="loading"
                 @click="$emit('close')"
               >
@@ -189,7 +189,7 @@
               </button>
               <button
                 type="submit"
-                class="btn-primary"
+                class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-6 py-2.5 text-[13px] font-semibold text-white transition-all enabled:hover:from-violet-500 enabled:hover:to-indigo-500 enabled:hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 sm:w-auto"
                 :disabled="loading"
               >
                 <Loader2 v-if="loading" :size="16" class="animate-spin" />
@@ -219,6 +219,13 @@ const emit = defineEmits<{
 }>()
 
 const isEdit = computed(() => !!props.course)
+
+const modalFade = {
+  enterActiveClass: 'transition-opacity duration-250 ease-out',
+  leaveActiveClass: 'transition-opacity duration-250 ease-out',
+  enterFromClass: 'opacity-0',
+  leaveToClass: 'opacity-0'
+}
 
 const form = reactive<CourseFormData>({
   title: '',
@@ -295,296 +302,3 @@ function handleSubmit() {
   emit('submit', { ...form })
 }
 </script>
-
-<style scoped>
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(5, 5, 12, 0.82);
-  backdrop-filter: blur(12px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  z-index: 100;
-}
-
-.modal-dialog {
-  width: 100%;
-  max-width: 680px;
-  max-height: 90vh;
-  overflow-y: auto;
-  background: #0f1019;
-  border: 1px solid rgba(124, 58, 237, 0.25);
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(124, 58, 237, 0.15);
-}
-
-html.light .modal-dialog {
-  background: #ffffff;
-  border-color: rgba(124, 58, 237, 0.3);
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.15), 0 0 35px rgba(124, 58, 237, 0.12);
-}
-
-.modal-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-html.light .modal-top {
-  border-bottom-color: rgba(0, 0, 0, 0.08);
-}
-
-.header-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.modal-badge-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: rgba(124, 58, 237, 0.15);
-  border: 1px solid rgba(124, 58, 237, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.modal-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #f8fafc;
-}
-
-html.light .modal-title {
-  color: #0f172a;
-}
-
-.modal-sub {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.45);
-  margin-top: 2px;
-}
-
-html.light .modal-sub {
-  color: #64748b;
-}
-
-.close-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-}
-
-.modal-form {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-row {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-@media (max-width: 640px) {
-  .form-row {
-    flex-direction: column;
-    gap: 12px;
-  }
-}
-
-.flex-1 { flex: 1 1 180px; }
-.flex-2 { flex: 2 1 280px; }
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1 1 180px;
-  min-width: 0;
-}
-
-.form-label {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
-  letter-spacing: 0.5px;
-}
-
-html.light .form-label {
-  color: #475569;
-}
-
-.form-input,
-.form-select,
-.form-textarea {
-  width: 100%;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #f1f5f9;
-  font-size: 13px;
-  outline: none;
-  font-family: inherit;
-  transition: all 0.2s;
-}
-
-html.light .form-input,
-html.light .form-select,
-html.light .form-textarea {
-  background: #ffffff;
-  border-color: #cbd5e1;
-  color: #0f172a;
-}
-
-.form-select {
-  background-color: #12131f;
-  color: #e2e8f0;
-}
-
-html.light .form-select {
-  background-color: #ffffff;
-  color: #0f172a;
-}
-
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-  border-color: rgba(124, 58, 237, 0.5);
-  background: rgba(255, 255, 255, 0.07);
-  box-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
-}
-
-html.light .form-input:focus,
-html.light .form-select:focus,
-html.light .form-textarea:focus {
-  background: #ffffff;
-  border-color: #7c3aed;
-  box-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
-}
-
-.thumb-input-row {
-  display: flex;
-  gap: 10px;
-}
-
-.sample-thumb-btn {
-  padding: 0 14px;
-  border-radius: 10px;
-  background: rgba(124, 58, 237, 0.15);
-  border: 1px solid rgba(124, 58, 237, 0.35);
-  color: #c4b5fd;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.sample-thumb-btn:hover {
-  background: rgba(124, 58, 237, 0.3);
-  color: #fff;
-}
-
-.thumb-preview-wrap {
-  margin-top: 8px;
-  border-radius: 10px;
-  overflow: hidden;
-  max-width: 220px;
-  aspect-ratio: 16 / 9;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.thumb-preview {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.form-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  margin-top: 8px;
-}
-
-.btn-secondary {
-  padding: 10px 20px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.09);
-  color: #fff;
-}
-
-.btn-primary {
-  padding: 10px 24px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  border: 1px solid rgba(139, 92, 246, 0.4);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #8b5cf6, #6366f1);
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
-}
-
-.btn-primary:disabled, .btn-secondary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.modal-fade-enter-active,
-.modal-fade-leave-active {
-  transition: opacity 0.25s ease;
-}
-.modal-fade-enter-from,
-.modal-fade-leave-to {
-  opacity: 0;
-}
-</style>

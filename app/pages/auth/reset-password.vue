@@ -24,7 +24,7 @@
             autocomplete="new-password"
             required
             :disabled="loading"
-          />
+          >
           <button
             type="button"
             class="absolute right-3.5 z-10 flex cursor-pointer items-center text-white/40 transition-colors hover:text-emerald-500 light:text-black/40"
@@ -53,7 +53,7 @@
             autocomplete="new-password"
             required
             :disabled="loading"
-          />
+          >
           <button
             type="button"
             class="absolute right-3.5 z-10 flex cursor-pointer items-center text-white/40 transition-colors hover:text-emerald-500 light:text-black/40"

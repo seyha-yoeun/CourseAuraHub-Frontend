@@ -1,31 +1,31 @@
 <template>
-  <div v-if="pending" class="loading-state">
-    <div class="shimmer skeleton-hero"></div>
-    <div class="shimmer skeleton-content"></div>
+  <div v-if="pending" class="flex flex-col gap-5">
+    <div class="h-70 w-full animate-pulse rounded-[20px] bg-white/5 light:bg-slate-100" />
+    <div class="h-87.5 w-full animate-pulse rounded-[20px] bg-white/5 light:bg-slate-100" />
   </div>
 
-  <div v-else-if="error || !course" class="error-state glass">
+  <div v-else-if="error || !course" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-5 py-15 text-center backdrop-blur-md light:border-slate-200 light:bg-white">
     <AlertCircle :size="40" class="text-rose-400" />
-    <h2 class="error-title">Course Not Found</h2>
-    <p class="error-desc">We couldn't locate the course matching the slug "{{ route.params.slug }}".</p>
-    <NuxtLink to="/courses" class="back-btn mt-4">
+    <h2 class="mt-3 text-xl font-bold text-slate-50 light:text-slate-900">Course Not Found</h2>
+    <p class="mt-1.5 text-[13px] text-white/50 light:text-slate-500">We couldn't locate the course matching the slug "{{ route.params.slug }}".</p>
+    <NuxtLink to="/courses" class="mt-4 inline-flex items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/6 px-4 py-2 text-[13px] font-medium text-slate-200 no-underline transition-colors hover:bg-white/10 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:hover:bg-slate-200 light:hover:text-slate-900">
       <ArrowLeft :size="16" />
       <span>Back to Courses</span>
     </NuxtLink>
   </div>
 
-  <div v-else class="course-detail-page">
+  <div v-else class="flex flex-col gap-6">
     <!-- Back breadcrumb & actions topbar -->
-    <div class="top-nav">
-      <NuxtLink to="/courses" class="back-link">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <NuxtLink to="/courses" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-violet-300 no-underline transition-colors hover:text-violet-200 light:text-violet-700 light:hover:text-violet-800">
         <ArrowLeft :size="15" />
         <span>All Courses</span>
       </NuxtLink>
 
-      <div class="top-actions">
+      <div class="flex items-center gap-2.5">
         <button
           type="button"
-          class="btn-edit"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-4 py-2 text-xs font-semibold text-violet-300 transition-all hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
           @click="isEditModalOpen = true"
         >
           <Edit3 :size="15" />
@@ -34,7 +34,7 @@
 
         <button
           type="button"
-          class="btn-delete"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs font-semibold text-rose-400 transition-all hover:bg-rose-500/20 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:border-rose-200 light:bg-rose-50 light:text-rose-600 light:hover:bg-rose-100 light:hover:text-rose-700"
           @click="isDeleteModalOpen = true"
         >
           <Trash2 :size="15" />
@@ -44,42 +44,42 @@
     </div>
 
     <!-- Hero Card -->
-    <div class="hero-card glass">
-      <div class="hero-media">
-        <img :src="course.thumbnail" :alt="course.title" class="hero-img" />
-        <div class="hero-overlay"></div>
+    <div class="grid overflow-hidden rounded-[20px] border border-white/8 bg-zinc-900/70 backdrop-blur-md md:grid-cols-[360px_1fr] light:border-slate-200 light:bg-white">
+      <div class="relative min-h-60 w-full overflow-hidden">
+        <img :src="course.thumbnail" :alt="course.title" class="absolute inset-0 size-full object-cover" >
+        <div class="absolute inset-0 bg-linear-to-t from-zinc-950/80 via-zinc-950/20 to-transparent" />
       </div>
 
-      <div class="hero-content">
-        <div class="hero-pills">
+      <div class="flex flex-col justify-center p-5 sm:p-7 lg:px-8">
+        <div class="mb-3 flex flex-wrap items-center gap-2">
           <CourseStatusBadge :status="course.status" />
-          <span class="meta-pill category-pill">{{ course.category }}</span>
-          <span class="meta-pill">{{ course.level }}</span>
-          <span v-if="course.rating > 0" class="meta-pill rating-pill">
+          <span class="rounded-md border border-violet-500/35 bg-violet-500/20 px-2.5 py-0.75 text-[11px] font-semibold text-violet-300 light:border-violet-300 light:bg-violet-50 light:text-violet-700">{{ course.category }}</span>
+          <span class="rounded-md border border-white/10 bg-white/6 px-2.5 py-0.75 text-[11px] font-semibold text-white/80 light:border-slate-200 light:bg-slate-100 light:text-slate-600">{{ course.level }}</span>
+          <span v-if="course.rating > 0" class="inline-flex items-center gap-1 rounded-md border border-amber-400/30 bg-amber-400/15 px-2.5 py-0.75 text-[11px] font-semibold text-amber-400 light:border-amber-200 light:bg-amber-50 light:text-amber-600">
             <Star :size="12" class="fill-amber-400 text-amber-400" />
             {{ course.rating.toFixed(1) }} Rating
           </span>
         </div>
 
-        <h1 class="hero-title">{{ course.title }}</h1>
-        <p class="hero-desc">{{ course.description }}</p>
+        <h1 class="text-2xl leading-tight font-extrabold text-slate-50 sm:text-[26px] light:text-slate-900">{{ course.title }}</h1>
+        <p class="mt-2.5 text-[13px] leading-relaxed text-white/60 light:text-slate-600">{{ course.description }}</p>
 
-        <div class="hero-instructor-row">
-          <div class="instructor-badge">
+        <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/8 pt-4.5 light:border-slate-200">
+          <div class="flex items-center gap-2.5">
             <img
               src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4"
               alt="Instructor"
-              class="instructor-avatar"
-            />
+              class="size-9 rounded-full border-2 border-violet-500/40"
+            >
             <div>
-              <span class="inst-label">Taught by</span>
-              <span class="inst-name">{{ course.instructor }}</span>
+              <span class="block text-[10px] tracking-wide text-white/40 uppercase light:text-slate-500">Taught by</span>
+              <span class="text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ course.instructor }}</span>
             </div>
           </div>
 
-          <div class="price-box">
-            <span class="price-val">${{ course.price.toFixed(2) }}</span>
-            <span v-if="course.originalPrice > course.price" class="price-orig">
+          <div class="flex items-baseline gap-2">
+            <span class="text-2xl font-extrabold text-emerald-400 light:text-emerald-700">${{ course.price.toFixed(2) }}</span>
+            <span v-if="course.originalPrice > course.price" class="text-[13px] text-white/35 line-through light:text-slate-400">
               ${{ course.originalPrice.toFixed(2) }}
             </span>
           </div>
@@ -88,7 +88,7 @@
     </div>
 
     <!-- Stat Cards -->
-    <div class="stats-grid">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
         label="Total Course Revenue"
         :value="course.revenue"
@@ -123,66 +123,64 @@
     </div>
 
     <!-- Course Monthly Performance Chart -->
-    <div class="chart-section">
-      <SalesChart
-        :title="`${course.title} - Performance`"
-        subtitle="Monthly sales and enrollment progression for this specific course"
-        :months="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']"
-        :monthly-revenue="course.monthlyRevenue || []"
-        :monthly-enrollments="course.monthlyEnrollments || []"
-      />
-    </div>
+    <SalesChart
+      :title="`${course.title} - Performance`"
+      subtitle="Monthly sales and enrollment progression for this specific course"
+      :months="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']"
+      :monthly-revenue="course.monthlyRevenue || []"
+      :monthly-enrollments="course.monthlyEnrollments || []"
+    />
 
     <!-- Two-Column: Enrolled Students List & Course Metadata -->
-    <div class="bottom-layout">
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
       <!-- Enrolled Students Table -->
-      <div class="students-section glass">
-        <div class="section-header">
+      <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 lg:col-span-2 light:border-slate-200 light:bg-white">
+        <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h3 class="section-title">Enrolled Students</h3>
-            <p class="section-sub">Students actively studying this program</p>
+            <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Enrolled Students</h3>
+            <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Students actively studying this program</p>
           </div>
-          <span class="students-count-badge">
+          <span class="rounded-full border border-violet-500/30 bg-violet-500/20 px-2.25 py-0.75 text-[11px] font-semibold text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">
             {{ enrolledStudents.length }} Enrolled
           </span>
         </div>
 
-        <div v-if="enrolledStudents.length === 0" class="no-students">
-          <Users :size="28" class="text-white/30 mb-2" />
+        <div v-if="enrolledStudents.length === 0" class="px-2.5 py-10 text-center text-[13px] text-white/40 light:text-slate-500">
+          <Users :size="28" class="mx-auto mb-2 text-white/30 light:text-slate-300" />
           <p>No students enrolled in this course yet.</p>
         </div>
 
-        <div v-else class="enrolled-table-wrap">
-          <table class="enrolled-table">
+        <div v-else class="overflow-x-auto">
+          <table class="w-full border-collapse text-left text-[13px]">
             <thead>
               <tr>
-                <th>Student</th>
-                <th>Country</th>
-                <th>Status</th>
-                <th>Joined</th>
+                <th class="border-b border-white/8 px-3 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">Student</th>
+                <th class="hidden border-b border-white/8 px-3 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase sm:table-cell light:border-slate-200 light:text-slate-500">Country</th>
+                <th class="border-b border-white/8 px-3 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">Status</th>
+                <th class="hidden border-b border-white/8 px-3 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase md:table-cell light:border-slate-200 light:text-slate-500">Joined</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="s in enrolledStudents" :key="s.id">
-                <td>
-                  <div class="student-name-cell">
-                    <img :src="s.avatar" :alt="s.name" class="s-avatar" />
-                    <div class="s-meta">
-                      <span class="s-name">{{ s.name }}</span>
-                      <span class="s-email">{{ s.email }}</span>
+              <tr v-for="s in enrolledStudents" :key="s.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
+                <td class="border-b border-white/4 px-3 py-3 light:border-slate-100">
+                  <div class="flex items-center gap-2.5">
+                    <img :src="s.avatar" :alt="s.name" class="size-8 shrink-0 rounded-full bg-violet-500/20" >
+                    <div class="flex flex-col">
+                      <span class="font-semibold text-slate-100 light:text-slate-900">{{ s.name }}</span>
+                      <span class="text-[11px] text-white/40 light:text-slate-500">{{ s.email }}</span>
                     </div>
                   </div>
                 </td>
-                <td>
-                  <span class="s-country">{{ s.country }}</span>
+                <td class="hidden border-b border-white/4 px-3 py-3 sm:table-cell light:border-slate-100">
+                  <span class="text-xs text-white/70 light:text-slate-600">{{ s.country }}</span>
                 </td>
-                <td>
-                  <span class="s-status" :class="`status-${s.status}`">
+                <td class="border-b border-white/4 px-3 py-3 light:border-slate-100">
+                  <span class="rounded-full px-2 py-0.5 text-[11px] font-semibold capitalize" :class="statusClass(s.status)">
                     {{ s.status }}
                   </span>
                 </td>
-                <td>
-                  <span class="s-date">{{ s.joinedAt }}</span>
+                <td class="hidden border-b border-white/4 px-3 py-3 md:table-cell light:border-slate-100">
+                  <span class="text-[11px] text-white/45 light:text-slate-500">{{ s.joinedAt }}</span>
                 </td>
               </tr>
             </tbody>
@@ -191,40 +189,40 @@
       </div>
 
       <!-- Course Tags & Details Sidebar -->
-      <div class="details-sidebar glass">
-        <h3 class="section-title mb-3">Course Specifications</h3>
+      <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
+        <h3 class="mb-3 text-base font-bold text-slate-100 light:text-slate-900">Course Specifications</h3>
 
-        <div class="spec-list">
-          <div class="spec-row">
-            <span class="spec-lbl">Category:</span>
-            <span class="spec-val">{{ course.category }}</span>
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between gap-4 border-b border-white/4 pb-2 text-[13px] light:border-slate-100">
+            <span class="text-white/45 light:text-slate-500">Category:</span>
+            <span class="font-semibold text-slate-200 light:text-slate-800">{{ course.category }}</span>
           </div>
-          <div class="spec-row">
-            <span class="spec-lbl">Skill Level:</span>
-            <span class="spec-val">{{ course.level }}</span>
+          <div class="flex justify-between gap-4 border-b border-white/4 pb-2 text-[13px] light:border-slate-100">
+            <span class="text-white/45 light:text-slate-500">Skill Level:</span>
+            <span class="font-semibold text-slate-200 light:text-slate-800">{{ course.level }}</span>
           </div>
-          <div class="spec-row">
-            <span class="spec-lbl">Total Lessons:</span>
-            <span class="spec-val">{{ course.totalLessons }} modules</span>
+          <div class="flex justify-between gap-4 border-b border-white/4 pb-2 text-[13px] light:border-slate-100">
+            <span class="text-white/45 light:text-slate-500">Total Lessons:</span>
+            <span class="font-semibold text-slate-200 light:text-slate-800">{{ course.totalLessons }} modules</span>
           </div>
-          <div class="spec-row">
-            <span class="spec-lbl">Video Duration:</span>
-            <span class="spec-val">{{ course.totalHours }} hours</span>
+          <div class="flex justify-between gap-4 border-b border-white/4 pb-2 text-[13px] light:border-slate-100">
+            <span class="text-white/45 light:text-slate-500">Video Duration:</span>
+            <span class="font-semibold text-slate-200 light:text-slate-800">{{ course.totalHours }} hours</span>
           </div>
-          <div class="spec-row">
-            <span class="spec-lbl">Initial Launch:</span>
-            <span class="spec-val">{{ course.createdAt }}</span>
+          <div class="flex justify-between gap-4 border-b border-white/4 pb-2 text-[13px] light:border-slate-100">
+            <span class="text-white/45 light:text-slate-500">Initial Launch:</span>
+            <span class="font-semibold text-slate-200 light:text-slate-800">{{ course.createdAt }}</span>
           </div>
-          <div class="spec-row">
-            <span class="spec-lbl">Last Updated:</span>
-            <span class="spec-val">{{ course.updatedAt }}</span>
+          <div class="flex justify-between gap-4 border-b border-white/4 pb-2 text-[13px] light:border-slate-100">
+            <span class="text-white/45 light:text-slate-500">Last Updated:</span>
+            <span class="font-semibold text-slate-200 light:text-slate-800">{{ course.updatedAt }}</span>
           </div>
         </div>
 
-        <div class="tags-section mt-5">
-          <span class="spec-lbl block mb-2">Technologies & Tags:</span>
-          <div class="tags-flex">
-            <span v-for="tag in course.tags" :key="tag" class="tag-chip">
+        <div class="mt-5">
+          <span class="mb-2 block text-[13px] text-white/45 light:text-slate-500">Technologies &amp; Tags:</span>
+          <div class="flex flex-wrap gap-1.5">
+            <span v-for="tag in course.tags" :key="tag" class="rounded-md border border-violet-500/25 bg-violet-500/12 px-2.25 py-0.75 text-[11px] font-medium text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">
               #{{ tag }}
             </span>
           </div>
@@ -296,6 +294,12 @@ const saving = ref(false)
 const isDeleteModalOpen = ref(false)
 const deleting = ref(false)
 
+function statusClass(status: string) {
+  if (status === 'active') return 'bg-emerald-400/15 text-emerald-400 light:bg-emerald-50 light:text-emerald-700'
+  if (status === 'inactive') return 'bg-slate-400/15 text-slate-400 light:bg-slate-100 light:text-slate-600'
+  return 'bg-violet-400/15 text-violet-300 light:bg-violet-50 light:text-violet-700'
+}
+
 async function handleUpdateCourse(formData: CourseFormData) {
   saving.value = true
   try {
@@ -322,448 +326,3 @@ async function handleDeleteCourse() {
   }
 }
 </script>
-
-<style scoped>
-.course-detail-page {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.top-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #a78bfa;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.back-link:hover {
-  color: #c4b5fd;
-}
-
-.top-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.btn-edit {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 10px;
-  background: rgba(124, 58, 237, 0.15);
-  border: 1px solid rgba(124, 58, 237, 0.35);
-  color: #c4b5fd;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-edit:hover {
-  background: rgba(124, 58, 237, 0.3);
-  color: #fff;
-}
-
-.btn-delete {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 10px;
-  background: rgba(244, 63, 94, 0.1);
-  border: 1px solid rgba(244, 63, 94, 0.3);
-  color: #fb7185;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-delete:hover {
-  background: rgba(244, 63, 94, 0.2);
-  color: #fff;
-}
-
-.hero-card {
-  border-radius: 20px;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 360px 1fr;
-  background: rgba(15, 15, 25, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-@media (max-width: 900px) {
-  .hero-card {
-    grid-template-columns: 1fr;
-  }
-}
-
-.hero-media {
-  position: relative;
-  width: 100%;
-  min-height: 240px;
-  overflow: hidden;
-}
-
-.hero-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(15, 15, 25, 0.8) 100%);
-}
-
-.hero-content {
-  padding: 28px 32px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.hero-pills {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-
-.meta-pill {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.category-pill {
-  background: rgba(124, 58, 237, 0.2);
-  color: #c4b5fd;
-  border-color: rgba(124, 58, 237, 0.35);
-}
-
-.rating-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(251, 191, 36, 0.15);
-  color: #fbbf24;
-  border-color: rgba(251, 191, 36, 0.3);
-}
-
-.hero-title {
-  font-size: 26px;
-  font-weight: 800;
-  color: #f8fafc;
-  line-height: 1.25;
-}
-
-.hero-desc {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
-  line-height: 1.6;
-  margin-top: 10px;
-}
-
-.hero-instructor-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 20px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.instructor-badge {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.instructor-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(124, 58, 237, 0.4);
-}
-
-.inst-label {
-  display: block;
-  font-size: 10px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.inst-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: #f1f5f9;
-}
-
-.price-box {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.price-val {
-  font-size: 24px;
-  font-weight: 800;
-  color: #34d399;
-}
-
-.price-orig {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.35);
-  text-decoration: line-through;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-}
-
-.bottom-layout {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
-}
-
-@media (max-width: 960px) {
-  .bottom-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-.students-section,
-.details-sidebar {
-  border-radius: 18px;
-  padding: 24px;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.section-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #f1f5f9;
-}
-
-.section-sub {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 2px;
-}
-
-.students-count-badge {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 99px;
-  background: rgba(124, 58, 237, 0.2);
-  color: #c4b5fd;
-  border: 1px solid rgba(124, 58, 237, 0.3);
-}
-
-.no-students {
-  text-align: center;
-  padding: 40px 10px;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 13px;
-}
-
-.enrolled-table-wrap {
-  overflow-x: auto;
-}
-
-.enrolled-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  text-align: left;
-}
-
-.enrolled-table th {
-  padding: 10px 12px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.enrolled-table td {
-  padding: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.student-name-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.s-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(124, 58, 237, 0.2);
-}
-
-.s-meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.s-name {
-  font-weight: 600;
-  color: #f1f5f9;
-}
-
-.s-email {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.s-country {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.s-status {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 99px;
-  text-transform: capitalize;
-}
-
-.status-active {
-  background: rgba(52, 211, 153, 0.15);
-  color: #34d399;
-}
-.status-inactive {
-  background: rgba(148, 163, 184, 0.15);
-  color: #94a3b8;
-}
-
-.s-date {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.spec-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.spec-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.spec-lbl {
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.spec-val {
-  color: #e2e8f0;
-  font-weight: 600;
-}
-
-.tags-flex {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.tag-chip {
-  font-size: 11px;
-  color: #c4b5fd;
-  background: rgba(124, 58, 237, 0.12);
-  border: 1px solid rgba(124, 58, 237, 0.25);
-  padding: 3px 9px;
-  border-radius: 6px;
-}
-
-.loading-state,
-.error-state {
-  padding: 60px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  border-radius: 20px;
-}
-
-.skeleton-hero {
-  width: 100%;
-  height: 280px;
-  border-radius: 20px;
-  margin-bottom: 20px;
-}
-
-.skeleton-content {
-  width: 100%;
-  height: 350px;
-  border-radius: 20px;
-}
-
-.error-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #f8fafc;
-  margin-top: 12px;
-}
-
-.error-desc {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
-  margin-top: 6px;
-}
-
-.back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  color: #e2e8f0;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
-}
-</style>
