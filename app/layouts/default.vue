@@ -1,5 +1,10 @@
 <template>
-  <div class="default-layout">
+  <div v-if="!isHydrated || !auth.initialized" class="auth-boot-screen">
+    <div class="auth-boot-spinner" />
+    <p>Restoring your session...</p>
+  </div>
+
+  <div v-else class="default-layout">
     <!-- Background glowing orbs -->
     <div class="bg-orb" style="width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,237,0.08),transparent 70%);top:-200px;left:-200px;"></div>
     <div class="bg-orb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(37,99,235,0.06),transparent 70%);top:50%;right:-150px;"></div>
@@ -39,6 +44,7 @@
 
     <!-- Global Admin Management Drawer (Live CRUD Console) -->
     <AdminManagementDrawer
+      v-if="auth.isAdmin"
       :is-open="adminDrawerOpen"
       @close="adminDrawerOpen = false"
       @open-create-course="navigateToCourses"
@@ -52,8 +58,15 @@ import AppSidebar from '~/components/layout/AppSidebar.vue'
 import AppHeader from '~/components/layout/AppHeader.vue'
 import AppFooter from '~/components/layout/AppFooter.vue'
 import AdminManagementDrawer from '~/components/admin/AdminManagementDrawer.vue'
+import { useAuth } from '~/composables/useAuth'
 
+const auth = useAuth()
+const isHydrated = ref(false)
 const sidebarCollapsed = ref(false)
+
+onMounted(() => {
+  isHydrated.value = true
+})
 const mobileSidebarOpen = ref(false)
 const adminDrawerOpen = ref(false)
 const isMobile = ref(false)
@@ -102,6 +115,31 @@ function onDataChanged() {
 </script>
 
 <style scoped>
+.auth-boot-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: #0a0a0f;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+}
+
+.auth-boot-spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid rgba(124, 58, 237, 0.2);
+  border-top-color: #8b5cf6;
+  border-radius: 50%;
+  animation: auth-boot-spin 0.8s linear infinite;
+}
+
+@keyframes auth-boot-spin {
+  to { transform: rotate(360deg); }
+}
+
 .default-layout {
   display: flex;
   min-height: 100vh;

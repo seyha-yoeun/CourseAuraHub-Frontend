@@ -57,7 +57,7 @@
       </nav>
 
       <!-- Admin Quick Console Trigger -->
-      <div class="sidebar-admin-section">
+      <div v-if="auth.isAdmin" class="sidebar-admin-section">
         <button
           type="button"
           class="admin-trigger-btn"
@@ -73,16 +73,16 @@
       </div>
 
       <!-- Bottom profile -->
-      <div class="sidebar-profile" @click="$emit('open-admin')">
+      <div class="sidebar-profile" @click="handleProfileClick">
         <img
-          src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4"
-          alt="Avatar"
+          :src="auth.userAvatar"
+          :alt="`${auth.userName} profile`"
           class="profile-avatar"
         />
         <Transition name="fade-text">
           <div v-if="!collapsed" class="profile-info">
-            <p class="profile-name">Alex Chen</p>
-            <p class="profile-role">Platform Admin</p>
+            <p class="profile-name">{{ auth.userName }}</p>
+            <p class="profile-role">{{ auth.roleLabel }}</p>
           </div>
         </Transition>
       </div>
@@ -110,31 +110,55 @@ withDefaults(
   }
 )
 
-defineEmits(['toggle', 'close-mobile', 'open-admin'])
+const emit = defineEmits(['toggle', 'close-mobile', 'open-admin'])
 
 const route = useRoute()
+const router = useRouter()
+const auth = useAuth()
 
-const navSections = [
-  {
-    label: 'Overview',
-    items: [
-      { to: '/', label: 'Dashboard', icon: LayoutDashboard },
-      { to: '/analytics', label: 'Analytics', icon: BarChart3 },
-    ],
-  },
-  {
-    label: 'Management',
-    items: [
-      { to: '/courses', label: 'Courses', icon: BookOpen, badge: '6' },
-      { to: '/students', label: 'Students', icon: GraduationCap, badge: '10' },
-      { to: '/settings', label: 'Settings', icon: Settings },
-    ],
-  },
-]
+const navSections = computed(() => {
+  if (!auth.isAdmin) {
+    return [
+      {
+        label: 'Learning',
+        items: [
+          { to: '/courses', label: 'Courses', icon: BookOpen },
+        ],
+      },
+    ]
+  }
+
+  return [
+    {
+      label: 'Overview',
+      items: [
+        { to: '/', label: 'Dashboard', icon: LayoutDashboard },
+        { to: '/analytics', label: 'Analytics', icon: BarChart3 },
+      ],
+    },
+    {
+      label: 'Management',
+      items: [
+        { to: '/courses', label: 'Courses', icon: BookOpen },
+        { to: '/students', label: 'Students', icon: GraduationCap },
+        { to: '/settings', label: 'Settings', icon: Settings },
+      ],
+    },
+  ]
+})
 
 function isActive(to: string) {
   if (to === '/') return route.path === '/'
   return route.path.startsWith(to)
+}
+
+function handleProfileClick() {
+  if (auth.isAdmin) {
+    emit('open-admin')
+    return
+  }
+
+  router.push('/courses')
 }
 </script>
 

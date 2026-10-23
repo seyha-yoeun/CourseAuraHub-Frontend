@@ -530,26 +530,5 @@
       "enrolledAt": "2026-09-28",
       "amount": 129.99
     }
-  ],
-  "settings": {
-    "platformName": "CourseAuraHub Academy",
-    "platformTagline": "Master modern web development",
-    "currency": "USD",
-    "defaultLanguage": "en",
-    "notifications": {
-      "newEnrollment": true,
-      "courseCompletion": true,
-      "weeklyReport": true,
-      "marketingEmails": false
-    },
-    "profile": {
-      "name": "Alex Chen",
-      "email": "seyha.aura@courseaurahub.io",
-      "role": "Platform Admin",
-      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4",
-      "bio": "Full-stack developer and course creator with 8+ years of experience in Vue and Nuxt ecosystems.",
-      "website": "https://alexchen.dev",
-      "twitter": "@alexchendev"
-    }
-  }
+  ]
 }

@@ -65,7 +65,7 @@
               <div class="item-text">
                 <h4 class="item-heading">Simulated Mock Catalog & Live CRUD</h4>
                 <p class="item-desc">
-                  All courses, pricing figures, revenue charts, and student accounts are simulated mock data. Feel free to create, modify, publish, or delete courses safely.
+                  Authentication and account/profile settings are connected to the real backend. Courses, pricing figures, revenue charts, and student accounts remain simulated demo data for this phase.
                 </p>
               </div>
             </div>

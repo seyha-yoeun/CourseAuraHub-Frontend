@@ -139,11 +139,13 @@ import StatCard from '~/components/shared/StatCard.vue'
 import SalesChart from '~/components/dashboard/SalesChart.vue'
 import { useDashboardStats } from '~/composables/useDashboardStats'
 
+definePageMeta({ requiresAdmin: true })
+
 useHead({
   title: 'Sales & Learner Analytics'
 })
 
-const { kpis, charts, pending, isRefreshing, refresh } = useDashboardStats()
+const { kpis, charts, isRefreshing, refresh } = useDashboardStats()
 
 const avgOrderValue = computed(() => {
   if (!kpis.value.totalStudents) return 99.99

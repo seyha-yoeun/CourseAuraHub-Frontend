@@ -308,12 +308,10 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'open-create-course'): void
-  (e: 'data-changed'): void
+  (e: 'close' | 'open-create-course' | 'data-changed'): void
 }>()
 
-const { crud, success, error, info } = useAppToast()
+const { crud, error } = useAppToast()
 
 const activeTab = ref<'courses' | 'students' | 'tools'>('courses')
 

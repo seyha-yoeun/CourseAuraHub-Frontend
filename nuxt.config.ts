@@ -14,9 +14,15 @@ export default defineNuxtConfig({
     fallback: 'dark',
   },
   runtimeConfig: {
+    apiBase: process.env.NUXT_API_BASE || 'http://localhost:8080/api/v1',
+    cookieSecure: process.env.NUXT_COOKIE_SECURE
+      ? process.env.NUXT_COOKIE_SECURE === 'true'
+      : process.env.NODE_ENV === 'production',
+    cookieSameSite: process.env.NUXT_COOKIE_SAME_SITE || 'lax',
+    cookieDomain: process.env.NUXT_COOKIE_DOMAIN || '',
     public: {
-      apiBase: process.env.NUXT_API_BASE || 'http://localhost:8080/api/v1',
-      siteUrl: process.env.NUXT_SITE_URL || 'http://localhost:3000'
+      siteUrl: process.env.NUXT_SITE_URL || 'http://localhost:3000',
+      backendUrl: process.env.NUXT_PUBLIC_BACKEND_URL || 'http://localhost:8080'
     }
   },
   nitro: {

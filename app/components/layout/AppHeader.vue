@@ -39,6 +39,7 @@
     <div class="header-right">
       <!-- Admin Management Trigger -->
       <button
+        v-if="auth.isAdmin"
         type="button"
         class="admin-quick-btn"
         title="Open Admin Management Console (Live CRUD)"
@@ -250,10 +251,10 @@
         <div
           class="header-avatar"
           :class="{ 'avatar-active': isAvatarOpen }"
-          title="Alex Chen (Platform Administrator)"
+          :title="`${auth.userName} (${auth.roleLabel})`"
           @click="toggleAvatar"
         >
-          <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4" alt="Alex Chen Profile" />
+          <img :src="auth.userAvatar" :alt="`${auth.userName} profile`" />
         </div>
 
         <!-- Avatar Dropdown Menu -->
@@ -263,16 +264,16 @@
             <div class="avatar-user-card">
               <div class="relative">
                 <img
-                  src="https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4"
-                  alt="Alex Chen"
+                  :src="auth.userAvatar"
+                  :alt="auth.userName"
                   class="user-card-avatar"
                 />
                 <span class="online-indicator"></span>
               </div>
               <div class="user-card-meta">
-                <span class="user-card-name">Alex Chen</span>
-                <span class="user-card-email">alex.chen@courseaurahub.io</span>
-                <span class="user-card-badge">Platform Administrator</span>
+                <span class="user-card-name">{{ auth.userName }}</span>
+                <span class="user-card-email">{{ auth.userEmail }}</span>
+                <span class="user-card-badge">{{ auth.roleLabel }}</span>
               </div>
             </div>
 
@@ -281,6 +282,7 @@
             <!-- Navigation Links -->
             <div class="avatar-menu-list">
               <button
+                v-if="auth.isAdmin"
                 type="button"
                 class="avatar-menu-item"
                 @click="handleOpenAdmin"
@@ -300,6 +302,7 @@
               </NuxtLink>
 
               <NuxtLink
+                v-if="auth.isAdmin"
                 to="/students"
                 class="avatar-menu-item"
                 @click="isAvatarOpen = false"
@@ -309,6 +312,7 @@
               </NuxtLink>
 
               <NuxtLink
+                v-if="auth.isAdmin"
                 to="/analytics"
                 class="avatar-menu-item"
                 @click="isAvatarOpen = false"
@@ -318,6 +322,7 @@
               </NuxtLink>
 
               <NuxtLink
+                v-if="auth.isAdmin"
                 to="/settings"
                 class="avatar-menu-item"
                 @click="isAvatarOpen = false"
@@ -402,6 +407,7 @@ import {
 } from 'lucide-vue-next'
 import AppHelpModal from '~/components/shared/AppHelpModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
+import { useAuth } from '~/composables/useAuth'
 import type { Course, Student } from '~/types'
 
 defineProps<{ sidebarCollapsed: boolean }>()
@@ -410,7 +416,8 @@ const emit = defineEmits(['toggle-sidebar', 'open-admin'])
 const route = useRoute()
 const router = useRouter()
 const colorMode = useColorMode()
-const { info, success } = useAppToast()
+const auth = useAuth()
+const { info } = useAppToast()
 
 // Dropdown and modal states
 const isNotifOpen = ref(false)
@@ -568,9 +575,9 @@ function handleOpenHelp() {
   isHelpOpen.value = true
 }
 
-function handleLogout() {
+async function handleLogout() {
   isAvatarOpen.value = false
-  success('Logged Out Successfully', 'Your demo administrator session has been reset.')
+  await auth.logout()
 }
 
 // Fetch search datasets (courses & students)
@@ -579,18 +586,24 @@ const allStudents = ref<Student[]>([])
 
 async function loadSearchData() {
   try {
-    const [cData, sData] = await Promise.all([
-      $fetch<Course[]>('/api/courses').catch(() => []),
-      $fetch<Student[]>('/api/students').catch(() => [])
-    ])
-    allCourses.value = cData || []
-    allStudents.value = sData || []
-  } catch (e) {
-    console.error('Error fetching search indices:', e)
+    const coursesPromise = $fetch<Course[]>('/api/courses').catch(() => [])
+    const studentsPromise = auth.isAdmin
+      ? $fetch<Student[]>('/api/students').catch(() => [])
+      : Promise.resolve([])
+
+    const [courses, students] = await Promise.all([coursesPromise, studentsPromise])
+    allCourses.value = courses || []
+    allStudents.value = students || []
+  } catch (error) {
+    console.error('Unable to load search data:', error)
   }
 }
 
 onMounted(() => {
+  loadSearchData()
+})
+
+watch(() => auth.isAdmin, () => {
   loadSearchData()
 })
 
@@ -630,9 +643,12 @@ const filteredStudents = computed(() => {
 const filteredPages = computed(() => {
   const q = searchQuery.value.toLowerCase().trim()
   if (!q) return []
-  return quickPages.filter(p =>
-    p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)
-  ).slice(0, 3)
+  return quickPages
+    .filter(page => auth.isAdmin || page.to === '/courses')
+    .filter(p =>
+      p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)
+    )
+    .slice(0, 3)
 })
 
 function closeSearch() {

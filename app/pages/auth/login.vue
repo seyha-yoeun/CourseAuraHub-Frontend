@@ -14,6 +14,10 @@
 
     <!-- Email/Password Form -->
     <form @submit.prevent="handleLogin" class="auth-form">
+      <div v-if="pageError" class="auth-alert" role="alert">
+        {{ pageError }}
+      </div>
+
       <div class="form-field" v-motion="fieldMotion(0)">
         <label for="email" class="form-label">Email</label>
         <div class="auth-input-wrapper">
@@ -23,6 +27,7 @@
             v-model="form.email"
             type="email"
             class="auth-input"
+            :class="{ 'auth-input-error': errors.email }"
             placeholder="you@example.com"
             autocomplete="email"
             required
@@ -33,10 +38,7 @@
       </div>
 
       <div class="form-field" v-motion="fieldMotion(0.08)">
-        <div class="form-label-row">
-          <label for="password" class="form-label">Password</label>
-          <NuxtLink to="/auth/forgot-password" class="forgot-link">Forgot password?</NuxtLink>
-        </div>
+        <label for="password" class="form-label">Password</label>
         <div class="auth-input-wrapper">
           <Lock class="auth-input-icon" :size="18" />
           <input
@@ -44,6 +46,7 @@
             v-model="form.password"
             :type="showPassword ? 'text' : 'password'"
             class="auth-input"
+            :class="{ 'auth-input-error': errors.password }"
             placeholder="Enter your password"
             autocomplete="current-password"
             required
@@ -95,33 +98,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useAuth } from '~/composables/useAuth'
-import { 
-  Mail, 
-  Lock, 
-  Eye, 
-  EyeOff, 
-  Loader2 
+import { toApiError } from '~/utils/apiError'
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Loader2,
 } from 'lucide-vue-next'
 import SocialLoginButtons from '~/components/auth/SocialLoginButtons.vue'
 
-const { login, initiateOAuth2, loading: authLoading } = useAuth()
-
-const loading = authLoading
+const route = useRoute()
+const auth = useAuth()
+const { login, initiateOAuth2, loading } = auth
 
 const form = reactive({
   email: '',
   password: '',
-  rememberMe: false
+  rememberMe: false,
 })
 
 const errors = reactive({
   email: '',
-  password: ''
+  password: '',
 })
 
+const pageError = ref('')
 const showPassword = ref(false)
+
+if (route.query.session === 'expired') {
+  pageError.value = 'Your session has expired. Please sign in again.'
+}
+
+onMounted(() => {
+  if (auth.initializationError && !pageError.value) {
+    pageError.value = auth.initializationError
+  }
+})
 
 const cardMotion = {
   initial: { opacity: 0, y: 30 },
@@ -139,6 +154,7 @@ function validateForm() {
   let valid = true
   errors.email = ''
   errors.password = ''
+  pageError.value = ''
 
   if (!form.email) {
     errors.email = 'Email is required'
@@ -161,8 +177,19 @@ async function handleLogin() {
 
   try {
     await login(form.email, form.password, form.rememberMe)
-  } catch (e) {
-    // Error is handled in the store
+  } catch (error) {
+    const apiError = toApiError(error, 'Login failed')
+
+    if (apiError.fieldErrors.email) errors.email = apiError.fieldErrors.email
+    if (apiError.fieldErrors.password) errors.password = apiError.fieldErrors.password
+
+    if (apiError.status === 401) {
+      pageError.value = 'Invalid email or password. Please try again.'
+    } else if (apiError.status === 429) {
+      pageError.value = 'Too many sign-in attempts. Please wait a moment and try again.'
+    } else if (!Object.keys(apiError.fieldErrors).length) {
+      pageError.value = apiError.message
+    }
   }
 }
 
@@ -255,6 +282,16 @@ html.light .form-label {
 
 html.light .forgot-link {
   color: var(--emerald-600);
+}
+
+.auth-alert {
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .form-error {

@@ -12,7 +12,7 @@
       <button
         type="button"
         class="save-btn"
-        :disabled="saving"
+        :disabled="saving || pending || Boolean(loadErrorMessage)"
         @click="saveSettings"
       >
         <Loader2 v-if="saving" :size="16" class="animate-spin" />
@@ -30,7 +30,20 @@
       </div>
     </Transition>
 
+    <div v-if="saveError" class="error-banner" role="alert">
+      <span>{{ saveError }}</span>
+    </div>
+
     <div v-if="pending" class="shimmer skeleton-settings"></div>
+
+    <div v-else-if="loadErrorMessage" class="settings-error glass">
+      <h3 class="card-title">Unable to load settings</h3>
+      <p class="card-desc">{{ loadErrorMessage }}</p>
+      <button type="button" class="save-btn" @click="refresh()">
+        <RefreshCw :size="16" />
+        <span>Try Again</span>
+      </button>
+    </div>
 
     <div v-else class="settings-grid">
       <!-- Profile Settings -->
@@ -44,10 +57,10 @@
         </div>
 
         <div class="avatar-edit-row">
-          <img :src="form.profile.avatar" alt="Avatar" class="avatar-preview" />
+          <img :src="form.profile.avatar || auth.userAvatar" alt="Avatar" class="avatar-preview" />
           <div class="avatar-meta">
             <span class="avatar-label">Profile Avatar</span>
-            <span class="avatar-note">Using DiceBear animated SVGs for avatars</span>
+            <span class="avatar-note">Managed through your account profile</span>
           </div>
         </div>
 
@@ -59,13 +72,13 @@
             </div>
             <div class="form-group">
               <label class="form-label">Email Address</label>
-              <input v-model="form.profile.email" type="email" class="form-input" />
+              <input v-model="form.profile.email" type="email" class="form-input" readonly />
             </div>
           </div>
 
           <div class="form-group">
             <label class="form-label">Platform Role</label>
-            <input v-model="form.profile.role" type="text" class="form-input" />
+            <input v-model="form.profile.role" type="text" class="form-input" readonly />
           </div>
 
           <div class="form-group">
@@ -206,25 +219,37 @@ import {
   Save,
   Check,
   CheckCircle2,
-  Loader2
+  Loader2,
+  RefreshCw,
 } from 'lucide-vue-next'
 import type { PlatformSettings } from '~/types'
 import { useAppToast } from '~/composables/useAppToast'
+import { useAuth } from '~/composables/useAuth'
+import { toApiError } from '~/utils/apiError'
+
+definePageMeta({ requiresAdmin: true })
 
 useHead({
-  title: 'Platform Settings'
+  title: 'Platform Settings',
 })
 
-const { success, error } = useAppToast()
+const auth = useAuth()
+const { success } = useAppToast()
 
-const { data: initialSettings, pending } = await useAsyncData<PlatformSettings>(
+const {
+  data: initialSettings,
+  pending,
+  error: settingsError,
+  refresh,
+} = await useAsyncData<PlatformSettings>(
   'platform-settings',
-  () => $fetch('/api/settings')
+  () => $fetch<PlatformSettings>('/api/settings', { credentials: 'include' }),
+  { server: false },
 )
 
 const form = reactive<PlatformSettings>({
-  platformName: 'CourseAuraHub Academy',
-  platformTagline: 'Master modern web development',
+  platformName: '',
+  platformTagline: '',
   currency: 'USD',
   defaultLanguage: 'en',
   notifications: {
@@ -234,48 +259,83 @@ const form = reactive<PlatformSettings>({
     marketingEmails: false,
   },
   profile: {
-    name: 'Alex Chen',
-    email: 'alex.chen@courseaurahub.io',
-    role: 'Platform Admin',
-    avatar: 'https://api.dicebear.com/9.x/avataaars/svg?seed=AlexAdmin&backgroundColor=b6e3f4',
-    bio: 'Full-stack developer and course creator with 8+ years of experience.',
-    website: 'https://alexchen.dev',
-    twitter: '@alexchendev',
+    name: '',
+    email: '',
+    role: '',
+    avatar: '',
+    bio: '',
+    website: '',
+    twitter: '',
   },
+})
+
+const loadErrorMessage = computed(() => {
+  if (!settingsError.value) return ''
+  return toApiError(settingsError.value, 'Unable to load platform settings').message
 })
 
 watch(
   initialSettings,
-  (val) => {
-    if (val) {
-      Object.assign(form, val)
+  (value) => {
+    if (value) {
+      Object.assign(form, value)
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 const saving = ref(false)
 const saveSuccess = ref(false)
+const saveError = ref('')
+let successTimer: ReturnType<typeof setTimeout> | undefined
 
 async function saveSettings() {
   saving.value = true
   saveSuccess.value = false
+  saveError.value = ''
+
   try {
-    await $fetch('/api/settings', {
+    const saved = await $fetch<PlatformSettings>('/api/settings', {
       method: 'PUT',
-      body: form,
+      credentials: 'include',
+      body: {
+        platformName: form.platformName,
+        platformTagline: form.platformTagline,
+        currency: form.currency,
+        defaultLanguage: form.defaultLanguage,
+        notifications: form.notifications,
+        profile: {
+          name: form.profile.name,
+          avatar: form.profile.avatar,
+          bio: form.profile.bio,
+          website: form.profile.website,
+          twitter: form.profile.twitter,
+        },
+      },
     })
+
+    Object.assign(form, saved)
+    auth.setProfile(saved.profile)
     saveSuccess.value = true
     success('Settings Saved', 'Platform branding and profile details updated successfully.')
-    setTimeout(() => {
+
+    if (successTimer) clearTimeout(successTimer)
+    successTimer = setTimeout(() => {
       saveSuccess.value = false
     }, 4000)
-  } catch (err: unknown) {
-    error('Save Failed', (err as Error).message || 'Failed to save settings')
+  } catch (error) {
+    const apiError = toApiError(error, 'Failed to save settings')
+    saveError.value = apiError.status === 403
+      ? 'You do not have permission to update platform settings.'
+      : apiError.message
   } finally {
     saving.value = false
   }
 }
+
+onUnmounted(() => {
+  if (successTimer) clearTimeout(successTimer)
+})
 </script>
 
 <style scoped>
@@ -342,6 +402,37 @@ async function saveSettings() {
   color: #34d399;
   font-size: 13px;
   font-weight: 500;
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.settings-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 24px;
+  border-radius: 18px;
+}
+
+.settings-error .save-btn {
+  margin-top: 4px;
+}
+
+.form-input[readonly] {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .settings-grid {

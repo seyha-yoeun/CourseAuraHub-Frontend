@@ -49,47 +49,63 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuth } from '~/composables/useAuth'
-import { 
-  CheckCircle, 
-  AlertCircle, 
-  Loader2 
+import { toApiError } from '~/utils/apiError'
+import {
+  CheckCircle,
+  AlertCircle,
+  Loader2,
 } from 'lucide-vue-next'
 
 const router = useRouter()
 const route = useRoute()
-const { fetchUser } = useAuth()
+const auth = useAuth()
 
 type Status = 'loading' | 'success' | 'error'
 const status = ref<Status>('loading')
 const errorMessage = ref('')
+let redirectTimer: ReturnType<typeof setTimeout> | undefined
 
 const cardMotion = {
   initial: { opacity: 0, scale: 0.95 },
   enter: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }
 }
 
+function getOAuthErrorMessage() {
+  const error = route.query.error
+  if (!error) return ''
+
+  const value = Array.isArray(error) ? error[0] : error
+  if (value === 'access_denied') {
+    return 'Sign-in was cancelled or access was denied.'
+  }
+
+  return 'The authentication provider could not complete the sign-in.'
+}
+
 async function handleCallback() {
-  try {
-    // The backend callback endpoint sets cookies, then we fetch user to verify
-    const success = await fetchUser()
-    
-    if (success) {
-      status.value = 'success'
-      
-      // Redirect after brief delay
-      setTimeout(() => {
-        const redirect = route.query.redirect as string || '/'
-        router.push(redirect)
-      }, 1500)
-    } else {
-      throw new Error('Failed to authenticate')
-    }
-  } catch (e) {
+  const oauthError = getOAuthErrorMessage()
+  if (oauthError) {
     status.value = 'error'
-    errorMessage.value = (e as Error)?.message || 'Unable to complete authentication. Please try again.'
+    errorMessage.value = oauthError
+    return
+  }
+
+  try {
+    await auth.fetchUser()
+    status.value = 'success'
+
+    redirectTimer = setTimeout(() => {
+      router.push(auth.homeRoute)
+    }, 1200)
+  } catch (error) {
+    status.value = 'error'
+    errorMessage.value = toApiError(
+      error,
+      'Unable to complete authentication. Please try again.',
+    ).message
   }
 }
 
@@ -101,6 +117,10 @@ function retryLogin() {
 
 onMounted(() => {
   handleCallback()
+})
+
+onUnmounted(() => {
+  if (redirectTimer) clearTimeout(redirectTimer)
 })
 
 useHead({

@@ -14,6 +14,10 @@
 
     <!-- Registration Form -->
     <form @submit.prevent="handleRegister" class="auth-form">
+      <div v-if="pageError" class="auth-alert" role="alert">
+        {{ pageError }}
+      </div>
+
       <div class="form-row" v-motion="fieldMotion(0)">
         <div class="form-field">
           <label for="firstName" class="form-label">First Name</label>
@@ -172,22 +176,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useAuth } from '~/composables/useAuth'
-import { 
-  User, 
-  Mail, 
-  Lock, 
-  Eye, 
-  EyeOff, 
-  Loader2 
+import { toApiError } from '~/utils/apiError'
+import {
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Loader2,
 } from 'lucide-vue-next'
 import SocialLoginButtons from '~/components/auth/SocialLoginButtons.vue'
 import PasswordStrengthMeter from '~/components/auth/PasswordStrengthMeter.vue'
 
-const { register, initiateOAuth2, loading: authLoading } = useAuth()
-
-const loading = authLoading
+const auth = useAuth()
+const { register, initiateOAuth2, loading } = auth
+const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
 
 const form = reactive({
   firstName: '',
@@ -207,6 +212,7 @@ const errors = reactive({
   terms: ''
 })
 
+const pageError = ref('')
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 
@@ -223,12 +229,12 @@ function fieldMotion(delay = 0) {
 }
 
 const isFormValid = computed(() => {
-  return form.firstName.trim() &&
-         form.lastName.trim() &&
-         form.email.trim() &&
-         form.password.length >= 8 &&
-         form.password === form.confirmPassword &&
-         form.terms
+  return form.firstName.trim().length >= 2
+    && form.lastName.trim().length >= 2
+    && form.email.trim()
+    && PASSWORD_PATTERN.test(form.password)
+    && form.password === form.confirmPassword
+    && form.terms
 })
 
 function validateForm() {
@@ -239,14 +245,21 @@ function validateForm() {
   errors.password = ''
   errors.confirmPassword = ''
   errors.terms = ''
+  pageError.value = ''
 
   if (!form.firstName.trim()) {
     errors.firstName = 'First name is required'
+    valid = false
+  } else if (form.firstName.trim().length < 2) {
+    errors.firstName = 'First name must be at least 2 characters'
     valid = false
   }
 
   if (!form.lastName.trim()) {
     errors.lastName = 'Last name is required'
+    valid = false
+  } else if (form.lastName.trim().length < 2) {
+    errors.lastName = 'Last name must be at least 2 characters'
     valid = false
   }
 
@@ -261,8 +274,8 @@ function validateForm() {
   if (!form.password) {
     errors.password = 'Password is required'
     valid = false
-  } else if (form.password.length < 8) {
-    errors.password = 'Password must be at least 8 characters'
+  } else if (!PASSWORD_PATTERN.test(form.password)) {
+    errors.password = 'Use at least 8 characters with uppercase, lowercase, a number, and a special character'
     valid = false
   }
 
@@ -287,8 +300,21 @@ async function handleRegister() {
 
   try {
     await register(form.firstName, form.lastName, form.email, form.password)
-  } catch (e) {
-    // Error is handled in the store
+  } catch (error) {
+    const apiError = toApiError(error, 'Registration failed')
+
+    if (apiError.fieldErrors.firstName) errors.firstName = apiError.fieldErrors.firstName
+    if (apiError.fieldErrors.lastName) errors.lastName = apiError.fieldErrors.lastName
+    if (apiError.fieldErrors.email) errors.email = apiError.fieldErrors.email
+    if (apiError.fieldErrors.password) errors.password = apiError.fieldErrors.password
+
+    if (apiError.status === 409) {
+      errors.email = apiError.fieldErrors.email || 'An account with this email already exists'
+    } else if (apiError.status === 429) {
+      pageError.value = 'Too many registration attempts. Please wait a moment and try again.'
+    } else if (!Object.keys(apiError.fieldErrors).length) {
+      pageError.value = apiError.message
+    }
   }
 }
 
@@ -364,6 +390,16 @@ html.light .auth-subtitle {
 
 html.light .form-label {
   color: #334155;
+}
+
+.auth-alert {
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .form-error {

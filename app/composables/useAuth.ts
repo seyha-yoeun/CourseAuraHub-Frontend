@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppToast } from '~/composables/useAppToast'
+import { ApiError, toApiError } from '~/utils/apiError'
 
-export interface User {
+export interface AuthUser {
   userId: string
   email: string
   firstName: string
@@ -13,109 +14,187 @@ export interface User {
   avatar?: string
 }
 
-export interface AuthResponse {
-  success: boolean
-  message: string
-  data: {
-    accessToken: string | null
-    refreshToken: string | null
-    tokenType: string
-    expiresIn: number
-    userId: string
-    email: string
-    firstName: string
-    lastName: string
-    role: string
-    provider: string
-  }
-  timestamp: string
+export type User = AuthUser
+
+type OAuthProvider = 'google' | 'github' | 'facebook'
+
+const ADMIN_ROLE = 'ROLE_ADMIN'
+
+function getSafeRedirect(value: unknown) {
+  if (typeof value !== 'string') return null
+  if (!value.startsWith('/') || value.startsWith('//')) return null
+  if (value.startsWith('/auth/')) return null
+  return value
+}
+
+function getDefaultAvatar(seed: string) {
+  return `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(seed || 'CourseAura')}&backgroundColor=b6e3f4`
 }
 
 export const useAuthStore = defineStore('auth', () => {
   const router = useRouter()
-  const { success, error } = useAppToast()
+  const { success, warning } = useAppToast()
 
-  const user = ref<User | null>(null)
+  const user = ref<AuthUser | null>(null)
   const loading = ref(false)
   const initialized = ref(false)
+  const initializing = ref<Promise<void> | null>(null)
+  const initializationError = ref<string | null>(null)
+  const lastError = ref<ApiError | null>(null)
 
-  const isAuthenticated = computed(() => !!user.value)
-  const isAdmin = computed(() => user.value?.role === 'ROLE_ADMIN')
-  const userName = computed(() => user.value ? `${user.value.firstName} ${user.value.lastName}` : '')
-  const userInitials = computed(() => 
-    user.value ? `${user.value.firstName[0]}${user.value.lastName[0]}`.toUpperCase() : 'U'
-  )
+  const isAuthenticated = computed(() => Boolean(user.value))
+  const isAdmin = computed(() => user.value?.role === ADMIN_ROLE)
 
-  function setUser(userData: User) {
+  const userName = computed(() => {
+    if (!user.value) return ''
+    const fullName = [user.value.firstName, user.value.lastName]
+      .map(part => part?.trim())
+      .filter(Boolean)
+      .join(' ')
+
+    return fullName || user.value.email || 'Account'
+  })
+
+  const userEmail = computed(() => user.value?.email || '')
+
+  const userInitials = computed(() => {
+    const first = user.value?.firstName?.trim().charAt(0) || ''
+    const last = user.value?.lastName?.trim().charAt(0) || ''
+    const initials = `${first}${last}`.toUpperCase()
+
+    return initials || user.value?.email?.charAt(0).toUpperCase() || 'U'
+  })
+
+  const userAvatar = computed(() => {
+    if (user.value?.avatar) return user.value.avatar
+    return getDefaultAvatar(user.value?.email || userName.value)
+  })
+
+  const roleLabel = computed(() => {
+    switch (user.value?.role) {
+      case 'ROLE_ADMIN':
+        return 'Platform Administrator'
+      case 'ROLE_INSTRUCTOR':
+        return 'Instructor'
+      case 'ROLE_USER':
+        return 'Student'
+      default:
+        return user.value?.role || 'Member'
+    }
+  })
+
+  const homeRoute = computed(() => isAdmin.value ? '/' : '/courses')
+  const sessionExpired = computed(() => lastError.value?.status === 401 || lastError.value?.code === 'SESSION_EXPIRED')
+
+  function setUser(userData: AuthUser) {
     user.value = userData
+    lastError.value = null
+  }
+
+  function updateUser(patch: Partial<AuthUser>) {
+    if (!user.value) return
+    user.value = { ...user.value, ...patch }
+  }
+
+  function setProfile(profile: { name?: string; email?: string; role?: string; avatar?: string }) {
+    const patch: Partial<AuthUser> = {}
+
+    if (profile.name?.trim()) {
+      const [firstName, ...rest] = profile.name.trim().split(/\s+/)
+      patch.firstName = firstName || ''
+      patch.lastName = rest.join(' ')
+    }
+
+    if (profile.email) patch.email = profile.email
+    if (profile.role) patch.role = profile.role
+    if (profile.avatar) patch.avatar = profile.avatar
+
+    updateUser(patch)
   }
 
   function clearAuth() {
     user.value = null
   }
 
-  async function initializeAuth() {
-    if (initialized.value) return
-    
-    try {
-      await fetchUser()
-    } catch {
-      // Not authenticated, that's fine
-    }
-    initialized.value = true
+  function handleError(error: unknown, fallbackMessage: string) {
+    const apiError = toApiError(error, fallbackMessage)
+    lastError.value = apiError
+    return apiError
+  }
+
+  async function initializeAuth(force = false) {
+    if (initialized.value && !force) return
+    if (initializing.value) return initializing.value
+
+    initializing.value = (async () => {
+      initializationError.value = null
+
+      try {
+        await fetchUser()
+      } catch (error) {
+        const apiError = handleError(error, 'Unable to restore your session')
+
+        if (apiError.status !== 401) {
+          initializationError.value = apiError.message
+        }
+      } finally {
+        initialized.value = true
+        initializing.value = null
+      }
+    })()
+
+    return initializing.value
   }
 
   async function fetchUser(): Promise<boolean> {
     try {
-      const response = await $fetch<AuthResponse>('/api/auth/me')
-      if (response.success && response.data) {
-        setUser({
-          userId: response.data.userId,
-          email: response.data.email,
-          firstName: response.data.firstName,
-          lastName: response.data.lastName,
-          role: response.data.role,
-          provider: response.data.provider
-        })
-        return true
+      const response = await $fetch<AuthUser>('/api/auth/me', {
+        credentials: 'include',
+      })
+
+      if (!response?.userId) {
+        throw new ApiError('The server returned an invalid session.', 502)
       }
-    } catch {
-      clearAuth()
+
+      setUser(response)
+      return true
+    } catch (error) {
+      const apiError = handleError(error, 'Unable to restore your session')
+
+      if (apiError.status === 401) {
+        clearAuth()
+      }
+
+      throw apiError
     }
-    return false
   }
 
   async function login(email: string, password: string, rememberMe = false) {
     loading.value = true
+    lastError.value = null
+
     try {
-      const response = await $fetch<AuthResponse>('/api/auth/login', {
+      const response = await $fetch<AuthUser>('/api/auth/login', {
         method: 'POST',
-        body: { email, password, rememberMe }
+        credentials: 'include',
+        body: { email, password, rememberMe },
       })
-      
-      if (response.success && response.data) {
-        setUser({
-          userId: response.data.userId,
-          email: response.data.email,
-          firstName: response.data.firstName,
-          lastName: response.data.lastName,
-          role: response.data.role,
-          provider: response.data.provider
-        })
-        success('Welcome Back!', `Hello ${response.data.firstName}`)
-        
-        const redirect = router.currentRoute.value.query.redirect as string || '/'
-        await router.push(redirect)
-        
-        return response
+
+      if (!response?.userId) {
+        throw new ApiError('The server returned an invalid login response.', 502)
       }
-      throw new Error(response.message || 'Login failed')
-    } catch (e: unknown) {
-      const message = (e as { response?: { _data?: { message: string } } }).response?._data?.message 
-        || (e as Error)?.message 
-        || 'Invalid email or password'
-      error('Login Failed', message)
-      throw e
+
+      setUser(response)
+      initialized.value = true
+
+      success('Welcome Back!', `Hello ${response.firstName || response.email}`)
+
+      const redirect = getSafeRedirect(router.currentRoute.value.query.redirect)
+      await router.push(redirect || homeRoute.value)
+
+      return response
+    } catch (error) {
+      throw handleError(error, 'Login failed')
     } finally {
       loading.value = false
     }
@@ -123,78 +202,110 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function register(firstName: string, lastName: string, email: string, password: string) {
     loading.value = true
+    lastError.value = null
+
     try {
-      const response = await $fetch<AuthResponse>('/api/auth/register', {
+      const response = await $fetch<AuthUser>('/api/auth/register', {
         method: 'POST',
-        body: { firstName, lastName, email, password }
+        credentials: 'include',
+        body: { firstName, lastName, email, password },
       })
-      
-      if (response.success && response.data) {
-        setUser({
-          userId: response.data.userId,
-          email: response.data.email,
-          firstName: response.data.firstName,
-          lastName: response.data.lastName,
-          role: response.data.role,
-          provider: response.data.provider
-        })
-        success('Account Created!', `Welcome to CourseAuraHub, ${response.data.firstName}`)
-        
-        await router.push('/')
-        
-        return response
+
+      if (!response?.userId) {
+        throw new ApiError('The server returned an invalid registration response.', 502)
       }
-      throw new Error(response.message || 'Registration failed')
-    } catch (e: unknown) {
-      const message = (e as { response?: { _data?: { message: string } } }).response?._data?.message 
-        || (e as Error)?.message 
-        || 'Registration failed'
-      error('Registration Failed', message)
-      throw e
+
+      setUser(response)
+      initialized.value = true
+
+      success('Account Created!', `Welcome to CourseAuraHub, ${response.firstName || response.email}`)
+      await router.push(homeRoute.value)
+
+      return response
+    } catch (error) {
+      throw handleError(error, 'Registration failed')
     } finally {
       loading.value = false
+    }
+  }
+
+  async function refreshSession() {
+    try {
+      const response = await $fetch<AuthUser>('/api/auth/refresh', {
+        method: 'POST',
+        credentials: 'include',
+      })
+
+      if (!response?.userId) {
+        throw new ApiError('The server returned an invalid session.', 502)
+      }
+
+      setUser(response)
+      initialized.value = true
+      return response
+    } catch (error) {
+      const apiError = handleError(error, 'Session expired')
+
+      if (apiError.status === 401) {
+        clearAuth()
+      }
+
+      throw apiError
     }
   }
 
   async function logout() {
     loading.value = true
+    lastError.value = null
+
     try {
-      await $fetch('/api/auth/logout', { method: 'POST' })
-    } catch {
-      // Ignore logout API errors
+      await $fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      })
+    } catch (error) {
+      handleError(error, 'Logout failed')
+      warning('Signed Out Locally', 'The server could not be reached, but your local session was cleared.')
     } finally {
       clearAuth()
-      success('Logged Out', 'You have been successfully logged out')
+      initialized.value = true
       loading.value = false
       await router.push('/auth/login')
     }
   }
 
-  function initiateOAuth2(provider: 'google' | 'github' | 'facebook') {
-    const config = useRuntimeConfig()
-    const frontendUrl = config.public.siteUrl || 'http://localhost:3000'
-    // Use our Nuxt API callback endpoint as redirect_uri so it can set cookies
-    const redirectUri = `${frontendUrl}/api/auth/callback`
-    // Use our Nuxt API endpoint to properly handle CSRF and cookies
-    window.location.href = `/api/auth/oauth2/${provider}?redirect_uri=${encodeURIComponent(redirectUri)}`
+  function initiateOAuth2(provider: OAuthProvider) {
+    if (!import.meta.client) return
+    window.location.href = `/api/auth/oauth2/${provider}`
   }
 
   return {
     user,
     loading,
     initialized,
+    initializing,
+    initializationError,
+    lastError,
     isAuthenticated,
     isAdmin,
     userName,
+    userEmail,
     userInitials,
+    userAvatar,
+    roleLabel,
+    homeRoute,
+    sessionExpired,
     setUser,
+    updateUser,
+    setProfile,
     clearAuth,
     initializeAuth,
     fetchUser,
     login,
     register,
+    refreshSession,
     logout,
-    initiateOAuth2
+    initiateOAuth2,
   }
 })
 
