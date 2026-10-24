@@ -2,12 +2,12 @@
   <header class="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-white/8 bg-zinc-950/85 px-3.5 backdrop-blur-xl transition-colors duration-300 sm:px-6 light:border-slate-200 light:bg-white/90">
     <div class="flex min-w-0 items-center gap-4">
       <button
-        class="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-colors hover:border-violet-500/40 hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
+        class="group flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-violet-500/40 hover:bg-white/8 hover:text-white hover:shadow-[0_4px_14px_rgba(124,58,237,0.14)] active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-violet-300 light:hover:bg-slate-200 light:hover:text-slate-900"
         aria-label="Toggle sidebar"
         title="Toggle Sidebar (Ctrl+B)"
-        @click="$emit('toggle-sidebar')"
+        @click="emit('toggle-sidebar')"
       >
-        <Menu :size="20" :stroke-width="1.5" />
+        <Menu :size="20" :stroke-width="1.5" class="transition-transform duration-200 ease-out group-hover:scale-110" />
       </button>
 
       <!-- Breadcrumb with CourseAuraHub Academy branding and high contrast -->
@@ -43,18 +43,6 @@
     </div>
 
     <div class="flex items-center gap-2.5">
-      <!-- Admin Management Trigger -->
-      <button
-        v-if="auth.isAdmin"
-        type="button"
-        class="flex cursor-pointer items-center gap-1.5 rounded-lg border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold whitespace-nowrap text-violet-300 transition-all hover:border-violet-500/60 hover:bg-violet-500/30 hover:text-white hover:shadow-[0_0_15px_rgba(124,58,237,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
-        title="Open Admin Management Console (Live CRUD)"
-        @click="$emit('open-admin')"
-      >
-        <ShieldAlert :size="15" class="text-violet-400" />
-        <span class="hidden md:inline">Admin CRUD</span>
-      </button>
-
       <!-- Functional Search Bar with Instant Results Dropdown -->
       <div ref="searchContainerRef" class="relative hidden min-[840px]:block">
         <div class="relative flex items-center">
@@ -166,99 +154,79 @@
       </div>
 
       <!-- Theme (Dark / Light Mode) Toggle -->
-      <button
-        type="button"
-        class="relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all duration-200 hover:rotate-[15deg] hover:border-violet-500/40 hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
-        :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
-        aria-label="Toggle Dark and Light Mode"
-        @click="toggleTheme"
-      >
-        <Sun v-if="isDark" :size="18" :stroke-width="1.6" class="text-amber-400" />
-        <Moon v-else :size="18" :stroke-width="1.6" class="text-indigo-400" />
-      </button>
+      <ThemeToggle />
 
       <!-- Notifications with Dropdown -->
       <div v-if="auth.isAdmin" ref="notifContainerRef" class="relative">
         <button
           type="button"
-          class="relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:border-violet-500/40 hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
+          class="group relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-violet-500/40 hover:bg-white/8 hover:text-white hover:shadow-[0_4px_14px_rgba(124,58,237,0.14)] active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-violet-300 light:hover:bg-slate-200 light:hover:text-slate-900"
           :class="{ 'border-violet-500/40 bg-white/8 text-white light:bg-slate-200 light:text-slate-900': isNotifOpen }"
           aria-label="Notifications"
+          :aria-expanded="isNotifOpen"
+          aria-haspopup="dialog"
           title="Notifications"
           @click="toggleNotif"
         >
-          <Bell :size="18" :stroke-width="1.5" />
-          <span v-if="unreadNotifsCount > 0" class="absolute top-1.75 right-1.75 size-1.75 animate-pulse rounded-full border-[1.5px] border-zinc-950 bg-violet-600 light:border-white" />
+          <Bell
+            :size="18"
+            :stroke-width="1.5"
+            class="transition-transform duration-300 ease-out group-hover:scale-110"
+            :class="{ '-rotate-12 scale-110 text-violet-300 light:text-violet-700': isNotifOpen }"
+          />
+          <span v-if="unreadNotifsCount > 0" class="pointer-events-none absolute top-1.5 right-1.5 flex size-2">
+            <span class="absolute inline-flex size-full animate-ping rounded-full bg-violet-500/70" />
+            <span class="relative inline-flex size-2 rounded-full border-[1.5px] border-zinc-950 bg-violet-500 light:border-white" />
+          </span>
         </button>
 
-        <!-- Notifications Dropdown -->
-        <Transition v-bind="dropdownAnim">
-          <div
-            v-if="isNotifOpen"
-            class="absolute top-full right-0 z-[60] mt-2.5 w-85 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-violet-500/30 bg-zinc-950 shadow-2xl shadow-black/80 light:border-violet-500/25 light:bg-white"
-          >
-            <!-- Header -->
-            <div class="flex items-center justify-between border-b border-white/8 px-4 py-3.5 light:border-slate-200">
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-bold text-slate-100 light:text-slate-900">Notifications</span>
-                <span v-if="unreadNotifsCount > 0" class="rounded-full border border-violet-500/35 bg-violet-500/20 px-1.75 py-0.5 text-[10px] font-bold text-violet-300 light:border-violet-200 light:bg-violet-100 light:text-violet-700">{{ unreadNotifsCount }} new</span>
-              </div>
-              <button
-                v-if="unreadNotifsCount > 0"
-                type="button"
-                class="cursor-pointer text-[11px] font-semibold text-violet-300 transition-colors hover:text-violet-200 hover:underline light:text-violet-700 light:hover:text-violet-800"
-                @click="markAllAsRead"
-              >
-                Mark all read
-              </button>
-            </div>
+        <!-- Notification center: teleported on mobile so it can be centered in the viewport -->
+        <Teleport to="body" :disabled="!isMobileNotif">
+          <!-- Mobile dimmed backdrop -->
+          <Transition v-bind="notifBackdropAnim">
+            <div
+              v-if="isMobileNotif && isNotifOpen"
+              class="fixed inset-0 z-[90] bg-zinc-950/75 backdrop-blur-md light:bg-slate-950/45"
+              aria-hidden="true"
+              @click="closeNotif"
+            />
+          </Transition>
 
-            <!-- List -->
-            <div class="flex max-h-80 flex-col overflow-y-auto">
-              <div
-                v-if="notifications.length === 0"
-                class="flex flex-col items-center justify-center p-6 text-center text-xs text-white/40 light:text-slate-500"
-              >
-                <span>No recent enrollment activity</span>
-              </div>
-              <div
-                v-for="notif in notifications"
-                :key="notif.id"
-                class="relative flex cursor-pointer items-start gap-3 border-b border-white/4 px-4 py-3 transition-colors hover:bg-white/4 light:border-slate-100 light:hover:bg-slate-50"
-                :class="{ 'bg-violet-500/[0.07] light:bg-violet-50': !notif.read }"
-                @click="markItemRead(notif)"
-              >
-                <div class="mt-0.5 flex size-7.5 shrink-0 items-center justify-center rounded-lg" :class="notif.bgClass">
-                  <component :is="notif.icon" :size="15" :class="notif.iconClass" />
-                </div>
-                <div class="flex-1">
-                  <p class="text-xs leading-snug font-medium text-slate-200 light:text-slate-800">{{ notif.title }}</p>
-                  <span class="mt-1 block text-[10px] text-white/40 light:text-slate-400">{{ notif.time }}</span>
-                </div>
-                <span v-if="!notif.read" class="mt-1.5 size-1.5 shrink-0 rounded-full bg-violet-600" />
-              </div>
+          <!-- Panel -->
+          <Transition v-bind="notifPanelAnim">
+            <div
+              v-if="isNotifOpen"
+              ref="notifPanelRef"
+              :class="notifPanelClass"
+              role="dialog"
+              :aria-modal="isMobileNotif ? 'true' : undefined"
+              aria-label="Notifications"
+            >
+              <NotificationPanel
+                :notifications="notifications"
+                :unread-count="unreadNotifsCount"
+                :mobile="isMobileNotif"
+                @close="closeNotif"
+                @mark-all-read="markAllAsRead"
+                @mark-read="markItemRead"
+              />
             </div>
-
-            <!-- Footer link -->
-            <div class="border-t border-white/6 bg-black/20 px-4 py-2.5 text-center light:border-slate-200 light:bg-slate-50">
-              <NuxtLink to="/analytics" class="inline-flex items-center gap-1 text-[11px] font-semibold text-violet-300 no-underline transition-colors hover:text-violet-200 light:text-violet-700 light:hover:text-violet-800" @click="isNotifOpen = false">
-                <span>View Full Analytics Activity</span>
-                <ArrowRight :size="12" />
-              </NuxtLink>
-            </div>
-          </div>
-        </Transition>
+          </Transition>
+        </Teleport>
       </div>
 
       <!-- Help with Modal Trigger -->
       <button
         type="button"
-        class="relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:border-violet-500/40 hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
+        class="group relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-violet-500/40 hover:bg-white/8 hover:text-white hover:shadow-[0_4px_14px_rgba(124,58,237,0.14)] active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-violet-300 light:hover:bg-slate-200 light:hover:text-slate-900"
+        :class="{ 'border-violet-500/40 bg-white/8 text-white light:bg-slate-200 light:text-slate-900': isHelpOpen }"
         aria-label="Help & About Platform"
-        title="Help & Platform Guide (Ctrl+H)"
-        @click="isHelpOpen = true"
+        :aria-expanded="isHelpOpen"
+        aria-haspopup="dialog"
+        title="Help & Platform Guide (Ctrl+H or ?)"
+        @click="openHelp"
       >
-        <HelpCircle :size="18" :stroke-width="1.5" />
+        <HelpCircle :size="18" :stroke-width="1.5" class="transition-transform duration-300 ease-out group-hover:rotate-12 group-hover:scale-110" />
       </button>
 
       <!-- Avatar with User Dropdown -->
@@ -299,16 +267,16 @@
 
             <!-- Navigation Links -->
             <div class="flex flex-col gap-0.5">
-              <button
+              <NuxtLink
                 v-if="auth.isAdmin"
-                type="button"
+                to="/admin"
                 class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
-                @click="handleOpenAdmin"
+                @click="isAvatarOpen = false"
               >
                 <ShieldAlert :size="15" class="text-violet-400" />
-                <span>Admin CRUD Console</span>
+                <span>Admin Console</span>
                 <span class="ml-auto rounded-full border border-emerald-400/25 bg-emerald-400/12 px-1.5 py-px text-[10px] font-bold text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700">Live</span>
-              </button>
+              </NuxtLink>
 
               <NuxtLink
                 to="/courses"
@@ -362,17 +330,12 @@
             <div class="my-1 h-px bg-white/6 light:bg-slate-200" />
 
             <!-- Quick Theme Switch Row inside Dropdown -->
-            <div class="flex items-center justify-between px-2.5 py-1.5">
-              <span class="text-xs text-white/40 light:text-slate-500">Appearance</span>
-              <button
-                type="button"
-                class="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-white/10 bg-white/6 px-2.25 py-1 text-[11px] font-semibold text-slate-100 transition-all hover:border-violet-500/40 hover:bg-violet-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-300 light:bg-slate-100 light:text-slate-900 light:hover:bg-violet-50"
-                @click="toggleTheme"
-              >
-                <Sun v-if="!isDark" :size="13" class="text-amber-400" />
-                <Moon v-else :size="13" class="text-indigo-400" />
-                <span>{{ isDark ? 'Dark Theme' : 'Light Theme' }}</span>
-              </button>
+            <div class="flex items-center justify-between px-2.5 py-2">
+              <div class="min-w-0">
+                <span class="block text-xs font-medium text-white/55 light:text-slate-600">Appearance</span>
+                <span class="mt-0.5 block text-[10px] text-white/30 light:text-slate-400">Dark / Light</span>
+              </div>
+              <ThemeToggle />
             </div>
 
             <div class="my-1 h-px bg-white/6 light:bg-slate-200" />
@@ -407,8 +370,6 @@ import {
   HelpCircle,
   ShieldAlert,
   ChevronRight,
-  Sun,
-  Moon,
   LogOut,
   Settings,
   BookOpen,
@@ -416,31 +377,40 @@ import {
   BarChart3,
   CheckCircle2,
   TrendingUp,
-  Star,
-  RefreshCw,
   Compass,
   SearchX,
-  X,
-  ArrowRight
+  X
 } from 'lucide-vue-next'
+import { useMediaQuery } from '@vueuse/core'
 import AppHelpModal from '~/components/shared/AppHelpModal.vue'
+import NotificationPanel from '~/components/layout/NotificationPanel.vue'
+import ThemeToggle from '~/components/layout/ThemeToggle.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useAuth } from '~/composables/useAuth'
+import { useBodyScrollLock } from '~/composables/useBodyScrollLock'
 import type { Course, Student, Enrollment } from '~/types'
+import type { Component } from 'vue'
 
 defineProps<{ sidebarCollapsed: boolean }>()
-const emit = defineEmits(['toggle-sidebar', 'open-admin'])
+
+const emit = defineEmits<{
+  (e: 'toggle-sidebar'): void
+}>()
 
 const route = useRoute()
 const router = useRouter()
-const colorMode = useColorMode()
 const auth = useAuth()
 const { info } = useAppToast()
+const colorMode = useColorMode()
 
 // Dropdown and modal states
 const isNotifOpen = ref(false)
 const isAvatarOpen = ref(false)
 const isHelpOpen = ref(false)
+
+// The notification center becomes a centered dialog on small screens
+const isMobileNotif = useMediaQuery('(max-width: 767px)')
+const notifPanelRef = ref<HTMLElement | null>(null)
 
 // Search state
 const searchQuery = ref('')
@@ -449,15 +419,6 @@ const searchInputRef = ref<HTMLInputElement | null>(null)
 const searchContainerRef = ref<HTMLElement | null>(null)
 const notifContainerRef = ref<HTMLElement | null>(null)
 const avatarContainerRef = ref<HTMLElement | null>(null)
-
-// Dark/Light mode computed
-const isDark = computed(() => colorMode.value === 'dark')
-
-function toggleTheme() {
-  const nextMode = isDark.value ? 'light' : 'dark'
-  colorMode.preference = nextMode
-  info(`Theme Switched`, `Switched to ${nextMode.toUpperCase()} mode`)
-}
 
 // Breadcrumb items with CourseAuraHub branding
 const breadcrumbItems = computed(() => {
@@ -494,6 +455,13 @@ const breadcrumbItems = computed(() => {
     ]
   }
 
+  if (path === '/admin') {
+    return [
+      { label: 'CourseAuraHub', to: '/' },
+      { label: 'Admin Console' }
+    ]
+  }
+
   if (path === '/analytics') {
     return [
       { label: 'CourseAuraHub', to: '/' },
@@ -519,7 +487,7 @@ interface HeaderNotification {
   id: number
   title: string
   time: string
-  icon: any
+  icon: Component
   iconClass: string
   bgClass: string
   read: boolean
@@ -565,6 +533,36 @@ async function loadNotifications() {
 
 const unreadNotifsCount = computed(() => notifications.value.filter(n => !n.read).length)
 
+// Responsive panel shell: anchored dropdown on desktop, centered dialog on mobile
+const notifPanelClass = computed(() => isMobileNotif.value
+  ? 'fixed top-1/2 left-1/2 z-[100] w-[calc(100vw-2rem)] max-w-[22rem] -translate-x-1/2 -translate-y-1/2 origin-center overflow-hidden rounded-2xl border border-violet-500/35 bg-zinc-950 shadow-[0_28px_70px_-16px_rgba(0,0,0,0.95),0_0_45px_rgba(124,58,237,0.22)] ring-1 ring-violet-500/15 light:border-violet-500/25 light:bg-white light:shadow-[0_28px_70px_-16px_rgba(15,23,42,0.35),0_0_40px_rgba(124,58,237,0.12)] light:ring-violet-500/10'
+  : 'absolute top-[calc(100%+0.625rem)] right-0 z-[60] w-85 max-w-[calc(100vw-2rem)] origin-top-right overflow-hidden rounded-2xl border border-violet-500/30 bg-zinc-950 shadow-2xl shadow-black/80 ring-1 ring-violet-500/10 light:border-violet-500/25 light:bg-white light:shadow-xl light:ring-violet-500/10')
+
+const notifBackdropAnim = {
+  enterActiveClass: 'transition-opacity duration-300 ease-out',
+  leaveActiveClass: 'transition-opacity duration-200 ease-in',
+  enterFromClass: 'opacity-0',
+  leaveToClass: 'opacity-0'
+}
+
+const notifPanelAnim = computed(() => isMobileNotif.value
+  ? {
+      enterActiveClass: 'transition duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform',
+      leaveActiveClass: 'transition duration-200 ease-[cubic-bezier(0.4,0,1,1)]',
+      enterFromClass: 'scale-90 opacity-0',
+      leaveToClass: 'scale-95 opacity-0'
+    }
+  : {
+      enterActiveClass: 'transition duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform',
+      leaveActiveClass: 'transition duration-150 ease-[cubic-bezier(0.4,0,1,1)]',
+      enterFromClass: 'scale-[0.96] -translate-y-2 opacity-0',
+      leaveToClass: 'scale-[0.98] -translate-y-1 opacity-0'
+    })
+
+function closeNotif() {
+  isNotifOpen.value = false
+}
+
 function toggleNotif() {
   isNotifOpen.value = !isNotifOpen.value
   if (isNotifOpen.value) {
@@ -582,6 +580,10 @@ function markItemRead(item: (typeof notifications.value)[0]) {
   item.read = true
 }
 
+// Lock background scrolling while the mobile notification dialog is open
+const shouldLockNotifications = computed(() => isNotifOpen.value && isMobileNotif.value)
+useBodyScrollLock(shouldLockNotifications)
+
 // Avatar dropdown triggers
 function toggleAvatar() {
   isAvatarOpen.value = !isAvatarOpen.value
@@ -591,14 +593,29 @@ function toggleAvatar() {
   }
 }
 
-function handleOpenAdmin() {
+function closeHeaderSurfaces() {
+  closeNotif()
   isAvatarOpen.value = false
-  emit('open-admin')
+  isSearchFocused.value = false
+}
+
+function openHelp() {
+  closeHeaderSurfaces()
+  isHelpOpen.value = true
+}
+
+function toggleHelp() {
+  if (isHelpOpen.value) {
+    isHelpOpen.value = false
+    return
+  }
+
+  openHelp()
 }
 
 function handleOpenHelp() {
   isAvatarOpen.value = false
-  isHelpOpen.value = true
+  openHelp()
 }
 
 async function handleLogout() {
@@ -641,7 +658,7 @@ const quickPages = [
   { name: 'Student Directory', desc: 'Active learners, enrollment dates, and lifetime spend', to: '/students', icon: Users },
   { name: 'Sales & Analytics', desc: 'Detailed financial and performance reports', to: '/analytics', icon: TrendingUp },
   { name: 'Platform Settings', desc: 'Storefront branding, preferences, and profile', to: '/settings', icon: Settings },
-  { name: 'Admin Live Console', desc: 'Quick drawer operations, status toggles, and tools', to: 'admin', icon: ShieldAlert },
+  { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
 ]
 
 const filteredCourses = computed(() => {
@@ -705,19 +722,17 @@ function goToStudents() {
 function goToPage(page: typeof quickPages[0]) {
   closeSearch()
   searchQuery.value = ''
-  if (page.to === 'admin') {
-    emit('open-admin')
-  } else {
-    router.push(page.to)
-  }
+  router.push(page.to)
 }
 
 // Global click-outside handling
 function handleClickOutside(e: MouseEvent) {
   const target = e.target as Node
+  const insideNotifications = notifContainerRef.value?.contains(target)
+    || notifPanelRef.value?.contains(target)
 
-  if (notifContainerRef.value && !notifContainerRef.value.contains(target)) {
-    isNotifOpen.value = false
+  if (!insideNotifications) {
+    closeNotif()
   }
 
   if (avatarContainerRef.value && !avatarContainerRef.value.contains(target)) {
@@ -729,23 +744,82 @@ function handleClickOutside(e: MouseEvent) {
   }
 }
 
-// Keyboard shortcuts (Ctrl+K or '/' to focus search, Ctrl+H for help)
+// Keyboard shortcuts
+// Ctrl/⌘+K or '/' focuses search, Ctrl/⌘+H or '?' opens help,
+// Ctrl/⌘+B toggles the sidebar, Ctrl/⌘+Shift+L switches theme
+function isEditableTarget(target: EventTarget | null) {
+  const element = target as HTMLElement | null
+  if (!element) return false
+
+  return element.tagName === 'INPUT'
+    || element.tagName === 'TEXTAREA'
+    || element.tagName === 'SELECT'
+    || element.isContentEditable
+}
+
+function hasOpenModal() {
+  return document.body.dataset.modalOpen === 'true'
+}
+
+function toggleTheme() {
+  const nextMode = colorMode.value === 'dark' ? 'light' : 'dark'
+  colorMode.preference = nextMode
+  info('Appearance Updated', `${nextMode === 'dark' ? 'Dark' : 'Light'} mode enabled`)
+}
+
 function handleGlobalKeydown(e: KeyboardEvent) {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+  const key = e.key.toLowerCase()
+  const ctrlOrMeta = e.ctrlKey || e.metaKey
+
+  // Always allow Escape to dismiss header surfaces and the help dialog.
+  if (e.key === 'Escape') {
+    if (isHelpOpen.value) {
+      isHelpOpen.value = false
+    }
+    closeHeaderSurfaces()
+    return
+  }
+
+  // Allow Ctrl/⌘+H to close an already-open help dialog.
+  if (ctrlOrMeta && !e.altKey && key === 'h') {
+    if (!isHelpOpen.value && hasOpenModal()) return
+    e.preventDefault()
+    toggleHelp()
+    return
+  }
+
+  // Never trigger page shortcuts behind an open modal.
+  if (hasOpenModal()) return
+
+  if (ctrlOrMeta && !e.altKey && key === 'b') {
+    e.preventDefault()
+    emit('toggle-sidebar')
+    return
+  }
+
+  if (ctrlOrMeta && !e.altKey && e.shiftKey && key === 'l') {
+    e.preventDefault()
+    toggleTheme()
+    return
+  }
+
+  if (ctrlOrMeta && !e.altKey && key === 'k') {
     e.preventDefault()
     searchInputRef.value?.focus()
     isSearchFocused.value = true
-  } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'h') {
+    return
+  }
+
+  if (!ctrlOrMeta && !e.altKey && !isEditableTarget(e.target) && e.key === '?') {
     e.preventDefault()
-    isHelpOpen.value = !isHelpOpen.value
-  } else if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+    openHelp()
+    return
+  }
+
+  if (!ctrlOrMeta && !e.altKey && !isEditableTarget(e.target) && e.key === '/') {
     e.preventDefault()
     searchInputRef.value?.focus()
     isSearchFocused.value = true
-  } else if (e.key === 'Escape') {
-    isNotifOpen.value = false
-    isAvatarOpen.value = false
-    isSearchFocused.value = false
   }
 }
 

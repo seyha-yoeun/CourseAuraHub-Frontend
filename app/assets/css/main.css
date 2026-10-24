@@ -115,3 +115,27 @@ html.light body {
   --ui-background: #0a0a0f;
   --ui-foreground: #e2e8f0;
 }
+
+/* ---------------------------------------------------------------------------
+ * Notification panel list reveal
+ * ------------------------------------------------------------------------- */
+@keyframes notification-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.notification-item-in {
+  animation: notification-item-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notification-item-in {
+    animation: none;
+  }
+}
