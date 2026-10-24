@@ -49,13 +49,27 @@
             v-for="item in section.items"
             :key="item.to"
             :to="item.to"
-            class="relative flex items-center gap-2.5 overflow-hidden rounded-[10px] border px-3 py-2.5 text-sm font-medium whitespace-nowrap no-underline transition-colors duration-200 ease-out hover:bg-white/5 hover:text-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:hover:bg-slate-100 light:hover:text-slate-900"
+            :aria-label="item.label"
+            :aria-current="isActive(item.to) ? 'page' : undefined"
+            :title="collapsed ? item.label : undefined"
+            class="group relative flex items-center gap-2.5 overflow-hidden rounded-[10px] border px-3 py-2.5 text-sm font-medium whitespace-nowrap no-underline transition-all duration-200 ease-out hover:translate-x-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
             :class="isActive(item.to)
-              ? 'border-violet-500/40 bg-linear-to-br from-violet-600/25 to-blue-600/15 text-violet-300 light:border-violet-500/30 light:bg-violet-500/10 light:text-violet-700'
-              : 'border-transparent text-white/55 light:text-slate-600'"
+              ? 'border-violet-500/40 bg-linear-to-br from-violet-600/25 to-blue-600/15 text-violet-300 hover:border-violet-500/55 hover:from-violet-600/35 hover:to-blue-600/25 hover:text-violet-200 light:border-violet-500/30 light:bg-violet-500/10 light:text-violet-700 light:hover:bg-violet-500/15 light:hover:text-violet-700'
+              : 'border-transparent text-white/55 hover:border-white/8 hover:bg-white/8 hover:text-white hover:shadow-[0_4px_12px_rgba(0,0,0,0.18)] light:text-slate-600 light:hover:border-slate-200 light:hover:bg-slate-100 light:hover:text-slate-900'"
             @click="$emit('close-mobile')"
           >
-            <component :is="item.icon" :size="20" class="shrink-0" :stroke-width="1.5" />
+            <span
+              aria-hidden="true"
+              class="absolute top-1/2 left-0 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-violet-400 shadow-[0_0_8px_rgba(167,139,250,0.7)] transition-opacity duration-200"
+              :class="isActive(item.to) ? 'opacity-100' : 'opacity-0 group-hover:opacity-70'"
+            />
+            <component
+              :is="item.icon"
+              :size="20"
+              class="shrink-0 transition-transform duration-200 ease-out group-hover:scale-110"
+              :class="!isActive(item.to) ? 'group-hover:text-violet-300 light:group-hover:text-violet-700' : ''"
+              :stroke-width="1.5"
+            />
             <Transition v-bind="fadeText">
               <span v-if="!collapsed" class="text-sm font-medium">{{ item.label }}</span>
             </Transition>
@@ -71,31 +85,17 @@
         </div>
       </nav>
 
-      <!-- Admin Quick Console Trigger -->
-      <div v-if="auth.isAdmin" class="border-t border-white/4 p-3 light:border-slate-200">
-        <button
-          type="button"
-          class="flex w-full items-center gap-2.5 overflow-hidden rounded-[10px] border border-violet-500/25 bg-violet-500/12 px-3 py-2.25 text-[13px] font-semibold whitespace-nowrap text-violet-300 transition-colors hover:border-violet-500/50 hover:bg-violet-500/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:border-violet-400 light:hover:bg-violet-100 light:hover:text-violet-900"
-          :class="{ 'justify-center px-2.25': collapsed }"
-          title="Open Admin Management Console"
-          @click="$emit('open-admin')"
-        >
-          <ShieldAlert :size="18" class="shrink-0 text-violet-400" />
-          <Transition v-bind="fadeText">
-            <span v-if="!collapsed" class="text-[13px]">Admin Console</span>
-          </Transition>
-        </button>
-      </div>
-
       <!-- Bottom profile -->
-      <div
-        class="flex min-h-18 cursor-pointer items-center gap-2.5 border-t border-white/6 px-4.5 py-4 transition-colors hover:bg-white/3 light:border-slate-200 light:hover:bg-slate-50"
+      <button
+        type="button"
+        class="group flex min-h-18 w-full cursor-pointer items-center gap-2.5 border-t border-white/6 px-4.5 py-4 text-left transition-all duration-200 ease-out hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-violet-500/60 light:border-slate-200 light:hover:bg-slate-50"
+        title="Open profile settings"
         @click="handleProfileClick"
       >
         <img
           :src="auth.userAvatar"
           :alt="`${auth.userName} profile`"
-          class="size-9 shrink-0 rounded-full border-2 border-violet-500/40 bg-[#1a1a2e] light:border-violet-300 light:bg-violet-50"
+          class="size-9 shrink-0 rounded-full border-2 border-violet-500/40 bg-[#1a1a2e] transition-all duration-200 group-hover:scale-105 group-hover:border-violet-500/70 group-hover:shadow-[0_0_12px_rgba(124,58,237,0.3)] light:border-violet-300 light:bg-violet-50"
         >
         <Transition v-bind="fadeText">
           <div v-if="!collapsed" class="min-w-0">
@@ -103,7 +103,7 @@
             <p class="mt-px truncate text-[11px] text-white/40 light:text-slate-500">{{ auth.roleLabel }}</p>
           </div>
         </Transition>
-      </div>
+      </button>
     </aside>
   </div>
 </template>
@@ -128,7 +128,7 @@ withDefaults(
   }
 )
 
-const emit = defineEmits(['toggle', 'close-mobile', 'open-admin'])
+defineEmits(['toggle', 'close-mobile'])
 
 const route = useRoute()
 const router = useRouter()
@@ -159,6 +159,7 @@ const navSections = computed(() => {
       items: [
         { to: '/courses', label: 'Courses', icon: BookOpen },
         { to: '/students', label: 'Students', icon: GraduationCap },
+        { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/settings', label: 'Settings', icon: Settings },
       ],
     },
@@ -185,11 +186,6 @@ function isActive(to: string) {
 }
 
 function handleProfileClick() {
-  if (auth.isAdmin) {
-    emit('open-admin')
-    return
-  }
-
-  router.push('/courses')
+  router.push(auth.isAdmin ? '/settings' : '/courses')
 }
 </script>

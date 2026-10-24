@@ -2,7 +2,7 @@
   <Teleport to="body">
     <Transition v-bind="modalFade">
       <div v-if="isOpen" class="fixed inset-0 z-100 flex items-center justify-center bg-[#05050c]/82 p-4 backdrop-blur-xl sm:p-6" @click.self="$emit('close')">
-        <div class="max-h-[90dvh] w-full max-w-170 overflow-y-auto rounded-[20px] border border-violet-500/25 bg-[#0f1019] p-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_40px_rgba(124,58,237,0.15)] sm:p-6 light:border-violet-500/30 light:bg-white light:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15),0_0_35px_rgba(124,58,237,0.12)]" role="dialog" aria-modal="true">
+        <div ref="dialogRef" class="max-h-[90dvh] w-full max-w-170 overflow-y-auto overscroll-contain rounded-[20px] border border-violet-500/25 bg-[#0f1019] p-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_40px_rgba(124,58,237,0.15)] focus:outline-none sm:p-6 light:border-violet-500/30 light:bg-white light:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15),0_0_35px_rgba(124,58,237,0.12)]" role="dialog" aria-modal="true" aria-labelledby="course-modal-title" tabindex="-1">
           <!-- Header -->
           <div class="flex items-start justify-between gap-4 border-b border-white/8 pb-4.5 light:border-slate-200">
             <div class="flex items-center gap-3">
@@ -11,7 +11,7 @@
                 <FileEdit v-else :size="20" class="text-violet-400" />
               </div>
               <div>
-                <h2 class="text-lg font-bold text-slate-50 light:text-slate-900">{{ isEdit ? 'Edit Course' : 'Create New Course' }}</h2>
+                <h2 id="course-modal-title" class="text-lg font-bold text-slate-50 light:text-slate-900">{{ isEdit ? 'Edit Course' : 'Create New Course' }}</h2>
                 <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">
                   {{ isEdit ? 'Update course curriculum, pricing, and status.' : 'Fill in the details to publish or draft a new course.' }}
                 </p>
@@ -205,6 +205,7 @@
 
 <script setup lang="ts">
 import { BookPlus, FileEdit, X, Loader2 } from 'lucide-vue-next'
+import { useModalA11y } from '~/composables/useModalA11y'
 import type { Course, CourseFormData } from '~/types'
 
 const props = defineProps<{
@@ -217,6 +218,15 @@ const emit = defineEmits<{
   (e: 'close'): void
   (e: 'submit', data: CourseFormData): void
 }>()
+
+const dialogRef = ref<HTMLElement | null>(null)
+const isOpen = computed(() => props.isOpen)
+
+useModalA11y({
+  isOpen,
+  dialogRef,
+  onClose: () => emit('close')
+})
 
 const isEdit = computed(() => !!props.course)
 
