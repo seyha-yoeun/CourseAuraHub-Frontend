@@ -19,7 +19,6 @@
       :mobile-open="mobileSidebarOpen"
       @toggle="toggleSidebar"
       @close-mobile="mobileSidebarOpen = false"
-      @open-admin="adminDrawerOpen = true"
     />
 
     <!-- Main area -->
@@ -30,7 +29,6 @@
       <AppHeader
         :sidebar-collapsed="sidebarCollapsed"
         @toggle-sidebar="toggleSidebar"
-        @open-admin="adminDrawerOpen = true"
       />
 
       <main class="min-w-0 flex-1 overflow-x-hidden px-4 py-4 sm:px-6 sm:py-6 lg:p-8">
@@ -41,15 +39,6 @@
 
       <AppFooter />
     </div>
-
-    <!-- Global Admin Management Drawer (Live CRUD Console) -->
-    <AdminManagementDrawer
-      v-if="auth.isAdmin"
-      :is-open="adminDrawerOpen"
-      @close="adminDrawerOpen = false"
-      @open-create-course="navigateToCourses"
-      @data-changed="onDataChanged"
-    />
   </div>
 </template>
 
@@ -57,7 +46,6 @@
 import AppSidebar from '~/components/layout/AppSidebar.vue'
 import AppHeader from '~/components/layout/AppHeader.vue'
 import AppFooter from '~/components/layout/AppFooter.vue'
-import AdminManagementDrawer from '~/components/admin/AdminManagementDrawer.vue'
 import { useAuth } from '~/composables/useAuth'
 
 const auth = useAuth()
@@ -68,27 +56,12 @@ onMounted(() => {
   isHydrated.value = true
 })
 const mobileSidebarOpen = ref(false)
-const adminDrawerOpen = ref(false)
-
-const router = useRouter()
 
 function toggleSidebar() {
   if (import.meta.client && window.innerWidth < 768) {
     mobileSidebarOpen.value = !mobileSidebarOpen.value
   } else {
     sidebarCollapsed.value = !sidebarCollapsed.value
-  }
-}
-
-function navigateToCourses() {
-  adminDrawerOpen.value = false
-  router.push('/courses')
-}
-
-function onDataChanged() {
-  // Trigger router refresh or page reload
-  if (import.meta.client) {
-    window.dispatchEvent(new CustomEvent('academy:data-refresh'))
   }
 }
 </script>
