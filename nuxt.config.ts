@@ -1,5 +1,20 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+// File-change events from Windows drives mounted in WSL (/mnt/*) don't reach the dev server,
+// so edits are silently ignored until restart. Poll there instead (or force it with NUXT_WATCH_POLLING=true).
+const watchPolling = process.env.NUXT_WATCH_POLLING
+  ? process.env.NUXT_WATCH_POLLING === 'true'
+  : process.platform === 'linux' && process.cwd().startsWith('/mnt/')
+
 export default defineNuxtConfig({
+  watchers: {
+    chokidar: { usePolling: watchPolling, interval: 300 },
+  },
+  vite: {
+    server: {
+      watch: { usePolling: watchPolling, interval: 300 },
+    },
+  },
   modules: [
     '@nuxt/ui',
     '@nuxt/eslint',

@@ -71,9 +71,9 @@
         <Transition v-bind="dropdownAnim">
           <div
             v-if="isSearchFocused && searchQuery.trim().length > 0"
-            class="absolute top-full left-0 z-[60] mt-2 w-[min(380px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-violet-500/30 bg-zinc-950 shadow-2xl shadow-black/80 ring-1 ring-violet-500/10 light:border-violet-500/25 light:bg-white light:shadow-xl light:ring-violet-500/10"
+            class="absolute top-full left-0 z-[60] mt-2 w-[min(380px,calc(100vw-2rem))] origin-top-left overflow-hidden rounded-2xl border border-violet-500/30 bg-zinc-950 shadow-2xl shadow-black/80 ring-1 ring-violet-500/10 light:border-violet-500/25 light:bg-white light:shadow-xl light:ring-violet-500/10"
           >
-            <div class="flex max-h-100 flex-col gap-2.5 overflow-y-auto p-2">
+            <div class="menu-stagger flex max-h-100 flex-col gap-2.5 overflow-y-auto p-2">
               <!-- Courses Group -->
               <div v-if="filteredCourses.length > 0" class="flex flex-col gap-1">
                 <div class="flex items-center gap-1.5 px-2 py-1 text-[11px] font-bold tracking-wider text-white/45 uppercase light:text-slate-500">
@@ -231,20 +231,24 @@
 
       <!-- Avatar with User Dropdown -->
       <div ref="avatarContainerRef" class="relative">
-        <div
-          class="size-9 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-violet-500/50 transition-all duration-200 hover:scale-105 hover:border-violet-500 hover:shadow-[0_0_14px_rgba(124,58,237,0.5)] light:border-violet-300"
+        <button
+          type="button"
+          class="relative block size-9 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-violet-500/50 p-0 transition-all duration-200 ease-out hover:scale-105 hover:border-violet-500 hover:shadow-[0_0_14px_rgba(124,58,237,0.5)] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 light:border-violet-300 light:focus-visible:ring-offset-white"
           :class="{ 'scale-105 border-violet-500 shadow-[0_0_14px_rgba(124,58,237,0.5)] light:border-violet-600': isAvatarOpen }"
           :title="`${auth.userName} (${auth.roleLabel})`"
+          aria-label="Open account menu"
+          aria-haspopup="true"
+          :aria-expanded="isAvatarOpen"
           @click="toggleAvatar"
         >
           <img :src="auth.userAvatar" :alt="`${auth.userName} profile`" class="size-full object-cover" >
-        </div>
+        </button>
 
         <!-- Avatar Dropdown Menu -->
         <Transition v-bind="dropdownAnim">
           <div
             v-if="isAvatarOpen"
-            class="absolute top-full right-0 z-[60] mt-2.5 w-[270px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-violet-500/30 bg-zinc-950 p-2 shadow-2xl shadow-black/80 light:border-violet-500/25 light:bg-white"
+            class="menu-stagger absolute top-full right-0 z-[60] mt-2.5 w-[270px] max-w-[calc(100vw-2rem)] origin-top-right overflow-hidden rounded-2xl border border-violet-500/30 bg-zinc-950/95 p-2 backdrop-blur-xl shadow-2xl shadow-black/80 light:border-violet-500/25 light:bg-white"
           >
             <!-- User Summary Header -->
             <div class="flex items-center gap-3 px-2.5 pt-2.5 pb-3">
@@ -266,11 +270,11 @@
             <div class="my-1 h-px bg-white/6 light:bg-slate-200" />
 
             <!-- Navigation Links -->
-            <div class="flex flex-col gap-0.5">
+            <div class="menu-stagger flex flex-col gap-0.5">
               <NuxtLink
                 v-if="auth.isAdmin"
                 to="/admin"
-                class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
+                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
               >
                 <ShieldAlert :size="15" class="text-violet-400" />
@@ -280,17 +284,46 @@
 
               <NuxtLink
                 to="/courses"
-                class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
+                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
               >
                 <BookOpen :size="15" class="text-blue-400" />
                 <span>Course Catalog</span>
               </NuxtLink>
 
+              <template v-if="!auth.isAdmin">
+                <NuxtLink
+                  to="/my-learning"
+                  class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
+                  @click="isAvatarOpen = false"
+                >
+                  <GraduationCap :size="15" class="text-violet-400" />
+                  <span>My Learning</span>
+                </NuxtLink>
+
+                <NuxtLink
+                  to="/wishlist"
+                  class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
+                  @click="isAvatarOpen = false"
+                >
+                  <Heart :size="15" class="text-rose-400" />
+                  <span>Wishlist</span>
+                </NuxtLink>
+
+                <NuxtLink
+                  to="/account"
+                  class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
+                  @click="isAvatarOpen = false"
+                >
+                  <UserCog :size="15" class="text-purple-400" />
+                  <span>Profile & Security</span>
+                </NuxtLink>
+              </template>
+
               <NuxtLink
                 v-if="auth.isAdmin"
                 to="/students"
-                class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
+                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
               >
                 <Users :size="15" class="text-emerald-400" />
@@ -300,7 +333,7 @@
               <NuxtLink
                 v-if="auth.isAdmin"
                 to="/analytics"
-                class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
+                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
               >
                 <BarChart3 :size="15" class="text-amber-400" />
@@ -310,7 +343,7 @@
               <NuxtLink
                 v-if="auth.isAdmin"
                 to="/settings"
-                class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
+                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
               >
                 <Settings :size="15" class="text-purple-400" />
@@ -319,7 +352,7 @@
 
               <button
                 type="button"
-                class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
+                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
                 @click="handleOpenHelp"
               >
                 <HelpCircle :size="15" class="text-teal-400" />
@@ -379,6 +412,9 @@ import {
   TrendingUp,
   Compass,
   SearchX,
+  GraduationCap,
+  Heart,
+  UserCog,
   X
 } from 'lucide-vue-next'
 import { useMediaQuery } from '@vueuse/core'
@@ -452,6 +488,27 @@ const breadcrumbItems = computed(() => {
     return [
       { label: 'CourseAuraHub', to: '/' },
       { label: 'Students' }
+    ]
+  }
+
+  if (path.startsWith('/learn/')) {
+    const slug = (route.params.slug as string) || path.replace('/learn/', '')
+    return [
+      { label: 'CourseAuraHub', to: auth.homeRoute },
+      { label: 'My Learning', to: '/my-learning' },
+      { label: slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) }
+    ]
+  }
+
+  if (path === '/my-learning' || path === '/wishlist' || path === '/account') {
+    const labels: Record<string, string> = {
+      '/my-learning': 'My Learning',
+      '/wishlist': 'Wishlist',
+      '/account': 'Profile & Security'
+    }
+    return [
+      { label: 'CourseAuraHub', to: auth.homeRoute },
+      { label: labels[path] }
     ]
   }
 
@@ -661,6 +718,13 @@ const quickPages = [
   { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
 ]
 
+const learnerPages = [
+  { name: 'Browse Courses', desc: 'Explore the course catalog', to: '/courses', icon: BookOpen },
+  { name: 'My Learning', desc: 'Enrolled courses and your progress', to: '/my-learning', icon: GraduationCap },
+  { name: 'Wishlist', desc: 'Courses saved for later', to: '/wishlist', icon: Heart },
+  { name: 'Profile & Security', desc: 'Your profile, avatar, and password', to: '/account', icon: UserCog },
+]
+
 const filteredCourses = computed(() => {
   const q = searchQuery.value.toLowerCase().trim()
   if (!q) return []
@@ -688,8 +752,7 @@ const filteredStudents = computed(() => {
 const filteredPages = computed(() => {
   const q = searchQuery.value.toLowerCase().trim()
   if (!q) return []
-  return quickPages
-    .filter(page => auth.isAdmin || page.to === '/courses')
+  return (auth.isAdmin ? quickPages : learnerPages)
     .filter(p =>
       p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)
     )
@@ -834,9 +897,9 @@ onUnmounted(() => {
 })
 
 const dropdownAnim = {
-  enterActiveClass: 'transition duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]',
-  leaveActiveClass: 'transition duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]',
-  enterFromClass: 'scale-97 -translate-y-2 opacity-0',
-  leaveToClass: 'scale-97 -translate-y-1.5 opacity-0'
+  enterActiveClass: 'transition duration-250 ease-[cubic-bezier(0.16,1,0.3,1)]',
+  leaveActiveClass: 'transition duration-150 ease-in',
+  enterFromClass: 'scale-95 -translate-y-1.5 opacity-0 blur-[2px]',
+  leaveToClass: 'scale-[0.97] -translate-y-1 opacity-0'
 }
 </script>

@@ -12,7 +12,8 @@
       <div class="absolute inset-0 bg-linear-to-b from-zinc-950/30 to-zinc-950/70 light:from-white/10 light:to-white/50" />
 
       <div class="absolute top-3 right-3 left-3 z-2 flex items-center justify-between">
-        <CourseStatusBadge :status="course.status" />
+        <CourseStatusBadge v-if="canManage" :status="course.status" />
+        <span v-else />
         <span class="rounded-md border border-white/12 bg-black/60 px-2 py-0.75 text-[10px] font-bold tracking-wider text-slate-200 uppercase backdrop-blur-md light:border-slate-300 light:bg-white/80 light:text-slate-700">{{ course.level }}</span>
       </div>
 
@@ -60,10 +61,17 @@
             {{ course.totalStudents.toLocaleString() }}
           </span>
         </div>
-        <div class="flex flex-col gap-0.5">
+        <div v-if="canManage" class="flex flex-col gap-0.5">
           <span class="text-[10px] tracking-wider text-white/40 uppercase light:text-slate-500">Revenue</span>
           <span class="flex items-center gap-1 text-[13px] font-bold text-emerald-400 light:text-emerald-700">
             ${{ formatRevenue(course.revenue) }}
+          </span>
+        </div>
+        <div v-else class="flex flex-col gap-0.5">
+          <span class="text-[10px] tracking-wider text-white/40 uppercase light:text-slate-500">Rating</span>
+          <span class="flex items-center gap-1 text-[13px] font-bold text-amber-400 light:text-amber-600">
+            <Star :size="13" class="fill-amber-400 text-amber-400" />
+            {{ course.rating > 0 ? course.rating.toFixed(1) : 'New' }}
           </span>
         </div>
       </div>
@@ -71,8 +79,9 @@
       <!-- Footer: Pricing & Actions -->
       <div class="mt-4 flex items-center justify-between gap-3 border-t border-white/6 pt-3.5 light:border-slate-200">
         <div class="flex items-baseline gap-1.5">
-          <span class="text-lg font-extrabold text-slate-50 light:text-slate-900">${{ course.price.toFixed(2) }}</span>
-          <span v-if="course.originalPrice > course.price" class="text-xs text-white/35 line-through light:text-slate-400">
+          <span v-if="course.price <= 0" class="text-lg font-extrabold text-emerald-400 light:text-emerald-700">Free</span>
+          <span v-else class="text-lg font-extrabold text-slate-50 light:text-slate-900">${{ course.price.toFixed(2) }}</span>
+          <span v-if="course.price > 0 && course.originalPrice > course.price" class="text-xs text-white/35 line-through light:text-slate-400">
             ${{ course.originalPrice.toFixed(2) }}
           </span>
         </div>
@@ -99,9 +108,9 @@
           <NuxtLink
             :to="`/courses/${course.slug}`"
             class="flex items-center gap-1 rounded-lg border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold text-violet-300 no-underline transition-all hover:border-violet-500/60 hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
-            title="View Details & Analytics"
+            :title="canManage ? 'View Details & Analytics' : 'View Course'"
           >
-            <span>Details</span>
+            <span>{{ canManage ? 'Details' : 'View' }}</span>
             <ArrowRight :size="13" />
           </NuxtLink>
         </div>

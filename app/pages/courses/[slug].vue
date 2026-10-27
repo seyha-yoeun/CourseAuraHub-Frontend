@@ -1,5 +1,5 @@
 <template>
-  <div v-if="pending" class="flex flex-col gap-5">
+  <div v-if="pending && !course" class="flex flex-col gap-5">
     <div class="h-70 w-full animate-pulse rounded-[20px] bg-white/5 light:bg-slate-100" />
     <div class="h-87.5 w-full animate-pulse rounded-[20px] bg-white/5 light:bg-slate-100" />
   </div>
@@ -14,6 +14,8 @@
     </NuxtLink>
   </div>
 
+  <LearnerCourseView v-else-if="!auth.isAdmin" :course="course" @refresh="refresh" />
+
   <div v-else class="flex flex-col gap-6">
     <!-- Back breadcrumb & actions topbar -->
     <div class="flex flex-wrap items-center justify-between gap-3">
@@ -22,7 +24,7 @@
         <span>All Courses</span>
       </NuxtLink>
 
-      <div v-if="auth.isAdmin" class="flex items-center gap-2.5">
+      <div class="flex items-center gap-2.5">
         <button
           type="button"
           class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-4 py-2 text-xs font-semibold text-violet-300 transition-all hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
@@ -230,6 +232,12 @@
       </div>
     </div>
 
+    <!-- Curriculum & review management -->
+    <div class="grid grid-cols-1 gap-5 xl:grid-cols-2">
+      <CurriculumEditor :slug="course.slug" @changed="refresh" />
+      <CourseReviews :slug="course.slug" can-moderate @changed="refresh" />
+    </div>
+
     <!-- Modals -->
     <CourseFormModal
       :is-open="isEditModalOpen"
@@ -267,6 +275,9 @@ import StatCard from '~/components/shared/StatCard.vue'
 import SalesChart from '~/components/dashboard/SalesChart.vue'
 import CourseFormModal from '~/components/courses/CourseFormModal.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
+import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
+import CourseReviews from '~/components/learning/CourseReviews.vue'
+import LearnerCourseView from '~/components/learning/LearnerCourseView.vue'
 import { useCourses } from '~/composables/useCourses'
 
 const auth = useAuth()
@@ -283,7 +294,10 @@ const { data: course, pending, error, refresh } = await useAsyncData<Course>(
 )
 
 useHead({
-  title: computed(() => course.value?.title ? `${course.value.title} - Analytics` : 'Course Details')
+  title: computed(() => {
+    if (!course.value?.title) return 'Course Details'
+    return auth.isAdmin ? `${course.value.title} - Analytics` : course.value.title
+  })
 })
 
 const enrolledStudents = computed<Student[]>(() => {

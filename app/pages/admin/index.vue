@@ -370,14 +370,7 @@
                     placeholder="Country"
                     class="w-full rounded-lg border border-white/10 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600"
                   >
-                  <select
-                    v-model="newStudent.status"
-                    class="w-full cursor-pointer rounded-lg border border-white/10 bg-zinc-900 px-3 py-2 text-[13px] text-slate-200 outline-none transition-all focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600"
-                    aria-label="Student status"
-                  >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
+                  <AppDropdown id="new-student-status" v-model="newStudent.status" :options="studentStatusOptions" size="sm" aria-label="Student status" />
                 </div>
                 <div class="mt-3 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                   <button
@@ -624,6 +617,7 @@ import type { Course, CourseFormData, Student } from '~/types'
 import StatCard from '~/components/shared/StatCard.vue'
 import CourseFormModal from '~/components/courses/CourseFormModal.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
+import AppDropdown from '~/components/shared/AppDropdown.vue'
 import { useAppToast } from '~/composables/useAppToast'
 
 definePageMeta({ requiresAdmin: true })
@@ -639,6 +633,11 @@ type AdminTab = 'courses' | 'students' | 'ops'
 type DeleteTarget =
   | { kind: 'course'; item: Course }
   | { kind: 'student'; item: Student }
+
+const studentStatusOptions = [
+  { value: 'active', label: 'Active' },
+  { value: 'inactive', label: 'Inactive' }
+]
 
 const activeTab = ref<AdminTab>('courses')
 const courses = ref<Course[]>([])

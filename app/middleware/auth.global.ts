@@ -6,6 +6,9 @@ const PUBLIC_PATHS = [
   '/auth/forgot-password',
   '/auth/reset-password',
   '/auth/callback',
+  '/privacy',
+  '/terms',
+  '/support',
 ]
 
 function normalizePath(path: string) {

@@ -3,9 +3,9 @@
     <!-- Header -->
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Course Management</h1>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ auth.isAdmin ? 'Course Management' : 'Explore Courses' }}</h1>
         <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">
-          Create, edit, analyze, and manage your online educational catalog.
+          {{ auth.isAdmin ? 'Create, edit, analyze, and manage your online educational catalog.' : 'Find your next course. Free courses can be started right away.' }}
         </p>
       </div>
 
@@ -91,7 +91,7 @@
       <span class="rounded-full border border-white/6 bg-white/3 px-3.5 py-1.25 text-xs text-white/60 transition-all light:border-slate-200 light:bg-slate-100 light:text-slate-700">
         <strong>{{ courses.length }}</strong> Courses Found
       </span>
-      <span class="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3.5 py-1.25 text-xs text-emerald-500 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-700">
+      <span v-if="auth.isAdmin" class="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3.5 py-1.25 text-xs text-emerald-500 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-700">
         <strong>{{ courses.filter(c => c.status === 'published').length }}</strong> Published
       </span>
       <span v-if="auth.isAdmin" class="rounded-full border border-amber-500/25 bg-amber-500/10 px-3.5 py-1.25 text-xs text-amber-500 light:border-amber-200 light:bg-amber-50 light:text-amber-700">
@@ -113,7 +113,7 @@
       </div>
       <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">No courses found</h3>
       <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">
-        Try adjusting your search criteria or create a brand new course to get started.
+        {{ auth.isAdmin ? 'Try adjusting your search criteria or create a brand new course to get started.' : 'Try adjusting your search or filters.' }}
       </p>
       <button
         v-if="auth.isAdmin"
@@ -217,14 +217,14 @@ const statusOptions = computed(() => {
   ]
 })
 
-const sortOptions = [
+const sortOptions = computed(() => [
   { value: 'createdAt:desc', label: 'Newest First' },
-  { value: 'revenue:desc', label: 'Highest Revenue' },
-  { value: 'totalStudents:desc', label: 'Most Enrolled' },
+  ...(auth.isAdmin ? [{ value: 'revenue:desc', label: 'Highest Revenue' }] : []),
+  { value: 'totalStudents:desc', label: auth.isAdmin ? 'Most Enrolled' : 'Most Popular' },
   { value: 'rating:desc', label: 'Top Rated' },
   { value: 'price:asc', label: 'Price: Low to High' },
   { value: 'price:desc', label: 'Price: High to Low' }
-]
+])
 
 // Modal & actions state
 const isFormModalOpen = ref(false)
