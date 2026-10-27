@@ -98,7 +98,9 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = { ...user.value, ...patch }
   }
 
-  function setProfile(profile: { name?: string; email?: string; role?: string; avatar?: string }) {
+  // Display fields only. The role must come from the session (/auth/me): profile payloads such as
+  // platform settings carry a human-readable role label, and copying it here would drop admin access.
+  function setProfile(profile: { name?: string; email?: string; avatar?: string }) {
     const patch: Partial<AuthUser> = {}
 
     if (profile.name?.trim()) {
@@ -108,7 +110,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     if (profile.email) patch.email = profile.email
-    if (profile.role) patch.role = profile.role
     if (profile.avatar) patch.avatar = profile.avatar
 
     updateUser(patch)

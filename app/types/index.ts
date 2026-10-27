@@ -28,6 +28,8 @@ export interface Course {
   monthlyEnrollments: number[]
   monthlyRevenue: number[]
   enrolledStudentList?: Student[]
+  // Whether the caller is enrolled; only set on the course detail response
+  enrolled?: boolean | null
 }
 
 export type CourseFormData = Omit<
@@ -122,4 +124,119 @@ export interface PlatformSettings {
     website: string
     twitter: string
   }
+}
+
+// Learner self-service (/api/v1/me/**) and curriculum
+
+export interface CourseProgress {
+  completedLessons: number
+  totalLessons: number
+  progressPercent: number
+  completed: boolean
+}
+
+export interface MyCourse {
+  courseId: number
+  slug: string
+  title: string
+  thumbnail: string
+  instructor: string
+  level: string
+  enrolledAt: string
+  progress: CourseProgress
+  lastActivityAt: string | null
+}
+
+export interface WishlistItem {
+  courseId: number
+  slug: string
+  title: string
+  thumbnail: string
+  instructor: string
+  level: string
+  price: number
+  originalPrice: number
+  rating: number
+  addedAt: string
+}
+
+export interface LearnerProfile {
+  userId: string
+  email: string
+  firstName: string
+  lastName: string
+  imageUrl: string | null
+  bio: string | null
+  website: string | null
+  twitter: string | null
+  provider: string
+  hasPassword: boolean
+}
+
+export type LearnerProfileUpdate = Partial<Pick<LearnerProfile, 'firstName' | 'lastName' | 'imageUrl' | 'bio' | 'website' | 'twitter'>>
+
+export type LessonType = 'video' | 'article' | 'quiz'
+
+export interface Lesson {
+  id: number
+  title: string
+  type: LessonType
+  durationMinutes: number
+  preview: boolean
+  position: number
+  locked: boolean
+  contentUrl: string | null
+  completed: boolean
+}
+
+export interface CourseSection {
+  id: number
+  title: string
+  position: number
+  totalDurationMinutes: number
+  lessons: Lesson[]
+}
+
+export interface Curriculum {
+  courseId: number
+  courseSlug: string
+  enrolled: boolean
+  totalLessons: number
+  totalDurationMinutes: number
+  progress: CourseProgress | null
+  sections: CourseSection[]
+}
+
+export interface LessonFormData {
+  title: string
+  type: LessonType
+  durationMinutes: number
+  contentUrl: string
+  preview: boolean
+}
+
+export interface LessonProgressResult {
+  lessonId: number
+  courseSlug: string
+  lessonCompleted: boolean
+  courseProgress: CourseProgress
+}
+
+export interface Review {
+  id: number
+  rating: number
+  comment: string | null
+  reviewerName: string
+  reviewerAvatar: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ReviewPage {
+  items: Review[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+  averageRating: number | null
 }

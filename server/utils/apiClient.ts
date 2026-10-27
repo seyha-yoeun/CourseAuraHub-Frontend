@@ -28,6 +28,7 @@ export interface BackendUser {
   lastName: string
   role: string
   provider: string
+  imageUrl?: string | null
 }
 
 export interface AuthUserPayload {
