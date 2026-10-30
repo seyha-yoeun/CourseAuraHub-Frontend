@@ -115,7 +115,8 @@ import {
   Settings,
   BarChart3,
   GraduationCap,
-  ShieldAlert
+  ShieldAlert,
+  ShieldCheck
 } from 'lucide-vue-next'
 
 withDefaults(
@@ -143,6 +144,12 @@ const navSections = computed(() => {
           { to: '/courses', label: 'Courses', icon: BookOpen },
         ],
       },
+      {
+        label: 'Account',
+        items: [
+          { to: '/account/security', label: 'Security', icon: ShieldCheck },
+        ],
+      },
     ]
   }
 
@@ -161,6 +168,12 @@ const navSections = computed(() => {
         { to: '/students', label: 'Students', icon: GraduationCap },
         { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/settings', label: 'Settings', icon: Settings },
+      ],
+    },
+    {
+      label: 'Account',
+      items: [
+        { to: '/account/security', label: 'Security', icon: ShieldCheck },
       ],
     },
   ]

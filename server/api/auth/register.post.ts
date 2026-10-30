@@ -1,4 +1,4 @@
-import type { BackendAuthData } from '../../utils/apiClient'
+import type { BackendVerificationRequired } from '../../utils/apiClient'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
@@ -8,16 +8,12 @@ export default defineEventHandler(async (event) => {
     password: string
   }>(event)
 
-  const data = await backendRequest<BackendAuthData>(event, '/auth/register', {
+  // Registration creates a pending account; the session starts after POST /api/auth/verify-email.
+  return await backendRequest<BackendVerificationRequired>(event, '/auth/register', {
     method: 'POST',
     body,
     auth: false,
     retryOn401: false,
     fallbackMessage: 'Registration failed',
   })
-
-  setSessionCookies(event, data, false)
-  await ensureCsrfToken(event).catch(() => null)
-
-  return toAuthUser(data)
 })

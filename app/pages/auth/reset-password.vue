@@ -9,8 +9,33 @@
       <p class="text-[15px] leading-normal text-white/60 light:text-slate-500">Enter your new password below</p>
     </div>
 
+    <!-- Missing or unusable link -->
+    <div v-if="!token" class="flex flex-col items-center gap-4 text-center">
+      <div
+        class="w-full rounded-xl border border-red-500/30 bg-red-500/10 px-3.5 py-2.75 text-[13px] leading-relaxed text-red-300 light:border-red-200 light:bg-red-50 light:text-red-700"
+        role="alert"
+      >
+        This reset link is incomplete. Open the link from your email again, or request a new one.
+      </div>
+      <NuxtLink
+        to="/auth/forgot-password"
+        class="flex w-full items-center justify-center rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 px-6 py-4 text-[15px] font-semibold text-white no-underline transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(16,185,129,0.4)] short:py-3"
+      >
+        Request a New Link
+      </NuxtLink>
+    </div>
+
     <!-- Form -->
-    <form class="mt-6 flex flex-col gap-5 short:mt-4 short:gap-3" @submit.prevent="handleResetPassword">
+    <form v-else-if="!success" class="mt-6 flex flex-col gap-5 short:mt-4 short:gap-3" @submit.prevent="handleResetPassword">
+      <div
+        v-if="pageError"
+        class="rounded-xl border border-red-500/30 bg-red-500/10 px-3.5 py-2.75 text-[13px] leading-relaxed text-red-300 light:border-red-200 light:bg-red-50 light:text-red-700"
+        role="alert"
+      >
+        {{ pageError }}
+        <NuxtLink v-if="linkExpired" to="/auth/forgot-password" class="font-semibold text-red-200 underline light:text-red-800">Request a new link</NuxtLink>
+      </div>
+
       <div v-motion="fieldMotion(0)" class="flex flex-col gap-2">
         <label for="password" class="text-[13px] font-semibold text-slate-200 light:text-slate-700">New Password</label>
         <div class="group relative flex items-center">
@@ -85,7 +110,7 @@
       </div>
       <h2 class="text-xl font-bold text-slate-100 light:text-slate-900">Password Reset Complete</h2>
       <p class="text-sm leading-relaxed text-white/60 light:text-slate-600">
-        Your password has been successfully updated. You can now sign in with your new password.
+        Your password has been updated and every device has been signed out. Sign in with your new password.
       </p>
       <NuxtLink
         to="/auth/login"
@@ -114,8 +139,12 @@ import {
   CheckCircle
 } from 'lucide-vue-next'
 import PasswordStrengthMeter from '~/components/auth/PasswordStrengthMeter.vue'
+import { useAuth } from '~/composables/useAuth'
+import { toApiError } from '~/utils/apiError'
 
 const route = useRoute()
+const auth = useAuth()
+const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,100}$/
 
 const loading = ref(false)
 const success = ref(false)
@@ -132,8 +161,13 @@ const errors = reactive({
 
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
+const pageError = ref('')
+const linkExpired = ref(false)
 
-const token = computed(() => route.query.token as string)
+const token = computed(() => {
+  const value = Array.isArray(route.query.token) ? route.query.token[0] : route.query.token
+  return typeof value === 'string' ? value.trim() : ''
+})
 
 const inputClass = 'w-full rounded-xl border border-white/10 bg-white/4 py-3.5 pr-4 pl-12 text-[15px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-emerald-500 focus:bg-white/[0.07] focus:ring-[3px] focus:ring-emerald-500/15 disabled:opacity-60 short:py-3 light:border-slate-200 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
 
@@ -157,15 +191,17 @@ const successMotion = {
 }
 
 const isFormValid = computed(() => {
-  return form.password.length >= 8 &&
+  return PASSWORD_PATTERN.test(form.password) &&
          form.password === form.confirmPassword &&
-         token.value
+         Boolean(token.value)
 })
 
 function validateForm() {
   let valid = true
   errors.password = ''
   errors.confirmPassword = ''
+  pageError.value = ''
+  linkExpired.value = false
 
   if (!token.value) {
     errors.password = 'Invalid or expired reset token'
@@ -175,8 +211,8 @@ function validateForm() {
   if (!form.password) {
     errors.password = 'Password is required'
     valid = false
-  } else if (form.password.length < 8) {
-    errors.password = 'Password must be at least 8 characters'
+  } else if (!PASSWORD_PATTERN.test(form.password)) {
+    errors.password = 'Use at least 8 characters with uppercase, lowercase, a number, and a special character'
     valid = false
   }
 
@@ -205,11 +241,20 @@ async function handleResetPassword() {
       }
     })
     success.value = true
-  } catch (e: unknown) {
-    const message = (e as { response?: { _data?: { message: string } } }).response?._data?.message
-      || (e as Error)?.message
-      || 'Failed to reset password'
-    errors.password = message
+    // Every session was revoked, including this browser's.
+    auth.clearAuth()
+  } catch (error) {
+    const apiError = toApiError(error, 'Failed to reset password')
+
+    if (apiError.fieldErrors.password) errors.password = apiError.fieldErrors.password
+    if (apiError.fieldErrors.confirmPassword) errors.confirmPassword = apiError.fieldErrors.confirmPassword
+
+    if (apiError.status === 429) {
+      pageError.value = 'Too many attempts. Please wait a moment and try again.'
+    } else if (!Object.keys(apiError.fieldErrors).length) {
+      pageError.value = apiError.message
+      linkExpired.value = apiError.status === 400
+    }
   } finally {
     loading.value = false
   }

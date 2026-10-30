@@ -102,6 +102,13 @@ async function handleCallback() {
     return
   }
 
+  // Two-factor accounts: the backend left a challenge cookie instead of a session.
+  if (route.query.mfa === 'required') {
+    const redirect = getSafeRedirect(route.query.redirect)
+    await router.replace({ path: '/auth/two-factor', query: redirect ? { redirect } : undefined })
+    return
+  }
+
   try {
     // Always re-read the session here: the cookies may have just been replaced
     // by the OAuth provider and the store could still hold a previous user.

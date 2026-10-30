@@ -317,6 +317,15 @@
                 <span>Platform Settings</span>
               </NuxtLink>
 
+              <NuxtLink
+                to="/account/security"
+                class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
+                @click="isAvatarOpen = false"
+              >
+                <ShieldCheck :size="15" class="text-emerald-400" />
+                <span>Account Security</span>
+              </NuxtLink>
+
               <button
                 type="button"
                 class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
@@ -369,6 +378,7 @@ import {
   Bell,
   HelpCircle,
   ShieldAlert,
+  ShieldCheck,
   ChevronRight,
   LogOut,
   Settings,
@@ -473,6 +483,14 @@ const breadcrumbItems = computed(() => {
     return [
       { label: 'CourseAuraHub', to: '/' },
       { label: 'Settings' }
+    ]
+  }
+
+  if (path === '/account/security') {
+    return [
+      { label: 'CourseAuraHub', to: '/' },
+      { label: 'Account' },
+      { label: 'Security' }
     ]
   }
 
@@ -659,6 +677,7 @@ const quickPages = [
   { name: 'Sales & Analytics', desc: 'Detailed financial and performance reports', to: '/analytics', icon: TrendingUp },
   { name: 'Platform Settings', desc: 'Storefront branding, preferences, and profile', to: '/settings', icon: Settings },
   { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
+  { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
 ]
 
 const filteredCourses = computed(() => {
@@ -689,7 +708,7 @@ const filteredPages = computed(() => {
   const q = searchQuery.value.toLowerCase().trim()
   if (!q) return []
   return quickPages
-    .filter(page => auth.isAdmin || page.to === '/courses')
+    .filter(page => auth.isAdmin || page.to === '/courses' || page.to === '/account/security')
     .filter(p =>
       p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)
     )
