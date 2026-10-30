@@ -145,6 +145,69 @@ export interface MyCourse {
   enrolledAt: string
   progress: CourseProgress
   lastActivityAt: string | null
+  /** Where to resume; null once the course is completed */
+  nextLesson: NextLesson | null
+}
+
+export interface NextLesson {
+  lessonId: number
+  title: string
+  type: LessonType
+  durationMinutes: number
+  sectionId: number
+  sectionTitle: string
+}
+
+export interface LearningStreak {
+  currentDays: number
+  longestDays: number
+  activeToday: boolean
+}
+
+export interface DailyActivity {
+  date: string
+  lessonsCompleted: number
+}
+
+export interface LearnerDashboard {
+  enrolledCourses: number
+  inProgressCourses: number
+  completedCourses: number
+  certificatesEarned: number
+  lessonsCompleted: number
+  minutesLearned: number
+  streak: LearningStreak
+  /** Oldest first, ending today */
+  lastSevenDays: DailyActivity[]
+  continueLearning: MyCourse | null
+  timeZone: string
+}
+
+export interface Achievement {
+  code: string
+  title: string
+  description: string
+  metric: 'lessons_completed' | 'certificates_earned' | 'longest_streak_days' | 'reviews_written'
+  progress: number
+  target: number
+  earned: boolean
+}
+
+export interface Certificate {
+  certificateNumber: string
+  courseSlug: string
+  courseTitle: string
+  instructor: string
+  thumbnail: string
+  issuedAt: string
+}
+
+export interface CertificateVerification {
+  certificateNumber: string
+  learnerName: string
+  courseTitle: string
+  instructor: string
+  issuedAt: string
 }
 
 export interface WishlistItem {
@@ -204,6 +267,7 @@ export interface Curriculum {
   totalLessons: number
   totalDurationMinutes: number
   progress: CourseProgress | null
+  nextLessonId: number | null
   sections: CourseSection[]
 }
 

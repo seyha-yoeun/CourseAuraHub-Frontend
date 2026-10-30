@@ -1,10 +1,24 @@
 import type {
+  Achievement,
+  Certificate,
+  CertificateVerification,
+  LearnerDashboard,
   LearnerProfile,
   LearnerProfileUpdate,
   LessonProgressResult,
   MyCourse,
   WishlistItem,
 } from '~/types'
+
+/** The browser's IANA time zone, so streaks and "today" match the learner's calendar. */
+function browserTimeZone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || undefined
+  }
+  catch {
+    return undefined
+  }
+}
 
 /**
  * Self-service calls for the signed-in learner (/api/me/**).
@@ -22,6 +36,22 @@ export function useLearning() {
     return await $fetch<LessonProgressResult>(`/api/me/lessons/${lessonId}/completion`, {
       method: completed ? 'PUT' : 'DELETE',
     })
+  }
+
+  async function fetchDashboard() {
+    return await $fetch<LearnerDashboard>('/api/me/dashboard', { query: { timeZone: browserTimeZone() } })
+  }
+
+  async function fetchAchievements() {
+    return await $fetch<Achievement[]>('/api/me/achievements', { query: { timeZone: browserTimeZone() } })
+  }
+
+  async function fetchCertificates() {
+    return await $fetch<Certificate[]>('/api/me/certificates')
+  }
+
+  async function verifyCertificate(certificateNumber: string) {
+    return await $fetch<CertificateVerification>(`/api/certificates/${encodeURIComponent(certificateNumber)}`)
   }
 
   async function fetchWishlist() {
@@ -52,6 +82,10 @@ export function useLearning() {
     fetchMyCourses,
     enroll,
     setLessonCompleted,
+    fetchDashboard,
+    fetchAchievements,
+    fetchCertificates,
+    verifyCertificate,
     fetchWishlist,
     addToWishlist,
     removeFromWishlist,
