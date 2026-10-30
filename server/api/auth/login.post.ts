@@ -1,4 +1,4 @@
-import type { BackendAuthData } from '../../utils/apiClient'
+import type { BackendAuthData, BackendMfaChallenge } from '../../utils/apiClient'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
@@ -9,17 +9,34 @@ export default defineEventHandler(async (event) => {
 
   const rememberMe = Boolean(body?.rememberMe)
 
-  const data = await backendRequest<BackendAuthData>(event, '/auth/login', {
-    method: 'POST',
-    body: {
-      email: body.email,
-      password: body.password,
-      rememberMe,
-    },
-    auth: false,
-    retryOn401: false,
-    fallbackMessage: 'Login failed',
-  })
+  let data: BackendAuthData | BackendMfaChallenge
+
+  try {
+    data = await backendRequest<BackendAuthData | BackendMfaChallenge>(event, '/auth/login', {
+      method: 'POST',
+      body: {
+        email: body.email,
+        password: body.password,
+        rememberMe,
+      },
+      auth: false,
+      retryOn401: false,
+      fallbackMessage: 'Login failed',
+    })
+  } catch (error) {
+    throw tagAccountStateError(error)
+  }
+
+  if (isMfaChallenge(data)) {
+    // The challenge token stays in an HttpOnly cookie; the browser only learns that a code is needed.
+    setMfaChallengeCookie(event, data)
+
+    return {
+      mfaRequired: true,
+      methods: data.methods,
+      expiresInSeconds: data.expiresInSeconds,
+    }
+  }
 
   setSessionCookies(event, data, rememberMe)
   await ensureCsrfToken(event).catch(() => null)

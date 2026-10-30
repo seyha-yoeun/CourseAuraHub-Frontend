@@ -25,6 +25,24 @@
         {{ pageError }}
       </div>
 
+      <div
+        v-if="needsVerification"
+        class="flex flex-col gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-3 text-[13px] leading-relaxed text-amber-200 light:border-amber-200 light:bg-amber-50 light:text-amber-800"
+        role="alert"
+      >
+        <span>Please verify your email address before signing in. We'll send a fresh code to <strong class="break-all">{{ form.email }}</strong>.</span>
+        <button
+          type="button"
+          class="inline-flex cursor-pointer items-center justify-center gap-2 self-start rounded-lg bg-linear-to-br from-emerald-500 to-emerald-600 px-3.5 py-2 text-[13px] font-semibold text-white transition-all duration-200 enabled:hover:shadow-[0_6px_18px_rgba(16,185,129,0.35)] disabled:cursor-not-allowed disabled:opacity-60"
+          :disabled="sendingVerification"
+          @click="goToVerification"
+        >
+          <Loader2 v-if="sendingVerification" :size="15" class="animate-spin" />
+          <MailCheck v-else :size="15" />
+          <span>Send code &amp; verify</span>
+        </button>
+      </div>
+
       <div v-motion="fieldMotion(0)" class="flex flex-col gap-2">
         <label for="email" class="text-[13px] font-semibold text-slate-200 light:text-slate-700">Email</label>
         <div class="group relative flex items-center">
@@ -116,12 +134,15 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  MailCheck,
 } from 'lucide-vue-next'
 import SocialLoginButtons from '~/components/auth/SocialLoginButtons.vue'
 
 const route = useRoute()
 const auth = useAuth()
-const { login, initiateOAuth2, loading } = auth
+const { login, initiateOAuth2, resendVerification } = auth
+const router = useRouter()
+const loading = computed(() => auth.loading)
 
 const form = reactive({
   email: '',
@@ -140,6 +161,8 @@ const inputErrorClass = 'w-full rounded-xl border border-red-500 bg-white/4 py-3
 
 const pageError = ref('')
 const showPassword = ref(false)
+const needsVerification = ref(false)
+const sendingVerification = ref(false)
 
 const registerLink = computed(() => {
   const redirect = getSafeRedirect(route.query.redirect)
@@ -179,6 +202,7 @@ function validateForm() {
   errors.email = ''
   errors.password = ''
   pageError.value = ''
+  needsVerification.value = false
 
   if (!form.email) {
     errors.email = 'Email is required'
@@ -207,13 +231,36 @@ async function handleLogin() {
     if (apiError.fieldErrors.email) errors.email = apiError.fieldErrors.email
     if (apiError.fieldErrors.password) errors.password = apiError.fieldErrors.password
 
-    if (apiError.status === 401) {
-      pageError.value = 'Invalid email or password. Please try again.'
+    if (apiError.code === 'EMAIL_NOT_VERIFIED') {
+      needsVerification.value = true
+    } else if (apiError.status === 401) {
+      // Generic for wrong credentials; explains temporary lockouts.
+      pageError.value = apiError.message || 'Invalid email or password. Please try again.'
+    } else if (apiError.status === 403) {
+      pageError.value = apiError.message
     } else if (apiError.status === 429) {
       pageError.value = 'Too many sign-in attempts. Please wait a moment and try again.'
     } else if (!Object.keys(apiError.fieldErrors).length) {
       pageError.value = apiError.message
     }
+  }
+}
+
+async function goToVerification() {
+  sendingVerification.value = true
+
+  try {
+    await resendVerification(form.email.trim())
+    const redirect = getSafeRedirect(route.query.redirect)
+    await router.push({ path: '/auth/verify-email', query: redirect ? { redirect } : undefined })
+  } catch (error) {
+    const apiError = toApiError(error, 'Unable to send a verification code')
+    needsVerification.value = false
+    pageError.value = apiError.status === 429
+      ? 'Too many requests. Please wait a moment before asking for another code.'
+      : apiError.message
+  } finally {
+    sendingVerification.value = false
   }
 }
 
