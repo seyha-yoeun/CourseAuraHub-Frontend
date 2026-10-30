@@ -5,10 +5,13 @@ import { useAppToast } from '~/composables/useAppToast'
 import { ApiError, toApiError } from '~/utils/apiError'
 import {
   clearPendingOAuth,
+  clearPendingVerification,
+  consumePendingRedirect,
   getPendingRedirect,
   getSafeRedirect,
   rememberOAuthProvider,
   rememberPendingRedirect,
+  rememberPendingVerification,
   type OAuthProvider,
 } from '~/utils/authRedirect'
 
@@ -20,9 +23,31 @@ export interface AuthUser {
   role: string
   provider: string
   avatar?: string
+  emailVerified?: boolean
+  mfaEnabled?: boolean
 }
 
 export type User = AuthUser
+
+export interface VerificationChallenge {
+  email: string
+  verificationRequired: boolean
+  codeLength: number
+  codeExpiresInSeconds: number
+  resendCooldownSeconds: number
+}
+
+export interface MfaChallenge {
+  mfaRequired: true
+  methods: string[]
+  expiresInSeconds: number
+}
+
+export type MfaProof = { code: string } | { recoveryCode: string }
+
+function isMfaChallenge(value: unknown): value is MfaChallenge {
+  return Boolean(value && typeof value === 'object' && (value as MfaChallenge).mfaRequired === true)
+}
 
 const ADMIN_ROLE = 'ROLE_ADMIN'
 
@@ -85,6 +110,43 @@ export const useAuthStore = defineStore('auth', () => {
   })
 
   const homeRoute = computed(() => isAdmin.value ? '/' : '/my-learning')
+
+  function currentRedirect() {
+    return getSafeRedirect(router.currentRoute.value.query.redirect)
+  }
+
+  function redirectQuery() {
+    const redirect = currentRedirect()
+    return redirect ? { redirect } : {}
+  }
+
+  async function completeSignIn(response: AuthUser, title: string, description: string) {
+    if (!response?.userId) {
+      throw new ApiError('The server returned an invalid session.', 502)
+    }
+
+    setUser(response)
+    initialized.value = true
+    clearPendingVerification()
+
+    success(title, description)
+
+    // OAuth2 sign-ins remember their destination in session storage.
+    const redirect = currentRedirect() || consumePendingRedirect()
+    clearPendingOAuth()
+    await router.push(redirect || homeRoute.value)
+
+    return response
+  }
+
+  function rememberVerification(challenge: VerificationChallenge, fallbackEmail: string) {
+    rememberPendingVerification({
+      email: challenge?.email || fallbackEmail.trim().toLowerCase(),
+      codeLength: Number(challenge?.codeLength) || 6,
+      codeExpiresInSeconds: Number(challenge?.codeExpiresInSeconds) || 600,
+      resendAvailableAt: Date.now() + (Number(challenge?.resendCooldownSeconds) || 60) * 1000,
+    })
+  }
 
   function setUser(userData: AuthUser) {
     user.value = userData
@@ -179,28 +241,40 @@ export const useAuthStore = defineStore('auth', () => {
     sessionExpired.value = false
 
     try {
-      const response = await $fetch<AuthUser>('/api/auth/login', {
+      const response = await $fetch<AuthUser | MfaChallenge>('/api/auth/login', {
         method: 'POST',
         credentials: 'include',
         body: { email, password, rememberMe },
       })
 
-      if (!response?.userId) {
-        throw new ApiError('The server returned an invalid login response.', 502)
+      if (isMfaChallenge(response)) {
+        await router.push({ path: '/auth/two-factor', query: redirectQuery() })
+        return response
       }
 
-      setUser(response)
-      initialized.value = true
-      clearPendingOAuth()
-
-      success('Welcome Back!', `Hello ${response.firstName || response.email}`)
-
-      const redirect = getSafeRedirect(router.currentRoute.value.query.redirect)
-      await router.push(redirect || homeRoute.value)
-
-      return response
+      return await completeSignIn(response, 'Welcome Back!', `Hello ${response.firstName || response.email}`)
     } catch (error) {
       throw handleError(error, 'Login failed')
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function verifyMfa(proof: MfaProof) {
+    loading.value = true
+    lastError.value = null
+
+    try {
+      // This path matches the HttpOnly challenge cookie scope (see server/api/v1/auth/mfa).
+      const response = await $fetch<AuthUser>('/api/v1/auth/mfa/verify', {
+        method: 'POST',
+        credentials: 'include',
+        body: proof,
+      })
+
+      return await completeSignIn(response, 'Welcome Back!', `Hello ${response.firstName || response.email}`)
+    } catch (error) {
+      throw handleError(error, 'Two-factor verification failed')
     } finally {
       loading.value = false
     }
@@ -212,30 +286,76 @@ export const useAuthStore = defineStore('auth', () => {
     sessionExpired.value = false
 
     try {
-      const response = await $fetch<AuthUser>('/api/auth/register', {
+      const response = await $fetch<VerificationChallenge>('/api/auth/register', {
         method: 'POST',
         credentials: 'include',
         body: { firstName, lastName, email, password },
       })
 
-      if (!response?.userId) {
-        throw new ApiError('The server returned an invalid registration response.', 502)
-      }
-
-      setUser(response)
-      initialized.value = true
-      clearPendingOAuth()
-
-      success('Account Created!', `Welcome to CourseAuraHub, ${response.firstName || response.email}`)
-
-      const redirect = getSafeRedirect(router.currentRoute.value.query.redirect)
-      await router.push(redirect || homeRoute.value)
+      rememberVerification(response, email)
+      await router.push({ path: '/auth/verify-email', query: redirectQuery() })
 
       return response
     } catch (error) {
       throw handleError(error, 'Registration failed')
     } finally {
       loading.value = false
+    }
+  }
+
+  async function verifyEmail(email: string, code: string) {
+    loading.value = true
+    lastError.value = null
+
+    try {
+      const response = await $fetch<AuthUser>('/api/auth/verify-email', {
+        method: 'POST',
+        credentials: 'include',
+        body: { email, code },
+      })
+
+      return await completeSignIn(
+        response,
+        'Account Created!',
+        `Welcome to CourseAuraHub, ${response.firstName || response.email}`,
+      )
+    } catch (error) {
+      throw handleError(error, 'Email verification failed')
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function resendVerification(email: string) {
+    try {
+      const response = await $fetch<VerificationChallenge>('/api/auth/verify-email/resend', {
+        method: 'POST',
+        credentials: 'include',
+        body: { email },
+      })
+
+      rememberVerification(response, email)
+      return response
+    } catch (error) {
+      throw handleError(error, 'Unable to send a new verification code')
+    }
+  }
+
+  async function changePassword(currentPassword: string, newPassword: string) {
+    try {
+      const response = await $fetch<AuthUser>('/api/auth/password/change', {
+        method: 'POST',
+        credentials: 'include',
+        body: { currentPassword, newPassword },
+      })
+
+      if (response?.userId) {
+        updateUser(response)
+      }
+
+      return response
+    } catch (error) {
+      throw handleError(error, 'Unable to change your password')
     }
   }
 
@@ -279,13 +399,36 @@ export const useAuthStore = defineStore('auth', () => {
       handleError(error, 'Logout failed')
       warning('Signed Out Locally', 'The server could not be reached, but your local session was cleared.')
     } finally {
-      clearAuth()
-      clearPendingOAuth()
-      hadSession.value = false
-      initialized.value = true
-      loading.value = false
-      await router.push('/auth/login')
+      await finishSignOut()
     }
+  }
+
+  async function logoutAll() {
+    loading.value = true
+    lastError.value = null
+
+    try {
+      await $fetch('/api/auth/logout-all', {
+        method: 'POST',
+        credentials: 'include',
+      })
+    } catch (error) {
+      loading.value = false
+      throw handleError(error, 'Unable to sign out of all devices')
+    }
+
+    success('Signed Out Everywhere', 'Every device has been signed out of your account.')
+    await finishSignOut()
+  }
+
+  async function finishSignOut() {
+    clearAuth()
+    clearPendingOAuth()
+    hadSession.value = false
+    sessionExpired.value = false
+    initialized.value = true
+    loading.value = false
+    await router.push('/auth/login')
   }
 
   function initiateOAuth2(provider: OAuthProvider) {
@@ -323,9 +466,14 @@ export const useAuthStore = defineStore('auth', () => {
     initializeAuth,
     fetchUser,
     login,
+    verifyMfa,
     register,
+    verifyEmail,
+    resendVerification,
+    changePassword,
     refreshSession,
     logout,
+    logoutAll,
     initiateOAuth2,
   }
 })

@@ -195,7 +195,8 @@ import PasswordStrengthMeter from '~/components/auth/PasswordStrengthMeter.vue'
 
 const route = useRoute()
 const auth = useAuth()
-const { register, initiateOAuth2, loading } = auth
+const { register, initiateOAuth2 } = auth
+const loading = computed(() => auth.loading)
 const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
 
 const form = reactive({
@@ -329,9 +330,7 @@ async function handleRegister() {
     if (apiError.fieldErrors.email) errors.email = apiError.fieldErrors.email
     if (apiError.fieldErrors.password) errors.password = apiError.fieldErrors.password
 
-    if (apiError.status === 409) {
-      errors.email = apiError.fieldErrors.email || 'An account with this email already exists'
-    } else if (apiError.status === 429) {
+    if (apiError.status === 429) {
       pageError.value = 'Too many registration attempts. Please wait a moment and try again.'
     } else if (!Object.keys(apiError.fieldErrors).length) {
       pageError.value = apiError.message

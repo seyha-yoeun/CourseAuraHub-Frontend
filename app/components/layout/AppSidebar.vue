@@ -117,6 +117,7 @@ import {
   GraduationCap,
   Heart,
   ShieldAlert,
+  ShieldCheck,
   Trophy,
   UserCog
 } from 'lucide-vue-next'
@@ -152,7 +153,8 @@ const navSections = computed(() => {
       {
         label: 'Account',
         items: [
-          { to: '/account', label: 'Profile & Security', icon: UserCog },
+          { to: '/account', label: 'Profile', icon: UserCog },
+          { to: '/account/security', label: 'Security', icon: ShieldCheck },
         ],
       },
     ]
@@ -173,6 +175,12 @@ const navSections = computed(() => {
         { to: '/students', label: 'Students', icon: GraduationCap },
         { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/settings', label: 'Settings', icon: Settings },
+      ],
+    },
+    {
+      label: 'Account',
+      items: [
+        { to: '/account/security', label: 'Security', icon: ShieldCheck },
       ],
     },
   ]

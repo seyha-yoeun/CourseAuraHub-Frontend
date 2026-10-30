@@ -47,13 +47,19 @@
       </div>
       <h2 class="text-xl font-bold text-slate-100 light:text-slate-900">Check Your Inbox</h2>
       <p class="text-sm leading-relaxed text-white/60 light:text-slate-600">
-        We've sent a password reset link to <strong>{{ form.email }}</strong>.
-        The link will expire in 1 hour.
+        If an account exists for <strong class="break-all">{{ form.email }}</strong>, a password reset link is on its way.
+        The link expires in 30 minutes and works once.
       </p>
       <p class="text-[13px] text-white/45 light:text-slate-400">
-        Didn't receive it?
-        <button type="button" class="cursor-pointer font-semibold text-emerald-500 transition-colors hover:text-emerald-400 hover:underline light:text-emerald-600" @click="resendEmail">Resend email</button>
-        or check your spam folder.
+        Didn't receive it? Check your spam folder or
+        <button
+          type="button"
+          class="cursor-pointer font-semibold text-emerald-500 transition-colors enabled:hover:text-emerald-400 enabled:hover:underline disabled:cursor-not-allowed disabled:text-white/35 light:text-emerald-600 light:disabled:text-slate-400"
+          :disabled="loading || cooldown > 0"
+          @click="resendEmail"
+        >
+          {{ cooldown > 0 ? `resend in ${cooldown}s` : 'resend the email' }}
+        </button>
       </p>
     </div>
 
@@ -66,15 +72,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { computed, onMounted, onUnmounted, ref, reactive } from 'vue'
+import { toApiError } from '~/utils/apiError'
 import {
   Mail,
   Loader2,
   MailCheck
 } from 'lucide-vue-next'
 
+const RESEND_COOLDOWN_MS = 60 * 1000
+
 const loading = ref(false)
 const submitted = ref(false)
+const resendAvailableAt = ref(0)
+const now = ref(Date.now())
+let ticker: ReturnType<typeof setInterval> | undefined
+
+const cooldown = computed(() => Math.max(0, Math.ceil((resendAvailableAt.value - now.value) / 1000)))
 
 const form = reactive({
   email: ''
@@ -124,14 +138,15 @@ async function handleForgotPassword() {
     // Call the forgot password API endpoint
     await $fetch('/api/auth/forgot-password', {
       method: 'POST',
-      body: { email: form.email }
+      body: { email: form.email.trim() }
     })
     submitted.value = true
-  } catch (e: unknown) {
-    const message = (e as { response?: { _data?: { message: string } } }).response?._data?.message
-      || (e as Error)?.message
-      || 'Failed to send reset email'
-    errors.email = message
+    resendAvailableAt.value = Date.now() + RESEND_COOLDOWN_MS
+  } catch (error) {
+    const apiError = toApiError(error, 'Failed to send reset email')
+    errors.email = apiError.status === 429
+      ? 'Too many requests. Please wait a moment and try again.'
+      : apiError.fieldErrors.email || apiError.message
   } finally {
     loading.value = false
   }
@@ -141,6 +156,16 @@ function resendEmail() {
   submitted.value = false
   handleForgotPassword()
 }
+
+onMounted(() => {
+  ticker = setInterval(() => {
+    now.value = Date.now()
+  }, 1000)
+})
+
+onUnmounted(() => {
+  if (ticker) clearInterval(ticker)
+})
 
 useHead({
   title: 'Forgot Password',

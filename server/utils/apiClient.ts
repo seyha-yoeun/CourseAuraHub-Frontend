@@ -19,6 +19,23 @@ export interface BackendAuthData {
   lastName: string
   role: string
   provider: string
+  sessionId?: string
+  refreshExpiresIn?: number
+}
+
+export interface BackendMfaChallenge {
+  mfaRequired: true
+  mfaToken: string
+  methods: string[]
+  expiresInSeconds: number
+}
+
+export interface BackendVerificationRequired {
+  email: string
+  verificationRequired: boolean
+  codeLength: number
+  codeExpiresInSeconds: number
+  resendCooldownSeconds: number
 }
 
 export interface BackendUser {
@@ -28,6 +45,8 @@ export interface BackendUser {
   lastName: string
   role: string
   provider: string
+  emailVerified: boolean
+  mfaEnabled: boolean
   imageUrl?: string | null
 }
 
@@ -38,6 +57,35 @@ export interface AuthUserPayload {
   lastName: string
   role: string
   provider: string
+}
+
+export interface BackendSession {
+  sessionId: string
+  createdAt: string
+  lastUsedAt: string | null
+  expiresAt: string
+  ipAddress: string | null
+  userAgent: string | null
+  rememberMe: boolean
+  current: boolean
+}
+
+export interface BackendMfaStatus {
+  enabled: boolean
+  enrollmentPending: boolean
+  remainingRecoveryCodes: number
+  available: boolean
+}
+
+export interface BackendTotpSetup {
+  secret: string
+  otpauthUri: string
+  digits: number
+  periodSeconds: number
+}
+
+export interface BackendRecoveryCodes {
+  recoveryCodes: string[]
 }
 
 export interface PlatformSettingsResponse {
@@ -82,6 +130,10 @@ const ACCESS_COOKIE = 'access_token'
 const REFRESH_COOKIE = 'refresh_token'
 const CSRF_COOKIE = 'XSRF-TOKEN'
 const REMEMBER_COOKIE = 'remember_me'
+// Same name and path as the backend's OAuth2 challenge cookie, so both login flows share one
+// HttpOnly cookie that the browser only sends to `/api/v1/auth/mfa/*` (see server/api/v1).
+const MFA_CHALLENGE_COOKIE = 'mfa_challenge'
+const MFA_CHALLENGE_PATH = '/api/v1/auth/mfa'
 
 const ACCESS_TOKEN_MAX_AGE = 15 * 60
 const REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60
@@ -201,11 +253,32 @@ export function toPublicError(
   })
 }
 
-export function setSessionCookies(event: H3Event, data: BackendAuthData, rememberMe: boolean) {
+/**
+ * Client identity for the backend: the session list shows the browser instead of the Node.js
+ * fetch client, and per-IP rate limits apply per visitor. The backend only honours
+ * X-Forwarded-For from addresses listed in its TRUSTED_PROXIES setting.
+ */
+function getClientHeaders(event: H3Event): Record<string, string> {
+  const headers: Record<string, string> = {}
+  const userAgent = getRequestHeader(event, 'user-agent')
+  // Socket address only; a client-supplied X-Forwarded-For must not be relayed as trusted.
+  const clientIp = getRequestIP(event)
+
+  if (userAgent) headers['User-Agent'] = userAgent
+  if (clientIp) headers['X-Forwarded-For'] = clientIp
+
+  return headers
+}
+
+export function setSessionCookies(event: H3Event, data: BackendAuthData, rememberMe?: boolean) {
   const accessMaxAge = Number(data.expiresIn) > 0
     ? Math.max(60, Math.floor(Number(data.expiresIn) / 1000))
     : ACCESS_TOKEN_MAX_AGE
-  const refreshMaxAge = rememberMe ? REMEMBER_ME_MAX_AGE : REFRESH_TOKEN_MAX_AGE
+  // The backend decides the session lifetime (remember-me, MFA and OAuth2 sign-ins included).
+  const refreshMaxAge = Number(data.refreshExpiresIn) > 0
+    ? Math.max(60, Math.floor(Number(data.refreshExpiresIn) / 1000))
+    : rememberMe ? REMEMBER_ME_MAX_AGE : REFRESH_TOKEN_MAX_AGE
+  const isRemembered = rememberMe ?? refreshMaxAge > REFRESH_TOKEN_MAX_AGE
 
   setCookie(event, ACCESS_COOKIE, data.accessToken, {
     ...getCookieOptions(event),
@@ -217,7 +290,7 @@ export function setSessionCookies(event: H3Event, data: BackendAuthData, remembe
     maxAge: refreshMaxAge,
   })
 
-  setCookie(event, REMEMBER_COOKIE, rememberMe ? '1' : '0', {
+  setCookie(event, REMEMBER_COOKIE, isRemembered ? '1' : '0', {
     ...getCookieOptions(event),
     maxAge: refreshMaxAge,
   })
@@ -230,6 +303,50 @@ export function clearSessionCookies(event: H3Event) {
   deleteCookie(event, REFRESH_COOKIE, options)
   deleteCookie(event, CSRF_COOKIE, options)
   deleteCookie(event, REMEMBER_COOKIE, options)
+  clearMfaChallengeCookie(event)
+}
+
+export function isMfaChallenge(data: unknown): data is BackendMfaChallenge {
+  return Boolean(data && typeof data === 'object' && (data as BackendMfaChallenge).mfaRequired === true)
+}
+
+export function setMfaChallengeCookie(event: H3Event, challenge: BackendMfaChallenge) {
+  setCookie(event, MFA_CHALLENGE_COOKIE, challenge.mfaToken, {
+    ...getCookieOptions(event),
+    path: MFA_CHALLENGE_PATH,
+    maxAge: Math.max(30, Number(challenge.expiresInSeconds) || 300),
+  })
+}
+
+export function getMfaChallengeCookie(event: H3Event) {
+  return getCookie(event, MFA_CHALLENGE_COOKIE)
+}
+
+export function clearMfaChallengeCookie(event: H3Event) {
+  deleteCookie(event, MFA_CHALLENGE_COOKIE, {
+    ...getCookieDeleteOptions(),
+    path: MFA_CHALLENGE_PATH,
+  })
+}
+
+/**
+ * The backend answers 403 for both disabled and unverified accounts. Tag the unverified case so
+ * the sign-in page can offer email verification instead of a dead end.
+ */
+export function tagAccountStateError(error: unknown) {
+  const candidate = error as { statusCode?: number; data?: { code?: string; message?: unknown } }
+  const message = candidate?.data?.message
+
+  if (
+    candidate?.statusCode === 403
+    && candidate.data
+    && typeof message === 'string'
+    && message.startsWith('Email verification required')
+  ) {
+    candidate.data.code = 'EMAIL_NOT_VERIFIED'
+  }
+
+  return error
 }
 
 async function performRefresh(event: H3Event, refreshToken: string): Promise<BackendAuthData> {
@@ -246,6 +363,7 @@ async function performRefresh(event: H3Event, refreshToken: string): Promise<Bac
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        ...getClientHeaders(event),
         ...(xsrfToken ? { 'X-XSRF-TOKEN': xsrfToken } : {}),
         Cookie: cookies.join('; '),
       },
@@ -289,7 +407,7 @@ export async function refreshSession(event: H3Event) {
 
   try {
     const data = await request
-    setSessionCookies(event, data, getCookie(event, REMEMBER_COOKIE) === '1')
+    setSessionCookies(event, data, data.refreshExpiresIn ? undefined : getCookie(event, REMEMBER_COOKIE) === '1')
     return data
   } catch (error) {
     const status = getErrorStatus(error)
@@ -346,6 +464,7 @@ async function executeBackendRequest<T>(
   const headers: Record<string, string> = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
+    ...getClientHeaders(event),
   }
 
   if (accessToken) {
@@ -443,6 +562,7 @@ export async function logoutBackend(event: H3Event) {
       method: 'POST',
       headers: {
         Accept: 'application/json',
+        ...getClientHeaders(event),
         Cookie: `${REFRESH_COOKIE}=${encodeURIComponent(refreshToken)}`,
       },
     })
