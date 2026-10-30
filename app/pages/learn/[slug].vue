@@ -59,6 +59,10 @@
               controls
               preload="metadata"
               @error="mediaFailed = true"
+              @loadedmetadata="restorePosition"
+              @timeupdate="onVideoProgress"
+              @pause="onVideoPause"
+              @ended="onVideoPause"
             />
             <div v-else class="flex aspect-video flex-col items-center justify-center gap-3 bg-linear-to-br from-violet-950/60 to-zinc-950 p-6 text-center light:from-violet-50 light:to-white">
               <component :is="lessonIcon" :size="40" class="text-violet-300 light:text-violet-600" />
@@ -185,7 +189,7 @@ const route = useRoute()
 const router = useRouter()
 const toast = useAppToast()
 const { fetchCurriculum } = useCurriculum()
-const { setLessonCompleted, fetchAchievements, findCertificate } = useLearning()
+const { setLessonCompleted, saveLessonPosition, fetchAchievements, findCertificate } = useLearning()
 
 const slug = computed(() => String(route.params.slug))
 
@@ -205,8 +209,12 @@ const { data, pending } = await useAsyncData(
 const course = computed(() => data.value?.course ?? null)
 const curriculum = computed<Curriculum | null>(() => data.value?.curriculum ?? null)
 
+const POSITION_SAVE_INTERVAL_SECONDS = 10
+const RESUME_END_MARGIN_SECONDS = 5
+
 const saving = ref(false)
 const mediaFailed = ref(false)
+let lastSavedPosition = 0
 const certificate = ref<Certificate | null>(null)
 // Badges earned so far, so a completion can announce only the new ones
 const earnedBadges = ref<Set<string> | null>(null)
@@ -251,7 +259,9 @@ const embedUrl = computed(() => {
   const url = activeLesson.value?.contentUrl
   if (!url) return null
   const youtube = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{11})/)
-  return youtube ? `https://www.youtube-nocookie.com/embed/${youtube[1]}` : null
+  if (!youtube) return null
+  const start = activeLesson.value?.resumePositionSeconds
+  return `https://www.youtube-nocookie.com/embed/${youtube[1]}${start ? `?start=${start}` : ''}`
 })
 
 const isPlayableVideo = computed(() => {
@@ -265,8 +275,43 @@ const lessonIcon = computed(() => {
   return PlayCircle
 })
 
+function restorePosition(event: Event) {
+  const video = event.target as HTMLVideoElement
+  const position = activeLesson.value?.resumePositionSeconds
+  // Near the end there is nothing left to resume, so start over
+  if (position && position < video.duration - RESUME_END_MARGIN_SECONDS) {
+    video.currentTime = position
+  }
+  lastSavedPosition = Math.floor(video.currentTime)
+}
+
+// Saving your place is a convenience, so a failure must not interrupt the video
+function savePosition(lesson: Lesson, seconds: number) {
+  if (!curriculum.value?.enrolled || seconds === lastSavedPosition) return
+  lastSavedPosition = seconds
+  lesson.resumePositionSeconds = seconds
+  saveLessonPosition(lesson.id, seconds).catch(() => {})
+}
+
+function onVideoProgress(event: Event) {
+  const video = event.target as HTMLVideoElement
+  const lesson = activeLesson.value
+  const seconds = Math.floor(video.currentTime)
+  if (lesson && video.isConnected && Math.abs(seconds - lastSavedPosition) >= POSITION_SAVE_INTERVAL_SECONDS) {
+    savePosition(lesson, seconds)
+  }
+}
+
+function onVideoPause(event: Event) {
+  const video = event.target as HTMLVideoElement
+  const lesson = activeLesson.value
+  // A video removed by switching lessons also pauses, and its time belongs to the old lesson
+  if (lesson && video.isConnected) savePosition(lesson, Math.floor(video.currentTime))
+}
+
 watch(() => activeLesson.value?.id, (lessonId) => {
   mediaFailed.value = false
+  lastSavedPosition = 0
   // Pin the resolved lesson in the URL so completing it doesn't move the fallback selection
   if (lessonId && route.query.lesson !== String(lessonId)) {
     router.replace({ query: { ...route.query, lesson: String(lessonId) } })
