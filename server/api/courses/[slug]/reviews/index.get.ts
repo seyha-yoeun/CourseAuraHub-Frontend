@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
       page: queryString(query.page as string | undefined),
       size: queryString(query.size as string | undefined),
     },
+    optionalAuth: true,
     fallbackMessage: 'Unable to load reviews',
   })
 })

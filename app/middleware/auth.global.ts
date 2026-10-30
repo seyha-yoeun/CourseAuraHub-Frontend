@@ -11,6 +11,7 @@ const PUBLIC_PATHS = [
   '/privacy',
   '/terms',
   '/support',
+  '/courses',
 ]
 
 function normalizePath(path: string) {
@@ -18,8 +19,9 @@ function normalizePath(path: string) {
   return normalized || '/'
 }
 
-// Certificate verification links are shared with people who have no account
-const PUBLIC_PATH_PREFIXES = ['/certificates/']
+// Certificate verification links are shared with people who have no account,
+// and visitors can browse the catalog before signing up
+const PUBLIC_PATH_PREFIXES = ['/certificates/', '/courses/']
 
 function isPublicPath(path: string) {
   const normalized = normalizePath(path)

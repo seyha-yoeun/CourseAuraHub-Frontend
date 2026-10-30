@@ -121,6 +121,8 @@ interface BackendRequestOptions {
   body?: unknown
   query?: Record<string, unknown>
   auth?: boolean
+  // Public endpoint: send the session when there is one, otherwise call it anonymously
+  optionalAuth?: boolean
   retryOn401?: boolean
   csrf?: boolean
   fallbackMessage?: string
@@ -511,14 +513,19 @@ export async function backendRequest<T>(
     fallbackMessage = 'Request failed',
   } = options
 
+  const { optionalAuth = false } = options
   let accessToken = auth ? getCookie(event, ACCESS_COOKIE) : undefined
 
-  if (auth && !accessToken && retryOn401) {
-    const refreshed = await refreshSession(event)
-    accessToken = refreshed.accessToken
+  if (auth && !accessToken && retryOn401 && (!optionalAuth || getCookie(event, REFRESH_COOKIE))) {
+    try {
+      const refreshed = await refreshSession(event)
+      accessToken = refreshed.accessToken
+    } catch (error) {
+      if (!optionalAuth) throw error
+    }
   }
 
-  if (auth && !accessToken) {
+  if (auth && !accessToken && !optionalAuth) {
     throw createSessionExpiredError()
   }
 
