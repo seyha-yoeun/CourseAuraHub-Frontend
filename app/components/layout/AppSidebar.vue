@@ -116,6 +116,7 @@ import {
   BarChart3,
   GraduationCap,
   Heart,
+  Receipt,
   ShieldAlert,
   ShieldCheck,
   Tag,
@@ -159,6 +160,7 @@ const navSections = computed(() => {
           { to: '/my-learning', label: 'My Learning', icon: GraduationCap },
           { to: '/courses', label: 'Browse Courses', icon: BookOpen },
           { to: '/wishlist', label: 'Wishlist', icon: Heart },
+          { to: '/orders', label: 'My Orders', icon: Receipt },
           { to: '/achievements', label: 'Achievements', icon: Trophy },
         ],
       },
@@ -185,6 +187,7 @@ const navSections = computed(() => {
       items: [
         { to: '/courses', label: 'Courses', icon: BookOpen },
         { to: '/students', label: 'Students', icon: GraduationCap },
+        { to: '/admin/orders', label: 'Orders', icon: Receipt },
         { to: '/admin/discounts', label: 'Discounts', icon: Tag },
         { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/settings', label: 'Settings', icon: Settings },

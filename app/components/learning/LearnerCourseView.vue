@@ -121,14 +121,17 @@
               <GraduationCap v-else :size="16" />
               Enroll for free
             </button>
-            <span
+            <button
               v-else-if="auth.isAuthenticated"
-              class="inline-flex items-center gap-1.5 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-xs font-semibold text-amber-300 light:border-amber-200 light:bg-amber-50 light:text-amber-700"
-              title="Paid checkout is on the roadmap"
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
+              :disabled="checkingOut"
+              @click="handleCheckout"
             >
-              <Clock :size="14" />
-              Checkout coming soon
-            </span>
+              <Loader2 v-if="checkingOut" :size="16" class="animate-spin" />
+              <ShoppingCart v-else :size="16" />
+              Buy now
+            </button>
           </div>
         </div>
       </div>
@@ -198,6 +201,7 @@ import {
   Loader2,
   PlayCircle,
   RefreshCw,
+  ShoppingCart,
   Star,
   Users
 } from 'lucide-vue-next'
@@ -208,6 +212,7 @@ import CourseReviews from '~/components/learning/CourseReviews.vue'
 import { formatDuration, useCurriculum } from '~/composables/useCurriculum'
 import { formatDiscount } from '~/composables/useDiscounts'
 import { useLearning } from '~/composables/useLearning'
+import { useOrders } from '~/composables/useOrders'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
 import { formatDate } from '~/utils/dateTime'
@@ -221,9 +226,12 @@ const toast = useAppToast()
 const { fetchCurriculum } = useCurriculum()
 const { enroll, setLessonCompleted, fetchWishlist, addToWishlist, removeFromWishlist, findCertificate } = useLearning()
 
+const { createOrder } = useOrders()
+
 const curriculum = ref<Curriculum | null>(null)
 const curriculumPending = ref(true)
 const enrolling = ref(false)
+const checkingOut = ref(false)
 const inWishlist = ref(false)
 const wishlistBusy = ref(false)
 const busyLessonId = ref<number | null>(null)
@@ -264,6 +272,24 @@ async function handleEnroll() {
     toast.error('Enrollment Failed', getErrorMessage(err, 'Unable to enroll in this course'))
   } finally {
     enrolling.value = false
+  }
+}
+
+async function handleCheckout() {
+  checkingOut.value = true
+  try {
+    const order = await createOrder(props.course.slug)
+    if (order.checkoutUrl) {
+      await navigateTo(order.checkoutUrl, { external: true })
+    } else {
+      // Orders that cost nothing settle straight away
+      toast.success('You\'re Enrolled!', `Welcome to ${props.course.title}.`)
+      await router.push(`/learn/${props.course.slug}`)
+    }
+  } catch (err) {
+    toast.error('Checkout Failed', getErrorMessage(err, 'Unable to start checkout'))
+  } finally {
+    checkingOut.value = false
   }
 }
 
