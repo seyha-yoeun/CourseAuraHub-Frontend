@@ -150,9 +150,9 @@
           <span class="mt-px flex size-5 shrink-0 items-center justify-center rounded-md border border-white/15 bg-white/[0.03] transition-all duration-200 after:-mt-0.5 after:h-2.5 after:w-1.5 after:rotate-45 after:content-[''] peer-checked:border-emerald-500 peer-checked:bg-linear-to-br peer-checked:from-emerald-500 peer-checked:to-emerald-600 peer-checked:after:border-r-2 peer-checked:after:border-b-2 peer-checked:after:border-solid peer-checked:after:border-white peer-focus-visible:ring-[3px] peer-focus-visible:ring-emerald-500/20 light:border-slate-200 light:bg-white" />
           <span class="text-[13px] leading-relaxed text-white/60 light:text-slate-500">
             I agree to the
-            <NuxtLink to="/terms" class="font-semibold text-emerald-500 no-underline transition-colors hover:text-emerald-400 hover:underline light:text-emerald-600">Terms of Service</NuxtLink>
+            <NuxtLink to="/terms" target="_blank" class="font-semibold text-emerald-500 no-underline transition-colors hover:text-emerald-400 hover:underline light:text-emerald-600">Terms of Service</NuxtLink>
             and
-            <NuxtLink to="/privacy" class="font-semibold text-emerald-500 no-underline transition-colors hover:text-emerald-400 hover:underline light:text-emerald-600">Privacy Policy</NuxtLink>
+            <NuxtLink to="/privacy" target="_blank" class="font-semibold text-emerald-500 no-underline transition-colors hover:text-emerald-400 hover:underline light:text-emerald-600">Privacy Policy</NuxtLink>
           </span>
         </label>
         <p v-if="errors.terms" class="min-h-4 text-xs text-red-500">{{ errors.terms }}</p>

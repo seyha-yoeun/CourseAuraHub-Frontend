@@ -8,6 +8,9 @@ const PUBLIC_PATHS = [
   '/auth/verify-email',
   '/auth/two-factor',
   '/auth/callback',
+  '/privacy',
+  '/terms',
+  '/support',
 ]
 
 function normalizePath(path: string) {
@@ -15,8 +18,12 @@ function normalizePath(path: string) {
   return normalized || '/'
 }
 
+// Certificate verification links are shared with people who have no account
+const PUBLIC_PATH_PREFIXES = ['/certificates/']
+
 function isPublicPath(path: string) {
-  return PUBLIC_PATHS.includes(normalizePath(path))
+  const normalized = normalizePath(path)
+  return PUBLIC_PATHS.includes(normalized) || PUBLIC_PATH_PREFIXES.some(prefix => normalized.startsWith(prefix))
 }
 
 function isAuthEntryPath(path: string) {

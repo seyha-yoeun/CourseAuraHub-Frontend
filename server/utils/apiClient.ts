@@ -47,6 +47,7 @@ export interface BackendUser {
   provider: string
   emailVerified: boolean
   mfaEnabled: boolean
+  imageUrl?: string | null
 }
 
 export interface AuthUserPayload {

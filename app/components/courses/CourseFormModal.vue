@@ -38,15 +38,8 @@
               </div>
 
               <div class="flex min-w-0 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Category</label>
-                <select v-model="form.category" class="w-full cursor-pointer rounded-[10px] border border-white/10 bg-zinc-900 px-3.5 py-2.5 text-[13px] text-slate-200 outline-none transition-all duration-200 focus:border-violet-500/50 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600">
-                  <option value="Web Development">Web Development</option>
-                  <option value="Programming">Programming</option>
-                  <option value="Design">Design</option>
-                  <option value="Backend">Backend</option>
-                  <option value="DevOps">DevOps</option>
-                  <option value="Mobile">Mobile</option>
-                </select>
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="course-category">Category</label>
+                <AppDropdown id="course-category" v-model="form.category" :options="categoryOptions" />
               </div>
             </div>
 
@@ -63,21 +56,13 @@
               </div>
 
               <div class="flex min-w-0 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Difficulty Level</label>
-                <select v-model="form.level" class="w-full cursor-pointer rounded-[10px] border border-white/10 bg-zinc-900 px-3.5 py-2.5 text-[13px] text-slate-200 outline-none transition-all duration-200 focus:border-violet-500/50 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600">
-                  <option value="Beginner">Beginner</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
-                </select>
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="course-level">Difficulty Level</label>
+                <AppDropdown id="course-level" v-model="form.level" :options="levelOptions" />
               </div>
 
               <div class="flex min-w-0 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Publishing Status</label>
-                <select v-model="form.status" class="w-full cursor-pointer rounded-[10px] border border-white/10 bg-zinc-900 px-3.5 py-2.5 text-[13px] text-slate-200 outline-none transition-all duration-200 focus:border-violet-500/50 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600">
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                  <option value="archived">Archived</option>
-                </select>
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="course-status">Publishing Status</label>
+                <AppDropdown id="course-status" v-model="form.status" :options="statusOptions" />
               </div>
             </div>
 
@@ -206,7 +191,27 @@
 <script setup lang="ts">
 import { BookPlus, FileEdit, X, Loader2 } from 'lucide-vue-next'
 import { useModalA11y } from '~/composables/useModalA11y'
+import AppDropdown from '~/components/shared/AppDropdown.vue'
 import type { Course, CourseFormData } from '~/types'
+
+const categoryOptions = [
+  { value: 'Web Development', label: 'Web Development' },
+  { value: 'Programming', label: 'Programming' },
+  { value: 'Design', label: 'Design' },
+  { value: 'Backend', label: 'Backend' },
+  { value: 'DevOps', label: 'DevOps' },
+  { value: 'Mobile', label: 'Mobile' }
+]
+const levelOptions = [
+  { value: 'Beginner', label: 'Beginner' },
+  { value: 'Intermediate', label: 'Intermediate' },
+  { value: 'Advanced', label: 'Advanced' }
+]
+const statusOptions = [
+  { value: 'draft', label: 'Draft' },
+  { value: 'published', label: 'Published' },
+  { value: 'archived', label: 'Archived' }
+]
 
 const props = defineProps<{
   isOpen: boolean

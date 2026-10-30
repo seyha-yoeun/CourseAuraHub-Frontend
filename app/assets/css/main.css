@@ -139,3 +139,57 @@ html.light body {
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Dropdown / menu motion
+ * Items cascade in using their `--i` index; the selected check pops in.
+ * ------------------------------------------------------------------------- */
+@keyframes dropdown-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dropdown-check-in {
+  0% { opacity: 0; transform: scale(0.4) rotate(-20deg); }
+  60% { opacity: 1; transform: scale(1.2) rotate(0); }
+  100% { transform: scale(1); }
+}
+
+.dropdown-item-in {
+  animation: dropdown-item-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(min(var(--i, 0), 10) * 22ms);
+}
+
+.dropdown-check-in {
+  animation: dropdown-check-in 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdown-item-in,
+  .dropdown-check-in {
+    animation: none;
+  }
+}
+
+/* Stagger the direct children of a menu as it opens */
+.menu-stagger > * {
+  animation: dropdown-item-in 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.menu-stagger > :nth-child(2) { animation-delay: 25ms; }
+.menu-stagger > :nth-child(3) { animation-delay: 50ms; }
+.menu-stagger > :nth-child(4) { animation-delay: 75ms; }
+.menu-stagger > :nth-child(5) { animation-delay: 100ms; }
+.menu-stagger > :nth-child(6) { animation-delay: 125ms; }
+.menu-stagger > :nth-child(n + 7) { animation-delay: 150ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-stagger > * {
+    animation: none;
+  }
+}

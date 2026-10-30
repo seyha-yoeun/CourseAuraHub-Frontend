@@ -139,23 +139,13 @@
 
             <div class="flex flex-col gap-3 sm:flex-row">
               <div class="flex flex-1 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Default Currency</label>
-                <select v-model="form.currency" class="w-full cursor-pointer rounded-[10px] border border-white/9 bg-zinc-950 px-3 py-2.25 text-[13px] text-slate-200 outline-none transition-all duration-200 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600">
-                  <option value="USD">USD ($)</option>
-                  <option value="EUR">EUR (€)</option>
-                  <option value="GBP">GBP (£)</option>
-                  <option value="JPY">JPY (¥)</option>
-                </select>
+                <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500" for="settings-currency">Default Currency</label>
+                <AppDropdown id="settings-currency" v-model="form.currency" :options="currencyOptions" size="sm" />
               </div>
 
               <div class="flex flex-1 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Language</label>
-                <select v-model="form.defaultLanguage" class="w-full cursor-pointer rounded-[10px] border border-white/9 bg-zinc-950 px-3 py-2.25 text-[13px] text-slate-200 outline-none transition-all duration-200 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600">
-                  <option value="en">English (US)</option>
-                  <option value="es">Español</option>
-                  <option value="fr">Français</option>
-                  <option value="de">Deutsch</option>
-                </select>
+                <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500" for="settings-language">Language</label>
+                <AppDropdown id="settings-language" v-model="form.defaultLanguage" :options="languageOptions" size="sm" />
               </div>
             </div>
           </div>
@@ -241,6 +231,20 @@ import type { PlatformSettings } from '~/types'
 import { useAppToast } from '~/composables/useAppToast'
 import { useAuth } from '~/composables/useAuth'
 import { toApiError } from '~/utils/apiError'
+import AppDropdown from '~/components/shared/AppDropdown.vue'
+
+const currencyOptions = [
+  { value: 'USD', label: 'USD ($)' },
+  { value: 'EUR', label: 'EUR (€)' },
+  { value: 'GBP', label: 'GBP (£)' },
+  { value: 'JPY', label: 'JPY (¥)' }
+]
+const languageOptions = [
+  { value: 'en', label: 'English (US)' },
+  { value: 'es', label: 'Español' },
+  { value: 'fr', label: 'Français' },
+  { value: 'de', label: 'Deutsch' }
+]
 
 definePageMeta({ requiresAdmin: true })
 
