@@ -115,8 +115,11 @@ import {
   Settings,
   BarChart3,
   GraduationCap,
+  Heart,
   ShieldAlert,
-  ShieldCheck
+  ShieldCheck,
+  Trophy,
+  UserCog
 } from 'lucide-vue-next'
 
 withDefaults(
@@ -141,12 +144,16 @@ const navSections = computed(() => {
       {
         label: 'Learning',
         items: [
-          { to: '/courses', label: 'Courses', icon: BookOpen },
+          { to: '/my-learning', label: 'My Learning', icon: GraduationCap },
+          { to: '/courses', label: 'Browse Courses', icon: BookOpen },
+          { to: '/wishlist', label: 'Wishlist', icon: Heart },
+          { to: '/achievements', label: 'Achievements', icon: Trophy },
         ],
       },
       {
         label: 'Account',
         items: [
+          { to: '/account', label: 'Profile', icon: UserCog },
           { to: '/account/security', label: 'Security', icon: ShieldCheck },
         ],
       },
@@ -195,10 +202,12 @@ const fadeBackdrop = {
 
 function isActive(to: string) {
   if (to === '/') return route.path === '/'
+  // The lesson player belongs to My Learning
+  if (to === '/my-learning' && route.path.startsWith('/learn/')) return true
   return route.path.startsWith(to)
 }
 
 function handleProfileClick() {
-  router.push(auth.isAdmin ? '/settings' : '/courses')
+  router.push(auth.isAdmin ? '/settings' : '/account')
 }
 </script>
