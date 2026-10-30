@@ -30,11 +30,47 @@ export interface Course {
   enrolledStudentList?: Student[]
   // Whether the caller is enrolled; only set on the course detail response
   enrolled?: boolean | null
+  // The running sale. price already includes it, except for admins, who see the regular price
+  sale?: CourseSale | null
 }
+
+export interface CourseSale {
+  salePrice: number
+  discountType: string
+  discountValue: number
+  // Null when the sale has no end date
+  endsAt: string | null
+}
+
+export interface CourseDiscount {
+  id: number
+  courseSlug: string
+  courseTitle: string
+  discountType: string
+  discountValue: number
+  regularPrice: number
+  salePrice: number
+  startsAt: string
+  endsAt: string | null
+  active: boolean
+  // Whether learners are getting this price right now
+  running: boolean
+  createdAt: string
+}
+
+export interface CourseDiscountCreate {
+  courseSlug: string
+  discountType: string
+  discountValue: number
+  startsAt?: string
+  endsAt?: string
+}
+
+export type CourseDiscountUpdate = Partial<Omit<CourseDiscountCreate, 'courseSlug'>> & { active?: boolean }
 
 export type CourseFormData = Omit<
   Course,
-  'id' | 'slug' | 'rating' | 'totalStudents' | 'revenue' | 'completionRate' | 'createdAt' | 'updatedAt' | 'monthlyEnrollments' | 'monthlyRevenue' | 'enrolledStudentList'
+  'id' | 'slug' | 'rating' | 'totalStudents' | 'revenue' | 'completionRate' | 'createdAt' | 'updatedAt' | 'monthlyEnrollments' | 'monthlyRevenue' | 'enrolledStudentList' | 'sale'
 >
 
 export interface Student {

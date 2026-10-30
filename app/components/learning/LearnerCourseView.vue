@@ -76,6 +76,12 @@
               <span v-if="course.originalPrice > course.price" class="text-[13px] text-white/35 line-through light:text-slate-400">
                 ${{ course.originalPrice.toFixed(2) }}
               </span>
+              <span v-if="course.sale" class="rounded-md border border-rose-400/30 bg-rose-400/12 px-2 py-0.5 text-[11px] font-bold text-rose-300 light:border-rose-200 light:bg-rose-50 light:text-rose-600">
+                {{ formatDiscount(course.sale) }}
+              </span>
+              <span v-if="course.sale?.endsAt" class="text-xs text-white/45 light:text-slate-500">
+                Ends {{ formatDate(course.sale.endsAt) }}
+              </span>
             </template>
           </div>
 
@@ -200,9 +206,11 @@ import ProgressBar from '~/components/learning/ProgressBar.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
 import { formatDuration, useCurriculum } from '~/composables/useCurriculum'
+import { formatDiscount } from '~/composables/useDiscounts'
 import { useLearning } from '~/composables/useLearning'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
+import { formatDate } from '~/utils/dateTime'
 
 const props = defineProps<{ course: Course }>()
 defineEmits<{ refresh: [] }>()
