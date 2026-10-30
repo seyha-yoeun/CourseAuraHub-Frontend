@@ -350,6 +350,15 @@
                 <span>Platform Settings</span>
               </NuxtLink>
 
+              <NuxtLink
+                to="/account/security"
+                class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
+                @click="isAvatarOpen = false"
+              >
+                <ShieldCheck :size="15" class="text-emerald-400" />
+                <span>Account Security</span>
+              </NuxtLink>
+
               <button
                 type="button"
                 class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
@@ -402,6 +411,7 @@ import {
   Bell,
   HelpCircle,
   ShieldAlert,
+  ShieldCheck,
   ChevronRight,
   LogOut,
   Settings,
@@ -414,6 +424,7 @@ import {
   SearchX,
   GraduationCap,
   Heart,
+  Trophy,
   UserCog,
   X
 } from 'lucide-vue-next'
@@ -530,6 +541,14 @@ const breadcrumbItems = computed(() => {
     return [
       { label: 'CourseAuraHub', to: '/' },
       { label: 'Settings' }
+    ]
+  }
+
+  if (path === '/account/security') {
+    return [
+      { label: 'CourseAuraHub', to: '/' },
+      { label: 'Account' },
+      { label: 'Security' }
     ]
   }
 
@@ -716,13 +735,16 @@ const quickPages = [
   { name: 'Sales & Analytics', desc: 'Detailed financial and performance reports', to: '/analytics', icon: TrendingUp },
   { name: 'Platform Settings', desc: 'Storefront branding, preferences, and profile', to: '/settings', icon: Settings },
   { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
+  { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
 ]
 
 const learnerPages = [
   { name: 'Browse Courses', desc: 'Explore the course catalog', to: '/courses', icon: BookOpen },
   { name: 'My Learning', desc: 'Enrolled courses and your progress', to: '/my-learning', icon: GraduationCap },
   { name: 'Wishlist', desc: 'Courses saved for later', to: '/wishlist', icon: Heart },
-  { name: 'Profile & Security', desc: 'Your profile, avatar, and password', to: '/account', icon: UserCog },
+  { name: 'Achievements', desc: 'Badges, streaks, and course certificates', to: '/achievements', icon: Trophy },
+  { name: 'Profile', desc: 'Your name, avatar, and public details', to: '/account', icon: UserCog },
+  { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
 ]
 
 const filteredCourses = computed(() => {
