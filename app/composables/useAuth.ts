@@ -84,7 +84,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   })
 
-  const homeRoute = computed(() => isAdmin.value ? '/' : '/courses')
+  const homeRoute = computed(() => isAdmin.value ? '/' : '/my-learning')
 
   function setUser(userData: AuthUser) {
     user.value = userData

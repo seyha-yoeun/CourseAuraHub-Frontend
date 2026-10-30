@@ -34,6 +34,16 @@
       </div>
 
       <div
+        v-else-if="error"
+        class="rounded-2xl border border-amber-400/30 bg-amber-400/8 p-6 text-center light:border-amber-200 light:bg-amber-50"
+      >
+        <AlertCircle :size="28" class="mx-auto text-amber-400 light:text-amber-600" />
+        <p class="mt-2 text-sm font-bold text-slate-100 light:text-slate-900">We couldn't check this certificate right now</p>
+        <p class="mt-1 text-[13px] text-white/50 light:text-slate-500">This doesn't mean it's invalid. Please try again in a moment.</p>
+        <button type="button" class="mt-3 cursor-pointer text-xs font-semibold text-violet-300 underline light:text-violet-700" @click="refresh()">Try again</button>
+      </div>
+
+      <div
         v-else
         class="rounded-2xl border border-rose-500/25 bg-rose-500/8 p-6 text-center light:border-rose-200 light:bg-rose-50"
       >
@@ -48,9 +58,10 @@
 </template>
 
 <script setup lang="ts">
-import { BadgeCheck, CheckCircle2, XCircle } from 'lucide-vue-next'
+import { AlertCircle, BadgeCheck, CheckCircle2, XCircle } from 'lucide-vue-next'
 import InfoPageShell from '~/components/shared/InfoPageShell.vue'
 import { useLearning } from '~/composables/useLearning'
+import { toApiError } from '~/utils/apiError'
 
 definePageMeta({ layout: false })
 useHead({ title: 'Verify certificate' })
@@ -59,10 +70,13 @@ const route = useRoute()
 const { verifyCertificate } = useLearning()
 const number = computed(() => String(route.params.number))
 
-// A missing certificate is an expected outcome on this page, so render it instead of throwing
-const { data: certificate, pending } = await useAsyncData(
+// A 404 is an expected outcome on this page. Anything else must not read as "this certificate is fake"
+const { data: certificate, pending, error, refresh } = await useAsyncData(
   () => `certificate-${number.value}`,
-  () => verifyCertificate(number.value).catch(() => null)
+  () => verifyCertificate(number.value).catch((err) => {
+    if (toApiError(err).status === 404) return null
+    throw err
+  })
 )
 
 function formatDate(value: string) {

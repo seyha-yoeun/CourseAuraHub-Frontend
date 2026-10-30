@@ -117,10 +117,10 @@
                 >
                   <Loader2 v-if="saving" :size="14" class="animate-spin" />
                   <CheckCircle2 v-else :size="14" />
-                  {{ nextLesson ? 'Complete & continue' : 'Complete lesson' }}
+                  {{ nextUnfinished ? 'Complete & continue' : 'Complete lesson' }}
                 </button>
-                <button v-else type="button" :class="secondaryButton" :disabled="!nextLesson" @click="goTo(nextLesson)">
-                  Next <ChevronRight :size="15" />
+                <button v-else type="button" :class="secondaryButton" :disabled="!nextStop" @click="goTo(nextStop)">
+                  {{ !nextLesson && nextStop ? 'Next unfinished' : 'Next' }} <ChevronRight :size="15" />
                 </button>
               </div>
             </div>
@@ -131,7 +131,12 @@
             class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-[13px] text-emerald-200 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-800"
           >
             <span class="flex items-center gap-2"><Trophy :size="16" /> You've completed this course. Nice work!</span>
-            <NuxtLink :to="`/courses/${slug}`" class="font-semibold underline">Leave a review</NuxtLink>
+            <div class="flex flex-wrap items-center gap-3">
+              <NuxtLink v-if="certificate" :to="`/certificates/${certificate.certificateNumber}`" class="inline-flex items-center gap-1.5 font-semibold underline">
+                <Award :size="15" /> View certificate
+              </NuxtLink>
+              <NuxtLink :to="`/courses/${slug}`" class="font-semibold underline">Leave a review</NuxtLink>
+            </div>
           </div>
         </template>
       </div>
@@ -155,6 +160,7 @@
 import {
   AlertCircle,
   ArrowLeft,
+  Award,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
@@ -167,7 +173,7 @@ import {
   RotateCcw,
   Trophy
 } from 'lucide-vue-next'
-import type { Course, Curriculum, Lesson } from '~/types'
+import type { Certificate, Course, Curriculum, Lesson } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import { flattenLessons, formatDuration, useCurriculum } from '~/composables/useCurriculum'
@@ -179,7 +185,7 @@ const route = useRoute()
 const router = useRouter()
 const toast = useAppToast()
 const { fetchCurriculum } = useCurriculum()
-const { setLessonCompleted } = useLearning()
+const { setLessonCompleted, fetchAchievements, findCertificate } = useLearning()
 
 const slug = computed(() => String(route.params.slug))
 
@@ -199,10 +205,11 @@ const { data, pending } = await useAsyncData(
 const course = computed(() => data.value?.course ?? null)
 const curriculum = computed<Curriculum | null>(() => data.value?.curriculum ?? null)
 
-useHead({ title: computed(() => activeLesson.value?.title || course.value?.title || 'Lesson') })
-
 const saving = ref(false)
 const mediaFailed = ref(false)
+const certificate = ref<Certificate | null>(null)
+// Badges earned so far, so a completion can announce only the new ones
+const earnedBadges = ref<Set<string> | null>(null)
 
 const secondaryButton = 'inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-semibold text-white/75 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:hover:bg-slate-200'
 
@@ -217,6 +224,8 @@ const activeLesson = computed<Lesson | null>(() => {
   return unlockedLessons.value.find(lesson => !lesson.completed) ?? unlockedLessons.value[0] ?? null
 })
 
+useHead({ title: computed(() => activeLesson.value?.title || course.value?.title || 'Lesson') })
+
 const activeIndex = computed(() => allLessons.value.findIndex(lesson => lesson.id === activeLesson.value?.id))
 
 const previousLesson = computed(() => {
@@ -228,6 +237,15 @@ const nextLesson = computed(() => {
   const index = unlockedLessons.value.findIndex(lesson => lesson.id === activeLesson.value?.id)
   return index >= 0 ? unlockedLessons.value[index + 1] ?? null : null
 })
+
+// Next lesson still to do, wrapping around to anything skipped earlier
+const nextUnfinished = computed(() => {
+  const lessons = unlockedLessons.value
+  const index = lessons.findIndex(lesson => lesson.id === activeLesson.value?.id)
+  return [...lessons.slice(index + 1), ...lessons.slice(0, index)].find(lesson => !lesson.completed) ?? null
+})
+
+const nextStop = computed(() => nextLesson.value ?? (curriculum.value?.enrolled ? nextUnfinished.value : null))
 
 const embedUrl = computed(() => {
   const url = activeLesson.value?.contentUrl
@@ -260,6 +278,38 @@ function goTo(lesson: Lesson | null | undefined) {
   router.replace({ query: { ...route.query, lesson: String(lesson.id) } })
 }
 
+// Rewards are a bonus on top of the lesson, so failures here stay silent
+async function loadCertificate() {
+  certificate.value = await findCertificate(slug.value).catch(() => null)
+}
+
+async function loadEarnedBadges() {
+  const achievements = await fetchAchievements().catch(() => null)
+  return achievements ? achievements.filter(badge => badge.earned) : null
+}
+
+async function announceNewBadges() {
+  const earned = await loadEarnedBadges()
+  if (!earned) return
+  for (const badge of earned) {
+    if (earnedBadges.value && !earnedBadges.value.has(badge.code)) {
+      toast.success('Badge unlocked', `${badge.title}: ${badge.description}`)
+    }
+  }
+  earnedBadges.value = new Set(earned.map(badge => badge.code))
+}
+
+watch(curriculum, async (value) => {
+  if (!value?.enrolled) {
+    certificate.value = null
+    earnedBadges.value = null
+    return
+  }
+  loadCertificate()
+  const earned = await loadEarnedBadges()
+  earnedBadges.value = earned && new Set(earned.map(badge => badge.code))
+}, { immediate: true })
+
 async function setCompleted(lesson: Lesson, completed: boolean) {
   if (!curriculum.value?.enrolled) return false
   saving.value = true
@@ -270,7 +320,9 @@ async function setCompleted(lesson: Lesson, completed: boolean) {
     curriculum.value.progress = result.courseProgress
     if (!wasCompleted && result.courseProgress.completed) {
       toast.success('Course Completed! 🎉', `You finished ${course.value?.title}.`)
+      loadCertificate()
     }
+    if (completed) announceNewBadges()
     return true
   } catch (err) {
     toast.error('Progress Not Saved', getErrorMessage(err, 'Unable to update lesson progress'))
@@ -283,7 +335,7 @@ async function setCompleted(lesson: Lesson, completed: boolean) {
 async function completeAndContinue() {
   const lesson = activeLesson.value
   if (!lesson) return
-  const next = nextLesson.value
+  const next = nextUnfinished.value
   if (await setCompleted(lesson, true) && next) goTo(next)
 }
 </script>
