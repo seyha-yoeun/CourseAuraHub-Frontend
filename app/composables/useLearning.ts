@@ -50,6 +50,12 @@ export function useLearning() {
     return await $fetch<Certificate[]>('/api/me/certificates')
   }
 
+  /** The learner's certificate for a course, or null if they haven't earned one. */
+  async function findCertificate(courseSlug: string) {
+    const certificates = await fetchCertificates()
+    return certificates.find(certificate => certificate.courseSlug === courseSlug) ?? null
+  }
+
   async function verifyCertificate(certificateNumber: string) {
     return await $fetch<CertificateVerification>(`/api/certificates/${encodeURIComponent(certificateNumber)}`)
   }
@@ -85,6 +91,7 @@ export function useLearning() {
     fetchDashboard,
     fetchAchievements,
     fetchCertificates,
+    findCertificate,
     verifyCertificate,
     fetchWishlist,
     addToWishlist,

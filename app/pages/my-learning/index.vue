@@ -64,7 +64,7 @@
 
         <div class="rounded-2xl border border-white/8 bg-white/4 p-4 light:border-slate-200 light:bg-white">
           <p class="text-[11px] font-semibold text-white/45 light:text-slate-500">Lessons this week</p>
-          <div class="mt-2 flex h-14 items-end gap-1.5" role="img" :aria-label="weekSummary">
+          <div class="mt-2 flex h-16 items-end gap-1.5" role="img" :aria-label="weekSummary">
             <div v-for="day in dashboard.lastSevenDays" :key="day.date" class="flex flex-1 flex-col items-center gap-1">
               <div
                 class="w-full rounded-sm"
@@ -75,6 +75,9 @@
               <span class="text-[10px] text-white/40 light:text-slate-400">{{ dayLabel(day.date, 'narrow') }}</span>
             </div>
           </div>
+          <p v-if="dashboard.streak.currentDays && !dashboard.streak.activeToday" class="mt-2 text-[11px] font-semibold text-orange-400 light:text-orange-600">
+            Finish a lesson today to keep your streak
+          </p>
         </div>
       </div>
     </section>
@@ -85,7 +88,7 @@
 
     <div v-else-if="error" class="rounded-[20px] border border-rose-500/25 bg-rose-500/8 px-6 py-10 text-center text-[13px] text-rose-300 light:border-rose-200 light:bg-rose-50 light:text-rose-700">
       {{ getErrorMessage(error, 'Unable to load your courses') }}
-      <button type="button" class="ml-2 cursor-pointer font-semibold underline" @click="refresh()">Try again</button>
+      <button type="button" class="ml-2 cursor-pointer font-semibold underline" @click="retry">Try again</button>
     </div>
 
     <div v-else-if="!courses.length" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center light:border-slate-200 light:bg-white">
@@ -131,13 +134,23 @@
             <p v-if="item.nextLesson && item.progress.completedLessons" class="mt-3 truncate text-[11px] text-white/45 light:text-slate-500">
               Next: {{ item.nextLesson.title }}
             </p>
-            <NuxtLink
-              :to="learnLink(item)"
-              class="mt-4 flex items-center justify-center gap-1.5 rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-3 py-2 text-xs font-semibold text-violet-300 no-underline transition-all hover:bg-violet-500/30 hover:text-white light:border-violet-300 light:bg-violet-50 light:text-violet-700"
-            >
-              <PlayCircle :size="14" />
-              {{ item.progress.completed ? 'Review course' : item.progress.completedLessons ? 'Continue' : 'Start course' }}
-            </NuxtLink>
+            <div class="mt-4 flex gap-2">
+              <NuxtLink
+                :to="learnLink(item)"
+                class="flex flex-1 items-center justify-center gap-1.5 rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-3 py-2 text-xs font-semibold text-violet-300 no-underline transition-all hover:bg-violet-500/30 hover:text-white light:border-violet-300 light:bg-violet-50 light:text-violet-700"
+              >
+                <PlayCircle :size="14" />
+                {{ item.progress.completed ? 'Review course' : item.progress.completedLessons ? 'Continue' : 'Start course' }}
+              </NuxtLink>
+              <NuxtLink
+                v-if="certificateNumbers.has(item.slug)"
+                :to="`/certificates/${certificateNumbers.get(item.slug)}`"
+                class="flex items-center justify-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white/70 no-underline transition-colors hover:bg-white/10 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700"
+              >
+                <Award :size="14" />
+                Certificate
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </article>
@@ -154,17 +167,26 @@ import { getErrorMessage } from '~/utils/apiError'
 
 useHead({ title: 'My Learning' })
 
-const { fetchMyCourses, fetchDashboard } = useLearning()
+const { fetchMyCourses, fetchDashboard, fetchCertificates } = useLearning()
 
 const { data, pending, error, refresh } = await useAsyncData('my-courses', fetchMyCourses, { server: false })
 // The overview is a bonus on top of the course list, so a failure here just hides it
-const { data: dashboard } = await useAsyncData('learner-dashboard', () => fetchDashboard().catch(() => null), { server: false })
+const { data: dashboard, refresh: refreshDashboard } = await useAsyncData('learner-dashboard', () => fetchDashboard().catch(() => null), { server: false })
+const { data: certificates, refresh: refreshCertificates } = await useAsyncData('my-learning-certificates', () => fetchCertificates().catch(() => []), { server: false })
+
+const certificateNumbers = computed(() => new Map(certificates.value?.map(c => [c.courseSlug, c.certificateNumber])))
+
+function retry() {
+  refresh()
+  refreshDashboard()
+  refreshCertificates()
+}
 
 const stats = computed(() => {
   const d = dashboard.value
   if (!d) return []
   return [
-    { label: d.streak.activeToday || !d.streak.currentDays ? 'Day streak' : 'Day streak · learn today to keep it', value: d.streak.currentDays, icon: Flame, tone: 'bg-orange-500/15 text-orange-400 light:text-orange-600' },
+    { label: d.streak.longestDays > d.streak.currentDays ? `Day streak · best ${d.streak.longestDays}` : 'Day streak', value: d.streak.currentDays, icon: Flame, tone: 'bg-orange-500/15 text-orange-400 light:text-orange-600' },
     { label: 'Lessons completed', value: d.lessonsCompleted, icon: ListChecks, tone: 'bg-violet-500/15 text-violet-300 light:text-violet-600' },
     { label: 'Time learned', value: formatMinutes(d.minutesLearned), icon: Clock, tone: 'bg-sky-500/15 text-sky-300 light:text-sky-600' },
     { label: 'Certificates', value: d.certificatesEarned, icon: Award, tone: 'bg-emerald-500/15 text-emerald-400 light:text-emerald-600' }

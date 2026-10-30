@@ -48,13 +48,23 @@
             <span class="text-white/45 light:text-slate-500">{{ progress?.completedLessons ?? 0 }}/{{ progress?.totalLessons ?? course.totalLessons }} lessons</span>
           </div>
           <ProgressBar :value="progress?.progressPercent ?? 0" />
-          <NuxtLink
-            :to="`/learn/${course.slug}`"
-            class="mt-4 inline-flex items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white no-underline shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500"
-          >
-            <PlayCircle :size="16" />
-            {{ progress?.completedLessons ? (progress.completed ? 'Review course' : 'Continue learning') : 'Start learning' }}
-          </NuxtLink>
+          <div class="mt-4 flex flex-wrap items-center gap-2">
+            <NuxtLink
+              :to="`/learn/${course.slug}`"
+              class="inline-flex items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white no-underline shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500"
+            >
+              <PlayCircle :size="16" />
+              {{ progress?.completedLessons ? (progress.completed ? 'Review course' : 'Continue learning') : 'Start learning' }}
+            </NuxtLink>
+            <NuxtLink
+              v-if="certificate"
+              :to="`/certificates/${certificate.certificateNumber}`"
+              class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-[13px] font-semibold text-white/75 no-underline transition-all hover:bg-white/10 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700"
+            >
+              <Award :size="15" />
+              View certificate
+            </NuxtLink>
+          </div>
         </div>
 
         <!-- Not enrolled: price + enroll / wishlist -->
@@ -163,6 +173,7 @@
 <script setup lang="ts">
 import {
   ArrowLeft,
+  Award,
   BarChart3,
   BookOpen,
   Clock,
@@ -174,7 +185,7 @@ import {
   Star,
   Users
 } from 'lucide-vue-next'
-import type { Course, Curriculum, Lesson } from '~/types'
+import type { Certificate, Course, Curriculum, Lesson } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
@@ -189,7 +200,7 @@ defineEmits<{ refresh: [] }>()
 const router = useRouter()
 const toast = useAppToast()
 const { fetchCurriculum } = useCurriculum()
-const { enroll, setLessonCompleted, fetchWishlist, addToWishlist, removeFromWishlist } = useLearning()
+const { enroll, setLessonCompleted, fetchWishlist, addToWishlist, removeFromWishlist, findCertificate } = useLearning()
 
 const curriculum = ref<Curriculum | null>(null)
 const curriculumPending = ref(true)
@@ -197,6 +208,7 @@ const enrolling = ref(false)
 const inWishlist = ref(false)
 const wishlistBusy = ref(false)
 const busyLessonId = ref<number | null>(null)
+const certificate = ref<Certificate | null>(null)
 
 const isFree = computed(() => Number(props.course.price) <= 0)
 const isEnrolled = computed(() => Boolean(curriculum.value?.enrolled ?? props.course.enrolled))
@@ -276,5 +288,9 @@ watch(() => props.course.slug, () => {
   curriculumPending.value = true
   loadCurriculum()
   loadWishlistState()
+}, { immediate: true })
+
+watch(() => progress.value?.completed ? props.course.slug : null, async (slug) => {
+  certificate.value = slug ? await findCertificate(slug).catch(() => null) : null
 }, { immediate: true })
 </script>
