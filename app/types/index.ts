@@ -156,6 +156,8 @@ export interface NextLesson {
   durationMinutes: number
   sectionId: number
   sectionTitle: string
+  /** Seconds into the video to continue from, if it was started */
+  resumePositionSeconds?: number | null
 }
 
 export interface LearningStreak {
@@ -250,6 +252,13 @@ export interface Lesson {
   locked: boolean
   contentUrl: string | null
   completed: boolean
+  /** Seconds into the video to continue from, if it was started */
+  resumePositionSeconds?: number | null
+}
+
+export interface LessonPosition {
+  lessonId: number
+  positionSeconds: number
 }
 
 export interface CourseSection {
