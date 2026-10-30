@@ -8,6 +8,7 @@ export default defineEventHandler(async (event) => {
   }
 
   return await backendRequest<Course>(event, `/courses/${encodeURIComponent(slug)}`, {
+    optionalAuth: true,
     fallbackMessage: 'Unable to load course',
   })
 })

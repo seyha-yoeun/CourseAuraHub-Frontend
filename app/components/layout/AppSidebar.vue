@@ -139,6 +139,17 @@ const router = useRouter()
 const auth = useAuth()
 
 const navSections = computed(() => {
+  if (!auth.isAuthenticated) {
+    return [
+      {
+        label: 'Learning',
+        items: [
+          { to: '/courses', label: 'Browse Courses', icon: BookOpen },
+        ],
+      },
+    ]
+  }
+
   if (!auth.isAdmin) {
     return [
       {

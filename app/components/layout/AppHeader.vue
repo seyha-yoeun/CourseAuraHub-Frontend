@@ -229,8 +229,16 @@
         <HelpCircle :size="18" :stroke-width="1.5" class="transition-transform duration-300 ease-out group-hover:rotate-12 group-hover:scale-110" />
       </button>
 
+      <NuxtLink
+        v-if="!auth.isAuthenticated"
+        :to="{ path: '/auth/login', query: { redirect: route.fullPath } }"
+        class="inline-flex shrink-0 items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-3.5 py-2 text-xs font-semibold text-white no-underline transition-all hover:from-violet-500 hover:to-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+      >
+        Sign in
+      </NuxtLink>
+
       <!-- Avatar with User Dropdown -->
-      <div ref="avatarContainerRef" class="relative">
+      <div v-else ref="avatarContainerRef" class="relative">
         <button
           type="button"
           class="relative block size-9 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-violet-500/50 p-0 transition-all duration-200 ease-out hover:scale-105 hover:border-violet-500 hover:shadow-[0_0_14px_rgba(124,58,237,0.5)] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 light:border-violet-300 light:focus-visible:ring-offset-white"
