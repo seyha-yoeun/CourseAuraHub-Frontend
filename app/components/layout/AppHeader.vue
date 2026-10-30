@@ -420,6 +420,7 @@ import {
   HelpCircle,
   ShieldAlert,
   ShieldCheck,
+  Receipt,
   Tag,
   ChevronRight,
   LogOut,
@@ -520,10 +521,11 @@ const breadcrumbItems = computed(() => {
     ]
   }
 
-  if (path === '/my-learning' || path === '/wishlist' || path === '/account') {
+  if (path === '/my-learning' || path === '/wishlist' || path === '/orders' || path === '/account') {
     const labels: Record<string, string> = {
       '/my-learning': 'My Learning',
       '/wishlist': 'Wishlist',
+      '/orders': 'My Orders',
       '/account': 'Profile & Security'
     }
     return [
@@ -539,11 +541,11 @@ const breadcrumbItems = computed(() => {
     ]
   }
 
-  if (path === '/admin/discounts') {
+  if (path === '/admin/discounts' || path === '/admin/orders') {
     return [
       { label: 'CourseAuraHub', to: '/' },
       { label: 'Admin Console', to: '/admin' },
-      { label: 'Discounts' }
+      { label: path === '/admin/orders' ? 'Orders' : 'Discounts' }
     ]
   }
 
@@ -751,6 +753,7 @@ const quickPages = [
   { name: 'Student Directory', desc: 'Active learners, enrollment dates, and lifetime spend', to: '/students', icon: Users },
   { name: 'Sales & Analytics', desc: 'Detailed financial and performance reports', to: '/analytics', icon: TrendingUp },
   { name: 'Platform Settings', desc: 'Storefront branding, preferences, and profile', to: '/settings', icon: Settings },
+  { name: 'Orders', desc: 'Review purchases and refund paid orders', to: '/admin/orders', icon: Receipt },
   { name: 'Discounts', desc: 'Schedule sale prices for courses', to: '/admin/discounts', icon: Tag },
   { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
   { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
@@ -760,6 +763,7 @@ const learnerPages = [
   { name: 'Browse Courses', desc: 'Explore the course catalog', to: '/courses', icon: BookOpen },
   { name: 'My Learning', desc: 'Enrolled courses and your progress', to: '/my-learning', icon: GraduationCap },
   { name: 'Wishlist', desc: 'Courses saved for later', to: '/wishlist', icon: Heart },
+  { name: 'My Orders', desc: 'Your purchases and their status', to: '/orders', icon: Receipt },
   { name: 'Achievements', desc: 'Badges, streaks, and course certificates', to: '/achievements', icon: Trophy },
   { name: 'Profile', desc: 'Your name, avatar, and public details', to: '/account', icon: UserCog },
   { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },

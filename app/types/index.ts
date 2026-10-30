@@ -73,6 +73,44 @@ export type CourseFormData = Omit<
   'id' | 'slug' | 'rating' | 'totalStudents' | 'revenue' | 'completionRate' | 'createdAt' | 'updatedAt' | 'monthlyEnrollments' | 'monthlyRevenue' | 'enrolledStudentList' | 'sale'
 >
 
+export type OrderStatus = 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED' | 'REFUNDED'
+
+export interface Order {
+  orderNumber: string
+  courseSlug: string
+  courseTitle: string
+  thumbnail: string
+  // Price before any coupon
+  listAmount: number
+  discountAmount: number
+  couponCode: string | null
+  // What the learner pays
+  amount: number
+  currency: string
+  status: OrderStatus
+  // Where to pay; null once the order is no longer pending
+  checkoutUrl: string | null
+  createdAt: string
+  paidAt: string | null
+  refundedAt: string | null
+}
+
+export interface AdminOrder {
+  order: Order
+  studentId: number
+  studentEmail: string
+  provider: string | null
+  providerReference: string | null
+}
+
+export interface AdminOrderPage {
+  items: AdminOrder[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
 export interface Student {
   id: number
   name: string
