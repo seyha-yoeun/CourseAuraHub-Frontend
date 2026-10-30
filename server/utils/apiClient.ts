@@ -487,7 +487,10 @@ async function executeBackendRequest<T>(
   })
 }
 
-function unwrapResponse<T>(response: BackendApiResponse<T>, fallbackMessage: string) {
+function unwrapResponse<T>(response: BackendApiResponse<T> | undefined, fallbackMessage: string) {
+  // 204 No Content has no envelope to unwrap
+  if (response === undefined) return undefined as T
+
   if (!response || response.success === false) {
     throw createError({
       statusCode: 502,

@@ -420,6 +420,7 @@ import {
   HelpCircle,
   ShieldAlert,
   ShieldCheck,
+  Tag,
   ChevronRight,
   LogOut,
   Settings,
@@ -535,6 +536,14 @@ const breadcrumbItems = computed(() => {
     return [
       { label: 'CourseAuraHub', to: '/' },
       { label: 'Admin Console' }
+    ]
+  }
+
+  if (path === '/admin/discounts') {
+    return [
+      { label: 'CourseAuraHub', to: '/' },
+      { label: 'Admin Console', to: '/admin' },
+      { label: 'Discounts' }
     ]
   }
 
@@ -742,6 +751,7 @@ const quickPages = [
   { name: 'Student Directory', desc: 'Active learners, enrollment dates, and lifetime spend', to: '/students', icon: Users },
   { name: 'Sales & Analytics', desc: 'Detailed financial and performance reports', to: '/analytics', icon: TrendingUp },
   { name: 'Platform Settings', desc: 'Storefront branding, preferences, and profile', to: '/settings', icon: Settings },
+  { name: 'Discounts', desc: 'Schedule sale prices for courses', to: '/admin/discounts', icon: Tag },
   { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
   { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
 ]

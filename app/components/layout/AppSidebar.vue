@@ -118,6 +118,7 @@ import {
   Heart,
   ShieldAlert,
   ShieldCheck,
+  Tag,
   Trophy,
   UserCog
 } from 'lucide-vue-next'
@@ -184,6 +185,7 @@ const navSections = computed(() => {
       items: [
         { to: '/courses', label: 'Courses', icon: BookOpen },
         { to: '/students', label: 'Students', icon: GraduationCap },
+        { to: '/admin/discounts', label: 'Discounts', icon: Tag },
         { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/settings', label: 'Settings', icon: Settings },
       ],
@@ -213,6 +215,7 @@ const fadeBackdrop = {
 
 function isActive(to: string) {
   if (to === '/') return route.path === '/'
+  if (to === '/admin') return route.path === '/admin'
   // The lesson player belongs to My Learning
   if (to === '/my-learning' && route.path.startsWith('/learn/')) return true
   return route.path.startsWith(to)
