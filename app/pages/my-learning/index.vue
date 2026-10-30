@@ -24,6 +24,61 @@
       </div>
     </div>
 
+    <section v-if="dashboard && dashboard.enrolledCourses" aria-label="Learning overview" class="flex flex-col gap-4">
+      <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div
+          v-for="stat in stats"
+          :key="stat.label"
+          class="flex items-center gap-3 rounded-2xl border border-white/8 bg-white/4 p-4 light:border-slate-200 light:bg-white"
+        >
+          <span class="flex size-10 shrink-0 items-center justify-center rounded-xl" :class="stat.tone">
+            <component :is="stat.icon" :size="18" />
+          </span>
+          <div class="min-w-0">
+            <p class="text-xl leading-tight font-extrabold text-slate-50 light:text-slate-900">{{ stat.value }}</p>
+            <p class="truncate text-[11px] text-white/45 light:text-slate-500">{{ stat.label }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_280px]">
+        <NuxtLink
+          v-if="dashboard.continueLearning"
+          :to="learnLink(dashboard.continueLearning)"
+          class="group flex items-center gap-4 rounded-2xl border border-violet-500/25 bg-violet-500/8 p-4 no-underline transition-colors hover:border-violet-500/45 light:border-violet-200 light:bg-violet-50"
+        >
+          <img :src="dashboard.continueLearning.thumbnail" alt="" class="hidden aspect-video w-32 shrink-0 rounded-lg object-cover sm:block">
+          <div class="min-w-0 flex-1">
+            <p class="text-[11px] font-semibold tracking-wide text-violet-300 uppercase light:text-violet-700">Continue learning</p>
+            <p class="mt-0.5 truncate text-[15px] font-bold text-slate-100 light:text-slate-900">{{ dashboard.continueLearning.title }}</p>
+            <p v-if="dashboard.continueLearning.nextLesson" class="truncate text-xs text-white/50 light:text-slate-500">
+              Next: {{ dashboard.continueLearning.nextLesson.title }}
+            </p>
+            <ProgressBar class="mt-2" :value="dashboard.continueLearning.progress.progressPercent" />
+          </div>
+          <PlayCircle :size="28" class="shrink-0 text-violet-300 transition-transform group-hover:scale-110 light:text-violet-600" />
+        </NuxtLink>
+        <div v-else class="flex items-center gap-3 rounded-2xl border border-emerald-500/25 bg-emerald-500/8 p-4 text-[13px] text-emerald-300 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-700">
+          <CheckCircle2 :size="20" class="shrink-0" /> You've finished every course you're enrolled in. Time to pick a new one!
+        </div>
+
+        <div class="rounded-2xl border border-white/8 bg-white/4 p-4 light:border-slate-200 light:bg-white">
+          <p class="text-[11px] font-semibold text-white/45 light:text-slate-500">Lessons this week</p>
+          <div class="mt-2 flex h-14 items-end gap-1.5" role="img" :aria-label="weekSummary">
+            <div v-for="day in dashboard.lastSevenDays" :key="day.date" class="flex flex-1 flex-col items-center gap-1">
+              <div
+                class="w-full rounded-sm"
+                :class="day.lessonsCompleted ? 'bg-violet-500' : 'bg-white/8 light:bg-slate-200'"
+                :style="{ height: `${barHeight(day.lessonsCompleted)}px` }"
+                :title="`${day.lessonsCompleted} on ${dayLabel(day.date, 'long')}`"
+              />
+              <span class="text-[10px] text-white/40 light:text-slate-400">{{ dayLabel(day.date, 'narrow') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <div v-if="pending" class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
       <div v-for="i in 3" :key="i" class="h-80 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
     </div>
@@ -73,8 +128,11 @@
               <span>{{ lastActivityLabel(item) }}</span>
             </div>
             <ProgressBar :value="item.progress.progressPercent" />
+            <p v-if="item.nextLesson && item.progress.completedLessons" class="mt-3 truncate text-[11px] text-white/45 light:text-slate-500">
+              Next: {{ item.nextLesson.title }}
+            </p>
             <NuxtLink
-              :to="`/learn/${item.slug}`"
+              :to="learnLink(item)"
               class="mt-4 flex items-center justify-center gap-1.5 rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-3 py-2 text-xs font-semibold text-violet-300 no-underline transition-all hover:bg-violet-500/30 hover:text-white light:border-violet-300 light:bg-violet-50 light:text-violet-700"
             >
               <PlayCircle :size="14" />
@@ -88,7 +146,7 @@
 </template>
 
 <script setup lang="ts">
-import { BookOpen, CheckCircle2, GraduationCap, PlayCircle } from 'lucide-vue-next'
+import { Award, BookOpen, CheckCircle2, Clock, Flame, GraduationCap, ListChecks, PlayCircle } from 'lucide-vue-next'
 import type { MyCourse } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import { useLearning } from '~/composables/useLearning'
@@ -96,9 +154,50 @@ import { getErrorMessage } from '~/utils/apiError'
 
 useHead({ title: 'My Learning' })
 
-const { fetchMyCourses } = useLearning()
+const { fetchMyCourses, fetchDashboard } = useLearning()
 
 const { data, pending, error, refresh } = await useAsyncData('my-courses', fetchMyCourses, { server: false })
+// The overview is a bonus on top of the course list, so a failure here just hides it
+const { data: dashboard } = await useAsyncData('learner-dashboard', () => fetchDashboard().catch(() => null), { server: false })
+
+const stats = computed(() => {
+  const d = dashboard.value
+  if (!d) return []
+  return [
+    { label: d.streak.activeToday || !d.streak.currentDays ? 'Day streak' : 'Day streak · learn today to keep it', value: d.streak.currentDays, icon: Flame, tone: 'bg-orange-500/15 text-orange-400 light:text-orange-600' },
+    { label: 'Lessons completed', value: d.lessonsCompleted, icon: ListChecks, tone: 'bg-violet-500/15 text-violet-300 light:text-violet-600' },
+    { label: 'Time learned', value: formatMinutes(d.minutesLearned), icon: Clock, tone: 'bg-sky-500/15 text-sky-300 light:text-sky-600' },
+    { label: 'Certificates', value: d.certificatesEarned, icon: Award, tone: 'bg-emerald-500/15 text-emerald-400 light:text-emerald-600' }
+  ]
+})
+
+const weekSummary = computed(() => {
+  const total = dashboard.value?.lastSevenDays.reduce((sum, day) => sum + day.lessonsCompleted, 0) ?? 0
+  return `${total} lesson${total === 1 ? '' : 's'} completed in the last seven days`
+})
+
+function barHeight(lessons: number) {
+  const max = Math.max(1, ...(dashboard.value?.lastSevenDays.map(day => day.lessonsCompleted) ?? []))
+  return lessons ? Math.max(6, Math.round((lessons / max) * 40)) : 4
+}
+
+function dayLabel(date: string, weekday: 'narrow' | 'long') {
+  // Dates are calendar days (yyyy-mm-dd); format at noon UTC so no time zone shifts the weekday
+  return new Date(`${date}T12:00:00Z`).toLocaleDateString('en-US', { weekday, timeZone: 'UTC' })
+}
+
+function formatMinutes(minutes: number) {
+  if (minutes < 60) return `${minutes}m`
+  const hours = Math.floor(minutes / 60)
+  const rest = minutes % 60
+  return rest ? `${hours}h ${rest}m` : `${hours}h`
+}
+
+function learnLink(item: MyCourse) {
+  return item.nextLesson
+    ? { path: `/learn/${item.slug}`, query: { lesson: String(item.nextLesson.lessonId) } }
+    : `/learn/${item.slug}`
+}
 
 const courses = computed<MyCourse[]>(() => data.value ?? [])
 const activeTab = ref<'all' | 'in-progress' | 'completed'>('all')

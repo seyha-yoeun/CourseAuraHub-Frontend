@@ -117,6 +117,7 @@ import {
   GraduationCap,
   Heart,
   ShieldAlert,
+  Trophy,
   UserCog
 } from 'lucide-vue-next'
 
@@ -145,6 +146,7 @@ const navSections = computed(() => {
           { to: '/my-learning', label: 'My Learning', icon: GraduationCap },
           { to: '/courses', label: 'Browse Courses', icon: BookOpen },
           { to: '/wishlist', label: 'Wishlist', icon: Heart },
+          { to: '/achievements', label: 'Achievements', icon: Trophy },
         ],
       },
       {
