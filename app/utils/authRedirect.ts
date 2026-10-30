@@ -3,6 +3,7 @@ const SAFE_REDIRECT_ORIGIN = 'http://auth-redirect.local'
 
 const PENDING_REDIRECT_KEY = 'courseaura.auth.redirect'
 const OAUTH_PROVIDER_KEY = 'courseaura.auth.provider'
+const PENDING_VERIFICATION_KEY = 'courseaura.auth.verification'
 
 export type OAuthProvider = 'google' | 'github' | 'facebook'
 
@@ -77,8 +78,28 @@ export function getOAuthErrorMessage(value: unknown): string {
     return 'Sign-in was cancelled or access was denied.'
   }
 
-  if (error === 'oauth_failed' || error === 'server_error') {
+  if (error === 'oauth_failed' || error === 'oauth2_failed' || error === 'server_error') {
     return 'We could not complete sign-in. Please try again.'
+  }
+
+  if (error === 'email_required') {
+    return 'Your provider did not share an email address. Allow email access or sign in with your password.'
+  }
+
+  if (error === 'account_link_required') {
+    return 'An account with this email already exists. Sign in with your password to continue.'
+  }
+
+  if (error === 'account_link_conflict') {
+    return 'This account is already linked to a different profile at that provider.'
+  }
+
+  if (error === 'account_locked') {
+    return 'Your account is temporarily locked after too many failed attempts. Please try again later.'
+  }
+
+  if (error === 'account_unavailable') {
+    return 'This account is unavailable. Please contact support.'
   }
 
   return 'The authentication provider could not complete the sign-in.'
@@ -149,4 +170,43 @@ export function getRememberedOAuthProvider(): OAuthProvider | null {
 export function clearPendingOAuth() {
   removeSession(PENDING_REDIRECT_KEY)
   removeSession(OAUTH_PROVIDER_KEY)
+}
+
+export interface PendingVerification {
+  email: string
+  codeLength: number
+  codeExpiresInSeconds: number
+  /** Epoch milliseconds after which a new code may be requested. */
+  resendAvailableAt: number
+}
+
+/**
+ * Keeps the address awaiting verification in session storage rather than in the URL,
+ * so it survives a reload without leaking into history or server logs.
+ */
+export function rememberPendingVerification(value: PendingVerification) {
+  writeSession(PENDING_VERIFICATION_KEY, JSON.stringify(value))
+}
+
+export function getPendingVerification(): PendingVerification | null {
+  const raw = readSession(PENDING_VERIFICATION_KEY)
+  if (!raw) return null
+
+  try {
+    const parsed = JSON.parse(raw) as Partial<PendingVerification>
+    if (typeof parsed.email !== 'string' || !parsed.email) return null
+
+    return {
+      email: parsed.email,
+      codeLength: Number(parsed.codeLength) || 6,
+      codeExpiresInSeconds: Number(parsed.codeExpiresInSeconds) || 600,
+      resendAvailableAt: Number(parsed.resendAvailableAt) || 0,
+    }
+  } catch {
+    return null
+  }
+}
+
+export function clearPendingVerification() {
+  removeSession(PENDING_VERIFICATION_KEY)
 }
