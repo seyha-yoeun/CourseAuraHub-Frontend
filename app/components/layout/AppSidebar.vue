@@ -120,6 +120,7 @@ import {
   ShieldAlert,
   ShieldCheck,
   Tag,
+  TicketPercent,
   Trophy,
   UserCog
 } from 'lucide-vue-next'
@@ -189,6 +190,7 @@ const navSections = computed(() => {
         { to: '/students', label: 'Students', icon: GraduationCap },
         { to: '/admin/orders', label: 'Orders', icon: Receipt },
         { to: '/admin/discounts', label: 'Discounts', icon: Tag },
+        { to: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
         { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/settings', label: 'Settings', icon: Settings },
       ],

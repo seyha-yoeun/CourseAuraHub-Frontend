@@ -422,6 +422,7 @@ import {
   ShieldCheck,
   Receipt,
   Tag,
+  TicketPercent,
   ChevronRight,
   LogOut,
   Settings,
@@ -541,11 +542,16 @@ const breadcrumbItems = computed(() => {
     ]
   }
 
-  if (path === '/admin/discounts' || path === '/admin/orders') {
+  const adminPages: Record<string, string> = {
+    '/admin/orders': 'Orders',
+    '/admin/discounts': 'Discounts',
+    '/admin/coupons': 'Coupons'
+  }
+  if (adminPages[path]) {
     return [
       { label: 'CourseAuraHub', to: '/' },
       { label: 'Admin Console', to: '/admin' },
-      { label: path === '/admin/orders' ? 'Orders' : 'Discounts' }
+      { label: adminPages[path] }
     ]
   }
 
@@ -755,6 +761,7 @@ const quickPages = [
   { name: 'Platform Settings', desc: 'Storefront branding, preferences, and profile', to: '/settings', icon: Settings },
   { name: 'Orders', desc: 'Review purchases and refund paid orders', to: '/admin/orders', icon: Receipt },
   { name: 'Discounts', desc: 'Schedule sale prices for courses', to: '/admin/discounts', icon: Tag },
+  { name: 'Coupons', desc: 'Create discount codes for checkout', to: '/admin/coupons', icon: TicketPercent },
   { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
   { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
 ]

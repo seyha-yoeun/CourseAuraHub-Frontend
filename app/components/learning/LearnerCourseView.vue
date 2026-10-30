@@ -125,17 +125,23 @@
               v-else-if="auth.isAuthenticated"
               type="button"
               class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
-              :disabled="checkingOut"
-              @click="handleCheckout"
+              @click="isCheckoutOpen = true"
             >
-              <Loader2 v-if="checkingOut" :size="16" class="animate-spin" />
-              <ShoppingCart v-else :size="16" />
+              <ShoppingCart :size="16" />
               Buy now
             </button>
           </div>
         </div>
       </div>
     </div>
+
+    <CheckoutModal
+      :is-open="isCheckoutOpen"
+      :course="course"
+      :loading="checkingOut"
+      @close="isCheckoutOpen = false"
+      @confirm="handleCheckout"
+    />
 
     <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
       <div class="flex flex-col gap-5 lg:col-span-2">
@@ -209,6 +215,7 @@ import type { Certificate, Course, Curriculum, Lesson } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
+import CheckoutModal from '~/components/orders/CheckoutModal.vue'
 import { formatDuration, useCurriculum } from '~/composables/useCurriculum'
 import { formatDiscount } from '~/composables/useDiscounts'
 import { useLearning } from '~/composables/useLearning'
@@ -232,6 +239,7 @@ const curriculum = ref<Curriculum | null>(null)
 const curriculumPending = ref(true)
 const enrolling = ref(false)
 const checkingOut = ref(false)
+const isCheckoutOpen = ref(false)
 const inWishlist = ref(false)
 const wishlistBusy = ref(false)
 const busyLessonId = ref<number | null>(null)
@@ -275,10 +283,10 @@ async function handleEnroll() {
   }
 }
 
-async function handleCheckout() {
+async function handleCheckout(couponCode?: string) {
   checkingOut.value = true
   try {
-    const order = await createOrder(props.course.slug)
+    const order = await createOrder(props.course.slug, couponCode)
     if (order.checkoutUrl) {
       await navigateTo(order.checkoutUrl, { external: true })
     } else {
