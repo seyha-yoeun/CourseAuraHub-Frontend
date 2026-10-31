@@ -608,6 +608,35 @@ export async function proxyBackendStream(event: H3Event, path: string) {
   }
 }
 
+/** Relays a binary download, which the JSON envelope in backendRequest can't carry. */
+export async function proxyBackendFile(event: H3Event, path: string, fallbackMessage: string) {
+  const request = (accessToken: string) => fetch(`${getApiBase()}${path}`, {
+    headers: { Authorization: `Bearer ${accessToken}`, ...getClientHeaders(event) },
+  })
+
+  let upstream = await request(getCookie(event, ACCESS_COOKIE) || (await refreshSession(event)).accessToken)
+
+  if (upstream.status === 401) {
+    upstream = await request((await refreshSession(event)).accessToken)
+  }
+
+  if (upstream.status === 401) throw createSessionExpiredError()
+
+  if (!upstream.ok) {
+    const body = await upstream.json().catch(() => null) as { message?: string } | null
+    const message = body?.message || fallbackMessage
+    throw createError({ statusCode: upstream.status, statusMessage: message, data: { message } })
+  }
+
+  setResponseHeaders(event, {
+    'Content-Type': upstream.headers.get('content-type') || 'application/octet-stream',
+    'Content-Disposition': upstream.headers.get('content-disposition') || 'attachment',
+    'Cache-Control': 'private, no-store',
+  })
+
+  return Buffer.from(await upstream.arrayBuffer())
+}
+
 export async function logoutBackend(event: H3Event) {
   const refreshToken = getCookie(event, REFRESH_COOKIE)
   if (!refreshToken) return

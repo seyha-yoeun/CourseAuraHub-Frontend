@@ -1,10 +1,10 @@
 <template>
-  <div class="relative min-h-dvh overflow-x-hidden bg-zinc-950 text-slate-200 light:bg-slate-50 light:text-slate-800">
-    <div class="pointer-events-none fixed -top-50 -left-50 z-0 size-150 rounded-full bg-[radial-gradient(circle,rgba(124,58,237,0.1),transparent_70%)] blur-[80px]" />
-    <div class="pointer-events-none fixed -right-40 bottom-0 z-0 size-125 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.07),transparent_70%)] blur-[80px]" />
+  <div class="relative min-h-dvh overflow-x-hidden bg-zinc-950 text-slate-200 print:min-h-0 print:overflow-visible print:bg-white light:bg-slate-50 light:text-slate-800">
+    <div class="pointer-events-none fixed -top-50 -left-50 z-0 size-150 rounded-full bg-[radial-gradient(circle,rgba(124,58,237,0.1),transparent_70%)] blur-[80px] print:hidden" />
+    <div class="pointer-events-none fixed -right-40 bottom-0 z-0 size-125 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.07),transparent_70%)] blur-[80px] print:hidden" />
 
     <!-- Top bar -->
-    <header class="sticky top-0 z-20 border-b border-white/8 bg-zinc-950/80 backdrop-blur-xl light:border-slate-200 light:bg-white/85">
+    <header class="sticky top-0 z-20 border-b border-white/8 bg-zinc-950/80 backdrop-blur-xl print:hidden light:border-slate-200 light:bg-white/85">
       <div class="mx-auto flex h-16 max-w-4xl items-center justify-between gap-3 px-4 sm:px-6">
         <NuxtLink :to="homeLink" class="group flex items-center gap-2.5 no-underline">
           <span class="flex size-8 items-center justify-center rounded-lg border border-violet-500/30 bg-violet-500/15 transition-transform duration-300 ease-out group-hover:rotate-6 group-hover:scale-105">
@@ -33,8 +33,8 @@
       </div>
     </header>
 
-    <main v-motion-fade-visible-once class="relative z-1 mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
-      <div class="mb-8 flex items-start gap-4">
+    <main v-motion-fade-visible-once class="relative z-1 mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 print:max-w-none print:p-0 print:opacity-100!">
+      <div class="mb-8 flex items-start gap-4 print:hidden">
         <div class="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-violet-500/30 bg-linear-to-br from-violet-600/25 to-blue-600/15 shadow-[0_0_24px_rgba(124,58,237,0.2)]">
           <component :is="icon" :size="22" class="text-violet-300 light:text-violet-600" />
         </div>
