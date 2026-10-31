@@ -563,6 +563,51 @@ export async function backendRequest<T>(
   }
 }
 
+async function openBackendStream(event: H3Event, path: string, accessToken: string, signal: AbortSignal) {
+  const lastEventId = getRequestHeader(event, 'last-event-id')
+
+  return await fetch(`${getApiBase()}${path}`, {
+    signal,
+    headers: {
+      Accept: 'text/event-stream',
+      Authorization: `Bearer ${accessToken}`,
+      ...getClientHeaders(event),
+      ...(lastEventId ? { 'Last-Event-ID': lastEventId } : {}),
+    },
+  })
+}
+
+/** Relays a Server-Sent Events response. EventSource can't refresh a session, so this does. */
+export async function proxyBackendStream(event: H3Event, path: string) {
+  const abort = new AbortController()
+  event.node.req.on('close', () => abort.abort())
+
+  let accessToken = getCookie(event, ACCESS_COOKIE) || (await refreshSession(event)).accessToken
+  let upstream = await openBackendStream(event, path, accessToken, abort.signal)
+
+  if (upstream.status === 401) {
+    accessToken = (await refreshSession(event)).accessToken
+    upstream = await openBackendStream(event, path, accessToken, abort.signal)
+  }
+
+  if (!upstream.ok || !upstream.body) {
+    throw createError({ statusCode: upstream.status === 401 ? 401 : 502, statusMessage: 'Unable to open the stream' })
+  }
+
+  setResponseHeaders(event, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'X-Accel-Buffering': 'no',
+  })
+
+  try {
+    await sendStream(event, upstream.body)
+  } catch (error) {
+    // A closed browser tab aborts the upstream request, which is not a failure
+    if (!abort.signal.aborted) throw error
+  }
+}
+
 export async function logoutBackend(event: H3Event) {
   const refreshToken = getCookie(event, REFRESH_COOKIE)
   if (!refreshToken) return

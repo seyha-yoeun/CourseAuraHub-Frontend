@@ -52,14 +52,13 @@
           <Bell :size="18" :stroke-width="1.5" class="text-white/35 light:text-slate-400" />
         </span>
         <span class="text-xs font-semibold text-slate-200 light:text-slate-800">You're all caught up</span>
-        <span class="text-[11px] text-white/40 light:text-slate-500">New enrollment activity will show up here.</span>
+        <span class="text-[11px] text-white/40 light:text-slate-500">New activity will show up here.</span>
       </div>
 
+      <div v-for="(notif, index) in notifications" :key="notif.id" class="group/row relative">
       <button
-        v-for="(notif, index) in notifications"
-        :key="notif.id"
         type="button"
-        class="notification-item-in group relative flex w-full cursor-pointer items-start gap-3 border-b border-white/4 px-4 py-3 text-left transition-colors duration-200 ease-out last:border-b-0 hover:bg-white/4 focus-visible:bg-white/6 focus-visible:outline-none light:border-slate-100 light:hover:bg-slate-50 light:focus-visible:bg-slate-50"
+        class="notification-item-in group relative flex w-full cursor-pointer items-start gap-3 border-b border-white/4 px-4 py-3 text-left transition-colors duration-200 ease-out hover:bg-white/4 focus-visible:bg-white/6 focus-visible:outline-none light:border-slate-100 light:hover:bg-slate-50 light:focus-visible:bg-slate-50"
         :class="{ 'bg-violet-500/[0.07] light:bg-violet-50': !notif.read }"
         :style="{ animationDelay: `${Math.min(index, 8) * 35}ms` }"
         @click="$emit('mark-read', notif)"
@@ -79,6 +78,7 @@
 
         <div class="min-w-0 flex-1">
           <p class="text-xs leading-snug font-medium text-slate-200 light:text-slate-800">{{ notif.title }}</p>
+          <p v-if="notif.message" class="mt-0.5 text-[11px] leading-snug text-white/50 light:text-slate-500">{{ notif.message }}</p>
           <span class="mt-1 block text-[10px] text-white/40 light:text-slate-400">{{ notif.time }}</span>
         </div>
 
@@ -88,10 +88,29 @@
           aria-label="Unread"
         />
       </button>
+      <button
+        v-if="removable"
+        type="button"
+        class="absolute right-2 bottom-2 flex size-6 cursor-pointer items-center justify-center rounded-md text-white/35 opacity-0 transition-opacity group-hover/row:opacity-100 hover:bg-white/8 hover:text-rose-300 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-400 light:hover:bg-slate-100 light:hover:text-rose-600"
+        :aria-label="`Delete notification: ${notif.title}`"
+        @click="$emit('remove', notif)"
+      >
+        <Trash2 :size="13" />
+      </button>
+      </div>
+
+      <button
+        v-if="hasMore"
+        type="button"
+        class="cursor-pointer px-4 py-2.5 text-[11px] font-semibold text-violet-300 transition-colors hover:bg-white/4 hover:text-violet-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-violet-700 light:hover:bg-slate-50"
+        @click="$emit('load-more')"
+      >
+        Load older notifications
+      </button>
     </div>
 
     <!-- Footer link -->
-    <div class="border-t border-white/6 bg-black/20 px-4 py-2.5 text-center light:border-slate-200 light:bg-slate-50">
+    <div v-if="showAnalyticsLink" class="border-t border-white/6 bg-black/20 px-4 py-2.5 text-center light:border-slate-200 light:bg-slate-50">
       <NuxtLink
         to="/analytics"
         class="group inline-flex items-center gap-1 text-[11px] font-semibold text-violet-300 no-underline transition-colors duration-200 hover:text-violet-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-violet-700 light:hover:text-violet-800"
@@ -108,12 +127,13 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowRight, Bell, X } from 'lucide-vue-next'
+import { ArrowRight, Bell, Trash2, X } from 'lucide-vue-next'
 import type { Component } from 'vue'
 
 interface NotificationItem {
   id: number
   title: string
+  message?: string
   time: string
   icon: Component
   iconClass: string
@@ -125,11 +145,16 @@ defineProps<{
   notifications: NotificationItem[]
   unreadCount: number
   mobile?: boolean
+  removable?: boolean
+  hasMore?: boolean
+  showAnalyticsLink?: boolean
 }>()
 
 defineEmits<{
   close: []
   'mark-all-read': []
   'mark-read': [item: NotificationItem]
+  remove: [item: NotificationItem]
+  'load-more': []
 }>()
 </script>
