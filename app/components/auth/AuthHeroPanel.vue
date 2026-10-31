@@ -93,7 +93,7 @@
         <div v-motion="statsMotion" class="flex flex-wrap gap-2.5 tiny:hidden">
           <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-2 text-[12.5px] font-semibold text-white/75 backdrop-blur-sm light:border-slate-200 light:bg-white/70 light:text-slate-700">
             <BookOpen :size="14" class="text-emerald-400 light:text-emerald-600" />
-            <span>50+ Courses</span>
+            <span>Expert-led Courses</span>
           </span>
           <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-2 text-[12.5px] font-semibold text-white/75 backdrop-blur-sm light:border-slate-200 light:bg-white/70 light:text-slate-700">
             <Award :size="14" class="text-emerald-400 light:text-emerald-600" />
@@ -101,7 +101,7 @@
           </span>
           <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-2 text-[12.5px] font-semibold text-white/75 backdrop-blur-sm light:border-slate-200 light:bg-white/70 light:text-slate-700">
             <Users :size="14" class="text-emerald-400 light:text-emerald-600" />
-            <span>10K+ Community</span>
+            <span>Learning Community</span>
           </span>
         </div>
       </div>
