@@ -114,6 +114,7 @@ import {
   BookOpen,
   Settings,
   BarChart3,
+  Bell,
   GraduationCap,
   Heart,
   Receipt,
@@ -169,6 +170,7 @@ const navSections = computed(() => {
         label: 'Account',
         items: [
           { to: '/account', label: 'Profile', icon: UserCog },
+          { to: '/account/notifications', label: 'Notifications', icon: Bell },
           { to: '/account/security', label: 'Security', icon: ShieldCheck },
         ],
       },
@@ -208,6 +210,7 @@ const navSections = computed(() => {
     {
       label: 'Account',
       items: [
+        { to: '/account/notifications', label: 'Notifications', icon: Bell },
         { to: '/account/security', label: 'Security', icon: ShieldCheck },
       ],
     },
