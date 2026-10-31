@@ -5,6 +5,7 @@ import type {
   LearnerDashboard,
   LearnerProfile,
   LearnerProfileUpdate,
+  LessonPosition,
   LessonProgressResult,
   MyCourse,
   WishlistItem,
@@ -35,6 +36,13 @@ export function useLearning() {
   async function setLessonCompleted(lessonId: number, completed: boolean) {
     return await $fetch<LessonProgressResult>(`/api/me/lessons/${lessonId}/completion`, {
       method: completed ? 'PUT' : 'DELETE',
+    })
+  }
+
+  async function saveLessonPosition(lessonId: number, positionSeconds: number) {
+    return await $fetch<LessonPosition>(`/api/me/lessons/${lessonId}/position`, {
+      method: 'PUT',
+      body: { positionSeconds },
     })
   }
 
@@ -88,6 +96,7 @@ export function useLearning() {
     fetchMyCourses,
     enroll,
     setLessonCompleted,
+    saveLessonPosition,
     fetchDashboard,
     fetchAchievements,
     fetchCertificates,

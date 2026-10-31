@@ -76,11 +76,27 @@
               <span v-if="course.originalPrice > course.price" class="text-[13px] text-white/35 line-through light:text-slate-400">
                 ${{ course.originalPrice.toFixed(2) }}
               </span>
+              <span v-if="course.sale" class="rounded-md border border-rose-400/30 bg-rose-400/12 px-2 py-0.5 text-[11px] font-bold text-rose-300 light:border-rose-200 light:bg-rose-50 light:text-rose-600">
+                {{ formatDiscount(course.sale) }}
+              </span>
+              <span v-if="course.sale?.endsAt" class="text-xs text-white/45 light:text-slate-500">
+                Ends {{ formatDate(course.sale.endsAt) }}
+              </span>
             </template>
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
+            <NuxtLink
+              v-if="!auth.isAuthenticated"
+              :to="signInLink"
+              class="inline-flex items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white no-underline shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500"
+            >
+              <GraduationCap :size="16" />
+              Sign in to enroll
+            </NuxtLink>
+
             <button
+              v-if="auth.isAuthenticated"
               type="button"
               class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border px-4 py-2.5 text-[13px] font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 disabled:cursor-wait disabled:opacity-60"
               :class="inWishlist
@@ -95,7 +111,7 @@
             </button>
 
             <button
-              v-if="isFree"
+              v-if="auth.isAuthenticated && isFree"
               type="button"
               class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
               :disabled="enrolling"
@@ -105,14 +121,17 @@
               <GraduationCap v-else :size="16" />
               Enroll for free
             </button>
-            <span
-              v-else
-              class="inline-flex items-center gap-1.5 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-xs font-semibold text-amber-300 light:border-amber-200 light:bg-amber-50 light:text-amber-700"
-              title="Paid checkout is on the roadmap"
+            <button
+              v-else-if="auth.isAuthenticated"
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
+              :disabled="checkingOut"
+              @click="handleCheckout"
             >
-              <Clock :size="14" />
-              Checkout coming soon
-            </span>
+              <Loader2 v-if="checkingOut" :size="16" class="animate-spin" />
+              <ShoppingCart v-else :size="16" />
+              Buy now
+            </button>
           </div>
         </div>
       </div>
@@ -182,6 +201,7 @@ import {
   Loader2,
   PlayCircle,
   RefreshCw,
+  ShoppingCart,
   Star,
   Users
 } from 'lucide-vue-next'
@@ -190,21 +210,28 @@ import ProgressBar from '~/components/learning/ProgressBar.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
 import { formatDuration, useCurriculum } from '~/composables/useCurriculum'
+import { formatDiscount } from '~/composables/useDiscounts'
 import { useLearning } from '~/composables/useLearning'
+import { useOrders } from '~/composables/useOrders'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
+import { formatDate } from '~/utils/dateTime'
 
 const props = defineProps<{ course: Course }>()
 defineEmits<{ refresh: [] }>()
 
+const auth = useAuth()
 const router = useRouter()
 const toast = useAppToast()
 const { fetchCurriculum } = useCurriculum()
 const { enroll, setLessonCompleted, fetchWishlist, addToWishlist, removeFromWishlist, findCertificate } = useLearning()
 
+const { createOrder } = useOrders()
+
 const curriculum = ref<Curriculum | null>(null)
 const curriculumPending = ref(true)
 const enrolling = ref(false)
+const checkingOut = ref(false)
 const inWishlist = ref(false)
 const wishlistBusy = ref(false)
 const busyLessonId = ref<number | null>(null)
@@ -213,6 +240,7 @@ const certificate = ref<Certificate | null>(null)
 const isFree = computed(() => Number(props.course.price) <= 0)
 const isEnrolled = computed(() => Boolean(curriculum.value?.enrolled ?? props.course.enrolled))
 const progress = computed(() => curriculum.value?.progress ?? null)
+const signInLink = computed(() => ({ path: '/auth/login', query: { redirect: `/courses/${props.course.slug}` } }))
 
 async function loadCurriculum() {
   try {
@@ -225,7 +253,7 @@ async function loadCurriculum() {
 }
 
 async function loadWishlistState() {
-  if (props.course.enrolled) return
+  if (props.course.enrolled || !auth.isAuthenticated) return
   try {
     const items = await fetchWishlist()
     inWishlist.value = items.some(item => item.slug === props.course.slug)
@@ -244,6 +272,24 @@ async function handleEnroll() {
     toast.error('Enrollment Failed', getErrorMessage(err, 'Unable to enroll in this course'))
   } finally {
     enrolling.value = false
+  }
+}
+
+async function handleCheckout() {
+  checkingOut.value = true
+  try {
+    const order = await createOrder(props.course.slug)
+    if (order.checkoutUrl) {
+      await navigateTo(order.checkoutUrl, { external: true })
+    } else {
+      // Orders that cost nothing settle straight away
+      toast.success('You\'re Enrolled!', `Welcome to ${props.course.title}.`)
+      await router.push(`/learn/${props.course.slug}`)
+    }
+  } catch (err) {
+    toast.error('Checkout Failed', getErrorMessage(err, 'Unable to start checkout'))
+  } finally {
+    checkingOut.value = false
   }
 }
 

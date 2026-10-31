@@ -52,7 +52,7 @@
             <p class="text-[11px] font-semibold tracking-wide text-violet-300 uppercase light:text-violet-700">Continue learning</p>
             <p class="mt-0.5 truncate text-[15px] font-bold text-slate-100 light:text-slate-900">{{ dashboard.continueLearning.title }}</p>
             <p v-if="dashboard.continueLearning.nextLesson" class="truncate text-xs text-white/50 light:text-slate-500">
-              Next: {{ dashboard.continueLearning.nextLesson.title }}
+              {{ dashboard.continueLearning.nextLesson.resumePositionSeconds ? `Resume at ${formatPosition(dashboard.continueLearning.nextLesson.resumePositionSeconds)}:` : 'Next:' }} {{ dashboard.continueLearning.nextLesson.title }}
             </p>
             <ProgressBar class="mt-2" :value="dashboard.continueLearning.progress.progressPercent" />
           </div>
@@ -132,7 +132,7 @@
             </div>
             <ProgressBar :value="item.progress.progressPercent" />
             <p v-if="item.nextLesson && item.progress.completedLessons" class="mt-3 truncate text-[11px] text-white/45 light:text-slate-500">
-              Next: {{ item.nextLesson.title }}
+              {{ item.nextLesson.resumePositionSeconds ? `Resume at ${formatPosition(item.nextLesson.resumePositionSeconds)}:` : 'Next:' }} {{ item.nextLesson.title }}
             </p>
             <div class="mt-4 flex gap-2">
               <NuxtLink
@@ -162,6 +162,7 @@
 import { Award, BookOpen, CheckCircle2, Clock, Flame, GraduationCap, ListChecks, PlayCircle } from 'lucide-vue-next'
 import type { MyCourse } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
+import { formatPosition } from '~/composables/useCurriculum'
 import { useLearning } from '~/composables/useLearning'
 import { getErrorMessage } from '~/utils/apiError'
 

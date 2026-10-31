@@ -116,8 +116,10 @@ import {
   BarChart3,
   GraduationCap,
   Heart,
+  Receipt,
   ShieldAlert,
   ShieldCheck,
+  Tag,
   Trophy,
   UserCog
 } from 'lucide-vue-next'
@@ -139,6 +141,17 @@ const router = useRouter()
 const auth = useAuth()
 
 const navSections = computed(() => {
+  if (!auth.isAuthenticated) {
+    return [
+      {
+        label: 'Learning',
+        items: [
+          { to: '/courses', label: 'Browse Courses', icon: BookOpen },
+        ],
+      },
+    ]
+  }
+
   if (!auth.isAdmin) {
     return [
       {
@@ -147,6 +160,7 @@ const navSections = computed(() => {
           { to: '/my-learning', label: 'My Learning', icon: GraduationCap },
           { to: '/courses', label: 'Browse Courses', icon: BookOpen },
           { to: '/wishlist', label: 'Wishlist', icon: Heart },
+          { to: '/orders', label: 'My Orders', icon: Receipt },
           { to: '/achievements', label: 'Achievements', icon: Trophy },
         ],
       },
@@ -173,6 +187,8 @@ const navSections = computed(() => {
       items: [
         { to: '/courses', label: 'Courses', icon: BookOpen },
         { to: '/students', label: 'Students', icon: GraduationCap },
+        { to: '/admin/orders', label: 'Orders', icon: Receipt },
+        { to: '/admin/discounts', label: 'Discounts', icon: Tag },
         { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/settings', label: 'Settings', icon: Settings },
       ],
@@ -202,6 +218,7 @@ const fadeBackdrop = {
 
 function isActive(to: string) {
   if (to === '/') return route.path === '/'
+  if (to === '/admin') return route.path === '/admin'
   // The lesson player belongs to My Learning
   if (to === '/my-learning' && route.path.startsWith('/learn/')) return true
   return route.path.startsWith(to)
