@@ -41,7 +41,16 @@
             <p v-if="fieldErrors.lastName" class="text-[11px] text-rose-400">{{ fieldErrors.lastName }}</p>
           </div>
           <div class="flex flex-col gap-1.5 sm:col-span-2">
-            <label :class="labelClass" for="image-url">Avatar URL</label>
+            <label :class="labelClass" for="image-url">Avatar</label>
+            <FileUploadButton
+              v-model:busy="uploadingAvatar"
+              class="mb-1"
+              purpose="AVATAR"
+              accept="image/jpeg,image/png,image/webp"
+              label="Upload photo"
+              hint="JPG, PNG or WebP, up to 5 MB"
+              @uploaded="profileForm.imageUrl = $event.url"
+            />
             <input id="image-url" v-model="profileForm.imageUrl" type="url" maxlength="500" placeholder="https://…" :class="inputClass">
             <p v-if="fieldErrors.imageUrl" class="text-[11px] text-rose-400">{{ fieldErrors.imageUrl }}</p>
           </div>
@@ -61,7 +70,7 @@
         </div>
 
         <div class="mt-5 flex justify-end">
-          <button type="submit" :class="primaryButton" :disabled="savingProfile">
+          <button type="submit" :class="primaryButton" :disabled="savingProfile || uploadingAvatar">
             <Loader2 v-if="savingProfile" :size="15" class="animate-spin" />
             Save profile
           </button>
@@ -119,6 +128,7 @@
 import { KeyRound, Loader2 } from 'lucide-vue-next'
 import type { LearnerProfile } from '~/types'
 import PasswordStrengthMeter from '~/components/auth/PasswordStrengthMeter.vue'
+import FileUploadButton from '~/components/shared/FileUploadButton.vue'
 import { useLearning } from '~/composables/useLearning'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage, toApiError } from '~/utils/apiError'
@@ -141,6 +151,7 @@ const { data: profile, pending, refresh } = await useAsyncData<LearnerProfile>('
 const profileForm = reactive({ firstName: '', lastName: '', imageUrl: '', bio: '', website: '', twitter: '' })
 const fieldErrors = ref<Record<string, string>>({})
 const savingProfile = ref(false)
+const uploadingAvatar = ref(false)
 
 const passwordForm = reactive({ current: '', next: '', confirm: '' })
 const passwordError = ref('')
