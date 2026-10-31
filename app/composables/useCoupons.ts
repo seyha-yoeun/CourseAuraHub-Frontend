@@ -1,10 +1,6 @@
-import type { Coupon, CouponCreate, CouponPreview, CouponUpdate } from '~/types'
+import type { Coupon, CouponCreate, CouponUpdate } from '~/types'
 
 export function useCoupons() {
-  async function previewCoupon(courseSlug: string, code: string) {
-    return await $fetch<CouponPreview>('/api/me/coupons/preview', { method: 'POST', body: { courseSlug, code } })
-  }
-
   async function fetchCoupons() {
     return await $fetch<Coupon[]>('/api/admin/coupons')
   }
@@ -18,7 +14,6 @@ export function useCoupons() {
   }
 
   return {
-    previewCoupon,
     fetchCoupons,
     createCoupon,
     updateCoupon,

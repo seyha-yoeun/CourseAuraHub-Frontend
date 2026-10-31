@@ -1,13 +1,13 @@
 <template>
   <div class="flex flex-col gap-8">
     <div>
-      <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Achievements</h1>
-      <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Badges you've unlocked and the certificates you've earned by finishing courses.</p>
+      <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ t('Achievements') }}</h1>
+      <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">{{ t('Badges you\'ve unlocked and the certificates you\'ve earned by finishing courses.') }}</p>
     </div>
 
     <section aria-labelledby="badges-heading" class="flex flex-col gap-3">
       <div class="flex items-baseline justify-between gap-3">
-        <h2 id="badges-heading" class="text-base font-bold text-slate-100 light:text-slate-900">Badges</h2>
+        <h2 id="badges-heading" class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Badges') }}</h2>
         <span v-if="achievements" class="text-xs text-white/45 light:text-slate-500">{{ earnedCount }} of {{ achievements.length }} unlocked</span>
       </div>
 
@@ -15,7 +15,7 @@
         <div v-for="i in 6" :key="i" class="h-28 animate-pulse rounded-2xl bg-white/5 light:bg-slate-100" />
       </div>
       <p v-else-if="achievementsError" class="rounded-2xl border border-rose-500/25 bg-rose-500/8 px-5 py-6 text-center text-[13px] text-rose-300 light:border-rose-200 light:bg-rose-50 light:text-rose-700">
-        {{ getErrorMessage(achievementsError, 'Unable to load your achievements') }}
+        {{ getErrorMessage(achievementsError, t('Unable to load your achievements')) }}
       </p>
       <ul v-else class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
         <li
@@ -35,7 +35,7 @@
           <div class="min-w-0 flex-1">
             <p class="flex items-center gap-1.5 text-sm font-bold text-slate-100 light:text-slate-900">
               {{ badge.title }}
-              <span v-if="badge.earned" class="sr-only">(unlocked)</span>
+              <span v-if="badge.earned" class="sr-only">{{ t('(unlocked)') }}</span>
             </p>
             <p class="text-xs text-white/50 light:text-slate-500">{{ badge.description }}</p>
             <div v-if="!badge.earned" class="mt-2">
@@ -48,16 +48,16 @@
     </section>
 
     <section aria-labelledby="certificates-heading" class="flex flex-col gap-3">
-      <h2 id="certificates-heading" class="text-base font-bold text-slate-100 light:text-slate-900">Certificates</h2>
+      <h2 id="certificates-heading" class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Certificates') }}</h2>
 
       <div v-if="certificatesPending" class="h-24 animate-pulse rounded-2xl bg-white/5 light:bg-slate-100" />
       <p v-else-if="certificatesError" class="rounded-2xl border border-rose-500/25 bg-rose-500/8 px-5 py-6 text-center text-[13px] text-rose-300 light:border-rose-200 light:bg-rose-50 light:text-rose-700">
-        {{ getErrorMessage(certificatesError, 'Unable to load your certificates') }}
+        {{ getErrorMessage(certificatesError, t('Unable to load your certificates')) }}
       </p>
       <div v-else-if="!certificates?.length" class="flex flex-col items-center rounded-2xl border border-white/10 bg-white/4 px-6 py-10 text-center light:border-slate-200 light:bg-white">
         <Award :size="28" class="text-white/30 light:text-slate-400" />
-        <p class="mt-2 text-[13px] text-white/50 light:text-slate-500">Finish every lesson in a course to earn its certificate.</p>
-        <NuxtLink to="/my-learning" class="mt-3 text-xs font-semibold text-violet-300 light:text-violet-700">Go to My Learning</NuxtLink>
+        <p class="mt-2 text-[13px] text-white/50 light:text-slate-500">{{ t('Finish every lesson in a course to earn its certificate.') }}</p>
+        <NuxtLink to="/my-learning" class="mt-3 text-xs font-semibold text-violet-300 light:text-violet-700">{{ t('Go to My Learning') }}</NuxtLink>
       </div>
       <ul v-else class="flex flex-col gap-3">
         <li
@@ -79,7 +79,7 @@
               class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/70 hover:text-white light:border-slate-200 light:bg-white light:text-slate-600 light:hover:text-slate-900"
               @click="copyLink(certificate.certificateNumber)"
             >
-              <Link2 :size="14" /> Copy link
+              <Link2 :size="14" /> {{ t('Copy link') }}
             </button>
             <button
               type="button"
@@ -87,13 +87,13 @@
               :disabled="downloading"
               @click="download(certificate.certificateNumber)"
             >
-              <Download :size="14" /> PDF
+              <Download :size="14" /> {{ t('PDF') }}
             </button>
             <NuxtLink
               :to="verifyPath(certificate)"
               class="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold text-violet-300 no-underline hover:bg-violet-500/30 hover:text-white light:border-violet-300 light:bg-violet-50 light:text-violet-700"
             >
-              <BadgeCheck :size="14" /> View
+              <BadgeCheck :size="14" /> {{ t('View') }}
             </NuxtLink>
           </div>
         </li>
@@ -110,7 +110,9 @@ import { useCertificateActions } from '~/composables/useCertificateActions'
 import { useLearning } from '~/composables/useLearning'
 import { getErrorMessage } from '~/utils/apiError'
 
-useHead({ title: 'Achievements' })
+const { t } = useT()
+
+useHead({ title: () => t('Achievements') })
 
 const { fetchAchievements, fetchCertificates } = useLearning()
 const { downloading, download, copyLink } = useCertificateActions()

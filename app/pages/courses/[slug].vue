@@ -6,11 +6,11 @@
 
   <div v-else-if="error || !course" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-5 py-15 text-center backdrop-blur-md light:border-slate-200 light:bg-white">
     <AlertCircle :size="40" class="text-rose-400" />
-    <h2 class="mt-3 text-xl font-bold text-slate-50 light:text-slate-900">Course Not Found</h2>
+    <h2 class="mt-3 text-xl font-bold text-slate-50 light:text-slate-900">{{ t('Course Not Found') }}</h2>
     <p class="mt-1.5 text-[13px] text-white/50 light:text-slate-500">We couldn't locate the course matching the slug "{{ route.params.slug }}".</p>
     <NuxtLink to="/courses" class="mt-4 inline-flex items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/6 px-4 py-2 text-[13px] font-medium text-slate-200 no-underline transition-colors hover:bg-white/10 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:hover:bg-slate-200 light:hover:text-slate-900">
       <ArrowLeft :size="16" />
-      <span>Back to Courses</span>
+      <span>{{ t('Back to Courses') }}</span>
     </NuxtLink>
   </div>
 
@@ -21,7 +21,7 @@
     <div class="flex flex-wrap items-center justify-between gap-3">
       <NuxtLink to="/courses" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-violet-300 no-underline transition-colors hover:text-violet-200 light:text-violet-700 light:hover:text-violet-800">
         <ArrowLeft :size="15" />
-        <span>All Courses</span>
+        <span>{{ t('All Courses') }}</span>
       </NuxtLink>
 
       <div class="flex items-center gap-2.5">
@@ -31,7 +31,7 @@
           @click="isEditModalOpen = true"
         >
           <Edit3 :size="15" />
-          <span>Edit Course</span>
+          <span>{{ t('Edit Course') }}</span>
         </button>
 
         <button
@@ -40,7 +40,7 @@
           @click="isDeleteModalOpen = true"
         >
           <Trash2 :size="15" />
-          <span>Delete</span>
+          <span>{{ t('Delete') }}</span>
         </button>
       </div>
     </div>
@@ -74,7 +74,7 @@
               class="size-9 rounded-full border-2 border-violet-500/40"
             >
             <div>
-              <span class="block text-[10px] tracking-wide text-white/40 uppercase light:text-slate-500">Taught by</span>
+              <span class="block text-[10px] tracking-wide text-white/40 uppercase light:text-slate-500">{{ t('Taught by') }}</span>
               <span class="text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ course.instructor }}</span>
             </div>
           </div>
@@ -142,8 +142,8 @@
       <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 lg:col-span-2 light:border-slate-200 light:bg-white">
         <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Enrolled Students</h3>
-            <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Students actively studying this program</p>
+            <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Enrolled Students') }}</h3>
+            <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">{{ t('Students actively studying this program') }}</p>
           </div>
           <span class="rounded-full border border-violet-500/30 bg-violet-500/20 px-2.25 py-0.75 text-[11px] font-semibold text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">
             {{ enrolledStudents.length }} Enrolled
@@ -152,17 +152,17 @@
 
         <div v-if="enrolledStudents.length === 0" class="px-2.5 py-10 text-center text-[13px] text-white/40 light:text-slate-500">
           <Users :size="28" class="mx-auto mb-2 text-white/30 light:text-slate-300" />
-          <p>No students enrolled in this course yet.</p>
+          <p>{{ t('No students enrolled in this course yet.') }}</p>
         </div>
 
         <div v-else class="overflow-x-auto">
           <table class="w-full border-collapse text-left text-[13px]">
             <thead>
               <tr>
-                <th class="border-b border-white/8 px-3 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">Student</th>
-                <th class="hidden border-b border-white/8 px-3 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase sm:table-cell light:border-slate-200 light:text-slate-500">Country</th>
-                <th class="border-b border-white/8 px-3 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">Status</th>
-                <th class="hidden border-b border-white/8 px-3 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase md:table-cell light:border-slate-200 light:text-slate-500">Joined</th>
+                <th class="border-b border-white/8 px-3 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">{{ t('Student') }}</th>
+                <th class="hidden border-b border-white/8 px-3 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase sm:table-cell light:border-slate-200 light:text-slate-500">{{ t('Country') }}</th>
+                <th class="border-b border-white/8 px-3 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">{{ t('Status') }}</th>
+                <th class="hidden border-b border-white/8 px-3 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase md:table-cell light:border-slate-200 light:text-slate-500">{{ t('Joined') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -195,31 +195,31 @@
 
       <!-- Course Tags & Details Sidebar -->
       <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
-        <h3 class="mb-3 text-base font-bold text-slate-100 light:text-slate-900">Course Specifications</h3>
+        <h3 class="mb-3 text-base font-bold text-slate-100 light:text-slate-900">{{ t('Course Specifications') }}</h3>
 
         <div class="flex flex-col gap-3">
           <div class="flex justify-between gap-4 border-b border-white/4 pb-2 text-[13px] light:border-slate-100">
-            <span class="text-white/45 light:text-slate-500">Category:</span>
+            <span class="text-white/45 light:text-slate-500">{{ t('Category:') }}</span>
             <span class="font-semibold text-slate-200 light:text-slate-800">{{ course.category }}</span>
           </div>
           <div class="flex justify-between gap-4 border-b border-white/4 pb-2 text-[13px] light:border-slate-100">
-            <span class="text-white/45 light:text-slate-500">Skill Level:</span>
+            <span class="text-white/45 light:text-slate-500">{{ t('Skill Level:') }}</span>
             <span class="font-semibold text-slate-200 light:text-slate-800">{{ course.level }}</span>
           </div>
           <div class="flex justify-between gap-4 border-b border-white/4 pb-2 text-[13px] light:border-slate-100">
-            <span class="text-white/45 light:text-slate-500">Total Lessons:</span>
+            <span class="text-white/45 light:text-slate-500">{{ t('Total Lessons:') }}</span>
             <span class="font-semibold text-slate-200 light:text-slate-800">{{ course.totalLessons }} modules</span>
           </div>
           <div class="flex justify-between gap-4 border-b border-white/4 pb-2 text-[13px] light:border-slate-100">
-            <span class="text-white/45 light:text-slate-500">Video Duration:</span>
+            <span class="text-white/45 light:text-slate-500">{{ t('Video Duration:') }}</span>
             <span class="font-semibold text-slate-200 light:text-slate-800">{{ course.totalHours }} hours</span>
           </div>
           <div class="flex justify-between gap-4 border-b border-white/4 pb-2 text-[13px] light:border-slate-100">
-            <span class="text-white/45 light:text-slate-500">Initial Launch:</span>
+            <span class="text-white/45 light:text-slate-500">{{ t('Initial Launch:') }}</span>
             <span class="font-semibold text-slate-200 light:text-slate-800">{{ course.createdAt }}</span>
           </div>
           <div class="flex justify-between gap-4 border-b border-white/4 pb-2 text-[13px] light:border-slate-100">
-            <span class="text-white/45 light:text-slate-500">Last Updated:</span>
+            <span class="text-white/45 light:text-slate-500">{{ t('Last Updated:') }}</span>
             <span class="font-semibold text-slate-200 light:text-slate-800">{{ course.updatedAt }}</span>
           </div>
         </div>
@@ -282,6 +282,8 @@ import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
 import LearnerCourseView from '~/components/learning/LearnerCourseView.vue'
 import { useCourses } from '~/composables/useCourses'
+
+const { t } = useT()
 
 const auth = useAuth()
 const route = useRoute()
