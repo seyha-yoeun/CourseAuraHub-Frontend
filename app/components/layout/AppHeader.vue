@@ -578,6 +578,14 @@ const breadcrumbItems = computed(() => {
     ]
   }
 
+  if (path === '/account/notifications') {
+    return [
+      { label: 'CourseAuraHub', to: '/' },
+      { label: 'Account' },
+      { label: 'Notifications' }
+    ]
+  }
+
   if (path === '/account/security') {
     return [
       { label: 'CourseAuraHub', to: '/' },
@@ -784,6 +792,7 @@ const quickPages = [
   { name: 'Discounts', desc: 'Schedule sale prices for courses', to: '/admin/discounts', icon: Tag },
   { name: 'Coupons', desc: 'Create discount codes for checkout', to: '/admin/coupons', icon: TicketPercent },
   { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
+  { name: 'Notifications', desc: 'Connect Telegram and choose where updates reach you', to: '/account/notifications', icon: Bell },
   { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
 ]
 
@@ -794,6 +803,7 @@ const learnerPages = [
   { name: 'My Orders', desc: 'Your purchases and their status', to: '/orders', icon: Receipt },
   { name: 'Achievements', desc: 'Badges, streaks, and course certificates', to: '/achievements', icon: Trophy },
   { name: 'Profile', desc: 'Your name, avatar, and public details', to: '/account', icon: UserCog },
+  { name: 'Notifications', desc: 'Connect Telegram and choose where updates reach you', to: '/account/notifications', icon: Bell },
   { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
 ]
 

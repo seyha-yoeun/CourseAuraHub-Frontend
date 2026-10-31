@@ -330,6 +330,19 @@ export interface Achievement {
   earned: boolean
 }
 
+export interface TelegramStatus {
+  available: boolean
+  connected: boolean
+  enabled: boolean
+  telegramName: string | null
+  linkedAt: string | null
+}
+
+export interface TelegramConnectLink {
+  url: string
+  expiresAt: string
+}
+
 export interface Certificate {
   certificateNumber: string
   courseSlug: string

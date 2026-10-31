@@ -8,29 +8,39 @@
     <template #before>
       <div v-if="pending" class="h-48 animate-pulse rounded-2xl bg-white/5 light:bg-slate-100" />
 
-      <div
-        v-else-if="certificate"
-        class="rounded-2xl border border-emerald-500/30 bg-emerald-500/6 p-6 sm:p-8 light:border-emerald-200 light:bg-white"
-      >
-        <p class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-400 light:text-emerald-700">
-          <CheckCircle2 :size="14" /> Verified certificate
-        </p>
-        <p class="mt-5 text-[13px] text-white/50 light:text-slate-500">This certifies that</p>
-        <p class="text-2xl font-extrabold text-slate-50 light:text-slate-900">{{ certificate.learnerName }}</p>
-        <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">completed the course</p>
-        <p class="text-lg font-bold text-slate-100 light:text-slate-900">{{ certificate.courseTitle }}</p>
-        <p class="text-[13px] text-white/50 light:text-slate-500">taught by {{ certificate.instructor }}</p>
+      <div v-else-if="certificate" class="flex flex-col gap-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 print:hidden">
+          <p class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-400 light:text-emerald-700">
+            <CheckCircle2 :size="14" /> Verified certificate
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white/70 hover:text-white light:border-slate-200 light:bg-white light:text-slate-600 light:hover:text-slate-900"
+              @click="copyLink(certificate.certificateNumber)"
+            >
+              <Link2 :size="14" /> Copy link
+            </button>
+            <button
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white/70 hover:text-white light:border-slate-200 light:bg-white light:text-slate-600 light:hover:text-slate-900"
+              @click="printCertificate"
+            >
+              <Printer :size="14" /> Print
+            </button>
+            <button
+              v-if="isOwner"
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
+              :disabled="downloading"
+              @click="download(certificate.certificateNumber)"
+            >
+              <Download :size="14" /> {{ downloading ? 'Preparing...' : 'Download PDF' }}
+            </button>
+          </div>
+        </div>
 
-        <dl class="mt-6 grid grid-cols-1 gap-3 border-t border-white/8 pt-4 text-xs sm:grid-cols-2 light:border-slate-200">
-          <div>
-            <dt class="text-white/40 light:text-slate-400">Issued</dt>
-            <dd class="font-semibold text-slate-200 light:text-slate-700">{{ formatDate(certificate.issuedAt) }}</dd>
-          </div>
-          <div>
-            <dt class="text-white/40 light:text-slate-400">Certificate number</dt>
-            <dd class="font-mono font-semibold text-slate-200 light:text-slate-700">{{ certificate.certificateNumber }}</dd>
-          </div>
-        </dl>
+        <CertificateDocument :certificate="certificate" :verification-url="verificationUrl" />
       </div>
 
       <div
@@ -58,8 +68,10 @@
 </template>
 
 <script setup lang="ts">
-import { AlertCircle, BadgeCheck, CheckCircle2, XCircle } from 'lucide-vue-next'
+import { AlertCircle, BadgeCheck, CheckCircle2, Download, Link2, Printer, XCircle } from 'lucide-vue-next'
+import CertificateDocument from '~/components/learning/CertificateDocument.vue'
 import InfoPageShell from '~/components/shared/InfoPageShell.vue'
+import { useCertificateActions } from '~/composables/useCertificateActions'
 import { useLearning } from '~/composables/useLearning'
 import { toApiError } from '~/utils/apiError'
 
@@ -67,7 +79,10 @@ definePageMeta({ layout: false })
 useHead({ title: 'Verify certificate' })
 
 const route = useRoute()
-const { verifyCertificate } = useLearning()
+const auth = useAuth()
+const requestOrigin = useRequestURL().origin
+const { verifyCertificate, fetchCertificates } = useLearning()
+const { downloading, download, copyLink } = useCertificateActions()
 const number = computed(() => String(route.params.number))
 
 // A 404 is an expected outcome on this page. Anything else must not read as "this certificate is fake"
@@ -79,7 +94,24 @@ const { data: certificate, pending, error, refresh } = await useAsyncData(
   })
 )
 
-function formatDate(value: string) {
-  return new Date(value).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+const verificationUrl = computed(() => new URL(`/certificates/${number.value}`, requestOrigin).toString())
+
+// Only the learner who earned a certificate can download it; anyone can print the page
+const isOwner = ref(false)
+
+async function checkOwnership() {
+  if (!auth.isAuthenticated) {
+    isOwner.value = false
+    return
+  }
+  const mine = await fetchCertificates().catch(() => [])
+  isOwner.value = mine.some(item => item.certificateNumber === certificate.value?.certificateNumber)
 }
+
+function printCertificate() {
+  window.print()
+}
+
+onMounted(checkOwnership)
+watch(() => auth.isAuthenticated, checkOwnership)
 </script>
