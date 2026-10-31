@@ -73,6 +73,43 @@ export type CourseFormData = Omit<
   'id' | 'slug' | 'rating' | 'totalStudents' | 'revenue' | 'completionRate' | 'createdAt' | 'updatedAt' | 'monthlyEnrollments' | 'monthlyRevenue' | 'enrolledStudentList' | 'sale'
 >
 
+export interface Coupon {
+  id: number
+  code: string
+  discountType: string
+  discountValue: number
+  courseSlug: string | null
+  maxRedemptions: number | null
+  paidRedemptions: number
+  startsAt: string | null
+  expiresAt: string | null
+  active: boolean
+  createdAt: string
+}
+
+export interface CouponCreate {
+  code: string
+  discountType: string
+  discountValue: number
+  courseSlug?: string
+  maxRedemptions?: number
+  startsAt?: string
+  expiresAt?: string
+}
+
+export interface CouponUpdate {
+  active?: boolean
+  maxRedemptions?: number
+  expiresAt?: string
+}
+
+export interface CouponPreview {
+  code: string
+  listAmount: number
+  discountAmount: number
+  finalAmount: number
+}
+
 export type OrderStatus = 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED' | 'REFUNDED'
 
 export interface Order {
