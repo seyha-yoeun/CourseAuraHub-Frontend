@@ -157,7 +157,7 @@
       <ThemeToggle />
 
       <!-- Notifications with Dropdown -->
-      <div v-if="auth.isAdmin" ref="notifContainerRef" class="relative">
+      <div v-if="auth.isAuthenticated" ref="notifContainerRef" class="relative">
         <button
           type="button"
           class="group relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-violet-500/40 hover:bg-white/8 hover:text-white hover:shadow-[0_4px_14px_rgba(124,58,237,0.14)] active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-violet-300 light:hover:bg-slate-200 light:hover:text-slate-900"
@@ -206,9 +206,14 @@
                 :notifications="notifications"
                 :unread-count="unreadNotifsCount"
                 :mobile="isMobileNotif"
+                removable
+                :has-more="notificationCenter.hasMore.value"
+                :show-analytics-link="auth.isAdmin"
                 @close="closeNotif"
                 @mark-all-read="markAllAsRead"
                 @mark-read="markItemRead"
+                @remove="removeNotification"
+                @load-more="loadOlderNotifications"
               />
             </div>
           </Transition>
@@ -416,6 +421,8 @@
 import {
   Menu,
   Search,
+  AlertTriangle,
+  Award,
   Bell,
   HelpCircle,
   ShieldAlert,
@@ -429,11 +436,11 @@ import {
   BookOpen,
   Users,
   BarChart3,
-  CheckCircle2,
   TrendingUp,
   Compass,
   SearchX,
   GraduationCap,
+  PlayCircle,
   Heart,
   Trophy,
   UserCog,
@@ -445,8 +452,10 @@ import NotificationPanel from '~/components/layout/NotificationPanel.vue'
 import ThemeToggle from '~/components/layout/ThemeToggle.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useAuth } from '~/composables/useAuth'
+import { useNotifications } from '~/composables/useNotifications'
+import { formatTimeAgo } from '~/utils/dateTime'
 import { useBodyScrollLock } from '~/composables/useBodyScrollLock'
-import type { Course, Student, Enrollment } from '~/types'
+import type { AppNotification, Course, Student } from '~/types'
 import type { Component } from 'vue'
 
 defineProps<{ sidebarCollapsed: boolean }>()
@@ -458,7 +467,7 @@ const emit = defineEmits<{
 const route = useRoute()
 const router = useRouter()
 const auth = useAuth()
-const { info } = useAppToast()
+const { info, error: toastError } = useAppToast()
 const colorMode = useColorMode()
 
 // Dropdown and modal states
@@ -587,6 +596,7 @@ const breadcrumbItems = computed(() => {
 interface HeaderNotification {
   id: number
   title: string
+  message: string
   time: string
   icon: Component
   iconClass: string
@@ -594,45 +604,27 @@ interface HeaderNotification {
   read: boolean
 }
 
-// Live backend notifications
-const notifications = ref<HeaderNotification[]>([])
-
-function formatEnrollmentDate(dateStr?: string) {
-  if (!dateStr) return 'Recently'
-  try {
-    const d = new Date(dateStr)
-    if (isNaN(d.getTime())) return dateStr
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-  } catch {
-    return dateStr
-  }
+const notificationStyles: Record<AppNotification['type'], Pick<HeaderNotification, 'icon' | 'iconClass' | 'bgClass'>> = {
+  enrolled: { icon: GraduationCap, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
+  payment_failed: { icon: AlertTriangle, iconClass: 'text-rose-400', bgClass: 'bg-rose-400/15 light:bg-rose-50' },
+  order_refunded: { icon: Receipt, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' },
+  certificate_issued: { icon: Award, iconClass: 'text-amber-400', bgClass: 'bg-amber-400/15 light:bg-amber-50' },
+  new_lesson: { icon: PlayCircle, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
+  new_enrollment: { icon: Users, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' }
 }
 
-async function loadNotifications() {
-  if (!auth.isAdmin) {
-    notifications.value = []
-    return
-  }
+const notificationCenter = useNotifications()
 
-  try {
-    const enrollments = await $fetch<Enrollment[]>('/api/enrollments?limit=8').catch(() => [])
-    if (Array.isArray(enrollments)) {
-      notifications.value = enrollments.map(e => ({
-        id: e.id,
-        title: `${e.studentName || 'Learner'} enrolled in ${e.courseTitle || 'Course'} ($${Number(e.amount || 0).toFixed(2)})`,
-        time: formatEnrollmentDate(e.enrolledAt),
-        icon: CheckCircle2,
-        iconClass: 'text-emerald-400',
-        bgClass: 'bg-emerald-400/15 light:bg-emerald-50',
-        read: false
-      }))
-    }
-  } catch (error) {
-    console.error('Unable to load notifications:', error)
-  }
-}
+const notifications = computed<HeaderNotification[]>(() => notificationCenter.items.value.map(item => ({
+  ...notificationStyles[item.type],
+  id: item.id,
+  title: item.title,
+  message: item.message,
+  time: formatTimeAgo(item.createdAt),
+  read: item.read
+})))
 
-const unreadNotifsCount = computed(() => notifications.value.filter(n => !n.read).length)
+const unreadNotifsCount = computed(() => notificationCenter.unreadCount.value)
 
 // Responsive panel shell: anchored dropdown on desktop, centered dialog on mobile
 const notifPanelClass = computed(() => isMobileNotif.value
@@ -673,12 +665,34 @@ function toggleNotif() {
 }
 
 function markAllAsRead() {
-  notifications.value.forEach(n => (n.read = true))
-  info('Notifications Updated', 'All notifications marked as read')
+  notificationCenter.markAllRead()
+    .then(() => info('Notifications Updated', 'All notifications marked as read'))
+    .catch(() => toastError('Notifications Not Updated', 'Please try again.'))
 }
 
-function markItemRead(item: (typeof notifications.value)[0]) {
-  item.read = true
+function findNotification(item: HeaderNotification) {
+  return notificationCenter.items.value.find(notification => notification.id === item.id)
+}
+
+function markItemRead(item: HeaderNotification) {
+  const notification = findNotification(item)
+  if (!notification) return
+  notificationCenter.markRead(notification).catch(() => {})
+  if (notification.link) {
+    closeNotif()
+    router.push(notification.link)
+  }
+}
+
+function removeNotification(item: HeaderNotification) {
+  const notification = findNotification(item)
+  if (notification) {
+    notificationCenter.remove(notification).catch(() => toastError('Notification Not Deleted', 'Please try again.'))
+  }
+}
+
+function loadOlderNotifications() {
+  notificationCenter.loadMore().catch(() => toastError('Notifications Not Loaded', 'Please try again.'))
 }
 
 // Lock background scrolling while the mobile notification dialog is open
@@ -743,15 +757,22 @@ async function loadSearchData() {
   }
 }
 
+function syncNotificationStream() {
+  if (auth.isAuthenticated) {
+    notificationCenter.connect()
+  } else {
+    notificationCenter.disconnect()
+  }
+}
+
 onMounted(() => {
   loadSearchData()
-  loadNotifications()
+  syncNotificationStream()
 })
 
-watch(() => auth.isAdmin, () => {
-  loadSearchData()
-  loadNotifications()
-})
+watch(() => auth.isAuthenticated, syncNotificationStream)
+
+watch(() => auth.isAdmin, loadSearchData)
 
 const quickPages = [
   { name: 'Dashboard Overview', desc: 'Main sales KPIs, chart breakdowns, and metrics', to: '/', icon: BarChart3 },
