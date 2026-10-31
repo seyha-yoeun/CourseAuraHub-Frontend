@@ -100,10 +100,37 @@
       <span v-if="auth.isAdmin" class="rounded-full border border-slate-400/25 bg-slate-400/10 px-3.5 py-1.25 text-xs text-slate-400 light:border-slate-200 light:bg-slate-100 light:text-slate-600">
         <strong>{{ courses.filter(c => c.status === 'archived').length }}</strong> Archived
       </span>
+
+      <!-- View Toggle -->
+      <div
+        v-if="auth.isAdmin"
+        class="ml-auto inline-flex items-center gap-1 rounded-[10px] border border-white/8 bg-white/4 p-1 light:border-slate-200 light:bg-slate-100"
+        role="group"
+        aria-label="Course view"
+      >
+        <button
+          v-for="option in viewOptions"
+          :key="option.value"
+          type="button"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+          :class="viewMode === option.value
+            ? 'bg-violet-500/25 text-violet-200 light:bg-white light:text-violet-700 light:shadow-sm'
+            : 'text-white/50 hover:text-white light:text-slate-500 light:hover:text-slate-900'"
+          :aria-pressed="viewMode === option.value"
+          @click="viewMode = option.value"
+        >
+          <component :is="option.icon" :size="14" />
+          <span>{{ option.label }}</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Course Cards Grid -->
-    <div v-if="loading" class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <!-- Course Table / Cards -->
+    <div v-if="loading && showTable" class="flex flex-col gap-2 rounded-[18px] border border-white/10 bg-white/5 p-4 light:border-slate-200 light:bg-white">
+      <div v-for="i in 6" :key="i" class="h-14 animate-pulse rounded-xl bg-white/5 light:bg-slate-100" />
+    </div>
+
+    <div v-else-if="loading" class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       <div v-for="i in 6" :key="i" class="h-95 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
     </div>
 
@@ -125,6 +152,13 @@
         <span>Create New Course</span>
       </button>
     </div>
+
+    <CourseTable
+      v-else-if="showTable"
+      :courses="courses"
+      @edit="openEditModal"
+      @delete="openDeleteConfirm"
+    />
 
     <div v-else class="relative z-10 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       <CourseCard
@@ -158,12 +192,13 @@
 </template>
 
 <script setup lang="ts">
-import { Plus, Search, X, BookOpen } from 'lucide-vue-next'
+import { Plus, Search, X, BookOpen, LayoutGrid, Table2 } from 'lucide-vue-next'
 import type { Course, CourseFormData } from '~/types'
 import { useCourses } from '~/composables/useCourses'
 import { useAppToast } from '~/composables/useAppToast'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
 import CourseCard from '~/components/courses/CourseCard.vue'
+import CourseTable from '~/components/courses/CourseTable.vue'
 import CourseFormModal from '~/components/courses/CourseFormModal.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 
@@ -180,6 +215,19 @@ const selectedCategory = ref('all')
 const selectedStatus = ref('all')
 const selectedSort = ref('createdAt:desc')
 const activeDropdown = ref<string | null>(null)
+
+// Admins choose between table and cards; learners always see cards
+const viewMode = useCookie<'table' | 'card'>('courses-view', {
+  default: () => 'table',
+  maxAge: 60 * 60 * 24 * 365,
+  sameSite: 'lax'
+})
+const showTable = computed(() => auth.isAdmin && viewMode.value !== 'card')
+
+const viewOptions = [
+  { value: 'table', label: 'Table', icon: Table2 },
+  { value: 'card', label: 'Cards', icon: LayoutGrid }
+] as const
 
 function handleDropdownToggle(name: string, open: boolean) {
   if (open) {
