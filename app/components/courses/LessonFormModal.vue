@@ -33,6 +33,14 @@
             <div class="flex flex-col gap-1.5">
               <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="lesson-url">Content URL</label>
               <input id="lesson-url" v-model="form.contentUrl" type="url" maxlength="1000" placeholder="https://cdn.example.com/lesson.mp4" :class="inputClass">
+              <FileUploadButton
+                v-model:busy="uploading"
+                purpose="LESSON_CONTENT"
+                accept="video/mp4,video/webm,application/pdf"
+                label="Upload video or PDF"
+                hint="MP4, WebM or PDF, up to 2 GB"
+                @uploaded="form.contentUrl = $event.url"
+              />
             </div>
 
             <label class="flex cursor-pointer items-start gap-2.5 rounded-xl border border-white/8 bg-white/3 p-3 light:border-slate-200 light:bg-slate-50">
@@ -47,7 +55,7 @@
               <button type="button" class="cursor-pointer rounded-[10px] border border-white/10 bg-white/5 px-4.5 py-2.25 text-[13px] font-medium text-white/70 transition-all hover:bg-white/9 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700" :disabled="loading" @click="$emit('close')">
                 Cancel
               </button>
-              <button type="submit" class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.25 text-[13px] font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-50" :disabled="loading || !form.title.trim()">
+              <button type="submit" class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.25 text-[13px] font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-50" :disabled="loading || uploading || !form.title.trim()">
                 <Loader2 v-if="loading" :size="16" class="animate-spin" />
                 {{ lesson ? 'Save Lesson' : 'Add Lesson' }}
               </button>
@@ -63,6 +71,7 @@
 import { Loader2, X } from 'lucide-vue-next'
 import type { Lesson, LessonFormData } from '~/types'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
+import FileUploadButton from '~/components/shared/FileUploadButton.vue'
 import { useModalA11y } from '~/composables/useModalA11y'
 
 const props = defineProps<{
@@ -78,6 +87,7 @@ const emit = defineEmits<{
 }>()
 
 const dialogRef = ref<HTMLElement | null>(null)
+const uploading = ref(false)
 
 useModalA11y({
   isOpen: computed(() => props.isOpen),
