@@ -119,14 +119,22 @@
 
             <!-- Row: Thumbnail URL with preview -->
             <div class="flex flex-col gap-1.5">
-              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Thumbnail Image URL</label>
-              <div class="flex flex-col gap-2.5 sm:flex-row">
+              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Thumbnail Image</label>
+              <div class="flex flex-col gap-2.5 sm:flex-row sm:items-center">
                 <input
                   v-model="form.thumbnail"
                   type="url"
                   placeholder="https://images.unsplash.com/..."
                   class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
                 >
+                <FileUploadButton
+                  v-model:busy="uploading"
+                  class="shrink-0"
+                  purpose="COURSE_THUMBNAIL"
+                  accept="image/jpeg,image/png,image/webp"
+                  label="Upload image"
+                  @uploaded="form.thumbnail = $event.url"
+                />
               </div>
               <div v-if="form.thumbnail" class="mt-2 aspect-video max-w-55 overflow-hidden rounded-[10px] border border-white/10 light:border-slate-200">
                 <img :src="form.thumbnail" alt="Preview" class="size-full object-cover" >
@@ -168,7 +176,7 @@
               <button
                 type="submit"
                 class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-6 py-2.5 text-[13px] font-semibold text-white transition-all enabled:hover:from-violet-500 enabled:hover:to-indigo-500 enabled:hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 sm:w-auto"
-                :disabled="loading"
+                :disabled="loading || uploading"
               >
                 <Loader2 v-if="loading" :size="16" class="animate-spin" />
                 <span>{{ loading ? 'Saving...' : isEdit ? 'Save Changes' : 'Create Course' }}</span>
@@ -185,6 +193,7 @@
 import { BookPlus, FileEdit, X, Loader2 } from 'lucide-vue-next'
 import { useModalA11y } from '~/composables/useModalA11y'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
+import FileUploadButton from '~/components/shared/FileUploadButton.vue'
 import type { Course, CourseFormData } from '~/types'
 
 const categoryOptions = [
@@ -251,6 +260,7 @@ const form = reactive<CourseFormData>({
 })
 
 const rawTags = ref('')
+const uploading = ref(false)
 
 watch(
   () => props.course,
