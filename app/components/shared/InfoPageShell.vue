@@ -21,6 +21,7 @@
           <span class="text-sm font-bold tracking-tight text-slate-100 light:text-slate-900">CourseAuraHub</span>
         </NuxtLink>
         <div class="flex items-center gap-2">
+          <LanguageToggle />
           <ThemeToggle />
           <NuxtLink
             :to="homeLink"
@@ -68,6 +69,7 @@
 <script setup lang="ts">
 import { ArrowLeft } from 'lucide-vue-next'
 import type { Component } from 'vue'
+import LanguageToggle from '~/components/layout/LanguageToggle.vue'
 import ThemeToggle from '~/components/layout/ThemeToggle.vue'
 import { useAuth } from '~/composables/useAuth'
 

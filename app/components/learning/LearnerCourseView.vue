@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-6">
     <NuxtLink to="/courses" class="inline-flex w-fit items-center gap-1.5 text-[13px] font-semibold text-violet-300 no-underline transition-colors hover:text-violet-200 light:text-violet-700 light:hover:text-violet-800">
       <ArrowLeft :size="15" />
-      <span>All Courses</span>
+      <span>{{ t('All Courses') }}</span>
     </NuxtLink>
 
     <!-- Hero -->
@@ -35,15 +35,15 @@
             alt=""
             class="size-8 rounded-full border-2 border-violet-500/40"
           >
-          <span class="text-[13px] text-white/55 light:text-slate-500">Taught by <strong class="text-slate-100 light:text-slate-900">{{ course.instructor }}</strong></span>
+          <span class="text-[13px] text-white/55 light:text-slate-500">{{ t('Taught by') }} <strong class="text-slate-100 light:text-slate-900">{{ course.instructor }}</strong></span>
         </div>
 
         <!-- Enrolled: progress + continue -->
         <div v-if="isEnrolled" class="mt-5 border-t border-white/8 pt-4.5 light:border-slate-200">
           <div class="mb-2 flex items-center justify-between text-xs">
             <span class="font-semibold text-slate-200 light:text-slate-800">
-              <template v-if="progress?.completed">Course completed 🎉</template>
-              <template v-else>Your progress</template>
+              <template v-if="progress?.completed">{{ t('Course completed 🎉') }}</template>
+              <template v-else>{{ t('Your progress') }}</template>
             </span>
             <span class="text-white/45 light:text-slate-500">{{ progress?.completedLessons ?? 0 }}/{{ progress?.totalLessons ?? course.totalLessons }} lessons</span>
           </div>
@@ -54,7 +54,7 @@
               class="inline-flex items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white no-underline shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500"
             >
               <PlayCircle :size="16" />
-              {{ progress?.completedLessons ? (progress.completed ? 'Review course' : 'Continue learning') : 'Start learning' }}
+              {{ progress?.completedLessons ? (progress.completed ? t('Review course') : t('Continue learning')) : t('Start learning') }}
             </NuxtLink>
             <NuxtLink
               v-if="certificate"
@@ -62,7 +62,7 @@
               class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-[13px] font-semibold text-white/75 no-underline transition-all hover:bg-white/10 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700"
             >
               <Award :size="15" />
-              View certificate
+              {{ t('View certificate') }}
             </NuxtLink>
           </div>
         </div>
@@ -70,7 +70,7 @@
         <!-- Not enrolled: price + enroll / wishlist -->
         <div v-else class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/8 pt-4.5 light:border-slate-200">
           <div class="flex items-baseline gap-2">
-            <span v-if="isFree" class="text-2xl font-extrabold text-emerald-400 light:text-emerald-700">Free</span>
+            <span v-if="isFree" class="text-2xl font-extrabold text-emerald-400 light:text-emerald-700">{{ t('Free') }}</span>
             <template v-else>
               <span class="text-2xl font-extrabold text-emerald-400 light:text-emerald-700">${{ course.price.toFixed(2) }}</span>
               <span v-if="course.originalPrice > course.price" class="text-[13px] text-white/35 line-through light:text-slate-400">
@@ -92,7 +92,7 @@
               class="inline-flex items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white no-underline shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500"
             >
               <GraduationCap :size="16" />
-              Sign in to enroll
+              {{ t('Sign in to enroll') }}
             </NuxtLink>
 
             <button
@@ -107,7 +107,7 @@
               @click="toggleWishlist"
             >
               <Heart :size="15" :class="inWishlist ? 'fill-current' : ''" />
-              {{ inWishlist ? 'Saved' : 'Save' }}
+              {{ inWishlist ? t('Saved') : t('Save') }}
             </button>
 
             <button
@@ -119,29 +119,40 @@
             >
               <Loader2 v-if="enrolling" :size="16" class="animate-spin" />
               <GraduationCap v-else :size="16" />
-              Enroll for free
+              {{ t('Enroll for free') }}
             </button>
+            <NuxtLink
+              v-else-if="auth.isAuthenticated && inCart"
+              to="/cart"
+              class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-[13px] font-semibold text-white/75 no-underline hover:bg-white/10 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700"
+            >
+              <ShoppingCart :size="16" />
+              {{ t('Go to cart') }}
+            </NuxtLink>
             <button
               v-else-if="auth.isAuthenticated"
               type="button"
-              class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
-              @click="isCheckoutOpen = true"
+              class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-[13px] font-semibold text-white/75 hover:bg-white/10 hover:text-white disabled:cursor-wait disabled:opacity-60 light:border-slate-200 light:bg-slate-100 light:text-slate-700"
+              :disabled="checkingOut"
+              @click="addToCart"
             >
               <ShoppingCart :size="16" />
-              Buy now
+              {{ t('Add to cart') }}
+            </button>
+            <button
+              v-if="auth.isAuthenticated && !isFree"
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
+              :disabled="checkingOut"
+              @click="buyNow"
+            >
+              <Loader2 v-if="checkingOut" :size="16" class="animate-spin" />
+              {{ t('Buy now') }}
             </button>
           </div>
         </div>
       </div>
     </div>
-
-    <CheckoutModal
-      :is-open="isCheckoutOpen"
-      :course="course"
-      :loading="checkingOut"
-      @close="isCheckoutOpen = false"
-      @confirm="handleCheckout"
-    />
 
     <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
       <div class="flex flex-col gap-5 lg:col-span-2">
@@ -149,7 +160,7 @@
         <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
           <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Course Content</h3>
+              <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Course Content') }}</h3>
               <p v-if="curriculum" class="mt-0.5 text-xs text-white/40 light:text-slate-500">
                 {{ curriculum.sections.length }} sections · {{ curriculum.totalLessons }} lessons · {{ formatDuration(curriculum.totalDurationMinutes) }} total
               </p>
@@ -166,7 +177,7 @@
             @select="openLesson"
             @toggle-complete="toggleComplete"
           />
-          <p v-else class="text-[13px] text-white/45 light:text-slate-500">Unable to load the curriculum right now.</p>
+          <p v-else class="text-[13px] text-white/45 light:text-slate-500">{{ t('Unable to load the curriculum right now.') }}</p>
         </div>
 
         <CourseReviews :slug="course.slug" :can-review="isEnrolled" @changed="$emit('refresh')" />
@@ -174,7 +185,7 @@
 
       <!-- Specs -->
       <div class="h-fit rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
-        <h3 class="mb-3 text-base font-bold text-slate-100 light:text-slate-900">This course includes</h3>
+        <h3 class="mb-3 text-base font-bold text-slate-100 light:text-slate-900">{{ t('This course includes') }}</h3>
         <ul class="m-0 flex list-none flex-col gap-2.5 p-0 text-[13px] text-white/70 light:text-slate-600">
           <li class="flex items-center gap-2.5"><Clock :size="15" class="text-violet-400" /> {{ course.totalHours }} hours of content</li>
           <li class="flex items-center gap-2.5"><BookOpen :size="15" class="text-blue-400" /> {{ course.totalLessons }} lessons</li>
@@ -183,7 +194,7 @@
         </ul>
 
         <div v-if="course.tags?.length" class="mt-5">
-          <span class="mb-2 block text-[13px] text-white/45 light:text-slate-500">Topics</span>
+          <span class="mb-2 block text-[13px] text-white/45 light:text-slate-500">{{ t('Topics') }}</span>
           <div class="flex flex-wrap gap-1.5">
             <span v-for="tag in course.tags" :key="tag" class="rounded-md border border-violet-500/25 bg-violet-500/12 px-2.25 py-0.75 text-[11px] font-medium text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">
               #{{ tag }}
@@ -215,14 +226,15 @@ import type { Certificate, Course, Curriculum, Lesson } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
-import CheckoutModal from '~/components/orders/CheckoutModal.vue'
 import { formatDuration, useCurriculum } from '~/composables/useCurriculum'
 import { formatDiscount } from '~/composables/useDiscounts'
 import { useLearning } from '~/composables/useLearning'
-import { useOrders } from '~/composables/useOrders'
+import { useCart } from '~/composables/useCart'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
 import { formatDate } from '~/utils/dateTime'
+
+const { t } = useT()
 
 const props = defineProps<{ course: Course }>()
 defineEmits<{ refresh: [] }>()
@@ -233,19 +245,19 @@ const toast = useAppToast()
 const { fetchCurriculum } = useCurriculum()
 const { enroll, setLessonCompleted, fetchWishlist, addToWishlist, removeFromWishlist, findCertificate } = useLearning()
 
-const { createOrder } = useOrders()
+const cart = useCart()
 
 const curriculum = ref<Curriculum | null>(null)
 const curriculumPending = ref(true)
 const enrolling = ref(false)
 const checkingOut = ref(false)
-const isCheckoutOpen = ref(false)
 const inWishlist = ref(false)
 const wishlistBusy = ref(false)
 const busyLessonId = ref<number | null>(null)
 const certificate = ref<Certificate | null>(null)
 
 const isFree = computed(() => Number(props.course.price) <= 0)
+const inCart = computed(() => cart.contains(props.course.slug))
 const isEnrolled = computed(() => Boolean(curriculum.value?.enrolled ?? props.course.enrolled))
 const progress = computed(() => curriculum.value?.progress ?? null)
 const signInLink = computed(() => ({ path: '/auth/login', query: { redirect: `/courses/${props.course.slug}` } }))
@@ -277,25 +289,31 @@ async function handleEnroll() {
     toast.success('You\'re Enrolled!', `Welcome to ${props.course.title}.`)
     await router.push(`/learn/${props.course.slug}`)
   } catch (err) {
-    toast.error('Enrollment Failed', getErrorMessage(err, 'Unable to enroll in this course'))
+    toast.error(t('Enrollment Failed'), getErrorMessage(err, t('Unable to enroll in this course')))
   } finally {
     enrolling.value = false
   }
 }
 
-async function handleCheckout(couponCode?: string) {
+async function addToCart() {
   checkingOut.value = true
   try {
-    const order = await createOrder(props.course.slug, couponCode)
-    if (order.checkoutUrl) {
-      await navigateTo(order.checkoutUrl, { external: true })
-    } else {
-      // Orders that cost nothing settle straight away
-      toast.success('You\'re Enrolled!', `Welcome to ${props.course.title}.`)
-      await router.push(`/learn/${props.course.slug}`)
-    }
+    await cart.add(props.course.slug)
+    toast.success(t('Added to cart'), props.course.title)
   } catch (err) {
-    toast.error('Checkout Failed', getErrorMessage(err, 'Unable to start checkout'))
+    toast.error(t('Not added to cart'), getErrorMessage(err, t('Please try again.')))
+  } finally {
+    checkingOut.value = false
+  }
+}
+
+async function buyNow() {
+  checkingOut.value = true
+  try {
+    await cart.add(props.course.slug)
+    await router.push('/checkout')
+  } catch (err) {
+    toast.error(t('Checkout failed'), getErrorMessage(err, t('Unable to start checkout')))
   } finally {
     checkingOut.value = false
   }
@@ -307,14 +325,14 @@ async function toggleWishlist() {
     if (inWishlist.value) {
       await removeFromWishlist(props.course.slug)
       inWishlist.value = false
-      toast.info('Removed from Wishlist')
+      toast.info(t('Removed from Wishlist'))
     } else {
       await addToWishlist(props.course.slug)
       inWishlist.value = true
-      toast.success('Saved to Wishlist', props.course.title)
+      toast.success(t('Saved to Wishlist'), props.course.title)
     }
   } catch (err) {
-    toast.error('Wishlist Update Failed', getErrorMessage(err, 'Unable to update your wishlist'))
+    toast.error(t('Wishlist Update Failed'), getErrorMessage(err, t('Unable to update your wishlist')))
   } finally {
     wishlistBusy.value = false
   }
@@ -332,7 +350,7 @@ async function toggleComplete(lesson: Lesson) {
     lesson.completed = result.lessonCompleted
     if (curriculum.value) curriculum.value.progress = result.courseProgress
   } catch (err) {
-    toast.error('Progress Not Saved', getErrorMessage(err, 'Unable to update lesson progress'))
+    toast.error(t('Progress Not Saved'), getErrorMessage(err, t('Unable to update lesson progress')))
   } finally {
     busyLessonId.value = null
   }

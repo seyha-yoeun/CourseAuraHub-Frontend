@@ -2,10 +2,6 @@ import type { AdminOrderPage, Order } from '~/types'
 
 /** Learner checkout and order history, plus the admin order list. */
 export function useOrders() {
-  async function createOrder(courseSlug: string, couponCode?: string) {
-    return await $fetch<Order>('/api/me/orders', { method: 'POST', body: { courseSlug, couponCode } })
-  }
-
   async function fetchMyOrders() {
     return await $fetch<Order[]>('/api/me/orders')
   }
@@ -27,7 +23,6 @@ export function useOrders() {
   }
 
   return {
-    createOrder,
     fetchMyOrders,
     fetchMyOrder,
     cancelOrder,

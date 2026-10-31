@@ -6,9 +6,9 @@
 
   <div v-else-if="!curriculum || !course" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-5 py-15 text-center light:border-slate-200 light:bg-white">
     <AlertCircle :size="40" class="text-rose-400" />
-    <h2 class="mt-3 text-xl font-bold text-slate-50 light:text-slate-900">Course Unavailable</h2>
-    <p class="mt-1.5 text-[13px] text-white/50 light:text-slate-500">We couldn't load this course's lessons.</p>
-    <NuxtLink to="/my-learning" class="mt-4 text-[13px] font-semibold text-violet-300 light:text-violet-700">Back to My Learning</NuxtLink>
+    <h2 class="mt-3 text-xl font-bold text-slate-50 light:text-slate-900">{{ t('Course Unavailable') }}</h2>
+    <p class="mt-1.5 text-[13px] text-white/50 light:text-slate-500">{{ t('We couldn\'t load this course\'s lessons.') }}</p>
+    <NuxtLink to="/my-learning" class="mt-4 text-[13px] font-semibold text-violet-300 light:text-violet-700">{{ t('Back to My Learning') }}</NuxtLink>
   </div>
 
   <div v-else class="flex flex-col gap-5">
@@ -26,8 +26,8 @@
       v-if="!curriculum.enrolled"
       class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-blue-400/30 bg-blue-500/10 px-4 py-3 text-[13px] text-blue-200 light:border-blue-200 light:bg-blue-50 light:text-blue-800"
     >
-      <span>You're watching a free preview. Enroll to unlock every lesson and track your progress.</span>
-      <NuxtLink :to="`/courses/${slug}`" class="font-semibold text-blue-100 underline light:text-blue-900">View enrollment options</NuxtLink>
+      <span>{{ t('You\'re watching a free preview. Enroll to unlock every lesson and track your progress.') }}</span>
+      <NuxtLink :to="`/courses/${slug}`" class="font-semibold text-blue-100 underline light:text-blue-900">{{ t('View enrollment options') }}</NuxtLink>
     </div>
 
     <div class="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -36,12 +36,20 @@
         <div v-if="!activeLesson" class="flex aspect-video flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 p-6 text-center light:border-slate-200 light:bg-white">
           <Lock :size="32" class="text-white/35 light:text-slate-400" />
           <p class="mt-3 text-[13px] text-white/55 light:text-slate-500">
-            {{ curriculum.totalLessons ? 'Select an unlocked lesson to begin.' : 'This course has no lessons yet.' }}
+            {{ curriculum.totalLessons ? t('Select an unlocked lesson to begin.') : t('This course has no lessons yet.') }}
           </p>
         </div>
 
         <template v-else>
-          <div class="overflow-hidden rounded-[20px] border border-white/10 bg-black light:border-slate-200">
+          <QuizPlayer
+            v-if="showQuiz"
+            :key="`quiz-${activeLesson.id}`"
+            :lesson-id="activeLesson.id"
+            @ready="quizGraded = $event"
+            @passed="onQuizPassed"
+          />
+
+          <div v-if="!showQuiz || quizGraded === false" class="overflow-hidden rounded-[20px] border border-white/10 bg-black light:border-slate-200">
             <iframe
               v-if="embedUrl"
               :key="`embed-${activeLesson.id}`"
@@ -67,9 +75,9 @@
             <div v-else class="flex aspect-video flex-col items-center justify-center gap-3 bg-linear-to-br from-violet-950/60 to-zinc-950 p-6 text-center light:from-violet-50 light:to-white">
               <component :is="lessonIcon" :size="40" class="text-violet-300 light:text-violet-600" />
               <p class="max-w-md text-[13px] text-white/65 light:text-slate-600">
-                <template v-if="mediaFailed">This video couldn't be played in the browser.</template>
-                <template v-else-if="activeLesson.type === 'quiz'">This lesson is a quiz hosted with the course materials.</template>
-                <template v-else>This lesson is a reading resource.</template>
+                <template v-if="mediaFailed">{{ t('This video couldn\'t be played in the browser.') }}</template>
+                <template v-else-if="activeLesson.type === 'quiz'">{{ t('This lesson is a quiz hosted with the course materials.') }}</template>
+                <template v-else>{{ t('This lesson is a reading resource.') }}</template>
               </p>
               <a
                 v-if="activeLesson.contentUrl"
@@ -88,18 +96,18 @@
             <div class="flex flex-wrap items-start justify-between gap-3">
               <div class="min-w-0">
                 <p class="text-[11px] font-semibold tracking-wider text-white/40 uppercase light:text-slate-500">
-                  Lesson {{ activeIndex + 1 }} of {{ allLessons.length }} · {{ activeLesson.type }} · {{ formatDuration(activeLesson.durationMinutes) }}
+                  {{ t('Lesson {current} of {total}', { current: activeIndex + 1, total: allLessons.length }) }} · {{ t(lessonTypeLabel) }} · {{ formatDuration(activeLesson.durationMinutes) }}
                 </p>
                 <h1 class="mt-1 text-xl font-bold text-slate-50 light:text-slate-900">{{ activeLesson.title }}</h1>
               </div>
               <span v-if="activeLesson.completed" class="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-400/12 px-2.5 py-1 text-[11px] font-semibold text-emerald-400 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-700">
-                <CheckCircle2 :size="13" /> Completed
+                <CheckCircle2 :size="13" /> {{ t('Completed') }}
               </span>
             </div>
 
             <div class="mt-4 flex flex-wrap items-center justify-between gap-2.5 border-t border-white/8 pt-4 light:border-slate-200">
               <button type="button" :class="secondaryButton" :disabled="!previousLesson" @click="goTo(previousLesson)">
-                <ChevronLeft :size="15" /> Previous
+                <ChevronLeft :size="15" /> {{ t('Previous') }}
               </button>
 
               <div class="flex flex-wrap items-center gap-2">
@@ -110,10 +118,10 @@
                   :disabled="saving"
                   @click="setCompleted(activeLesson, false)"
                 >
-                  <RotateCcw :size="14" /> Mark incomplete
+                  <RotateCcw :size="14" /> {{ t('Mark incomplete') }}
                 </button>
                 <button
-                  v-if="curriculum.enrolled && !activeLesson.completed"
+                  v-if="curriculum.enrolled && !activeLesson.completed && !mustPassQuiz"
                   type="button"
                   class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
                   :disabled="saving"
@@ -121,10 +129,10 @@
                 >
                   <Loader2 v-if="saving" :size="14" class="animate-spin" />
                   <CheckCircle2 v-else :size="14" />
-                  {{ nextUnfinished ? 'Complete & continue' : 'Complete lesson' }}
+                  {{ nextUnfinished ? t('Complete & continue') : t('Complete lesson') }}
                 </button>
                 <button v-else type="button" :class="secondaryButton" :disabled="!nextStop" @click="goTo(nextStop)">
-                  {{ !nextLesson && nextStop ? 'Next unfinished' : 'Next' }} <ChevronRight :size="15" />
+                  {{ !nextLesson && nextStop ? t('Next unfinished') : t('Next') }} <ChevronRight :size="15" />
                 </button>
               </div>
             </div>
@@ -134,12 +142,12 @@
             v-if="curriculum.progress?.completed"
             class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-[13px] text-emerald-200 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-800"
           >
-            <span class="flex items-center gap-2"><Trophy :size="16" /> You've completed this course. Nice work!</span>
+            <span class="flex items-center gap-2"><Trophy :size="16" /> {{ t('You\'ve completed this course. Nice work!') }}</span>
             <div class="flex flex-wrap items-center gap-3">
               <NuxtLink v-if="certificate" :to="`/certificates/${certificate.certificateNumber}`" class="inline-flex items-center gap-1.5 font-semibold underline">
-                <Award :size="15" /> View certificate
+                <Award :size="15" /> {{ t('View certificate') }}
               </NuxtLink>
-              <NuxtLink :to="`/courses/${slug}`" class="font-semibold underline">Leave a review</NuxtLink>
+              <NuxtLink :to="`/courses/${slug}`" class="font-semibold underline">{{ t('Leave a review') }}</NuxtLink>
             </div>
           </div>
         </template>
@@ -147,7 +155,7 @@
 
       <!-- Curriculum sidebar -->
       <aside class="rounded-[18px] border border-white/10 bg-white/5 p-4 lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto light:border-slate-200 light:bg-white">
-        <h2 class="mb-3 px-1 text-sm font-bold text-slate-100 light:text-slate-900">Course content</h2>
+        <h2 class="mb-3 px-1 text-sm font-bold text-slate-100 light:text-slate-900">{{ t('Course content') }}</h2>
         <CurriculumOutline
           :curriculum="curriculum"
           :active-lesson-id="activeLesson?.id ?? null"
@@ -177,14 +185,16 @@ import {
   RotateCcw,
   Trophy
 } from 'lucide-vue-next'
-import type { Certificate, Course, Curriculum, Lesson } from '~/types'
+import type { Certificate, Course, Curriculum, Lesson, LessonProgressResult } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
+import QuizPlayer from '~/components/learning/QuizPlayer.vue'
 import { flattenLessons, formatDuration, useCurriculum } from '~/composables/useCurriculum'
 import { useLearning } from '~/composables/useLearning'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
 
+const { t } = useT()
 const route = useRoute()
 const router = useRouter()
 const toast = useAppToast()
@@ -230,6 +240,15 @@ const activeLesson = computed<Lesson | null>(() => {
   const match = unlockedLessons.value.find(lesson => lesson.id === requested)
   if (match) return match
   return unlockedLessons.value.find(lesson => !lesson.completed) ?? unlockedLessons.value[0] ?? null
+})
+
+// Null until the quiz says whether it has questions; one without them falls back to its link
+const quizGraded = ref<boolean | null>(null)
+const showQuiz = computed(() => activeLesson.value?.type === 'quiz' && Boolean(curriculum.value?.enrolled))
+const lessonTypeLabel = computed(() => ({ video: 'Video', article: 'Article', quiz: 'Quiz' }[activeLesson.value?.type ?? 'video']))
+const mustPassQuiz = computed(() => showQuiz.value && quizGraded.value !== false)
+watch(() => activeLesson.value?.id, () => {
+  quizGraded.value = null
 })
 
 useHead({ title: computed(() => activeLesson.value?.title || course.value?.title || 'Lesson') })
@@ -338,7 +357,7 @@ async function announceNewBadges() {
   if (!earned) return
   for (const badge of earned) {
     if (earnedBadges.value && !earnedBadges.value.has(badge.code)) {
-      toast.success('Badge unlocked', `${badge.title}: ${badge.description}`)
+      toast.success(t('Badge unlocked'), `${badge.title}: ${badge.description}`)
     }
   }
   earnedBadges.value = new Set(earned.map(badge => badge.code))
@@ -355,22 +374,32 @@ watch(curriculum, async (value) => {
   earnedBadges.value = earned && new Set(earned.map(badge => badge.code))
 }, { immediate: true })
 
+function applyProgress(lesson: Lesson, result: LessonProgressResult) {
+  if (!curriculum.value) return
+  const wasCompleted = curriculum.value.progress?.completed
+  lesson.completed = result.lessonCompleted
+  curriculum.value.progress = result.courseProgress
+  if (!wasCompleted && result.courseProgress.completed) {
+    toast.success(t('Course Completed! 🎉'), t('You finished {title}.', { title: course.value?.title ?? '' }))
+    loadCertificate()
+  }
+}
+
+function onQuizPassed(result: LessonProgressResult) {
+  if (!activeLesson.value) return
+  applyProgress(activeLesson.value, result)
+  announceNewBadges()
+}
+
 async function setCompleted(lesson: Lesson, completed: boolean) {
   if (!curriculum.value?.enrolled) return false
   saving.value = true
   try {
-    const wasCompleted = curriculum.value.progress?.completed
-    const result = await setLessonCompleted(lesson.id, completed)
-    lesson.completed = result.lessonCompleted
-    curriculum.value.progress = result.courseProgress
-    if (!wasCompleted && result.courseProgress.completed) {
-      toast.success('Course Completed! 🎉', `You finished ${course.value?.title}.`)
-      loadCertificate()
-    }
+    applyProgress(lesson, await setLessonCompleted(lesson.id, completed))
     if (completed) announceNewBadges()
     return true
   } catch (err) {
-    toast.error('Progress Not Saved', getErrorMessage(err, 'Unable to update lesson progress'))
+    toast.error(t('Progress Not Saved'), getErrorMessage(err, t('Unable to update lesson progress')))
     return false
   } finally {
     saving.value = false

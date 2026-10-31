@@ -97,7 +97,6 @@ export interface PlatformSettingsResponse {
     newEnrollment: boolean
     courseCompletion: boolean
     weeklyReport: boolean
-    marketingEmails: boolean
   }
   profile: {
     name: string

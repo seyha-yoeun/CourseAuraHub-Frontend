@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-2.5">
     <div v-if="!curriculum.sections.length" class="rounded-xl border border-dashed border-white/10 px-4 py-8 text-center text-[13px] text-white/40 light:border-slate-300 light:text-slate-500">
-      The curriculum for this course hasn't been published yet.
+      {{ t('The curriculum for this course hasn\'t been published yet.') }}
     </div>
 
     <section
@@ -67,12 +67,12 @@
                 {{ lesson.title }}
               </span>
               <span v-if="lesson.preview && !curriculum.enrolled" class="shrink-0 rounded border border-blue-400/30 bg-blue-400/12 px-1.5 py-px text-[10px] font-semibold text-blue-300 light:border-blue-200 light:bg-blue-50 light:text-blue-700">
-                Preview
+                {{ t('Preview') }}
               </span>
             </button>
 
             <span class="flex shrink-0 items-center gap-1.5 text-[11px] text-white/40 light:text-slate-500">
-              <Lock v-if="lesson.locked" :size="12" aria-label="Locked" />
+              <Lock v-if="lesson.locked" :size="12" :aria-label="t('Locked')" />
               {{ formatDuration(lesson.durationMinutes) }}
             </span>
           </div>
@@ -86,6 +86,8 @@
 import { Check, ChevronDown, FileText, HelpCircle, Lock, PlayCircle } from 'lucide-vue-next'
 import type { CourseSection, Curriculum, LessonType } from '~/types'
 import { formatDuration } from '~/composables/useCurriculum'
+
+const { t } = useT()
 
 const props = withDefaults(
   defineProps<{

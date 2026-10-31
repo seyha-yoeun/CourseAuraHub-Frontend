@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col gap-5">
     <div>
-      <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Wishlist</h1>
-      <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Courses you've saved for later.</p>
+      <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ t('Wishlist') }}</h1>
+      <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">{{ t('Courses you\'ve saved for later.') }}</p>
     </div>
 
     <div v-if="pending" class="flex flex-col gap-3">
@@ -13,10 +13,10 @@
       <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-rose-400/30 bg-rose-500/12">
         <Heart :size="30" class="text-rose-400" />
       </div>
-      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">Your wishlist is empty</h3>
+      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">{{ t('Your wishlist is empty') }}</h3>
       <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">Tap "Save" on any course page to keep it here.</p>
       <NuxtLink to="/courses" class="mt-4 inline-flex items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white no-underline">
-        <BookOpen :size="16" /> Browse courses
+        <BookOpen :size="16" /> {{ t('Browse courses') }}
       </NuxtLink>
     </div>
 
@@ -44,7 +44,7 @@
 
         <div class="flex items-center justify-between gap-3 sm:flex-col sm:items-end">
           <span class="text-lg font-extrabold text-emerald-400 light:text-emerald-700">
-            {{ Number(item.price) <= 0 ? 'Free' : `$${Number(item.price).toFixed(2)}` }}
+            {{ Number(item.price) <= 0 ? t('Free') : `$${Number(item.price).toFixed(2)}` }}
           </span>
           <div class="flex items-center gap-2">
             <button
@@ -53,13 +53,13 @@
               :disabled="removing === item.slug"
               @click="remove(item.slug, item.title)"
             >
-              Remove
+              {{ t('Remove') }}
             </button>
             <NuxtLink
               :to="`/courses/${item.slug}`"
               class="rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold text-violet-300 no-underline hover:bg-violet-500/30 hover:text-white light:border-violet-300 light:bg-violet-50 light:text-violet-700"
             >
-              View course
+              {{ t('View course') }}
             </NuxtLink>
           </div>
         </div>
@@ -75,7 +75,9 @@ import { useLearning } from '~/composables/useLearning'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
 
-useHead({ title: 'Wishlist' })
+const { t } = useT()
+
+useHead({ title: () => t('Wishlist') })
 
 const { fetchWishlist, removeFromWishlist } = useLearning()
 const toast = useAppToast()
@@ -90,9 +92,9 @@ async function remove(slug: string, title: string) {
   try {
     await removeFromWishlist(slug)
     data.value = items.value.filter(item => item.slug !== slug)
-    toast.info('Removed from Wishlist', title)
+    toast.info(t('Removed from Wishlist'), title)
   } catch (err) {
-    toast.error('Wishlist Update Failed', getErrorMessage(err, 'Unable to remove course'))
+    toast.error(t('Wishlist Update Failed'), getErrorMessage(err, t('Unable to remove course')))
   } finally {
     removing.value = null
   }

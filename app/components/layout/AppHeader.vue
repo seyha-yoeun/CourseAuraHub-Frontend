@@ -153,8 +153,21 @@
         </Transition>
       </div>
 
-      <!-- Theme (Dark / Light Mode) Toggle -->
+      <!-- Language and Theme (Dark / Light Mode) Toggles -->
+      <LanguageToggle />
       <ThemeToggle />
+
+      <!-- Cart -->
+      <NuxtLink
+        v-if="auth.isAuthenticated && !auth.isAdmin"
+        to="/cart"
+        class="relative flex size-9 items-center justify-center rounded-xl border border-white/8 bg-white/5 text-white/60 no-underline transition-colors hover:bg-white/10 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:text-slate-900"
+        :aria-label="t('Your cart')"
+        :title="t('Your cart')"
+      >
+        <ShoppingCart :size="17" />
+        <span v-if="cart.count.value > 0" class="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-violet-600 px-1 text-[10px] font-bold text-white">{{ cart.count.value }}</span>
+      </NuxtLink>
 
       <!-- Notifications with Dropdown -->
       <div v-if="auth.isAuthenticated" ref="notifContainerRef" class="relative">
@@ -421,6 +434,7 @@
 import {
   Menu,
   Search,
+  ShoppingCart,
   AlertTriangle,
   Award,
   Bell,
@@ -449,12 +463,14 @@ import {
 import { useMediaQuery } from '@vueuse/core'
 import AppHelpModal from '~/components/shared/AppHelpModal.vue'
 import NotificationPanel from '~/components/layout/NotificationPanel.vue'
+import LanguageToggle from '~/components/layout/LanguageToggle.vue'
 import ThemeToggle from '~/components/layout/ThemeToggle.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useAuth } from '~/composables/useAuth'
 import { useNotifications } from '~/composables/useNotifications'
 import { formatTimeAgo } from '~/utils/dateTime'
 import { useBodyScrollLock } from '~/composables/useBodyScrollLock'
+import { useCart } from '~/composables/useCart'
 import type { AppNotification, Course, Student } from '~/types'
 import type { Component } from 'vue'
 
@@ -618,15 +634,19 @@ const notificationStyles: Record<AppNotification['type'], Pick<HeaderNotificatio
   order_refunded: { icon: Receipt, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' },
   certificate_issued: { icon: Award, iconClass: 'text-amber-400', bgClass: 'bg-amber-400/15 light:bg-amber-50' },
   new_lesson: { icon: PlayCircle, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
-  new_enrollment: { icon: Users, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' }
+  new_enrollment: { icon: Users, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
+  course_completed: { icon: Award, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
+  weekly_report: { icon: BarChart3, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' }
 }
 
 const notificationCenter = useNotifications()
+const cart = useCart()
+const { t } = useT()
 
 const notifications = computed<HeaderNotification[]>(() => notificationCenter.items.value.map(item => ({
   ...notificationStyles[item.type],
   id: item.id,
-  title: item.title,
+  title: t(item.title),
   message: item.message,
   time: formatTimeAgo(item.createdAt),
   read: item.read
@@ -773,12 +793,24 @@ function syncNotificationStream() {
   }
 }
 
+function syncCart() {
+  if (auth.isAuthenticated && !auth.isAdmin) {
+    cart.refresh().catch(() => {})
+  } else {
+    cart.clear()
+  }
+}
+
 onMounted(() => {
   loadSearchData()
   syncNotificationStream()
+  syncCart()
 })
 
-watch(() => auth.isAuthenticated, syncNotificationStream)
+watch(() => auth.isAuthenticated, () => {
+  syncNotificationStream()
+  syncCart()
+})
 
 watch(() => auth.isAdmin, loadSearchData)
 
@@ -800,6 +832,7 @@ const learnerPages = [
   { name: 'Browse Courses', desc: 'Explore the course catalog', to: '/courses', icon: BookOpen },
   { name: 'My Learning', desc: 'Enrolled courses and your progress', to: '/my-learning', icon: GraduationCap },
   { name: 'Wishlist', desc: 'Courses saved for later', to: '/wishlist', icon: Heart },
+  { name: 'Your cart', desc: 'Courses ready for checkout', to: '/cart', icon: ShoppingCart },
   { name: 'My Orders', desc: 'Your purchases and their status', to: '/orders', icon: Receipt },
   { name: 'Achievements', desc: 'Badges, streaks, and course certificates', to: '/achievements', icon: Trophy },
   { name: 'Profile', desc: 'Your name, avatar, and public details', to: '/account', icon: UserCog },
