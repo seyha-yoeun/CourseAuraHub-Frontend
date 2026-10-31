@@ -184,13 +184,23 @@ const navSections = computed(() => {
       ],
     },
     {
-      label: 'Management',
+      label: 'Learning',
       items: [
         { to: '/courses', label: 'Courses', icon: BookOpen },
         { to: '/students', label: 'Students', icon: GraduationCap },
+      ],
+    },
+    {
+      label: 'Sales',
+      items: [
         { to: '/admin/orders', label: 'Orders', icon: Receipt },
         { to: '/admin/discounts', label: 'Discounts', icon: Tag },
         { to: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
+      ],
+    },
+    {
+      label: 'Platform',
+      items: [
         { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/settings', label: 'Settings', icon: Settings },
       ],
