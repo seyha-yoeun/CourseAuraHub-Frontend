@@ -127,13 +127,6 @@
                   placeholder="https://images.unsplash.com/..."
                   class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:shadow-[0_0_15px_rgba(124,58,237,0.15)] focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
                 >
-                <button
-                  type="button"
-                  class="shrink-0 cursor-pointer rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap text-violet-300 transition-all hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
-                  @click="generateSampleThumb"
-                >
-                  Random Tech Photo
-                </button>
               </div>
               <div v-if="form.thumbnail" class="mt-2 aspect-video max-w-55 overflow-hidden rounded-[10px] border border-white/10 light:border-slate-200">
                 <img :src="form.thumbnail" alt="Preview" class="size-full object-cover" >
@@ -245,7 +238,7 @@ const modalFade = {
 const form = reactive<CourseFormData>({
   title: '',
   description: '',
-  instructor: 'Alex Chen',
+  instructor: '',
   category: 'Web Development',
   level: 'Intermediate',
   status: 'draft',
@@ -279,7 +272,7 @@ watch(
     } else {
       form.title = ''
       form.description = ''
-      form.instructor = 'Alex Chen'
+      form.instructor = ''
       form.category = 'Web Development'
       form.level = 'Intermediate'
       form.status = 'draft'
@@ -294,20 +287,6 @@ watch(
   },
   { immediate: true }
 )
-
-const techImages = [
-  'https://images.unsplash.com/photo-1618477388954-7852f32655ec?w=800&h=450&fit=crop',
-  'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=450&fit=crop',
-  'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&h=450&fit=crop',
-  'https://images.unsplash.com/photo-1561736778-92e52a7769ef?w=800&h=450&fit=crop',
-  'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=450&fit=crop',
-  'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&h=450&fit=crop'
-]
-
-function generateSampleThumb() {
-  const random = techImages[Math.floor(Math.random() * techImages.length)]
-  form.thumbnail = random
-}
 
 function handleSubmit() {
   form.tags = rawTags.value
