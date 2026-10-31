@@ -193,3 +193,8 @@ html.light body {
     animation: none;
   }
 }
+
+/* Khmer text reads poorly with letter spacing and needs its own font */
+html[lang='km'] body {
+  font-family: 'Noto Sans Khmer', 'Inter', sans-serif;
+}

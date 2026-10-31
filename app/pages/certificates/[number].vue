@@ -1,6 +1,6 @@
 <template>
   <InfoPageShell
-    title="Certificate verification"
+    :title="t('Certificate verification')"
     subtitle="Confirm that a CourseAuraHub course completion certificate is genuine."
     :icon="BadgeCheck"
     :sections="[]"
@@ -11,7 +11,7 @@
       <div v-else-if="certificate" class="flex flex-col gap-5">
         <div class="flex flex-wrap items-center justify-between gap-3 print:hidden">
           <p class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-400 light:text-emerald-700">
-            <CheckCircle2 :size="14" /> Verified certificate
+            <CheckCircle2 :size="14" /> {{ t('Verified certificate') }}
           </p>
           <div class="flex flex-wrap gap-2">
             <button
@@ -19,14 +19,14 @@
               class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white/70 hover:text-white light:border-slate-200 light:bg-white light:text-slate-600 light:hover:text-slate-900"
               @click="copyLink(certificate.certificateNumber)"
             >
-              <Link2 :size="14" /> Copy link
+              <Link2 :size="14" /> {{ t('Copy link') }}
             </button>
             <button
               type="button"
               class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white/70 hover:text-white light:border-slate-200 light:bg-white light:text-slate-600 light:hover:text-slate-900"
               @click="printCertificate"
             >
-              <Printer :size="14" /> Print
+              <Printer :size="14" /> {{ t('Print') }}
             </button>
             <button
               v-if="isOwner"
@@ -35,7 +35,7 @@
               :disabled="downloading"
               @click="download(certificate.certificateNumber)"
             >
-              <Download :size="14" /> {{ downloading ? 'Preparing...' : 'Download PDF' }}
+              <Download :size="14" /> {{ downloading ? t('Preparing...') : t('Download PDF') }}
             </button>
           </div>
         </div>
@@ -48,9 +48,9 @@
         class="rounded-2xl border border-amber-400/30 bg-amber-400/8 p-6 text-center light:border-amber-200 light:bg-amber-50"
       >
         <AlertCircle :size="28" class="mx-auto text-amber-400 light:text-amber-600" />
-        <p class="mt-2 text-sm font-bold text-slate-100 light:text-slate-900">We couldn't check this certificate right now</p>
-        <p class="mt-1 text-[13px] text-white/50 light:text-slate-500">This doesn't mean it's invalid. Please try again in a moment.</p>
-        <button type="button" class="mt-3 cursor-pointer text-xs font-semibold text-violet-300 underline light:text-violet-700" @click="refresh()">Try again</button>
+        <p class="mt-2 text-sm font-bold text-slate-100 light:text-slate-900">{{ t('We couldn\'t check this certificate right now') }}</p>
+        <p class="mt-1 text-[13px] text-white/50 light:text-slate-500">{{ t('This doesn\'t mean it\'s invalid. Please try again in a moment.') }}</p>
+        <button type="button" class="mt-3 cursor-pointer text-xs font-semibold text-violet-300 underline light:text-violet-700" @click="refresh()">{{ t('Try again') }}</button>
       </div>
 
       <div
@@ -58,9 +58,9 @@
         class="rounded-2xl border border-rose-500/25 bg-rose-500/8 p-6 text-center light:border-rose-200 light:bg-rose-50"
       >
         <XCircle :size="28" class="mx-auto text-rose-400 light:text-rose-600" />
-        <p class="mt-2 text-sm font-bold text-slate-100 light:text-slate-900">No certificate matches this number</p>
+        <p class="mt-2 text-sm font-bold text-slate-100 light:text-slate-900">{{ t('No certificate matches this number') }}</p>
         <p class="mt-1 text-[13px] text-white/50 light:text-slate-500">
-          Check the number for typos. Certificate numbers look like <span class="font-mono">CAH-XXXX-XXXX-XXXX-XXXX</span>.
+          {{ t('Check the number for typos. Certificate numbers look like') }} <span class="font-mono">{{ t('CAH-XXXX-XXXX-XXXX-XXXX') }}</span>.
         </p>
       </div>
     </template>
@@ -75,8 +75,10 @@ import { useCertificateActions } from '~/composables/useCertificateActions'
 import { useLearning } from '~/composables/useLearning'
 import { toApiError } from '~/utils/apiError'
 
+const { t } = useT()
+
 definePageMeta({ layout: false })
-useHead({ title: 'Verify certificate' })
+useHead({ title: () => t('Verify certificate') })
 
 const route = useRoute()
 const auth = useAuth()

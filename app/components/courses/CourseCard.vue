@@ -55,23 +55,23 @@
       <!-- Metrics -->
       <div class="mt-3.5 grid grid-cols-2 gap-3 rounded-xl border border-white/5 bg-white/2 px-3.5 py-2.5 light:border-slate-200 light:bg-slate-50">
         <div class="flex flex-col gap-0.5">
-          <span class="text-[10px] tracking-wider text-white/40 uppercase light:text-slate-500">Students</span>
+          <span class="text-[10px] tracking-wider text-white/40 uppercase light:text-slate-500">{{ t('Students') }}</span>
           <span class="flex items-center gap-1 text-[13px] font-bold text-slate-100 light:text-slate-900">
             <Users :size="13" class="text-violet-400" />
             {{ course.totalStudents.toLocaleString() }}
           </span>
         </div>
         <div v-if="canManage" class="flex flex-col gap-0.5">
-          <span class="text-[10px] tracking-wider text-white/40 uppercase light:text-slate-500">Revenue</span>
+          <span class="text-[10px] tracking-wider text-white/40 uppercase light:text-slate-500">{{ t('Revenue') }}</span>
           <span class="flex items-center gap-1 text-[13px] font-bold text-emerald-400 light:text-emerald-700">
             ${{ formatRevenue(course.revenue) }}
           </span>
         </div>
         <div v-else class="flex flex-col gap-0.5">
-          <span class="text-[10px] tracking-wider text-white/40 uppercase light:text-slate-500">Rating</span>
+          <span class="text-[10px] tracking-wider text-white/40 uppercase light:text-slate-500">{{ t('Rating') }}</span>
           <span class="flex items-center gap-1 text-[13px] font-bold text-amber-400 light:text-amber-600">
             <Star :size="13" class="fill-amber-400 text-amber-400" />
-            {{ course.rating > 0 ? course.rating.toFixed(1) : 'New' }}
+            {{ course.rating > 0 ? course.rating.toFixed(1) : t('New') }}
           </span>
         </div>
       </div>
@@ -79,7 +79,7 @@
       <!-- Footer: Pricing & Actions -->
       <div class="mt-4 flex items-center justify-between gap-3 border-t border-white/6 pt-3.5 light:border-slate-200">
         <div class="flex items-baseline gap-1.5">
-          <span v-if="course.price <= 0" class="text-lg font-extrabold text-emerald-400 light:text-emerald-700">Free</span>
+          <span v-if="course.price <= 0" class="text-lg font-extrabold text-emerald-400 light:text-emerald-700">{{ t('Free') }}</span>
           <span v-else class="text-lg font-extrabold text-slate-50 light:text-slate-900">${{ course.price.toFixed(2) }}</span>
           <span v-if="course.price > 0 && course.originalPrice > course.price" class="text-xs text-white/35 line-through light:text-slate-400">
             ${{ course.originalPrice.toFixed(2) }}
@@ -94,7 +94,7 @@
             <button
               type="button"
               class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
-              title="Edit Course"
+              :title="t('Edit Course')"
               @click.stop="$emit('edit', course)"
             >
               <Edit3 :size="15" />
@@ -102,7 +102,7 @@
             <button
               type="button"
               class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-rose-400 transition-all hover:bg-rose-500/10 hover:text-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:border-slate-200 light:bg-slate-100 light:text-rose-600 light:hover:bg-rose-50 light:hover:text-rose-700"
-              title="Delete Course"
+              :title="t('Delete Course')"
               @click.stop="$emit('delete', course)"
             >
               <Trash2 :size="15" />
@@ -113,7 +113,7 @@
             class="flex items-center gap-1 rounded-lg border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold text-violet-300 no-underline transition-all hover:border-violet-500/60 hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
             :title="canManage ? 'View Details & Analytics' : 'View Course'"
           >
-            <span>{{ canManage ? 'Details' : 'View' }}</span>
+            <span>{{ canManage ? t('Details') : t('View') }}</span>
             <ArrowRight :size="13" />
           </NuxtLink>
         </div>
@@ -127,6 +127,8 @@ import { Star, Clock, Users, Edit3, Trash2, ArrowRight } from 'lucide-vue-next'
 import type { Course } from '~/types'
 import CourseStatusBadge from './CourseStatusBadge.vue'
 import { formatDiscount } from '~/composables/useDiscounts'
+
+const { t } = useT()
 
 withDefaults(
   defineProps<{

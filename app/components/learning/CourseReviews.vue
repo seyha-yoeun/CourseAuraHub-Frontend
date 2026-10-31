@@ -2,12 +2,12 @@
   <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
     <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
       <div>
-        <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Learner Reviews</h3>
+        <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Learner Reviews') }}</h3>
         <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">
           <template v-if="page && page.totalElements">
             {{ page.totalElements }} {{ page.totalElements === 1 ? 'review' : 'reviews' }}
           </template>
-          <template v-else>No reviews yet</template>
+          <template v-else>{{ t('No reviews yet') }}</template>
         </p>
       </div>
       <span v-if="page?.averageRating" class="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/15 px-3 py-1 text-[13px] font-bold text-amber-400 light:border-amber-200 light:bg-amber-50 light:text-amber-600">
@@ -24,9 +24,9 @@
     >
       <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2">
         <span class="text-[13px] font-semibold text-slate-100 light:text-slate-900">
-          {{ myReview ? 'Your review' : 'Rate this course' }}
+          {{ myReview ? t('Your review') : t('Rate this course') }}
         </span>
-        <div class="flex items-center gap-0.5" role="radiogroup" aria-label="Rating">
+        <div class="flex items-center gap-0.5" role="radiogroup" :aria-label="t('Rating')">
           <button
             v-for="n in 5"
             :key="n"
@@ -51,8 +51,8 @@
         v-model="draftComment"
         rows="3"
         maxlength="2000"
-        placeholder="What did you think of this course? (optional)"
-        aria-label="Review comment"
+        :placeholder="t('What did you think of this course? (optional)')"
+        :aria-label="t('Review comment')"
         class="w-full resize-y rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.5 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/35 focus:border-violet-500/65 focus:ring-2 focus:ring-violet-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400"
       />
 
@@ -64,7 +64,7 @@
           :disabled="saving"
           @click="handleDeleteMine"
         >
-          Delete
+          {{ t('Delete') }}
         </button>
         <button
           type="submit"
@@ -72,7 +72,7 @@
           :disabled="saving || !draftRating"
         >
           <Loader2 v-if="saving" :size="14" class="animate-spin" />
-          {{ myReview ? 'Update review' : 'Post review' }}
+          {{ myReview ? t('Update review') : t('Post review') }}
         </button>
       </div>
     </form>
@@ -83,7 +83,7 @@
 
     <div v-else-if="!reviews.length" class="px-2.5 py-8 text-center text-[13px] text-white/40 light:text-slate-500">
       <MessageSquare :size="26" class="mx-auto mb-2 text-white/30 light:text-slate-300" />
-      <p>{{ canReview ? 'Be the first to share your thoughts.' : 'No one has reviewed this course yet.' }}</p>
+      <p>{{ canReview ? t('Be the first to share your thoughts.') : t('No one has reviewed this course yet.') }}</p>
     </div>
 
     <ul v-else class="m-0 flex list-none flex-col gap-3 p-0">
@@ -114,7 +114,7 @@
               type="button"
               class="ml-auto flex size-7 cursor-pointer items-center justify-center rounded-lg text-rose-400 transition-colors hover:bg-rose-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:text-rose-600"
               :aria-label="`Delete review by ${review.reviewerName}`"
-              title="Delete review"
+              :title="t('Delete review')"
               @click="moderating = review"
             >
               <Trash2 :size="14" />
@@ -133,13 +133,13 @@
         @click="loadPage(page.page + 1, true)"
       >
         <Loader2 v-if="loading" :size="14" class="animate-spin" />
-        Show more reviews
+        {{ t('Show more reviews') }}
       </button>
     </div>
 
     <ConfirmDeleteModal
       :is-open="Boolean(moderating)"
-      title="Delete Review"
+      :title="t('Delete Review')"
       description="This review will be removed and the course rating recalculated."
       :item-name="moderating ? `${moderating.reviewerName} · ${moderating.rating}★` : undefined"
       :loading="saving"
@@ -156,6 +156,8 @@ import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import { useReviews } from '~/composables/useReviews'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
+
+const { t } = useT()
 
 const props = withDefaults(
   defineProps<{
@@ -194,7 +196,7 @@ async function loadPage(pageIndex = 0, append = false) {
     page.value = result
     reviews.value = append ? [...reviews.value, ...result.items] : result.items
   } catch (err) {
-    toast.error('Reviews Unavailable', getErrorMessage(err, 'Unable to load reviews'))
+    toast.error(t('Reviews Unavailable'), getErrorMessage(err, t('Unable to load reviews')))
   } finally {
     loading.value = false
   }
@@ -216,11 +218,11 @@ async function handleSave() {
   saving.value = true
   try {
     myReview.value = await saveMyReview(props.slug, draftRating.value, draftComment.value.trim())
-    toast.success('Review Saved', 'Thanks for sharing your feedback.')
+    toast.success(t('Review Saved'), 'Thanks for sharing your feedback.')
     await loadPage()
     emit('changed')
   } catch (err) {
-    toast.error('Review Not Saved', getErrorMessage(err, 'Unable to save your review'))
+    toast.error(t('Review Not Saved'), getErrorMessage(err, t('Unable to save your review')))
   } finally {
     saving.value = false
   }
@@ -233,11 +235,11 @@ async function handleDeleteMine() {
     myReview.value = null
     draftRating.value = 0
     draftComment.value = ''
-    toast.info('Review Deleted')
+    toast.info(t('Review Deleted'))
     await loadPage()
     emit('changed')
   } catch (err) {
-    toast.error('Delete Failed', getErrorMessage(err, 'Unable to delete your review'))
+    toast.error(t('Delete Failed'), getErrorMessage(err, t('Unable to delete your review')))
   } finally {
     saving.value = false
   }
@@ -253,7 +255,7 @@ async function handleModerate() {
     await loadPage()
     emit('changed')
   } catch (err) {
-    toast.error('Delete Failed', getErrorMessage(err, 'Unable to delete review'))
+    toast.error(t('Delete Failed'), getErrorMessage(err, t('Unable to delete review')))
   } finally {
     saving.value = false
   }

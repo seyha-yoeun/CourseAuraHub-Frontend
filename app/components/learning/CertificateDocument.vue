@@ -1,8 +1,8 @@
 <template>
   <!-- Sized in cqw so the sheet scales as one piece, from a phone to a printed A4 page. Colors stay fixed in both themes. -->
   <article
-    class="certificate-sheet @container relative aspect-[297/210] w-full overflow-hidden bg-[#fdfbf5] font-serif text-[#14213d] shadow-2xl shadow-black/30 print:h-[210mm] print:w-[297mm] print:shadow-none"
-    :aria-label="`Certificate of completion for ${certificate.learnerName}`"
+    class="certificate-sheet @container relative aspect-[297/210] w-full overflow-hidden bg-[#fdfbf5] text-[#14213d] shadow-2xl shadow-black/30 print:h-[210mm] print:w-[297mm] print:shadow-none"
+    :aria-label="t('Certificate of completion for {name}', { name: certificate.learnerName })"
   >
     <div class="absolute inset-[2.1cqw] border-[0.3cqw] border-[#14213d]" />
     <div class="absolute inset-[3cqw] border-[0.09cqw] border-[#b08d3c]" />
@@ -18,26 +18,26 @@
         <path d="M14 2L26 9V19L14 26L2 19V9L14 2Z" fill="#14213d" />
         <path d="M14 8L20 11.5V18.5L14 22L8 18.5V11.5L14 8Z" fill="#b08d3c" />
       </svg>
-      <p class="mt-[0.7cqw] font-sans text-[1cqw] font-bold tracking-[0.3em]">COURSEAURAHUB ACADEMY</p>
+      <p class="mt-[0.7cqw] font-sans text-[1cqw] font-bold tracking-[0.3em]">{{ t('COURSEAURAHUB ACADEMY') }}</p>
 
-      <h2 class="mt-[1.9cqw] text-[3.3cqw] leading-none font-bold tracking-[0.09em]">CERTIFICATE OF COMPLETION</h2>
+      <h2 class="mt-[1.9cqw] text-[3.3cqw] leading-none font-bold " :class="locale === 'km' ? '' : 'tracking-[0.09em]'">{{ t('CERTIFICATE OF COMPLETION') }}</h2>
       <div class="mt-[1cqw] flex items-center gap-[0.8cqw]" aria-hidden="true">
         <span class="h-[0.12cqw] w-[9.5cqw] bg-[#b08d3c]" />
         <span class="size-[0.7cqw] rotate-45 bg-[#b08d3c]" />
         <span class="h-[0.12cqw] w-[9.5cqw] bg-[#b08d3c]" />
       </div>
 
-      <p class="mt-[1.7cqw] text-[1.5cqw] text-[#5c6474] italic">This is to certify that</p>
+      <p class="mt-[1.7cqw] text-[1.5cqw] text-[#5c6474] italic">{{ t('This is to certify that') }}</p>
       <p class="mt-[0.9cqw] line-clamp-1 w-[50cqw] border-b-[0.09cqw] border-[#b08d3c] pb-[0.8cqw] text-[4.3cqw] leading-tight font-bold">
         {{ certificate.learnerName }}
       </p>
-      <p class="mt-[1.3cqw] text-[1.5cqw] text-[#5c6474] italic">has successfully completed every lesson of the course</p>
+      <p class="mt-[1.3cqw] text-[1.5cqw] text-[#5c6474] italic">{{ t('has successfully completed every lesson of the course') }}</p>
       <p class="mt-[0.9cqw] line-clamp-2 max-w-[74cqw] text-[2.6cqw] leading-tight font-bold">{{ certificate.courseTitle }}</p>
 
       <div class="mt-auto grid w-full grid-cols-[1fr_auto_1fr_auto] items-end gap-x-[3cqw]">
         <div>
           <p class="line-clamp-1 text-[1.5cqw] font-bold">{{ certificate.instructor }}</p>
-          <p class="mt-[0.4cqw] border-t-[0.07cqw] border-[#14213d] pt-[0.5cqw] font-sans text-[0.78cqw] font-bold tracking-[0.15em] text-[#5c6474]">COURSE INSTRUCTOR</p>
+          <p class="mt-[0.4cqw] border-t-[0.07cqw] border-[#14213d] pt-[0.5cqw] font-sans text-[0.78cqw] font-bold tracking-[0.15em] text-[#5c6474]">{{ t('COURSE INSTRUCTOR') }}</p>
         </div>
 
         <svg class="w-[9cqw]" viewBox="0 0 100 100" aria-hidden="true">
@@ -48,17 +48,17 @@
 
         <div>
           <p class="text-[1.5cqw] font-bold">{{ completedOn }}</p>
-          <p class="mt-[0.4cqw] border-t-[0.07cqw] border-[#14213d] pt-[0.5cqw] font-sans text-[0.78cqw] font-bold tracking-[0.15em] text-[#5c6474]">DATE OF COMPLETION</p>
+          <p class="mt-[0.4cqw] border-t-[0.07cqw] border-[#14213d] pt-[0.5cqw] font-sans text-[0.78cqw] font-bold tracking-[0.15em] text-[#5c6474]">{{ t('DATE OF COMPLETION') }}</p>
         </div>
 
         <div class="flex flex-col items-center gap-[0.35cqw]">
-          <img :src="qrImage" alt="QR code to verify this certificate" class="w-[7.6cqw]">
-          <p class="font-sans text-[0.65cqw] font-bold tracking-[0.1em] text-[#5c6474]">SCAN TO VERIFY</p>
+          <img :src="qrImage" :alt="t('QR code to verify this certificate')" class="w-[7.6cqw]">
+          <p class="font-sans text-[0.65cqw] font-bold tracking-[0.1em] text-[#5c6474]">{{ t('SCAN TO VERIFY') }}</p>
         </div>
       </div>
 
-      <p class="mt-[1.1cqw] text-[1.1cqw] font-bold tracking-[0.03em]">Certificate ID {{ certificate.certificateNumber }}</p>
-      <p class="mt-[0.15cqw] text-[1cqw] break-all text-[#5c6474]">Verify this certificate at {{ verificationUrl }}</p>
+      <p class="mt-[1.1cqw] text-[1.1cqw] font-bold tracking-[0.03em]">{{ t('Certificate ID {number}', { number: certificate.certificateNumber }) }}</p>
+      <p class="mt-[0.15cqw] text-[1cqw] break-all text-[#5c6474]">{{ t('Verify this certificate at {url}', { url: verificationUrl }) }}</p>
     </div>
   </article>
 </template>
@@ -66,6 +66,8 @@
 <script setup lang="ts">
 import { renderSVG } from 'uqr'
 import type { CertificateVerification } from '~/types'
+
+const { t, locale } = useT()
 
 const props = defineProps<{
   certificate: CertificateVerification
@@ -86,12 +88,19 @@ const sealPoints = Array.from({ length: 48 }, (_, i) => {
 }).join(' ')
 
 // UTC, so the date matches the downloaded PDF wherever it is viewed
-const completedOn = computed(() => new Date(props.certificate.issuedAt).toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  timeZone: 'UTC'
-}))
+const KHMER_MONTHS = ['មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូ']
+
+function khmerDigits(value: number) {
+  return String(value).replace(/\d/g, digit => String.fromCharCode(0x17E0 + Number(digit)))
+}
+
+const completedOn = computed(() => {
+  const date = new Date(props.certificate.issuedAt)
+  if (locale.value === 'km') {
+    return `ថ្ងៃទី${khmerDigits(date.getUTCDate())} ខែ${KHMER_MONTHS[date.getUTCMonth()]} ឆ្នាំ${khmerDigits(date.getUTCFullYear())}`
+  }
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
+})
 
 const qrImage = computed(() => `data:image/svg+xml;charset=utf-8,${encodeURIComponent(renderSVG(props.verificationUrl, {
   ecc: 'M',
@@ -102,6 +111,11 @@ const qrImage = computed(() => `data:image/svg+xml;charset=utf-8,${encodeURIComp
 </script>
 
 <style>
+.certificate-sheet {
+  /* The stack reaches Khmer names and titles in either language */
+  font-family: Georgia, 'Times New Roman', 'Noto Serif Khmer', serif;
+}
+
 @media print {
   /* Unnamed on purpose: a named page starts a new sheet, which prints a blank one first */
   @page {
