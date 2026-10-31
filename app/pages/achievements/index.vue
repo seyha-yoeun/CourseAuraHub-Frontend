@@ -77,9 +77,17 @@
             <button
               type="button"
               class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/70 hover:text-white light:border-slate-200 light:bg-white light:text-slate-600 light:hover:text-slate-900"
-              @click="copyLink(certificate)"
+              @click="copyLink(certificate.certificateNumber)"
             >
               <Link2 :size="14" /> Copy link
+            </button>
+            <button
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/70 hover:text-white disabled:cursor-wait disabled:opacity-60 light:border-slate-200 light:bg-white light:text-slate-600 light:hover:text-slate-900"
+              :disabled="downloading"
+              @click="download(certificate.certificateNumber)"
+            >
+              <Download :size="14" /> PDF
             </button>
             <NuxtLink
               :to="verifyPath(certificate)"
@@ -95,17 +103,17 @@
 </template>
 
 <script setup lang="ts">
-import { Award, BadgeCheck, BookOpenCheck, Flame, GraduationCap, Link2, MessageSquareQuote } from 'lucide-vue-next'
+import { Award, BadgeCheck, BookOpenCheck, Download, Flame, GraduationCap, Link2, MessageSquareQuote } from 'lucide-vue-next'
 import type { Achievement, Certificate } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
-import { useAppToast } from '~/composables/useAppToast'
+import { useCertificateActions } from '~/composables/useCertificateActions'
 import { useLearning } from '~/composables/useLearning'
 import { getErrorMessage } from '~/utils/apiError'
 
 useHead({ title: 'Achievements' })
 
 const { fetchAchievements, fetchCertificates } = useLearning()
-const toast = useAppToast()
+const { downloading, download, copyLink } = useCertificateActions()
 
 const { data: achievements, pending: achievementsPending, error: achievementsError } =
   await useAsyncData('my-achievements', fetchAchievements, { server: false })
@@ -131,16 +139,5 @@ function verifyPath(certificate: Certificate) {
 
 function formatDate(value: string) {
   return new Date(value).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-}
-
-async function copyLink(certificate: Certificate) {
-  const url = new URL(verifyPath(certificate), window.location.origin).toString()
-  try {
-    await navigator.clipboard.writeText(url)
-    toast.success('Verification link copied', 'Anyone with the link can confirm this certificate.')
-  }
-  catch {
-    toast.error('Could not copy the link', url)
-  }
 }
 </script>

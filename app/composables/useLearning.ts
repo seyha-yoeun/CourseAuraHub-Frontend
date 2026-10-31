@@ -68,6 +68,18 @@ export function useLearning() {
     return await $fetch<CertificateVerification>(`/api/certificates/${encodeURIComponent(certificateNumber)}`)
   }
 
+  async function downloadCertificate(certificateNumber: string) {
+    const pdf = await $fetch<Blob>(`/api/me/certificates/${encodeURIComponent(certificateNumber)}/pdf`, {
+      responseType: 'blob',
+    })
+    const url = URL.createObjectURL(pdf)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `certificate-${certificateNumber}.pdf`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
   async function fetchWishlist() {
     return await $fetch<WishlistItem[]>('/api/me/wishlist')
   }
@@ -102,6 +114,7 @@ export function useLearning() {
     fetchCertificates,
     findCertificate,
     verifyCertificate,
+    downloadCertificate,
     fetchWishlist,
     addToWishlist,
     removeFromWishlist,
