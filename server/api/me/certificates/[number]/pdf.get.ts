@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
 
   return await proxyBackendFile(
     event,
-    `/me/certificates/${encodeURIComponent(number)}/pdf`,
+    `/me/certificates/${encodeURIComponent(number)}/pdf?lang=${getQuery(event).lang === 'km' ? 'km' : 'en'}`,
     'Unable to download the certificate',
   )
 })

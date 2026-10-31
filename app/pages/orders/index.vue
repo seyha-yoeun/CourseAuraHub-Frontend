@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col gap-5">
     <div>
-      <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">My Orders</h1>
-      <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Your course purchases and their status.</p>
+      <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ t('My Orders') }}</h1>
+      <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">{{ t('Your course purchases and their status.') }}</p>
     </div>
 
     <div v-if="pending" class="flex flex-col gap-3">
@@ -11,17 +11,17 @@
 
     <div v-else-if="error" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-5 py-15 text-center light:border-slate-200 light:bg-white">
       <AlertCircle :size="40" class="text-rose-400" />
-      <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">{{ getErrorMessage(error, 'Unable to load your orders') }}</p>
+      <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">{{ getErrorMessage(error, t('Unable to load your orders')) }}</p>
     </div>
 
     <div v-else-if="!orders.length" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center light:border-slate-200 light:bg-white">
       <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-violet-500/30 bg-violet-500/12">
         <Receipt :size="30" class="text-violet-300 light:text-violet-700" />
       </div>
-      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">No orders yet</h3>
-      <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">Courses you buy will show up here.</p>
+      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">{{ t('No orders yet') }}</h3>
+      <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">{{ t('Courses you buy will show up here.') }}</p>
       <NuxtLink to="/courses" class="mt-4 inline-flex items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white no-underline">
-        <BookOpen :size="16" /> Browse courses
+        <BookOpen :size="16" /> {{ t('Browse courses') }}
       </NuxtLink>
     </div>
 
@@ -52,14 +52,14 @@
               :disabled="cancelling === order.orderNumber"
               @click="cancel(order)"
             >
-              Cancel
+              {{ t('Cancel') }}
             </button>
             <a
               v-if="order.checkoutUrl"
               :href="order.checkoutUrl"
               class="rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold text-violet-300 no-underline hover:bg-violet-500/30 hover:text-white light:border-violet-300 light:bg-violet-50 light:text-violet-700"
             >
-              Complete payment
+              {{ t('Complete payment') }}
             </a>
           </div>
         </div>
@@ -77,7 +77,9 @@ import { useOrders } from '~/composables/useOrders'
 import { getErrorMessage } from '~/utils/apiError'
 import { formatDate } from '~/utils/dateTime'
 
-useHead({ title: 'My Orders' })
+const { t } = useT()
+
+useHead({ title: () => t('My Orders') })
 
 const toast = useAppToast()
 const { fetchMyOrders, cancelOrder } = useOrders()
@@ -90,10 +92,10 @@ async function cancel(order: Order) {
   cancelling.value = order.orderNumber
   try {
     await cancelOrder(order.orderNumber)
-    toast.info('Order Cancelled', order.courseTitle)
+    toast.info(t('Order Cancelled'), order.courseTitle)
     await refresh()
   } catch (err) {
-    toast.error('Order Not Cancelled', getErrorMessage(err, 'Unable to cancel this order'))
+    toast.error(t('Order Not Cancelled'), getErrorMessage(err, t('Unable to cancel this order')))
   } finally {
     cancelling.value = null
   }

@@ -2,11 +2,11 @@
   <div class="flex flex-col gap-5">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">My Learning</h1>
-        <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Pick up where you left off and track your progress.</p>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ t('My Learning') }}</h1>
+        <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">{{ t('Pick up where you left off and track your progress.') }}</p>
       </div>
 
-      <div v-if="courses.length" class="flex gap-1 rounded-xl border border-white/8 bg-white/4 p-1 light:border-slate-200 light:bg-slate-100" role="tablist" aria-label="Filter courses">
+      <div v-if="courses.length" class="flex gap-1 rounded-xl border border-white/8 bg-white/4 p-1 light:border-slate-200 light:bg-slate-100" role="tablist" :aria-label="t('Filter courses')">
         <button
           v-for="tab in tabs"
           :key="tab.value"
@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <section v-if="dashboard && dashboard.enrolledCourses" aria-label="Learning overview" class="flex flex-col gap-4">
+    <section v-if="dashboard && dashboard.enrolledCourses" :aria-label="t('Learning overview')" class="flex flex-col gap-4">
       <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <div
           v-for="stat in stats"
@@ -49,21 +49,21 @@
         >
           <img :src="dashboard.continueLearning.thumbnail" alt="" class="hidden aspect-video w-32 shrink-0 rounded-lg object-cover sm:block">
           <div class="min-w-0 flex-1">
-            <p class="text-[11px] font-semibold tracking-wide text-violet-300 uppercase light:text-violet-700">Continue learning</p>
+            <p class="text-[11px] font-semibold tracking-wide text-violet-300 uppercase light:text-violet-700">{{ t('Continue learning') }}</p>
             <p class="mt-0.5 truncate text-[15px] font-bold text-slate-100 light:text-slate-900">{{ dashboard.continueLearning.title }}</p>
             <p v-if="dashboard.continueLearning.nextLesson" class="truncate text-xs text-white/50 light:text-slate-500">
-              {{ dashboard.continueLearning.nextLesson.resumePositionSeconds ? `Resume at ${formatPosition(dashboard.continueLearning.nextLesson.resumePositionSeconds)}:` : 'Next:' }} {{ dashboard.continueLearning.nextLesson.title }}
+              {{ dashboard.continueLearning.nextLesson.resumePositionSeconds ? `Resume at ${formatPosition(dashboard.continueLearning.nextLesson.resumePositionSeconds)}:` : t('Next:') }} {{ dashboard.continueLearning.nextLesson.title }}
             </p>
             <ProgressBar class="mt-2" :value="dashboard.continueLearning.progress.progressPercent" />
           </div>
           <PlayCircle :size="28" class="shrink-0 text-violet-300 transition-transform group-hover:scale-110 light:text-violet-600" />
         </NuxtLink>
         <div v-else class="flex items-center gap-3 rounded-2xl border border-emerald-500/25 bg-emerald-500/8 p-4 text-[13px] text-emerald-300 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-700">
-          <CheckCircle2 :size="20" class="shrink-0" /> You've finished every course you're enrolled in. Time to pick a new one!
+          <CheckCircle2 :size="20" class="shrink-0" /> {{ t('You\'ve finished every course you\'re enrolled in. Time to pick a new one!') }}
         </div>
 
         <div class="rounded-2xl border border-white/8 bg-white/4 p-4 light:border-slate-200 light:bg-white">
-          <p class="text-[11px] font-semibold text-white/45 light:text-slate-500">Lessons this week</p>
+          <p class="text-[11px] font-semibold text-white/45 light:text-slate-500">{{ t('Lessons this week') }}</p>
           <div class="mt-2 flex h-16 items-end gap-1.5" role="img" :aria-label="weekSummary">
             <div v-for="day in dashboard.lastSevenDays" :key="day.date" class="flex flex-1 flex-col items-center gap-1">
               <div
@@ -76,7 +76,7 @@
             </div>
           </div>
           <p v-if="dashboard.streak.currentDays && !dashboard.streak.activeToday" class="mt-2 text-[11px] font-semibold text-orange-400 light:text-orange-600">
-            Finish a lesson today to keep your streak
+            {{ t('Finish a lesson today to keep your streak') }}
           </p>
         </div>
       </div>
@@ -87,23 +87,23 @@
     </div>
 
     <div v-else-if="error" class="rounded-[20px] border border-rose-500/25 bg-rose-500/8 px-6 py-10 text-center text-[13px] text-rose-300 light:border-rose-200 light:bg-rose-50 light:text-rose-700">
-      {{ getErrorMessage(error, 'Unable to load your courses') }}
-      <button type="button" class="ml-2 cursor-pointer font-semibold underline" @click="retry">Try again</button>
+      {{ getErrorMessage(error, t('Unable to load your courses')) }}
+      <button type="button" class="ml-2 cursor-pointer font-semibold underline" @click="retry">{{ t('Try again') }}</button>
     </div>
 
     <div v-else-if="!courses.length" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center light:border-slate-200 light:bg-white">
       <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-violet-500/30 bg-violet-500/15">
         <GraduationCap :size="32" class="text-violet-400" />
       </div>
-      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">You haven't enrolled in any courses yet</h3>
-      <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">Browse the catalog to find something you'd like to learn. Free courses can be started right away.</p>
+      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">{{ t('You haven\'t enrolled in any courses yet') }}</h3>
+      <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">{{ t('Browse the catalog to find something you\'d like to learn. Free courses can be started right away.') }}</p>
       <NuxtLink to="/courses" class="mt-4 inline-flex items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white no-underline">
-        <BookOpen :size="16" /> Browse courses
+        <BookOpen :size="16" /> {{ t('Browse courses') }}
       </NuxtLink>
     </div>
 
     <p v-else-if="!visibleCourses.length" class="rounded-[20px] border border-white/10 bg-white/5 px-6 py-10 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">
-      No courses in this list.
+      {{ t('No courses in this list.') }}
     </p>
 
     <div v-else class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -115,7 +115,7 @@
         <NuxtLink :to="`/courses/${item.slug}`" class="relative block aspect-video overflow-hidden">
           <img :src="item.thumbnail" :alt="item.title" loading="lazy" class="size-full object-cover transition-transform duration-500 group-hover:scale-105">
           <span v-if="item.progress.completed" class="absolute top-3 left-3 inline-flex items-center gap-1 rounded-md bg-emerald-500 px-2 py-0.5 text-[11px] font-bold text-zinc-950">
-            <CheckCircle2 :size="12" /> Completed
+            <CheckCircle2 :size="12" /> {{ t('Completed') }}
           </span>
         </NuxtLink>
 
@@ -132,7 +132,7 @@
             </div>
             <ProgressBar :value="item.progress.progressPercent" />
             <p v-if="item.nextLesson && item.progress.completedLessons" class="mt-3 truncate text-[11px] text-white/45 light:text-slate-500">
-              {{ item.nextLesson.resumePositionSeconds ? `Resume at ${formatPosition(item.nextLesson.resumePositionSeconds)}:` : 'Next:' }} {{ item.nextLesson.title }}
+              {{ item.nextLesson.resumePositionSeconds ? `Resume at ${formatPosition(item.nextLesson.resumePositionSeconds)}:` : t('Next:') }} {{ item.nextLesson.title }}
             </p>
             <div class="mt-4 flex gap-2">
               <NuxtLink
@@ -140,7 +140,7 @@
                 class="flex flex-1 items-center justify-center gap-1.5 rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-3 py-2 text-xs font-semibold text-violet-300 no-underline transition-all hover:bg-violet-500/30 hover:text-white light:border-violet-300 light:bg-violet-50 light:text-violet-700"
               >
                 <PlayCircle :size="14" />
-                {{ item.progress.completed ? 'Review course' : item.progress.completedLessons ? 'Continue' : 'Start course' }}
+                {{ item.progress.completed ? t('Review course') : item.progress.completedLessons ? t('Continue') : t('Start course') }}
               </NuxtLink>
               <NuxtLink
                 v-if="certificateNumbers.has(item.slug)"
@@ -148,7 +148,7 @@
                 class="flex items-center justify-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white/70 no-underline transition-colors hover:bg-white/10 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700"
               >
                 <Award :size="14" />
-                Certificate
+                {{ t('Certificate') }}
               </NuxtLink>
             </div>
           </div>
@@ -166,7 +166,9 @@ import { formatPosition } from '~/composables/useCurriculum'
 import { useLearning } from '~/composables/useLearning'
 import { getErrorMessage } from '~/utils/apiError'
 
-useHead({ title: 'My Learning' })
+const { t } = useT()
+
+useHead({ title: () => t('My Learning') })
 
 const { fetchMyCourses, fetchDashboard, fetchCertificates } = useLearning()
 

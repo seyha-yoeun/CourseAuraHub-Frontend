@@ -3,9 +3,9 @@
     <!-- Header -->
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ auth.isAdmin ? 'Course Management' : 'Explore Courses' }}</h1>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ auth.isAdmin ? t('Course Management') : t('Explore Courses') }}</h1>
         <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">
-          {{ auth.isAdmin ? 'Create, edit, analyze, and manage your online educational catalog.' : 'Find your next course. Free courses can be started right away.' }}
+          {{ auth.isAdmin ? t('Create, edit, analyze, and manage your online educational catalog.') : t('Find your next course. Free courses can be started right away.') }}
         </p>
       </div>
 
@@ -16,7 +16,7 @@
         @click="openCreateModal"
       >
         <Plus :size="16" />
-        <span>Create Course</span>
+        <span>{{ t('Create Course') }}</span>
       </button>
     </div>
 
@@ -28,7 +28,7 @@
         <input
           v-model="searchQuery"
           type="text"
-          placeholder="Search by title, instructor, or tags..."
+          :placeholder="t('Search by title, instructor, or tags...')"
           class="h-10.5 w-full rounded-[10px] border border-white/9 bg-white/4 pr-9 pl-10 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/35 focus:border-violet-500/65 focus:bg-white/7 focus:ring-2 focus:ring-violet-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600"
           @input="onFilterChange"
         >
@@ -36,7 +36,7 @@
           v-if="searchQuery"
           type="button"
           class="absolute top-1/2 right-3 flex -translate-y-1/2 cursor-pointer items-center justify-center rounded p-1 text-white/40 transition-colors hover:text-white light:text-slate-400 light:hover:text-slate-900"
-          aria-label="Clear course search"
+          :aria-label="t('Clear course search')"
           @click="clearSearch"
         >
           <X :size="14" />
@@ -51,7 +51,7 @@
         <AppDropdown
           v-model="selectedCategory"
           :options="categoryOptions"
-          placeholder="All Categories"
+          :placeholder="t('All Categories')"
           @change="onFilterChange"
           @toggle="(open) => handleDropdownToggle('category', open)"
         />
@@ -65,7 +65,7 @@
         <AppDropdown
           v-model="selectedStatus"
           :options="statusOptions"
-          placeholder="All Statuses"
+          :placeholder="t('All Statuses')"
           @change="onFilterChange"
           @toggle="(open) => handleDropdownToggle('status', open)"
         />
@@ -79,7 +79,7 @@
         <AppDropdown
           v-model="selectedSort"
           :options="sortOptions"
-          placeholder="Sort By"
+          :placeholder="t('Sort By')"
           @change="onSortChange"
           @toggle="(open) => handleDropdownToggle('sort', open)"
         />
@@ -89,16 +89,16 @@
     <!-- Courses Stats Summary Bar -->
     <div class="relative z-10 flex flex-wrap items-center gap-3">
       <span class="rounded-full border border-white/6 bg-white/3 px-3.5 py-1.25 text-xs text-white/60 transition-all light:border-slate-200 light:bg-slate-100 light:text-slate-700">
-        <strong>{{ courses.length }}</strong> Courses Found
+        <strong>{{ courses.length }}</strong> {{ t('Courses Found') }}
       </span>
       <span v-if="auth.isAdmin" class="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3.5 py-1.25 text-xs text-emerald-500 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-700">
-        <strong>{{ courses.filter(c => c.status === 'published').length }}</strong> Published
+        <strong>{{ courses.filter(c => c.status === 'published').length }}</strong> {{ t('Published') }}
       </span>
       <span v-if="auth.isAdmin" class="rounded-full border border-amber-500/25 bg-amber-500/10 px-3.5 py-1.25 text-xs text-amber-500 light:border-amber-200 light:bg-amber-50 light:text-amber-700">
-        <strong>{{ courses.filter(c => c.status === 'draft').length }}</strong> Drafts
+        <strong>{{ courses.filter(c => c.status === 'draft').length }}</strong> {{ t('Drafts') }}
       </span>
       <span v-if="auth.isAdmin" class="rounded-full border border-slate-400/25 bg-slate-400/10 px-3.5 py-1.25 text-xs text-slate-400 light:border-slate-200 light:bg-slate-100 light:text-slate-600">
-        <strong>{{ courses.filter(c => c.status === 'archived').length }}</strong> Archived
+        <strong>{{ courses.filter(c => c.status === 'archived').length }}</strong> {{ t('Archived') }}
       </span>
 
       <!-- View Toggle -->
@@ -106,7 +106,7 @@
         v-if="auth.isAdmin"
         class="ml-auto inline-flex items-center gap-1 rounded-[10px] border border-white/8 bg-white/4 p-1 light:border-slate-200 light:bg-slate-100"
         role="group"
-        aria-label="Course view"
+        :aria-label="t('Course view')"
       >
         <button
           v-for="option in viewOptions"
@@ -138,9 +138,9 @@
       <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-violet-500/30 bg-violet-500/15">
         <BookOpen :size="32" class="text-violet-400" />
       </div>
-      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">No courses found</h3>
+      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">{{ t('No courses found') }}</h3>
       <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">
-        {{ auth.isAdmin ? 'Try adjusting your search criteria or create a brand new course to get started.' : 'Try adjusting your search or filters.' }}
+        {{ auth.isAdmin ? t('Try adjusting your search criteria or create a brand new course to get started.') : t('Try adjusting your search or filters.') }}
       </p>
       <button
         v-if="auth.isAdmin"
@@ -149,7 +149,7 @@
         @click="openCreateModal"
       >
         <Plus :size="16" />
-        <span>Create New Course</span>
+        <span>{{ t('Create New Course') }}</span>
       </button>
     </div>
 
@@ -202,9 +202,9 @@ import CourseTable from '~/components/courses/CourseTable.vue'
 import CourseFormModal from '~/components/courses/CourseFormModal.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 
-useHead({
-  title: 'Course Catalog & Management'
-})
+const { t } = useT()
+
+useHead({ title: () => t('Course Catalog & Management') })
 
 const auth = useAuth()
 const { courses, loading, fetchCourses, createCourse, updateCourse, deleteCourse } = useCourses()
@@ -225,8 +225,8 @@ const viewMode = useCookie<'table' | 'card'>('courses-view', {
 const showTable = computed(() => auth.isAdmin && viewMode.value !== 'card')
 
 const viewOptions = [
-  { value: 'table', label: 'Table', icon: Table2 },
-  { value: 'card', label: 'Cards', icon: LayoutGrid }
+  { value: 'table', label: t('Table'), icon: Table2 },
+  { value: 'card', label: t('Cards'), icon: LayoutGrid }
 ] as const
 
 function handleDropdownToggle(name: string, open: boolean) {
@@ -245,7 +245,7 @@ const categoryOptions = computed(() => {
     }
   }
   return [
-    { value: 'all', label: 'All Categories' },
+    { value: 'all', label: t('All Categories') },
     ...Array.from(categories).sort().map(cat => ({ value: cat, label: cat }))
   ]
 })
@@ -253,25 +253,25 @@ const categoryOptions = computed(() => {
 const statusOptions = computed(() => {
   if (!auth.isAdmin) {
     return [
-      { value: 'all', label: 'All Statuses' },
-      { value: 'published', label: 'Published' }
+      { value: 'all', label: t('All Statuses') },
+      { value: 'published', label: t('Published') }
     ]
   }
   return [
-    { value: 'all', label: 'All Statuses' },
-    { value: 'published', label: 'Published' },
-    { value: 'draft', label: 'Draft' },
-    { value: 'archived', label: 'Archived' }
+    { value: 'all', label: t('All Statuses') },
+    { value: 'published', label: t('Published') },
+    { value: 'draft', label: t('Draft') },
+    { value: 'archived', label: t('Archived') }
   ]
 })
 
 const sortOptions = computed(() => [
-  { value: 'createdAt:desc', label: 'Newest First' },
-  ...(auth.isAdmin ? [{ value: 'revenue:desc', label: 'Highest Revenue' }] : []),
-  { value: 'totalStudents:desc', label: auth.isAdmin ? 'Most Enrolled' : 'Most Popular' },
-  { value: 'rating:desc', label: 'Top Rated' },
-  { value: 'price:asc', label: 'Price: Low to High' },
-  { value: 'price:desc', label: 'Price: High to Low' }
+  { value: 'createdAt:desc', label: t('Newest First') },
+  ...(auth.isAdmin ? [{ value: 'revenue:desc', label: t('Highest Revenue') }] : []),
+  { value: 'totalStudents:desc', label: t(auth.isAdmin ? 'Most Enrolled' : 'Most Popular') },
+  { value: 'rating:desc', label: t('Top Rated') },
+  { value: 'price:asc', label: t('Price: Low to High') },
+  { value: 'price:desc', label: t('Price: High to Low') }
 ])
 
 // Modal & actions state

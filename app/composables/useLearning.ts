@@ -25,6 +25,8 @@ function browserTimeZone() {
  * Self-service calls for the signed-in learner (/api/me/**).
  */
 export function useLearning() {
+  const { locale } = useT()
+
   async function fetchMyCourses() {
     return await $fetch<MyCourse[]>('/api/me/courses')
   }
@@ -70,6 +72,7 @@ export function useLearning() {
 
   async function downloadCertificate(certificateNumber: string) {
     const pdf = await $fetch<Blob>(`/api/me/certificates/${encodeURIComponent(certificateNumber)}/pdf`, {
+      query: { lang: locale.value },
       responseType: 'blob',
     })
     const url = URL.createObjectURL(pdf)

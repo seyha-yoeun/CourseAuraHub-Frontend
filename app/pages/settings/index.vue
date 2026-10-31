@@ -197,18 +197,6 @@
                 class="size-4.5 shrink-0 cursor-pointer accent-violet-600"
               >
             </label>
-
-            <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/2 p-3 transition-colors hover:bg-white/4 light:border-slate-200 light:bg-slate-50 light:hover:bg-slate-100">
-              <div>
-                <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">Product News &amp; Marketing</span>
-                <span class="mt-0.5 block text-[11px] text-white/40 light:text-slate-500">Receive updates on new features and course creator tips</span>
-              </div>
-              <input
-                v-model="form.notifications.marketingEmails"
-                type="checkbox"
-                class="size-4.5 shrink-0 cursor-pointer accent-violet-600"
-              >
-            </label>
           </div>
         </div>
       </div>
@@ -240,10 +228,8 @@ const currencyOptions = [
   { value: 'JPY', label: 'JPY (¥)' }
 ]
 const languageOptions = [
-  { value: 'en', label: 'English (US)' },
-  { value: 'es', label: 'Español' },
-  { value: 'fr', label: 'Français' },
-  { value: 'de', label: 'Deutsch' }
+  { value: 'en', label: 'English' },
+  { value: 'km', label: 'ខ្មែរ (Khmer)' }
 ]
 
 definePageMeta({ requiresAdmin: true })
@@ -275,7 +261,6 @@ const form = reactive<PlatformSettings>({
     newEnrollment: true,
     courseCompletion: true,
     weeklyReport: true,
-    marketingEmails: false,
   },
   profile: {
     name: '',
@@ -298,6 +283,7 @@ watch(
   (value) => {
     if (value) {
       Object.assign(form, value)
+      form.defaultLanguage = form.defaultLanguage.toLowerCase()
     }
   },
   { immediate: true },

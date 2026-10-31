@@ -75,7 +75,7 @@ export type CourseFormData = Omit<
 
 export interface AppNotification {
   id: number
-  type: 'enrolled' | 'payment_failed' | 'order_refunded' | 'certificate_issued' | 'new_lesson' | 'new_enrollment'
+  type: 'enrolled' | 'payment_failed' | 'order_refunded' | 'certificate_issued' | 'new_lesson' | 'new_enrollment' | 'course_completed' | 'weekly_report'
   title: string
   message: string
   // Frontend path to open, such as a course page
@@ -248,7 +248,6 @@ export interface PlatformSettings {
     newEnrollment: boolean
     courseCompletion: boolean
     weeklyReport: boolean
-    marketingEmails: boolean
   }
   profile: {
     name: string
@@ -328,6 +327,87 @@ export interface Achievement {
   progress: number
   target: number
   earned: boolean
+}
+
+export interface CartItem {
+  courseId: number
+  slug: string
+  title: string
+  thumbnail: string
+  instructor: string
+  listPrice: number
+  price: number
+}
+
+export interface Cart {
+  items: CartItem[]
+  listTotal: number
+  total: number
+  currency: string
+}
+
+export interface CartCouponPreview {
+  code: string
+  courseSlug: string
+  courseTitle: string
+  couponDiscount: number
+  total: number
+}
+
+export interface CheckoutResult {
+  groupNumber: string
+  amount: number
+  currency: string
+  checkoutUrl: string | null
+  orders: Order[]
+}
+
+export interface Quiz {
+  lessonId: number
+  passPercent: number
+  questions: {
+    id: number
+    prompt: string
+    options: { id: number, text: string }[]
+  }[]
+  attempts: number
+  bestScore: number | null
+  passed: boolean
+}
+
+export interface QuizResult {
+  scorePercent: number
+  correctCount: number
+  totalCount: number
+  passPercent: number
+  passed: boolean
+  questions: {
+    questionId: number
+    correct: boolean
+    correctOptionId: number | null
+    explanation: string | null
+  }[]
+  progress: LessonProgressResult | null
+}
+
+export interface AdminQuiz {
+  lessonId: number
+  passPercent: number
+  questions: {
+    id: number
+    prompt: string
+    explanation: string | null
+    options: { id: number, text: string, correct: boolean }[]
+  }[]
+}
+
+export interface QuizFormData {
+  passPercent: number
+  questions: {
+    prompt: string
+    explanation: string | null
+    options: { text: string, correct: boolean }[]
+  }[]
 }
 
 export interface TelegramStatus {
