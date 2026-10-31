@@ -4,7 +4,7 @@
     <Transition v-bind="backdropAnim">
       <div
         v-if="isOpen"
-        class="fixed inset-0 z-[9998] bg-[#03040a]/82 backdrop-blur-xl light:bg-slate-950/45"
+        class="fixed inset-0 z-[9998] bg-[#03040a]/82 backdrop-blur-xl print:hidden light:bg-slate-950/45"
         aria-hidden="true"
         @click="dismissNotice('user')"
       />
@@ -14,7 +14,7 @@
     <Transition v-bind="panelAnim">
       <div
         v-if="isOpen"
-        class="pointer-events-none fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6"
+        class="pointer-events-none fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 print:hidden"
       >
         <div
           ref="dialogRef"
