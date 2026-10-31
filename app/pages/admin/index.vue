@@ -475,29 +475,6 @@
             <div v-else class="grid grid-cols-1 gap-3.5 md:grid-cols-2">
               <div class="flex flex-col rounded-[14px] border border-white/8 bg-white/2 p-4.5 light:border-slate-200 light:bg-slate-50">
                 <div class="flex items-start justify-between gap-3">
-                  <span class="flex size-10 items-center justify-center rounded-xl border border-amber-500/25 bg-amber-500/10">
-                    <Sparkles :size="19" class="text-amber-400" />
-                  </span>
-                  <span class="rounded-full border border-white/8 bg-white/4 px-2 py-0.5 text-[10px] font-semibold text-white/40 light:border-slate-200 light:bg-white light:text-slate-500">Demo data</span>
-                </div>
-                <h3 class="mt-3 text-sm font-bold text-slate-100 light:text-slate-900">Create a sample course</h3>
-                <p class="mt-1 flex-1 text-xs leading-relaxed text-white/45 light:text-slate-500">
-                  Generate a realistic course record and write it directly to the backend database.
-                </p>
-                <button
-                  type="button"
-                  class="mt-4 inline-flex w-fit cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3.5 py-2 text-xs font-semibold text-amber-300 transition-all enabled:hover:bg-amber-500/20 enabled:hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60 light:border-amber-200 light:bg-amber-50 light:text-amber-700 light:enabled:hover:bg-amber-100"
-                  :disabled="seeding"
-                  @click="seedSampleCourse"
-                >
-                  <Loader2 v-if="seeding" :size="14" class="animate-spin" />
-                  <Plus v-else :size="14" />
-                  <span>{{ seeding ? 'Creating...' : 'Create Sample Course' }}</span>
-                </button>
-              </div>
-
-              <div class="flex flex-col rounded-[14px] border border-white/8 bg-white/2 p-4.5 light:border-slate-200 light:bg-slate-50">
-                <div class="flex items-start justify-between gap-3">
                   <span class="flex size-10 items-center justify-center rounded-xl border border-blue-500/25 bg-blue-500/10">
                     <FileJson :size="19" class="text-blue-400" />
                   </span>
@@ -606,7 +583,6 @@ import {
   Settings,
   ShieldAlert,
   SlidersHorizontal,
-  Sparkles,
   Star,
   Trash2,
   UserPlus,
@@ -652,7 +628,6 @@ const studentSearch = ref('')
 
 const updatingCourseSlug = ref<string | null>(null)
 const updatingStudentId = ref<number | null>(null)
-const seeding = ref(false)
 
 const showAddStudent = ref(false)
 const creatingStudent = ref(false)
@@ -953,44 +928,6 @@ async function confirmDelete() {
     error('Delete Failed', (err as Error).message || 'Failed to delete record')
   } finally {
     deleteLoading.value = false
-  }
-}
-
-async function seedSampleCourse() {
-  seeding.value = true
-  const sampleTitles = [
-    'Full-Stack AI Agents with Vue 3 & LangChain',
-    'Advanced Pinia Patterns & State Architectures',
-    'Rust for TypeScript & Web Developers',
-    'Micro-Frontends with Nuxt 4 & Module Federation'
-  ]
-  const title = sampleTitles[Math.floor(Math.random() * sampleTitles.length)]!
-
-  try {
-    await $fetch('/api/courses', {
-      method: 'POST',
-      body: {
-        title,
-        description: 'Comprehensive advanced masterclass exploring cutting-edge architecture and patterns.',
-        instructor: 'Alex Chen',
-        category: 'Web Development',
-        level: 'Advanced',
-        price: 119.99,
-        originalPrice: 179.99,
-        status: 'published',
-        totalLessons: 45,
-        totalHours: 15,
-        thumbnail: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&h=450&fit=crop',
-        tags: ['Vue 3', 'Nuxt 4', 'Advanced']
-      }
-    })
-
-    crud('create', 'Course', title)
-    await loadData({ silent: true })
-  } catch (err: unknown) {
-    error('Seed Failed', (err as Error).message || 'Failed to create the sample course')
-  } finally {
-    seeding.value = false
   }
 }
 
