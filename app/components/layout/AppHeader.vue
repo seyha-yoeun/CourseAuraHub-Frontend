@@ -229,8 +229,16 @@
         <HelpCircle :size="18" :stroke-width="1.5" class="transition-transform duration-300 ease-out group-hover:rotate-12 group-hover:scale-110" />
       </button>
 
+      <NuxtLink
+        v-if="!auth.isAuthenticated"
+        :to="{ path: '/auth/login', query: { redirect: route.fullPath } }"
+        class="inline-flex shrink-0 items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-3.5 py-2 text-xs font-semibold text-white no-underline transition-all hover:from-violet-500 hover:to-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+      >
+        Sign in
+      </NuxtLink>
+
       <!-- Avatar with User Dropdown -->
-      <div ref="avatarContainerRef" class="relative">
+      <div v-else ref="avatarContainerRef" class="relative">
         <button
           type="button"
           class="relative block size-9 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-violet-500/50 p-0 transition-all duration-200 ease-out hover:scale-105 hover:border-violet-500 hover:shadow-[0_0_14px_rgba(124,58,237,0.5)] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 light:border-violet-300 light:focus-visible:ring-offset-white"
@@ -412,6 +420,8 @@ import {
   HelpCircle,
   ShieldAlert,
   ShieldCheck,
+  Receipt,
+  Tag,
   ChevronRight,
   LogOut,
   Settings,
@@ -511,10 +521,11 @@ const breadcrumbItems = computed(() => {
     ]
   }
 
-  if (path === '/my-learning' || path === '/wishlist' || path === '/account') {
+  if (path === '/my-learning' || path === '/wishlist' || path === '/orders' || path === '/account') {
     const labels: Record<string, string> = {
       '/my-learning': 'My Learning',
       '/wishlist': 'Wishlist',
+      '/orders': 'My Orders',
       '/account': 'Profile & Security'
     }
     return [
@@ -527,6 +538,14 @@ const breadcrumbItems = computed(() => {
     return [
       { label: 'CourseAuraHub', to: '/' },
       { label: 'Admin Console' }
+    ]
+  }
+
+  if (path === '/admin/discounts' || path === '/admin/orders') {
+    return [
+      { label: 'CourseAuraHub', to: '/' },
+      { label: 'Admin Console', to: '/admin' },
+      { label: path === '/admin/orders' ? 'Orders' : 'Discounts' }
     ]
   }
 
@@ -734,6 +753,8 @@ const quickPages = [
   { name: 'Student Directory', desc: 'Active learners, enrollment dates, and lifetime spend', to: '/students', icon: Users },
   { name: 'Sales & Analytics', desc: 'Detailed financial and performance reports', to: '/analytics', icon: TrendingUp },
   { name: 'Platform Settings', desc: 'Storefront branding, preferences, and profile', to: '/settings', icon: Settings },
+  { name: 'Orders', desc: 'Review purchases and refund paid orders', to: '/admin/orders', icon: Receipt },
+  { name: 'Discounts', desc: 'Schedule sale prices for courses', to: '/admin/discounts', icon: Tag },
   { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
   { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
 ]
@@ -742,6 +763,7 @@ const learnerPages = [
   { name: 'Browse Courses', desc: 'Explore the course catalog', to: '/courses', icon: BookOpen },
   { name: 'My Learning', desc: 'Enrolled courses and your progress', to: '/my-learning', icon: GraduationCap },
   { name: 'Wishlist', desc: 'Courses saved for later', to: '/wishlist', icon: Heart },
+  { name: 'My Orders', desc: 'Your purchases and their status', to: '/orders', icon: Receipt },
   { name: 'Achievements', desc: 'Badges, streaks, and course certificates', to: '/achievements', icon: Trophy },
   { name: 'Profile', desc: 'Your name, avatar, and public details', to: '/account', icon: UserCog },
   { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },

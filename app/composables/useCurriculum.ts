@@ -51,6 +51,14 @@ export function formatDuration(minutes: number) {
   return rest ? `${hours}h ${rest}m` : `${hours}h`
 }
 
+/** A video position as m:ss or h:mm:ss. */
+export function formatPosition(seconds: number) {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const rest = String(seconds % 60).padStart(2, '0')
+  return hours ? `${hours}:${String(minutes).padStart(2, '0')}:${rest}` : `${minutes}:${rest}`
+}
+
 export function flattenLessons(curriculum: Curriculum | null | undefined) {
   return curriculum?.sections.flatMap(section => section.lessons) ?? []
 }

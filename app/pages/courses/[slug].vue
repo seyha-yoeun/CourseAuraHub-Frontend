@@ -84,6 +84,9 @@
             <span v-if="course.originalPrice > course.price" class="text-[13px] text-white/35 line-through light:text-slate-400">
               ${{ course.originalPrice.toFixed(2) }}
             </span>
+            <span v-if="course.sale" class="text-xs font-semibold text-rose-300 light:text-rose-600">
+              On sale for ${{ Number(course.sale.salePrice).toFixed(2) }}
+            </span>
           </div>
         </div>
       </div>

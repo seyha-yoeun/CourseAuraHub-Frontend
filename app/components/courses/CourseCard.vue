@@ -84,6 +84,9 @@
           <span v-if="course.price > 0 && course.originalPrice > course.price" class="text-xs text-white/35 line-through light:text-slate-400">
             ${{ course.originalPrice.toFixed(2) }}
           </span>
+          <span v-if="course.sale" class="rounded-md border border-rose-400/30 bg-rose-400/12 px-1.5 py-0.5 text-[10px] font-bold whitespace-nowrap text-rose-300 light:border-rose-200 light:bg-rose-50 light:text-rose-600">
+            {{ formatDiscount(course.sale) }}
+          </span>
         </div>
 
         <div class="flex items-center gap-1.5">
@@ -123,6 +126,7 @@
 import { Star, Clock, Users, Edit3, Trash2, ArrowRight } from 'lucide-vue-next'
 import type { Course } from '~/types'
 import CourseStatusBadge from './CourseStatusBadge.vue'
+import { formatDiscount } from '~/composables/useDiscounts'
 
 withDefaults(
   defineProps<{

@@ -30,12 +30,86 @@ export interface Course {
   enrolledStudentList?: Student[]
   // Whether the caller is enrolled; only set on the course detail response
   enrolled?: boolean | null
+  // The running sale. price already includes it, except for admins, who see the regular price
+  sale?: CourseSale | null
 }
+
+export interface CourseSale {
+  salePrice: number
+  discountType: string
+  discountValue: number
+  // Null when the sale has no end date
+  endsAt: string | null
+}
+
+export interface CourseDiscount {
+  id: number
+  courseSlug: string
+  courseTitle: string
+  discountType: string
+  discountValue: number
+  regularPrice: number
+  salePrice: number
+  startsAt: string
+  endsAt: string | null
+  active: boolean
+  // Whether learners are getting this price right now
+  running: boolean
+  createdAt: string
+}
+
+export interface CourseDiscountCreate {
+  courseSlug: string
+  discountType: string
+  discountValue: number
+  startsAt?: string
+  endsAt?: string
+}
+
+export type CourseDiscountUpdate = Partial<Omit<CourseDiscountCreate, 'courseSlug'>> & { active?: boolean }
 
 export type CourseFormData = Omit<
   Course,
-  'id' | 'slug' | 'rating' | 'totalStudents' | 'revenue' | 'completionRate' | 'createdAt' | 'updatedAt' | 'monthlyEnrollments' | 'monthlyRevenue' | 'enrolledStudentList'
+  'id' | 'slug' | 'rating' | 'totalStudents' | 'revenue' | 'completionRate' | 'createdAt' | 'updatedAt' | 'monthlyEnrollments' | 'monthlyRevenue' | 'enrolledStudentList' | 'sale'
 >
+
+export type OrderStatus = 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED' | 'REFUNDED'
+
+export interface Order {
+  orderNumber: string
+  courseSlug: string
+  courseTitle: string
+  thumbnail: string
+  // Price before any coupon
+  listAmount: number
+  discountAmount: number
+  couponCode: string | null
+  // What the learner pays
+  amount: number
+  currency: string
+  status: OrderStatus
+  // Where to pay; null once the order is no longer pending
+  checkoutUrl: string | null
+  createdAt: string
+  paidAt: string | null
+  refundedAt: string | null
+}
+
+export interface AdminOrder {
+  order: Order
+  studentId: number
+  studentEmail: string
+  provider: string | null
+  providerReference: string | null
+}
+
+export interface AdminOrderPage {
+  items: AdminOrder[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
 
 export interface Student {
   id: number
@@ -156,6 +230,8 @@ export interface NextLesson {
   durationMinutes: number
   sectionId: number
   sectionTitle: string
+  /** Seconds into the video to continue from, if it was started */
+  resumePositionSeconds?: number | null
 }
 
 export interface LearningStreak {
@@ -250,6 +326,13 @@ export interface Lesson {
   locked: boolean
   contentUrl: string | null
   completed: boolean
+  /** Seconds into the video to continue from, if it was started */
+  resumePositionSeconds?: number | null
+}
+
+export interface LessonPosition {
+  lessonId: number
+  positionSeconds: number
 }
 
 export interface CourseSection {

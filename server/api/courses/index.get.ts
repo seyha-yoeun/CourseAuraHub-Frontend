@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
       sort: queryString(query.sort),
       order: queryString(query.order),
     },
+    optionalAuth: true,
     fallbackMessage: 'Unable to load courses',
   })
 })
