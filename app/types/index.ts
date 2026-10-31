@@ -541,3 +541,27 @@ export interface ReviewPage {
   totalPages: number
   averageRating: number | null
 }
+
+export type FilePurpose = 'AVATAR' | 'COURSE_THUMBNAIL' | 'LESSON_CONTENT'
+
+export interface FileUploadRequest {
+  purpose: FilePurpose
+  fileName: string
+  contentType: string
+  size: number
+}
+
+export interface FileUploadTicket {
+  id: string
+  uploadUrl: string
+  contentType: string
+}
+
+export interface StoredFile {
+  id: string
+  // The value to save on the course, profile or lesson
+  url: string
+  contentType: string
+  size: number
+  fileName: string
+}
