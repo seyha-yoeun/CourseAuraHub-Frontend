@@ -73,6 +73,30 @@ export type CourseFormData = Omit<
   'id' | 'slug' | 'rating' | 'totalStudents' | 'revenue' | 'completionRate' | 'createdAt' | 'updatedAt' | 'monthlyEnrollments' | 'monthlyRevenue' | 'enrolledStudentList' | 'sale'
 >
 
+export interface AppNotification {
+  id: number
+  type: 'enrolled' | 'payment_failed' | 'order_refunded' | 'certificate_issued' | 'new_lesson' | 'new_enrollment'
+  title: string
+  message: string
+  // Frontend path to open, such as a course page
+  link: string | null
+  read: boolean
+  createdAt: string
+}
+
+export interface NotificationPage {
+  items: AppNotification[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export interface NotificationStreamEvent {
+  notification: AppNotification
+  unreadCount: number
+}
+
 export interface Coupon {
   id: number
   code: string
