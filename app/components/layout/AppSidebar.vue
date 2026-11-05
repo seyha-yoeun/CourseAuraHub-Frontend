@@ -124,6 +124,7 @@ import {
   Heart,
   CreditCard,
   Receipt,
+  Route,
   ShieldAlert,
   ShieldCheck,
   ShoppingCart,
@@ -191,6 +192,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
           { to: '/courses', label: 'Browse Courses', icon: BookOpen },
           { to: '/wishlist', label: 'Wishlist', icon: Heart },
           { to: '/achievements', label: 'Achievements', icon: Trophy },
+          { to: '/learning-paths', label: 'Learning Paths', icon: Route },
         ],
       },
       {
@@ -227,6 +229,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
         { to: '/students', label: 'Students', icon: GraduationCap },
         { to: '/admin/enrollments', label: 'Enrollments', icon: UserPlus },
         { to: '/admin/categories', label: 'Categories', icon: FolderTree },
+        { to: '/admin/learning-paths', label: 'Learning Paths', icon: Route },
       ],
     },
     {
