@@ -35,7 +35,10 @@
             alt=""
             class="size-8 rounded-full border-2 border-violet-500/40"
           >
-          <span class="text-[13px] text-white/55 light:text-slate-500">{{ t('Taught by') }} <strong class="text-slate-100 light:text-slate-900">{{ course.instructor }}</strong></span>
+          <span class="text-[13px] text-white/55 light:text-slate-500">{{ t('Taught by') }}
+            <NuxtLink v-if="instructorCard" :to="`/instructors/${instructorCard.handle}`" class="font-bold text-slate-100 underline-offset-2 hover:underline light:text-slate-900">{{ course.instructor }}</NuxtLink>
+            <strong v-else class="text-slate-100 light:text-slate-900">{{ course.instructor }}</strong>
+          </span>
         </div>
 
         <!-- Enrolled: progress + continue -->
@@ -230,6 +233,7 @@ import { formatDuration, useCurriculum } from '~/composables/useCurriculum'
 import { formatDiscount } from '~/composables/useDiscounts'
 import { useLearning } from '~/composables/useLearning'
 import { useCart } from '~/composables/useCart'
+import { useInstructorProfile } from '~/composables/useInstructorProfile'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
 import { formatDate } from '~/utils/dateTime'
@@ -255,6 +259,14 @@ const inWishlist = ref(false)
 const wishlistBusy = ref(false)
 const busyLessonId = ref<number | null>(null)
 const certificate = ref<Certificate | null>(null)
+
+// Courses whose owner has a public profile link to it; admin-managed ones 404 and stay plain text
+const { fetchCourseInstructor } = useInstructorProfile()
+const { data: instructorCard } = useAsyncData(
+  () => `course-instructor-${props.course.slug}`,
+  () => fetchCourseInstructor(props.course.slug).catch(() => null),
+  { server: false, watch: [() => props.course.slug] }
+)
 
 const isFree = computed(() => Number(props.course.price) <= 0)
 const inCart = computed(() => cart.contains(props.course.slug))

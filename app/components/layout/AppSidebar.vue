@@ -130,7 +130,8 @@ import {
   Tag,
   TicketPercent,
   Trophy,
-  UserCog
+  UserCog,
+  Users
 } from 'lucide-vue-next'
 
 import type { Component } from 'vue'
@@ -167,6 +168,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
         label: 'Learning',
         items: [
           { to: '/courses', label: 'Browse Courses', icon: BookOpen },
+          { to: '/instructors', label: 'Instructors', icon: Users },
         ],
       },
     ]
@@ -189,6 +191,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
         items: [
           { to: '/my-learning', label: 'My Learning', icon: GraduationCap },
           { to: '/courses', label: 'Browse Courses', icon: BookOpen },
+          { to: '/instructors', label: 'Instructors', icon: Users },
           { to: '/wishlist', label: 'Wishlist', icon: Heart },
           { to: '/achievements', label: 'Achievements', icon: Trophy },
         ],
