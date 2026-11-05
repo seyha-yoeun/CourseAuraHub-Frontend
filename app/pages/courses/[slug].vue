@@ -25,6 +25,10 @@
       </NuxtLink>
 
       <div class="flex items-center gap-2.5">
+        <NuxtLink :to="`/instructor/analytics/${course.slug}`" class="inline-flex items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/6 px-4 py-2 text-xs font-semibold text-slate-200 no-underline transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:hover:bg-slate-200 light:hover:text-slate-900">
+          <BarChart3 :size="15" />
+          <span>{{ t('Learner Analytics') }}</span>
+        </NuxtLink>
         <button
           type="button"
           class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-4 py-2 text-xs font-semibold text-violet-300 transition-all hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
@@ -270,7 +274,8 @@ import {
   Users,
   Clock,
   GraduationCap,
-  AlertCircle
+  AlertCircle,
+  BarChart3
 } from 'lucide-vue-next'
 import type { Course, CourseFormData, Student } from '~/types'
 import CourseStatusBadge from '~/components/courses/CourseStatusBadge.vue'
