@@ -39,9 +39,9 @@
 </template>
 
 <script setup lang="ts">
+import QuizAttemptGrants from '~/components/courses/QuizAttemptGrants.vue'
 import CourseStatusBadge from '~/components/courses/CourseStatusBadge.vue'
 import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
-import QuizAttemptGrants from '~/components/courses/QuizAttemptGrants.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useInstructor } from '~/composables/useInstructor'
 import { getErrorMessage } from '~/utils/apiError'
