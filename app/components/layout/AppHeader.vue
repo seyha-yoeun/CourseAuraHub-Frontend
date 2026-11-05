@@ -447,6 +447,7 @@ import {
   Heart,
   HelpCircle,
   LogOut,
+  Megaphone,
   Menu,
   PlayCircle,
   Receipt,
@@ -645,6 +646,7 @@ const notificationStyles: Record<AppNotification['type'], Pick<HeaderNotificatio
   assignment: { icon: ClipboardCheck, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
   course_review: { icon: ShieldCheck, iconClass: 'text-amber-400', bgClass: 'bg-amber-400/15 light:bg-amber-50' },
   course_reminder: { icon: BellRing, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
+  announcement: { icon: Megaphone, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
   weekly_report: { icon: BarChart3, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' }
 }
 

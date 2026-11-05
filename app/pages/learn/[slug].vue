@@ -30,6 +30,8 @@
       <NuxtLink :to="`/courses/${slug}`" class="font-semibold text-blue-100 underline light:text-blue-900">{{ t('View enrollment options') }}</NuxtLink>
     </div>
 
+    <CourseAnnouncements v-if="curriculum.enrolled" :slug="slug" :highlight-id="highlightedAnnouncement" />
+
     <div class="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
       <!-- Lesson content -->
       <div class="flex min-w-0 flex-col gap-4">
@@ -198,6 +200,7 @@ import {
 import type { Certificate, Course, Curriculum, Lesson, LessonProgressResult } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
+import CourseAnnouncements from '~/components/learning/CourseAnnouncements.vue'
 import LessonWorkspace from '~/components/learning/LessonWorkspace.vue'
 import QuizPlayer from '~/components/learning/QuizPlayer.vue'
 import { flattenLessons, formatDuration, useCurriculum } from '~/composables/useCurriculum'
@@ -208,6 +211,8 @@ import { getErrorMessage } from '~/utils/apiError'
 const { t } = useT()
 const route = useRoute()
 const router = useRouter()
+// Notification links open the course with ?announcement=<id>
+const highlightedAnnouncement = computed(() => Number(route.query.announcement) || null)
 const toast = useAppToast()
 const { fetchCurriculum } = useCurriculum()
 const { setLessonCompleted, saveLessonPosition, fetchAchievements, findCertificate } = useLearning()

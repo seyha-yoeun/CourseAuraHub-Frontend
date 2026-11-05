@@ -241,6 +241,8 @@
       <CourseReviews :slug="course.slug" can-moderate @changed="refresh" />
     </div>
 
+    <AnnouncementManager :slug="course.slug" :published="course.status === 'published'" />
+
     <!-- Modals -->
     <CourseFormModal
       :is-open="isEditModalOpen"
@@ -280,6 +282,7 @@ import CourseFormModal from '~/components/courses/CourseFormModal.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
+import AnnouncementManager from '~/components/courses/AnnouncementManager.vue'
 import LearnerCourseView from '~/components/learning/LearnerCourseView.vue'
 import { useCourses } from '~/composables/useCourses'
 
