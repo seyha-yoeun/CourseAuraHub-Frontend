@@ -1,3 +1,4 @@
+import type { CourseAnalytics } from '~/types/analytics'
 import type { Category, Course, CourseFormData, InstructorCourse, InstructorStudent, InstructorSummary } from '~/types'
 
 /** The instructor workspace, the admin review that publishes its courses, and the category list. */
@@ -28,6 +29,10 @@ export function useInstructor() {
 
   async function submitForReview(slug: string) {
     return await $fetch<InstructorCourse>(`/api/instructor/courses/${slug}/submit`, { method: 'POST' })
+  }
+
+  async function fetchAnalytics(slug: string) {
+    return await $fetch<CourseAnalytics>(`/api/instructor/courses/${slug}/analytics`)
   }
 
   async function fetchStudents(slug: string) {
@@ -71,6 +76,7 @@ export function useInstructor() {
     deleteCourse,
     submitForReview,
     fetchStudents,
+    fetchAnalytics,
     fetchAwaitingReview,
     approveCourse,
     rejectCourse,
