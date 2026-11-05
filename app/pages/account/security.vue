@@ -25,7 +25,10 @@
         <TwoFactorCard />
       </div>
 
-      <ActiveSessionsCard ref="sessionsCard" />
+      <div class="flex flex-col gap-5">
+        <ActiveSessionsCard ref="sessionsCard" />
+        <PrivacyCard />
+      </div>
     </div>
   </div>
 </template>
@@ -34,6 +37,7 @@
 import { BadgeCheck, Mail } from 'lucide-vue-next'
 import ActiveSessionsCard from '~/components/account/ActiveSessionsCard.vue'
 import ChangePasswordCard from '~/components/account/ChangePasswordCard.vue'
+import PrivacyCard from '~/components/account/PrivacyCard.vue'
 import TwoFactorCard from '~/components/account/TwoFactorCard.vue'
 import { useAuth } from '~/composables/useAuth'
 
