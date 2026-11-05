@@ -86,6 +86,74 @@
       </div>
     </div>
 
+    <!-- More filters -->
+    <div class="relative z-20 flex flex-col gap-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-semibold text-slate-200 transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-white light:text-slate-700 light:hover:bg-slate-50"
+          :aria-expanded="showMoreFilters"
+          aria-controls="catalog-more-filters"
+          @click="showMoreFilters = !showMoreFilters"
+        >
+          <SlidersHorizontal :size="14" />
+          {{ t('More filters') }}
+          <span v-if="activeFilterCount" class="rounded-full bg-violet-500/25 px-1.75 text-[10px] text-violet-200 light:bg-violet-100 light:text-violet-700">{{ activeFilterCount }}</span>
+        </button>
+        <button
+          v-if="activeFilterCount"
+          type="button"
+          class="cursor-pointer text-xs font-semibold text-white/50 hover:text-white light:text-slate-500 light:hover:text-slate-900"
+          @click="resetFilters"
+        >
+          {{ t('Clear filters') }}
+        </button>
+      </div>
+
+      <div
+        v-show="showMoreFilters"
+        id="catalog-more-filters"
+        class="grid grid-cols-1 gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 light:border-slate-200 light:bg-white"
+      >
+        <div class="flex flex-col gap-1.5" :class="{ 'z-30': activeDropdown === 'level' }">
+          <span class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Level') }}</span>
+          <AppDropdown v-model="filters.level" :options="levelOptions" :aria-label="t('Level')" @change="onFilterChange" @toggle="(open) => handleDropdownToggle('level', open)" />
+        </div>
+        <div class="flex flex-col gap-1.5" :class="{ 'z-30': activeDropdown === 'pricing' }">
+          <span class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Price') }}</span>
+          <AppDropdown v-model="filters.pricing" :options="pricingOptions" :aria-label="t('Price')" @change="onFilterChange" @toggle="(open) => handleDropdownToggle('pricing', open)" />
+        </div>
+        <label class="flex flex-col gap-1.5">
+          <span class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Min price ($)') }}</span>
+          <input v-model="filters.minPrice" type="number" min="0" step="1" inputmode="decimal" :placeholder="t('Any')" class="h-10 w-full rounded-[10px] border border-white/9 bg-white/4 px-3 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/35 focus:border-violet-500/65 focus:ring-2 focus:ring-violet-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" @input="onFilterChange">
+        </label>
+        <label class="flex flex-col gap-1.5">
+          <span class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Max price ($)') }}</span>
+          <input v-model="filters.maxPrice" type="number" min="0" step="1" inputmode="decimal" :placeholder="t('Any')" class="h-10 w-full rounded-[10px] border border-white/9 bg-white/4 px-3 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/35 focus:border-violet-500/65 focus:ring-2 focus:ring-violet-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" @input="onFilterChange">
+        </label>
+        <div class="flex flex-col gap-1.5" :class="{ 'z-30': activeDropdown === 'rating' }">
+          <span class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Rating') }}</span>
+          <AppDropdown v-model="filters.minRating" :options="ratingOptions" :aria-label="t('Minimum rating')" @change="onFilterChange" @toggle="(open) => handleDropdownToggle('rating', open)" />
+        </div>
+        <div class="flex flex-col gap-1.5" :class="{ 'z-30': activeDropdown === 'duration' }">
+          <span class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Duration') }}</span>
+          <AppDropdown v-model="filters.duration" :options="durationOptions" :aria-label="t('Duration')" @change="onFilterChange" @toggle="(open) => handleDropdownToggle('duration', open)" />
+        </div>
+        <label class="flex cursor-pointer items-center gap-2 text-[13px] text-slate-200 sm:col-span-2 lg:col-span-3 xl:col-span-6 light:text-slate-700">
+          <input v-model="filters.onSale" type="checkbox" class="size-4 accent-violet-600" @change="onFilterChange">
+          {{ t('On sale now') }}
+        </label>
+      </div>
+    </div>
+
+    <p
+      v-if="fetchError"
+      role="alert"
+      class="rounded-xl border border-rose-500/25 bg-rose-500/8 px-4 py-2.5 text-[13px] text-rose-300 light:border-rose-200 light:bg-rose-50 light:text-rose-700"
+    >
+      {{ fetchError }}
+    </p>
+
     <!-- Courses Stats Summary Bar -->
     <div class="relative z-10 flex flex-wrap items-center gap-3">
       <span class="rounded-full border border-white/6 bg-white/3 px-3.5 py-1.25 text-xs text-white/60 transition-all light:border-slate-200 light:bg-slate-100 light:text-slate-700">
@@ -192,9 +260,10 @@
 </template>
 
 <script setup lang="ts">
-import { Plus, Search, X, BookOpen, LayoutGrid, Table2 } from 'lucide-vue-next'
+import { Plus, Search, X, BookOpen, LayoutGrid, SlidersHorizontal, Table2 } from 'lucide-vue-next'
 import type { Course, CourseFormData } from '~/types'
 import { useCourses } from '~/composables/useCourses'
+import type { CourseQuery } from '~/composables/useCourses'
 import { useAppToast } from '~/composables/useAppToast'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
 import CourseCard from '~/components/courses/CourseCard.vue'
@@ -207,7 +276,7 @@ const { t } = useT()
 useHead({ title: () => t('Course Catalog & Management') })
 
 const auth = useAuth()
-const { courses, loading, fetchCourses, createCourse, updateCourse, deleteCourse } = useCourses()
+const { courses, loading, error: fetchError, fetchCourses, createCourse, updateCourse, deleteCourse } = useCourses()
 const { crud, error } = useAppToast()
 
 const searchQuery = ref('')
@@ -265,8 +334,13 @@ const statusOptions = computed(() => {
   ]
 })
 
+const DEFAULT_SORT = 'createdAt:desc'
+const RELEVANCE = 'relevance'
+
 const sortOptions = computed(() => [
-  { value: 'createdAt:desc', label: t('Newest First') },
+  // Full-text ranking only means something while searching
+  ...(searchQuery.value.trim() ? [{ value: RELEVANCE, label: t('Best Match') }] : []),
+  { value: DEFAULT_SORT, label: t('Newest First') },
   ...(auth.isAdmin ? [{ value: 'revenue:desc', label: t('Highest Revenue') }] : []),
   { value: 'totalStudents:desc', label: t(auth.isAdmin ? 'Most Enrolled' : 'Most Popular') },
   { value: 'rating:desc', label: t('Top Rated') },
@@ -284,15 +358,102 @@ const deleteLoading = ref(false)
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
+// Extra filters beyond category, status and sort
+const showMoreFilters = ref(false)
+const filters = reactive({
+  level: 'all',
+  pricing: 'all',
+  minPrice: '' as string | number,
+  maxPrice: '' as string | number,
+  minRating: 'any',
+  duration: 'any',
+  onSale: false
+})
+
+const levelOptions = computed(() => [
+  { value: 'all', label: t('All Levels') },
+  { value: 'beginner', label: t('Beginner') },
+  { value: 'intermediate', label: t('Intermediate') },
+  { value: 'advanced', label: t('Advanced') }
+])
+
+const pricingOptions = computed(() => [
+  { value: 'all', label: t('Free and paid') },
+  { value: 'free', label: t('Free') },
+  { value: 'paid', label: t('Paid') }
+])
+
+const ratingOptions = computed(() => [
+  { value: 'any', label: t('Any rating') },
+  { value: '4.5', label: t('4.5 and up') },
+  { value: '4', label: t('4.0 and up') },
+  { value: '3', label: t('3.0 and up') }
+])
+
+// Hour ranges sent as minHours / maxHours
+const DURATIONS: Record<string, { min?: number, max?: number }> = {
+  short: { max: 2 },
+  medium: { min: 2, max: 5 },
+  long: { min: 5, max: 10 },
+  extended: { min: 10 }
+}
+
+const durationOptions = computed(() => [
+  { value: 'any', label: t('Any length') },
+  { value: 'short', label: t('Under 2 hours') },
+  { value: 'medium', label: t('2 to 5 hours') },
+  { value: 'long', label: t('5 to 10 hours') },
+  { value: 'extended', label: t('10+ hours') }
+])
+
+const activeFilterCount = computed(() => [
+  filters.level !== 'all',
+  filters.pricing !== 'all',
+  filters.minPrice !== '',
+  filters.maxPrice !== '',
+  filters.minRating !== 'any',
+  filters.duration !== 'any',
+  filters.onSale
+].filter(Boolean).length)
+
+function resetFilters() {
+  Object.assign(filters, { level: 'all', pricing: 'all', minPrice: '', maxPrice: '', minRating: 'any', duration: 'any', onSale: false })
+  triggerFetch()
+}
+
+function toNumber(value: string | number) {
+  return value === '' || value === null ? undefined : Number(value)
+}
+
+// Searching switches the default order to the best match, and back when the search is cleared.
+// Sync, because clearing the search fetches straight away.
+watch(searchQuery, (value, previous) => {
+  if (value.trim() && !previous.trim() && selectedSort.value === DEFAULT_SORT) {
+    selectedSort.value = RELEVANCE
+  } else if (!value.trim() && selectedSort.value === RELEVANCE) {
+    selectedSort.value = DEFAULT_SORT
+  }
+}, { flush: 'sync' })
+
 function triggerFetch() {
   const [sortField, sortOrder] = selectedSort.value.split(':')
-  fetchCourses({
+  const duration = DURATIONS[filters.duration] ?? {}
+  const query: CourseQuery = {
     status: selectedStatus.value,
     category: selectedCategory.value,
     search: searchQuery.value.trim() || undefined,
     sort: sortField,
-    order: sortOrder
-  })
+    order: sortOrder,
+    level: filters.level,
+    minPrice: toNumber(filters.minPrice),
+    maxPrice: toNumber(filters.maxPrice),
+    free: filters.pricing === 'all' ? undefined : filters.pricing === 'free',
+    onSale: filters.onSale || undefined,
+    minRating: filters.minRating === 'any' ? undefined : Number(filters.minRating),
+    minHours: duration.min,
+    maxHours: duration.max
+  }
+  fetchCourses(query)
 }
 
 function onFilterChange() {
