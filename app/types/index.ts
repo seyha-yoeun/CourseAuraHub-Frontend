@@ -364,6 +364,15 @@ export interface CheckoutResult {
   orders: Order[]
 }
 
+/** How a quiz may be taken; null fields are off. */
+export interface QuizRules {
+  maxAttempts: number | null
+  retryCooldownMinutes: number | null
+  timeLimitMinutes: number | null
+  questionsPerAttempt: number | null
+  shuffle: boolean
+}
+
 export interface Quiz {
   lessonId: number
   passPercent: number
@@ -375,6 +384,15 @@ export interface Quiz {
   attempts: number
   bestScore: number | null
   passed: boolean
+  rules?: QuizRules
+  /** Null when attempts are unlimited */
+  attemptsRemaining?: number | null
+  /** Set while a retry cooldown is running */
+  nextAttemptAt?: string | null
+  /** Timed, pooled or shuffled quizzes show their questions only after starting an attempt */
+  startRequired?: boolean
+  /** Deadline of the attempt in progress */
+  expiresAt?: string | null
 }
 
 export interface QuizResult {
@@ -401,6 +419,7 @@ export interface AdminQuiz {
     explanation: string | null
     options: { id: number, text: string, correct: boolean }[]
   }[]
+  rules?: QuizRules
 }
 
 export interface QuizFormData {
@@ -410,6 +429,20 @@ export interface QuizFormData {
     explanation: string | null
     options: { text: string, correct: boolean }[]
   }[]
+  // Optional rules; leaving one out turns it off
+  maxAttempts?: number | null
+  retryCooldownMinutes?: number | null
+  timeLimitMinutes?: number | null
+  questionsPerAttempt?: number | null
+  shuffle?: boolean
+}
+
+export interface QuizAttemptGrant {
+  studentId: number
+  lessonId: number
+  extraAttempts: number
+  attemptsUsed: number
+  attemptsRemaining: number | null
 }
 
 export interface TelegramStatus {
