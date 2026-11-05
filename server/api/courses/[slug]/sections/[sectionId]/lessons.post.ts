@@ -24,6 +24,7 @@ export default defineEventHandler(async (event) => {
       contentUrl: body?.contentUrl,
       preview: body?.preview,
       position: body?.position,
+      releaseAfterDays: body?.releaseAfterDays,
     },
     csrf: true,
     fallbackMessage: 'Unable to create lesson',

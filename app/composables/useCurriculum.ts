@@ -28,6 +28,14 @@ export function useCurriculum() {
     return await $fetch<Lesson>(`/api/courses/${slug}/lessons/${lessonId}`, { method: 'PUT', body: data })
   }
 
+  /** Whether lessons unlock in order. Admins and the course's instructor. */
+  async function updateSettings(slug: string, sequentialLessons: boolean) {
+    return await $fetch<{ sequentialLessons: boolean }>(`/api/courses/${slug}/curriculum/settings`, {
+      method: 'PUT',
+      body: { sequentialLessons }
+    })
+  }
+
   async function deleteLesson(slug: string, lessonId: number) {
     return await $fetch(`/api/courses/${slug}/lessons/${lessonId}`, { method: 'DELETE' })
   }
@@ -40,6 +48,7 @@ export function useCurriculum() {
     createLesson,
     updateLesson,
     deleteLesson,
+    updateSettings,
   }
 }
 

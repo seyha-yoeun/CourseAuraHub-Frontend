@@ -294,6 +294,12 @@ export interface NextLesson {
   sectionTitle: string
   /** Seconds into the video to continue from, if it was started */
   resumePositionSeconds?: number | null
+  /** Days after enrolling before the lesson opens; null opens it straight away */
+  releaseAfterDays?: number | null
+  /** Why the lesson is locked: enrollment, drip (opens on availableOn) or sequence (finish earlier lessons) */
+  lockReason?: 'enrollment' | 'drip' | 'sequence' | null
+  /** When a dripped lesson opens for this learner (yyyy-mm-dd) */
+  availableOn?: string | null
 }
 
 export interface LearningStreak {
@@ -484,6 +490,12 @@ export interface Lesson {
   completed: boolean
   /** Seconds into the video to continue from, if it was started */
   resumePositionSeconds?: number | null
+  /** Days after enrolling before the lesson opens; null opens it straight away */
+  releaseAfterDays?: number | null
+  /** Why the lesson is locked: enrollment, drip (opens on availableOn) or sequence (finish earlier lessons) */
+  lockReason?: 'enrollment' | 'drip' | 'sequence' | null
+  /** When a dripped lesson opens for this learner (yyyy-mm-dd) */
+  availableOn?: string | null
 }
 
 export interface LessonPosition {
@@ -508,6 +520,8 @@ export interface Curriculum {
   progress: CourseProgress | null
   nextLessonId: number | null
   sections: CourseSection[]
+  /** Lessons unlock in order, once the ones before them are complete */
+  sequentialLessons?: boolean
 }
 
 export interface LessonFormData {
@@ -516,6 +530,8 @@ export interface LessonFormData {
   durationMinutes: number
   contentUrl: string
   preview: boolean
+  /** 0 opens the lesson straight away */
+  releaseAfterDays?: number
 }
 
 export interface LessonProgressResult {
