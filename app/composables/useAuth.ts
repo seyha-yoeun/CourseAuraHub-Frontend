@@ -426,6 +426,22 @@ export const useAuthStore = defineStore('auth', () => {
     await finishSignOut()
   }
 
+  /** Permanently deletes the account; the server clears the session cookies. */
+  async function deleteAccount(confirmation: string, password?: string) {
+    try {
+      await $fetch('/api/me/account/deletion', {
+        method: 'POST',
+        body: { confirmation, password: password || undefined },
+        credentials: 'include',
+      })
+    } catch (error) {
+      throw handleError(error, 'Unable to delete your account')
+    }
+
+    success('Account Deleted', 'Your personal data has been removed.')
+    await finishSignOut()
+  }
+
   async function finishSignOut() {
     clearAuth()
     clearPendingOAuth()
@@ -481,6 +497,7 @@ export const useAuthStore = defineStore('auth', () => {
     refreshSession,
     logout,
     logoutAll,
+    deleteAccount,
     initiateOAuth2,
   }
 })
