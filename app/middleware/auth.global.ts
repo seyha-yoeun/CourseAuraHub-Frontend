@@ -23,9 +23,16 @@ function normalizePath(path: string) {
 // and visitors can browse the catalog before signing up
 const PUBLIC_PATH_PREFIXES = ['/certificates/', '/courses/']
 
+// Published learning paths are part of the public catalog
+function isLearningPathPage(path: string) {
+  return path === '/learning-paths' || path.startsWith('/learning-paths/')
+}
+
 function isPublicPath(path: string) {
   const normalized = normalizePath(path)
-  return PUBLIC_PATHS.includes(normalized) || PUBLIC_PATH_PREFIXES.some(prefix => normalized.startsWith(prefix))
+  return PUBLIC_PATHS.includes(normalized)
+    || PUBLIC_PATH_PREFIXES.some(prefix => normalized.startsWith(prefix))
+    || isLearningPathPage(normalized)
 }
 
 function isAuthEntryPath(path: string) {

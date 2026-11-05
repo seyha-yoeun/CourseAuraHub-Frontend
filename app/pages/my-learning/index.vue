@@ -82,6 +82,30 @@
       </div>
     </section>
 
+    <section v-if="myPaths?.length" :aria-label="t('My learning paths')" class="flex flex-col gap-3">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('My learning paths') }}</h2>
+        <NuxtLink to="/learning-paths" class="text-xs font-semibold text-violet-300 light:text-violet-700">{{ t('Browse paths') }}</NuxtLink>
+      </div>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <NuxtLink
+          v-for="item in myPaths"
+          :key="item.slug"
+          :to="`/learning-paths/${item.slug}`"
+          class="flex flex-col gap-2.5 rounded-[18px] border border-white/10 bg-white/5 p-4 no-underline transition-colors hover:border-violet-500/40 light:border-slate-200 light:bg-white"
+        >
+          <div class="flex items-start justify-between gap-2">
+            <p class="flex items-center gap-1.5 text-sm font-bold text-slate-100 light:text-slate-900"><Route :size="15" class="text-violet-400" /> {{ item.title }}</p>
+            <span v-if="item.certificate" class="inline-flex shrink-0 items-center gap-1 rounded-md bg-emerald-500 px-2 py-0.5 text-[11px] font-bold text-zinc-950"><Award :size="12" /> {{ t('Completed') }}</span>
+          </div>
+          <ProgressBar :value="item.percent" />
+          <p class="text-[11px] text-white/45 light:text-slate-500">
+            {{ t('{done} of {total} courses completed', { done: item.completedCourses, total: item.totalCourses }) }}
+          </p>
+        </NuxtLink>
+      </div>
+    </section>
+
     <div v-if="pending" class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
       <div v-for="i in 3" :key="i" class="h-80 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
     </div>
@@ -159,9 +183,10 @@
 </template>
 
 <script setup lang="ts">
-import { Award, BookOpen, CheckCircle2, Clock, Flame, GraduationCap, ListChecks, PlayCircle } from 'lucide-vue-next'
+import { Award, BookOpen, CheckCircle2, Clock, Flame, GraduationCap, ListChecks, PlayCircle, Route } from 'lucide-vue-next'
 import type { MyCourse } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
+import { useLearningPaths } from '~/composables/useLearningPaths'
 import { formatPosition } from '~/composables/useCurriculum'
 import { useLearning } from '~/composables/useLearning'
 import { getErrorMessage } from '~/utils/apiError'
@@ -171,6 +196,9 @@ const { t } = useT()
 useHead({ title: () => t('My Learning') })
 
 const { fetchMyCourses, fetchDashboard, fetchCertificates } = useLearning()
+const { fetchMyPaths } = useLearningPaths()
+// Paths the learner has started; a failure just hides the section
+const { data: myPaths } = await useAsyncData('my-learning-paths', () => fetchMyPaths().catch(() => []), { server: false })
 
 const { data, pending, error, refresh } = await useAsyncData('my-courses', fetchMyCourses, { server: false })
 // The overview is a bonus on top of the course list, so a failure here just hides it
