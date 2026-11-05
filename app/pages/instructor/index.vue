@@ -15,6 +15,8 @@
       </div>
     </div>
 
+    <InstructorProfileCard />
+
     <div v-if="pending" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
     <p v-else-if="error" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">{{ getErrorMessage(error, 'Unable to load your courses') }}</p>
     <p v-else-if="!items.length" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">No courses yet. Create your first one.</p>
@@ -65,6 +67,7 @@
 import type { Course, CourseFormData } from '~/types'
 import CourseFormModal from '~/components/courses/CourseFormModal.vue'
 import CourseStatusBadge from '~/components/courses/CourseStatusBadge.vue'
+import InstructorProfileCard from '~/components/instructor/InstructorProfileCard.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { formatMoney } from '~/composables/useCart'
