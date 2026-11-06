@@ -11,7 +11,10 @@
           <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ data.course.title }}</h1>
           <div class="mt-2"><CourseStatusBadge :status="data.course.status" /></div>
         </div>
+        <div class="flex flex-wrap items-center gap-2">
+        <NuxtLink :to="`/instructor/analytics/${data.course.slug}`" class="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-semibold text-slate-200 no-underline transition-colors hover:bg-white/10 light:border-slate-200 light:bg-slate-100 light:text-slate-700">Analytics</NuxtLink>
         <button v-if="data.course.status === 'draft'" type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500" :disabled="submitting" @click="submit">Send for Review</button>
+        </div>
       </div>
 
       <p v-if="data.reviewNote" class="rounded-xl border border-amber-400/30 bg-amber-400/10 px-3.5 py-2.5 text-xs text-amber-300 light:border-amber-200 light:bg-amber-50 light:text-amber-800">
