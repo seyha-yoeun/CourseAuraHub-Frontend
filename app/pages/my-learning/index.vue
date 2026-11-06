@@ -180,6 +180,8 @@
       </article>
     </div>
 
+    <GiftsPanel />
+
     <CourseRow v-if="!pending" :title="t('Recommended for you')" :subtitle="t('Based on the courses you take and save.')" :courses="recommended ?? []" />
   </div>
 </template>
@@ -188,6 +190,7 @@
 import { Award, BookOpen, CheckCircle2, Clock, Flame, GraduationCap, ListChecks, PlayCircle, Route } from 'lucide-vue-next'
 import type { MyCourse } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
+import GiftsPanel from '~/components/gifts/GiftsPanel.vue'
 import { useLearningPaths } from '~/composables/useLearningPaths'
 import { formatPosition } from '~/composables/useCurriculum'
 import { useLearning } from '~/composables/useLearning'
