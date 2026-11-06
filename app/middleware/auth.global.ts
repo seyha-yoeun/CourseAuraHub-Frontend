@@ -12,6 +12,7 @@ const PUBLIC_PATHS = [
   '/terms',
   '/support',
   '/courses',
+  '/instructors',
 ]
 
 function normalizePath(path: string) {
@@ -21,7 +22,7 @@ function normalizePath(path: string) {
 
 // Certificate verification links are shared with people who have no account,
 // and visitors can browse the catalog before signing up
-const PUBLIC_PATH_PREFIXES = ['/certificates/', '/courses/']
+const PUBLIC_PATH_PREFIXES = ['/certificates/', '/courses/', '/instructors/']
 
 // Published learning paths are part of the public catalog
 function isLearningPathPage(path: string) {
