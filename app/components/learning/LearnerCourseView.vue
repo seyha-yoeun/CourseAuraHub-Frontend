@@ -203,6 +203,8 @@
         </div>
       </div>
     </div>
+
+    <CourseRow :title="t('You might also like')" :subtitle="t('Courses that share topics with this one, or that its learners also took.')" :courses="related ?? []" />
   </div>
 </template>
 
@@ -226,9 +228,11 @@ import type { Certificate, Course, Curriculum, Lesson } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
+import CourseRow from '~/components/courses/CourseRow.vue'
 import { formatDuration, useCurriculum } from '~/composables/useCurriculum'
 import { formatDiscount } from '~/composables/useDiscounts'
 import { useLearning } from '~/composables/useLearning'
+import { useRecommendations } from '~/composables/useRecommendations'
 import { useCart } from '~/composables/useCart'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
@@ -246,6 +250,14 @@ const { fetchCurriculum } = useCurriculum()
 const { enroll, setLessonCompleted, fetchWishlist, addToWishlist, removeFromWishlist, findCertificate } = useLearning()
 
 const cart = useCart()
+const { fetchRelated } = useRecommendations()
+
+// Extra discovery: a failure just hides the row
+const { data: related } = useAsyncData(
+  () => `related-${props.course.slug}`,
+  () => fetchRelated(props.course.slug).catch(() => []),
+  { server: false, watch: [() => props.course.slug] }
+)
 
 const curriculum = ref<Curriculum | null>(null)
 const curriculumPending = ref(true)
