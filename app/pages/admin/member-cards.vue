@@ -110,7 +110,7 @@
       <button type="button" class="cursor-pointer font-semibold disabled:cursor-not-allowed disabled:opacity-40" :disabled="page + 1 >= pageCount" @click="page += 1">Next</button>
     </div>
 
-    <MemberCardManageModal :card="selectedCard" @close="selectedId = null" @changed="refreshCards()" @delete="askDelete" />
+    <MemberCardManageModal :card="selectedCard" @close="selectedId = null" @changed="onCardChanged" @delete="askDelete" />
 
     <ConfirmDeleteModal
       :is-open="deleting !== null"
@@ -185,7 +185,8 @@ definePageMeta({ requiresAdmin: true })
 useHead({ title: 'Member Cards' })
 
 const toast = useAppToast()
-const { fetchApplications, approveApplication, rejectApplication, fetchCards, createCard, deleteCard } = useMemberCard()
+const { fetchApplications, approveApplication, rejectApplication, fetchCards, fetchCard, createCard, deleteCard } = useMemberCard()
+const route = useRoute()
 
 const baseButton = 'cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50'
 const approveButton = `${baseButton} border-violet-500/35 bg-violet-500/15 text-violet-300 hover:bg-violet-500/25 light:border-violet-200 light:bg-violet-50 light:text-violet-700`
@@ -245,9 +246,42 @@ watch(cardSearch, () => {
   cardPage.value = 0
 })
 
-// Follows the list, so a new balance shows in the open panel
+// Follows the list, so a new balance shows in the open panel. A card that isn't on the
+// current page or search (or opened from a ?card= link) is loaded on its own.
 const selectedId = ref<number | null>(null)
-const selectedCard = computed(() => cards.value.find(card => card.id === selectedId.value) ?? null)
+const loadedCard = ref<MemberCard | null>(null)
+const selectedCard = computed(() =>
+  cards.value.find(card => card.id === selectedId.value)
+  ?? (loadedCard.value?.id === selectedId.value ? loadedCard.value : null))
+
+async function loadSelectedCard() {
+  const id = selectedId.value
+  if (id === null || cards.value.some(card => card.id === id)) return
+  try {
+    const card = await fetchCard(id)
+    if (selectedId.value === id) loadedCard.value = card
+  } catch (err) {
+    toast.error('Card Unavailable', getErrorMessage(err, 'Unable to load this member card'))
+    selectedId.value = null
+  }
+}
+
+watch([selectedId, cards], loadSelectedCard)
+
+async function onCardChanged() {
+  await refreshCards()
+  if (loadedCard.value && loadedCard.value.id === selectedId.value) {
+    loadedCard.value = await fetchCard(loadedCard.value.id).catch(() => loadedCard.value)
+  }
+}
+
+onMounted(() => {
+  const linked = Number(route.query.card)
+  if (Number.isInteger(linked) && linked > 0) {
+    tab.value = 'cards'
+    selectedId.value = linked
+  }
+})
 
 const busyId = ref<number | null>(null)
 const rejecting = ref<MemberCardApplication | null>(null)
