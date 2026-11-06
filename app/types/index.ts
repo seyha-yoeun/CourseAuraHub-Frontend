@@ -75,7 +75,7 @@ export type CourseFormData = Omit<
 
 export interface AppNotification {
   id: number
-  type: 'enrolled' | 'payment_failed' | 'order_refunded' | 'certificate_issued' | 'new_lesson' | 'new_enrollment' | 'course_completed' | 'member_card' | 'lesson_question' | 'assignment' | 'course_review' | 'course_reminder' | 'announcement' | 'weekly_report'
+  type: 'enrolled' | 'payment_failed' | 'order_refunded' | 'refund_request' | 'certificate_issued' | 'new_lesson' | 'course_updated' | 'new_enrollment' | 'course_completed' | 'member_card' | 'lesson_question' | 'assignment' | 'course_review' | 'course_reminder' | 'announcement' | 'weekly_report'
   title: string
   message: string
   // Frontend path to open, such as a course page
