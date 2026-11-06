@@ -5,6 +5,29 @@
     {{ loadError }}
   </p>
 
+  <!-- Timed, pooled or shuffled quizzes draw their questions when the learner starts -->
+  <section v-else-if="quiz && showStartScreen" class="rounded-[20px] border border-white/10 bg-white/5 p-5 sm:p-6 light:border-slate-200 light:bg-white">
+    <h2 class="flex items-center gap-2 text-base font-bold text-slate-100 light:text-slate-900">
+      <HelpCircle :size="18" class="text-violet-400" /> {{ t('Quiz') }}
+    </h2>
+    <ul class="m-0 mt-3 flex list-none flex-col gap-1.5 p-0 text-xs text-white/60 light:text-slate-600">
+      <li>{{ t('Pass mark {percent}%', { percent: quiz.passPercent }) }}</li>
+      <li v-if="quiz.rules?.questionsPerAttempt">{{ t('{count} questions drawn at random for each attempt', { count: quiz.rules.questionsPerAttempt }) }}</li>
+      <li v-if="quiz.rules?.timeLimitMinutes">{{ t('{minutes} minutes to finish once you start. Unanswered questions count as wrong.', { minutes: quiz.rules.timeLimitMinutes }) }}</li>
+      <li v-if="quiz.rules?.shuffle">{{ t('Questions and answers are shuffled for each attempt') }}</li>
+      <li v-if="attemptsRemaining !== null">{{ t('{count} attempts left', { count: attemptsRemaining }) }}</li>
+      <li v-if="quiz.bestScore !== null">{{ t('Best score {score}%', { score: quiz.bestScore }) }}</li>
+    </ul>
+    <p v-if="blockedReason" class="mt-4 rounded-xl border border-amber-400/30 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-300 light:border-amber-200 light:bg-amber-50 light:text-amber-700">
+      {{ blockedReason }}
+    </p>
+    <button v-else type="button" class="mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60" :disabled="starting" @click="start">
+      <Loader2 v-if="starting" :size="14" class="animate-spin" />
+      <PlayCircle v-else :size="14" />
+      {{ quiz.attempts ? t('Start a new attempt') : t('Start quiz') }}
+    </button>
+  </section>
+
   <section v-else-if="quiz?.questions.length" class="rounded-[20px] border border-white/10 bg-white/5 p-5 sm:p-6 light:border-slate-200 light:bg-white">
     <div class="flex flex-wrap items-start justify-between gap-3 border-b border-white/8 pb-4 light:border-slate-200">
       <div>
@@ -15,9 +38,19 @@
           {{ t('{count} questions · Pass mark {percent}%', { count: quiz.questions.length, percent: quiz.passPercent }) }}
         </p>
       </div>
-      <p v-if="quiz.bestScore !== null" class="text-xs text-white/50 light:text-slate-500">
-        {{ t('Best score {score}%', { score: quiz.bestScore }) }}
-      </p>
+      <div class="flex flex-col items-end gap-1 text-xs text-white/50 light:text-slate-500">
+        <p
+          v-if="secondsLeft !== null && !result"
+          class="inline-flex items-center gap-1 rounded-lg px-2 py-1 font-mono text-[13px] font-bold"
+          :class="secondsLeft <= 60 ? 'bg-rose-500/15 text-rose-300 light:bg-rose-50 light:text-rose-700' : 'bg-white/6 text-slate-100 light:bg-slate-100 light:text-slate-900'"
+          role="timer"
+          :aria-label="t('Time left')"
+        >
+          <Timer :size="14" /> {{ formatCountdown(secondsLeft) }}
+        </p>
+        <p v-if="quiz.bestScore !== null">{{ t('Best score {score}%', { score: quiz.bestScore }) }}</p>
+        <p v-if="attemptsRemaining !== null">{{ t('{count} attempts left', { count: attemptsRemaining }) }}</p>
+      </div>
     </div>
 
     <!-- Result -->
@@ -72,8 +105,9 @@
       <p class="text-xs text-white/45 light:text-slate-500">
         {{ t('{answered} of {total} answered', { answered: answeredCount, total: quiz.questions.length }) }}
       </p>
+      <p v-if="result && blockedReason" class="text-xs text-amber-300 light:text-amber-700">{{ blockedReason }}</p>
       <button
-        v-if="result"
+        v-else-if="result"
         type="button"
         class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white/75 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700"
         @click="retake"
@@ -84,7 +118,7 @@
         v-else
         type="button"
         class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
-        :disabled="submitting || answeredCount < quiz.questions.length"
+        :disabled="submitting || (!timed && answeredCount < quiz.questions.length)"
         @click="submit"
       >
         <Loader2 v-if="submitting" :size="14" class="animate-spin" />
@@ -95,11 +129,12 @@
 </template>
 
 <script setup lang="ts">
-import { HelpCircle, Loader2, RotateCcw } from 'lucide-vue-next'
+import { HelpCircle, Loader2, PlayCircle, RotateCcw, Timer } from 'lucide-vue-next'
 import type { LessonProgressResult, Quiz, QuizResult } from '~/types'
 import { useAppToast } from '~/composables/useAppToast'
 import { useQuiz } from '~/composables/useQuiz'
 import { getErrorMessage } from '~/utils/apiError'
+import { formatDateTime } from '~/utils/dateTime'
 
 const props = defineProps<{ lessonId: number }>()
 
@@ -111,7 +146,7 @@ const emit = defineEmits<{
 
 const { t } = useT()
 const toast = useAppToast()
-const { fetchQuiz, submitQuiz } = useQuiz()
+const { fetchQuiz, startQuiz, submitQuiz } = useQuiz()
 
 const quiz = ref<Quiz | null>(null)
 const pending = ref(true)
@@ -119,6 +154,38 @@ const loadError = ref('')
 const answers = ref<Record<number, number>>({})
 const result = ref<QuizResult | null>(null)
 const submitting = ref(false)
+const starting = ref(false)
+// Attempt limits, refreshed after each submission without replacing the questions on screen
+const attemptsRemaining = ref<number | null>(null)
+const nextAttemptAt = ref<string | null>(null)
+const now = ref(Date.now())
+let clock: ReturnType<typeof setInterval> | null = null
+
+const showStartScreen = computed(() => Boolean(quiz.value?.startRequired && !quiz.value.questions.length && !result.value))
+const timed = computed(() => Boolean(quiz.value?.expiresAt))
+const secondsLeft = computed(() => {
+  const deadline = quiz.value?.expiresAt
+  return deadline ? Math.max(0, Math.floor((new Date(deadline).getTime() - now.value) / 1000)) : null
+})
+
+// Why another attempt can't start yet, if it can't
+const blockedReason = computed(() => {
+  if (attemptsRemaining.value === 0) return t('You have no attempts left. Ask your instructor if you need another one.')
+  if (nextAttemptAt.value && new Date(nextAttemptAt.value).getTime() > now.value) {
+    return t('You can try again at {time}.', { time: formatDateTime(nextAttemptAt.value) })
+  }
+  return ''
+})
+
+function applyLimits(value: Quiz) {
+  attemptsRemaining.value = value.attemptsRemaining ?? null
+  nextAttemptAt.value = value.nextAttemptAt ?? null
+}
+
+function formatCountdown(total: number) {
+  const minutes = Math.floor(total / 60)
+  return `${minutes}:${String(total % 60).padStart(2, '0')}`
+}
 
 const answeredCount = computed(() => quiz.value?.questions.filter(question => answers.value[question.id] !== undefined).length ?? 0)
 
@@ -150,8 +217,12 @@ async function submit() {
       quiz.value.attempts += 1
       quiz.value.bestScore = Math.max(quiz.value.bestScore ?? 0, outcome.scorePercent)
       quiz.value.passed = quiz.value.passed || outcome.passed
+      // The attempt is over, so its clock stops
+      quiz.value.expiresAt = null
     }
     if (outcome.progress) emit('passed', outcome.progress)
+    // Refresh attempts left and any cooldown, keeping the graded questions on screen
+    fetchQuiz(props.lessonId).then(applyLimits).catch(() => {})
   } catch (err) {
     toast.error(t('Quiz not submitted'), getErrorMessage(err, t('Please try again.')))
   } finally {
@@ -159,20 +230,58 @@ async function submit() {
   }
 }
 
-function retake() {
-  result.value = null
-  answers.value = {}
+async function start() {
+  starting.value = true
+  try {
+    quiz.value = await startQuiz(props.lessonId)
+    applyLimits(quiz.value)
+    answers.value = {}
+  } catch (err) {
+    toast.error(t('Quiz not started'), getErrorMessage(err, t('Please try again.')))
+    await load()
+  } finally {
+    starting.value = false
+  }
 }
 
-onMounted(async () => {
+async function retake() {
+  result.value = null
+  answers.value = {}
+  // A started quiz needs a fresh attempt; the reload brings back its start screen
+  if (quiz.value?.rules && (quiz.value.rules.timeLimitMinutes || quiz.value.rules.questionsPerAttempt || quiz.value.rules.shuffle)) {
+    await load()
+  }
+}
+
+async function load() {
   try {
     quiz.value = await fetchQuiz(props.lessonId)
-    emit('ready', quiz.value.questions.length > 0)
+    applyLimits(quiz.value)
+    loadError.value = ''
+    return quiz.value
   } catch (err) {
     loadError.value = getErrorMessage(err, t('Unable to load this quiz'))
-    emit('ready', true)
-  } finally {
-    pending.value = false
+    return null
   }
+}
+
+// Time's up: hand in what was answered; the server also scores late submissions as zero
+watch(secondsLeft, (left) => {
+  if (left === 0 && !result.value && !submitting.value && quiz.value?.questions.length) {
+    submit()
+  }
+})
+
+onMounted(async () => {
+  const loaded = await load()
+  emit('ready', loaded ? loaded.questions.length > 0 || Boolean(loaded.startRequired) : true)
+  pending.value = false
+  clock = setInterval(() => {
+    now.value = Date.now()
+  }, 1000)
+})
+
+onBeforeUnmount(() => {
+  if (clock) clearInterval(clock)
 })
 </script>

@@ -11,7 +11,15 @@ export default defineEventHandler(async (event) => {
 
   return await backendRequest<AdminQuiz>(event, `/admin/lessons/${encodeURIComponent(lessonId)}/quiz`, {
     method: 'PUT',
-    body: { passPercent: body?.passPercent, questions: body?.questions },
+    body: {
+      passPercent: body?.passPercent,
+      questions: body?.questions,
+      maxAttempts: body?.maxAttempts,
+      retryCooldownMinutes: body?.retryCooldownMinutes,
+      timeLimitMinutes: body?.timeLimitMinutes,
+      questionsPerAttempt: body?.questionsPerAttempt,
+      shuffle: body?.shuffle,
+    },
     csrf: true,
     fallbackMessage: 'Unable to save this quiz',
   })
