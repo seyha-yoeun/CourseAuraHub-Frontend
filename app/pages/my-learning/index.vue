@@ -155,6 +155,8 @@
         </div>
       </article>
     </div>
+
+    <CourseRow v-if="!pending" :title="t('Recommended for you')" :subtitle="t('Based on the courses you take and save.')" :courses="recommended ?? []" />
   </div>
 </template>
 
@@ -164,6 +166,8 @@ import type { MyCourse } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import { formatPosition } from '~/composables/useCurriculum'
 import { useLearning } from '~/composables/useLearning'
+import { useRecommendations } from '~/composables/useRecommendations'
+import CourseRow from '~/components/courses/CourseRow.vue'
 import { getErrorMessage } from '~/utils/apiError'
 
 const { t } = useT()
@@ -176,6 +180,10 @@ const { data, pending, error, refresh } = await useAsyncData('my-courses', fetch
 // The overview is a bonus on top of the course list, so a failure here just hides it
 const { data: dashboard, refresh: refreshDashboard } = await useAsyncData('learner-dashboard', () => fetchDashboard().catch(() => null), { server: false })
 const { data: certificates, refresh: refreshCertificates } = await useAsyncData('my-learning-certificates', () => fetchCertificates().catch(() => []), { server: false })
+
+const { fetchRecommendations } = useRecommendations()
+// Suggestions are a bonus, so a failure just hides them
+const { data: recommended } = await useAsyncData('my-recommendations', () => fetchRecommendations().catch(() => []), { server: false })
 
 const certificateNumbers = computed(() => new Map(certificates.value?.map(c => [c.courseSlug, c.certificateNumber])))
 
