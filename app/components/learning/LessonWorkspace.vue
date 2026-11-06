@@ -58,6 +58,7 @@
           <span class="text-xs font-semibold text-[13px] text-slate-100 light:text-slate-900">{{ question.authorName }}</span>
           <span class="text-xs text-white/45 light:text-slate-500">{{ formatTimeAgo(question.createdAt) }}</span>
           <span v-if="question.resolved" class="rounded-full border border-emerald-400/30 bg-emerald-400/12 px-2 py-px text-[10px] font-semibold text-emerald-400 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-700">{{ t('Resolved') }}</span>
+          <ReportButton v-if="!question.canManage" target-type="question" :target-id="question.id" class="ml-auto" />
           <span v-if="question.canManage" class="ml-auto flex gap-1.5">
             <button type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-white/10 bg-white/5 text-white/75 hover:bg-white/9 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700" :disabled="working" @click="toggleResolved(question)">{{ question.resolved ? t('Reopen') : t('Resolve') }}</button>
             <button type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-rose-500/30 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 light:border-rose-200 light:bg-rose-50 light:text-rose-600" :disabled="working" @click="removeQuestion(question)">{{ t('Delete') }}</button>
@@ -72,6 +73,7 @@
               <span v-if="answer.fromStaff" class="rounded-full border border-violet-500/30 bg-violet-500/15 px-2 py-px text-[10px] font-semibold text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">{{ t('Staff') }}</span>
               <span class="text-xs text-white/45 light:text-slate-500">{{ formatTimeAgo(answer.createdAt) }}</span>
               <button v-if="answer.canDelete" type="button" class="ml-auto cursor-pointer text-[11px] font-semibold text-rose-400" :disabled="working" @click="removeAnswer(question, answer.id)">{{ t('Delete') }}</button>
+              <ReportButton v-else target-type="answer" :target-id="answer.id" class="ml-auto" />
             </div>
             <p class="mt-0.5 whitespace-pre-line text-[13px] text-slate-100 light:text-slate-900">{{ answer.body }}</p>
           </li>
@@ -107,6 +109,7 @@
 <script setup lang="ts">
 import type { Assignment, LessonNote, LessonQuestion, StoredFile } from '~/types'
 import FileUploadButton from '~/components/shared/FileUploadButton.vue'
+import ReportButton from '~/components/learning/ReportButton.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { formatPosition } from '~/composables/useCurriculum'
 import { useLessonTools } from '~/composables/useLessonTools'

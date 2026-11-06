@@ -121,6 +121,63 @@
             </button>
           </div>
           <p v-if="review.comment" class="mt-1.5 text-[13px] leading-relaxed whitespace-pre-line text-white/65 light:text-slate-600">{{ review.comment }}</p>
+
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <button
+              v-if="auth.isAuthenticated"
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-1 rounded-lg border px-2 py-1 text-[11px] font-semibold transition-colors disabled:opacity-50"
+              :class="votedHelpful.has(review.id)
+                ? 'border-emerald-500/35 bg-emerald-500/12 text-emerald-300 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-700'
+                : 'border-white/10 bg-white/4 text-white/55 hover:text-white light:border-slate-200 light:bg-white light:text-slate-600'"
+              :aria-pressed="votedHelpful.has(review.id)"
+              :disabled="votingId === review.id"
+              @click="toggleHelpful(review)"
+            >
+              <ThumbsUp :size="12" />
+              {{ t('Helpful') }}<template v-if="review.helpfulCount"> · {{ review.helpfulCount }}</template>
+            </button>
+            <span v-else-if="review.helpfulCount" class="text-[11px] text-white/40 light:text-slate-500">
+              {{ t('{count} found this helpful', { count: review.helpfulCount }) }}
+            </span>
+            <button
+              v-if="canReplyToReviews && !review.reply && replyingId !== review.id"
+              type="button"
+              class="cursor-pointer rounded-lg px-1.5 py-1 text-[11px] font-semibold text-violet-300 hover:bg-violet-500/10 light:text-violet-700"
+              @click="startReply(review)"
+            >
+              {{ t('Reply') }}
+            </button>
+            <ReportButton v-if="auth.isAuthenticated && !canModerate" target-type="review" :target-id="review.id" />
+          </div>
+
+          <div v-if="review.reply && replyingId !== review.id" class="mt-2.5 rounded-lg border-l-2 border-violet-500/50 bg-violet-500/6 px-3 py-2 light:bg-violet-50">
+            <div class="flex flex-wrap items-center gap-2 text-[11px]">
+              <span class="font-semibold text-violet-300 light:text-violet-700">{{ t('Response from {name}', { name: review.reply.authorName }) }}</span>
+              <span class="text-white/35 light:text-slate-400">{{ formatDate(review.reply.repliedAt) }}</span>
+              <span v-if="canReplyToReviews" class="ml-auto flex gap-2">
+                <button type="button" class="cursor-pointer font-semibold text-white/55 hover:text-white light:text-slate-500" @click="startReply(review)">{{ t('Edit') }}</button>
+                <button type="button" class="cursor-pointer font-semibold text-rose-400 light:text-rose-600" :disabled="replySaving" @click="removeReply(review)">{{ t('Remove') }}</button>
+              </span>
+            </div>
+            <p class="mt-1 text-[13px] whitespace-pre-line text-white/70 light:text-slate-700">{{ review.reply.body }}</p>
+          </div>
+
+          <form v-if="replyingId === review.id" class="mt-2.5 flex flex-col gap-2" @submit.prevent="saveReply(review)">
+            <textarea
+              v-model="replyDraft"
+              rows="2"
+              maxlength="2000"
+              required
+              :placeholder="t('Reply publicly to this review')"
+              :aria-label="t('Reply publicly to this review')"
+              class="w-full resize-y rounded-[10px] border border-white/9 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none placeholder:text-white/35 focus:border-violet-500/65 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400"
+            />
+            <div class="flex justify-end gap-2">
+              <button type="button" class="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-semibold text-white/75 light:border-slate-200 light:bg-slate-100 light:text-slate-700" @click="replyingId = null">{{ t('Cancel') }}</button>
+              <button type="submit" class="cursor-pointer rounded-lg border border-violet-500/35 bg-violet-500/15 px-2.5 py-1.5 text-xs font-semibold text-violet-300 disabled:opacity-50 light:border-violet-200 light:bg-violet-50 light:text-violet-700" :disabled="replySaving || !replyDraft.trim()">{{ t('Post reply') }}</button>
+            </div>
+          </form>
         </div>
       </li>
     </ul>
@@ -150,9 +207,10 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2, MessageSquare, Star, Trash2 } from 'lucide-vue-next'
+import { Loader2, MessageSquare, Star, ThumbsUp, Trash2 } from 'lucide-vue-next'
 import type { Review, ReviewPage } from '~/types'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
+import ReportButton from '~/components/learning/ReportButton.vue'
 import { useReviews } from '~/composables/useReviews'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
@@ -164,18 +222,81 @@ const props = withDefaults(
     slug: string
     canReview?: boolean
     canModerate?: boolean
+    // Course staff can answer reviews publicly
+    canReply?: boolean
   }>(),
   {
     canReview: false,
-    canModerate: false
+    canModerate: false,
+    canReply: false
   }
 )
 
 // Fired after any change that alters the course's average rating
 const emit = defineEmits<{ changed: [] }>()
 
-const { fetchReviews, fetchMyReview, saveMyReview, deleteMyReview, deleteReviewAsAdmin } = useReviews()
+const { fetchReviews, fetchMyReview, saveMyReview, deleteMyReview, deleteReviewAsAdmin, setHelpful, replyToReview, deleteReply } = useReviews()
 const toast = useAppToast()
+const auth = useAuth()
+
+const canReplyToReviews = computed(() => props.canReply || props.canModerate)
+// The API doesn't say which reviews the caller voted for, so votes are tracked for this visit
+const votedHelpful = ref(new Set<number>())
+const votingId = ref<number | null>(null)
+const replyingId = ref<number | null>(null)
+const replyDraft = ref('')
+const replySaving = ref(false)
+
+function replaceReview(updated: Review) {
+  reviews.value = reviews.value.map(item => item.id === updated.id ? updated : item)
+}
+
+async function toggleHelpful(review: Review) {
+  const helpful = !votedHelpful.value.has(review.id)
+  votingId.value = review.id
+  try {
+    replaceReview(await setHelpful(review.id, helpful))
+    const next = new Set(votedHelpful.value)
+    if (helpful) next.add(review.id)
+    else next.delete(review.id)
+    votedHelpful.value = next
+  } catch (err) {
+    toast.error(t('Vote not saved'), getErrorMessage(err, t('Unable to save your vote')))
+  } finally {
+    votingId.value = null
+  }
+}
+
+function startReply(review: Review) {
+  replyingId.value = review.id
+  replyDraft.value = review.reply?.body ?? ''
+}
+
+async function saveReply(review: Review) {
+  replySaving.value = true
+  try {
+    replaceReview(await replyToReview(props.slug, review.id, replyDraft.value.trim()))
+    replyingId.value = null
+    toast.success(t('Reply posted'))
+  } catch (err) {
+    toast.error(t('Reply not posted'), getErrorMessage(err, t('Unable to post the reply')))
+  } finally {
+    replySaving.value = false
+  }
+}
+
+async function removeReply(review: Review) {
+  replySaving.value = true
+  try {
+    await deleteReply(props.slug, review.id)
+    replaceReview({ ...review, reply: null })
+    toast.info(t('Reply removed'))
+  } catch (err) {
+    toast.error(t('Reply not removed'), getErrorMessage(err, t('Unable to remove the reply')))
+  } finally {
+    replySaving.value = false
+  }
+}
 
 const PAGE_SIZE = 5
 
