@@ -10,6 +10,10 @@
           <template v-else>Sections and lessons learners will work through</template>
         </p>
       </div>
+      <label v-if="curriculum" class="flex cursor-pointer items-center gap-2 rounded-lg border border-white/8 bg-white/3 px-3 py-1.5 text-xs text-slate-200 light:border-slate-200 light:bg-slate-50 light:text-slate-700" title="Each lesson opens once the lessons before it are complete">
+        <input type="checkbox" class="size-4 accent-violet-600" :checked="curriculum.sequentialLessons" :disabled="busy" @change="toggleSequential(($event.target as HTMLInputElement).checked)">
+        Unlock lessons in order
+      </label>
     </div>
 
     <div v-if="pending" class="flex flex-col gap-2.5">
@@ -55,6 +59,7 @@
           >
             <component :is="typeIcon(lesson.type)" :size="14" class="shrink-0 text-white/40 light:text-slate-400" />
             <span class="min-w-0 flex-1 truncate text-[13px] text-white/80 light:text-slate-700">{{ lesson.title }}</span>
+            <span v-if="lesson.releaseAfterDays" class="shrink-0 rounded border border-amber-400/30 bg-amber-400/12 px-1.5 py-px text-[10px] font-semibold text-amber-300 light:border-amber-200 light:bg-amber-50 light:text-amber-700" :title="`Opens ${lesson.releaseAfterDays} days after enrolling`">Day {{ lesson.releaseAfterDays }}</span>
             <span v-if="lesson.preview" class="shrink-0 rounded border border-blue-400/30 bg-blue-400/12 px-1.5 py-px text-[10px] font-semibold text-blue-300 light:border-blue-200 light:bg-blue-50 light:text-blue-700">Preview</span>
             <span class="w-12 shrink-0 text-right text-[11px] text-white/40 light:text-slate-500">{{ formatDuration(lesson.durationMinutes) }}</span>
             <button type="button" :class="iconButtonClass" :aria-label="`Move ${lesson.title} up`" :disabled="busy || lessonIndex === 0" @click="moveLesson(section, lessonIndex, -1)"><ArrowUp :size="13" /></button>
@@ -181,6 +186,14 @@ async function mutate(action: () => Promise<unknown>, successTitle: string, fail
   } finally {
     busy.value = false
   }
+}
+
+async function toggleSequential(enabled: boolean) {
+  await mutate(
+    () => api.updateSettings(props.slug, enabled),
+    enabled ? 'Lessons now unlock in order' : 'All lessons are open',
+    'Unable to update curriculum settings'
+  )
 }
 
 async function addSection() {

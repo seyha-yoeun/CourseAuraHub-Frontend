@@ -43,6 +43,12 @@
               />
             </div>
 
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="lesson-release">Release after (days)</label>
+              <input id="lesson-release" v-model.number="form.releaseAfterDays" type="number" min="0" max="3650" :class="inputClass">
+              <span class="text-xs text-white/45 light:text-slate-500">Days after a learner enrolls before this lesson opens. 0 opens it straight away.</span>
+            </div>
+
             <label class="flex cursor-pointer items-start gap-2.5 rounded-xl border border-white/8 bg-white/3 p-3 light:border-slate-200 light:bg-slate-50">
               <input v-model="form.preview" type="checkbox" class="mt-0.5 size-4 accent-violet-600">
               <span>
@@ -115,7 +121,8 @@ const form = reactive<LessonFormData>({
   type: 'video',
   durationMinutes: 10,
   contentUrl: '',
-  preview: false
+  preview: false,
+  releaseAfterDays: 0
 })
 
 watch(
@@ -127,6 +134,7 @@ watch(
     form.durationMinutes = lesson?.durationMinutes ?? 10
     form.contentUrl = lesson?.contentUrl ?? ''
     form.preview = lesson?.preview ?? false
+    form.releaseAfterDays = lesson?.releaseAfterDays ?? 0
   },
   { immediate: true }
 )
@@ -136,7 +144,8 @@ function handleSubmit() {
     ...form,
     title: form.title.trim(),
     contentUrl: form.contentUrl.trim(),
-    durationMinutes: Number(form.durationMinutes) || 0
+    durationMinutes: Number(form.durationMinutes) || 0,
+    releaseAfterDays: Math.max(0, Math.round(Number(form.releaseAfterDays) || 0))
   })
 }
 </script>
