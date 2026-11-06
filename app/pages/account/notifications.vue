@@ -17,12 +17,15 @@
           <input v-model="remindersOn" type="checkbox" class="size-4.5 shrink-0 accent-violet-600" :disabled="savingReminders" @change="saveReminders">
         </label>
       </section>
+
+      <EmailPreferencesCard class="mt-5" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import TelegramCard from '~/components/account/TelegramCard.vue'
+import EmailPreferencesCard from '~/components/account/EmailPreferencesCard.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
 
