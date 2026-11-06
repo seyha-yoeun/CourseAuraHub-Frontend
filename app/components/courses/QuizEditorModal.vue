@@ -23,6 +23,33 @@
               <input id="quiz-pass-percent" v-model.number="passPercent" type="number" min="1" max="100" required :class="inputClass">
             </div>
 
+            <fieldset class="m-0 grid grid-cols-2 gap-3 rounded-xl border border-white/8 bg-white/3 p-4 sm:grid-cols-4 light:border-slate-200 light:bg-slate-50">
+              <legend class="px-1 text-xs font-bold text-white/60 light:text-slate-600">Rules <span class="font-normal text-white/40 light:text-slate-500">· leave blank for no limit</span></legend>
+              <label class="flex flex-col gap-1.5">
+                <span class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Attempts</span>
+                <input v-model="rules.maxAttempts" type="number" min="1" max="100" placeholder="Unlimited" :class="inputClass">
+              </label>
+              <label class="flex flex-col gap-1.5">
+                <span class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Retry wait (min)</span>
+                <input v-model="rules.retryCooldownMinutes" type="number" min="1" max="10080" placeholder="None" :class="inputClass">
+              </label>
+              <label class="flex flex-col gap-1.5">
+                <span class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Time limit (min)</span>
+                <input v-model="rules.timeLimitMinutes" type="number" min="1" max="600" placeholder="None" :class="inputClass">
+              </label>
+              <label class="flex flex-col gap-1.5">
+                <span class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Questions per try</span>
+                <input v-model="rules.questionsPerAttempt" type="number" min="1" :max="questions.length || 1" placeholder="All" :class="inputClass">
+              </label>
+              <label class="col-span-2 flex cursor-pointer items-center gap-2 text-[13px] text-slate-200 sm:col-span-4 light:text-slate-700">
+                <input v-model="rules.shuffle" type="checkbox" class="size-4 accent-violet-600">
+                Shuffle question and answer order for each attempt
+              </label>
+              <p class="col-span-2 m-0 text-[11px] text-white/40 sm:col-span-4 light:text-slate-500">
+                Timed, pooled and shuffled quizzes are started by the learner, and an attempt left to run out counts as failed.
+              </p>
+            </fieldset>
+
             <div v-for="(question, questionIndex) in questions" :key="question.key" class="flex flex-col gap-3 rounded-xl border border-white/8 bg-white/3 p-4 light:border-slate-200 light:bg-slate-50">
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-bold text-white/60 light:text-slate-600">Question {{ questionIndex + 1 }}</span>
@@ -118,6 +145,18 @@ const pending = ref(false)
 const saving = ref(false)
 const error = ref('')
 const passPercent = ref(70)
+// Blank inputs mean "off"; number inputs bound with v-model give '' when cleared
+const rules = reactive({
+  maxAttempts: '' as number | string,
+  retryCooldownMinutes: '' as number | string,
+  timeLimitMinutes: '' as number | string,
+  questionsPerAttempt: '' as number | string,
+  shuffle: false
+})
+
+function optionalNumber(value: number | string) {
+  return value === '' || value === null ? null : Number(value)
+}
 const questions = ref<QuestionDraft[]>([])
 let nextKey = 0
 
@@ -141,6 +180,11 @@ watch(() => props.isOpen, async (open) => {
   try {
     const quiz = await fetchAdminQuiz(props.lesson.id)
     passPercent.value = quiz.passPercent
+    rules.maxAttempts = quiz.rules?.maxAttempts ?? ''
+    rules.retryCooldownMinutes = quiz.rules?.retryCooldownMinutes ?? ''
+    rules.timeLimitMinutes = quiz.rules?.timeLimitMinutes ?? ''
+    rules.questionsPerAttempt = quiz.rules?.questionsPerAttempt ?? ''
+    rules.shuffle = quiz.rules?.shuffle ?? false
     questions.value = quiz.questions.map((question) => {
       const options = question.options.map(option => ({ ...newOption(option.text), correct: option.correct }))
       return {
@@ -176,7 +220,12 @@ async function save() {
         prompt: question.prompt,
         explanation: question.explanation || null,
         options: question.options.map(option => ({ text: option.text, correct: option.key === question.correctKey }))
-      }))
+      })),
+      maxAttempts: optionalNumber(rules.maxAttempts),
+      retryCooldownMinutes: optionalNumber(rules.retryCooldownMinutes),
+      timeLimitMinutes: optionalNumber(rules.timeLimitMinutes),
+      questionsPerAttempt: optionalNumber(rules.questionsPerAttempt),
+      shuffle: rules.shuffle
     })
     toast.success('Quiz Saved', 'Learners must now pass it to complete this lesson.')
     emit('close')
