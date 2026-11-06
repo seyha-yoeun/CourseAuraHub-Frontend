@@ -113,6 +113,7 @@ import {
   LayoutDashboard,
   BookOpen,
   Settings,
+  RotateCcw,
   BarChart3,
   Bell,
   ClipboardCheck,
@@ -249,6 +250,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
       items: [
         { to: '/admin/orders', label: 'Orders', icon: Receipt },
         { to: '/admin/member-cards', label: 'Member Cards', icon: CreditCard },
+        { to: '/admin/refund-requests', label: 'Refund Requests', icon: RotateCcw },
       ],
     },
     {
