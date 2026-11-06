@@ -39,6 +39,8 @@
       </section>
 
       <AnnouncementManager :slug="data.course.slug" :published="data.course.status === 'published'" />
+
+      <CourseReviews v-if="data.course.status === 'published'" :slug="data.course.slug" can-reply />
     </template>
   </div>
 </template>
@@ -48,6 +50,7 @@ import QuizAttemptGrants from '~/components/courses/QuizAttemptGrants.vue'
 import CourseStatusBadge from '~/components/courses/CourseStatusBadge.vue'
 import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
 import AnnouncementManager from '~/components/courses/AnnouncementManager.vue'
+import CourseReviews from '~/components/learning/CourseReviews.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useInstructor } from '~/composables/useInstructor'
 import { getErrorMessage } from '~/utils/apiError'
