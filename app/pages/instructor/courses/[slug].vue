@@ -13,6 +13,7 @@
         </div>
         <div class="flex flex-wrap items-center gap-2">
         <NuxtLink :to="`/instructor/analytics/${data.course.slug}`" class="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-semibold text-slate-200 no-underline transition-colors hover:bg-white/10 light:border-slate-200 light:bg-slate-100 light:text-slate-700">Analytics</NuxtLink>
+        <CourseExportButtons :slug="data.course.slug" />
         <button v-if="data.course.status === 'draft'" type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500" :disabled="submitting" @click="submit">Send for Review</button>
         </div>
       </div>
@@ -45,6 +46,7 @@
 
 <script setup lang="ts">
 import QuizAttemptGrants from '~/components/courses/QuizAttemptGrants.vue'
+import CourseExportButtons from '~/components/courses/CourseExportButtons.vue'
 import CourseStatusBadge from '~/components/courses/CourseStatusBadge.vue'
 import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
 import AnnouncementManager from '~/components/courses/AnnouncementManager.vue'
