@@ -20,6 +20,8 @@
       <p v-if="data.reviewNote" class="rounded-xl border border-amber-400/30 bg-amber-400/10 px-3.5 py-2.5 text-xs text-amber-300 light:border-amber-200 light:bg-amber-50 light:text-amber-800">
         An admin asked for changes: {{ data.reviewNote }}
       </p>
+      <RevisionPanel :slug="data.course.slug" :pending="data.pendingRevision" @changed="refresh" />
+
       <p v-if="data.course.status === 'pending_review'" class="text-xs text-white/45 light:text-slate-500">This course is being reviewed. You can edit it again if it's sent back.</p>
 
       <CurriculumEditor v-else :slug="data.course.slug" @changed="refresh" />
@@ -46,6 +48,7 @@
 <script setup lang="ts">
 import QuizAttemptGrants from '~/components/courses/QuizAttemptGrants.vue'
 import CourseStatusBadge from '~/components/courses/CourseStatusBadge.vue'
+import RevisionPanel from '~/components/courses/RevisionPanel.vue'
 import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
 import AnnouncementManager from '~/components/courses/AnnouncementManager.vue'
 import { useAppToast } from '~/composables/useAppToast'

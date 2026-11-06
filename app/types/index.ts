@@ -817,6 +817,8 @@ export interface SubmissionReview {
 export interface InstructorCourse {
   course: Course
   reviewNote: string | null
+  /** Edits to the published course waiting for admin review */
+  pendingRevision?: import('./revision').CourseRevision | null
 }
 
 export interface InstructorSummary {

@@ -184,6 +184,8 @@
         </div>
 
         <CourseReviews :slug="course.slug" :can-review="isEnrolled" @changed="$emit('refresh')" />
+
+        <CourseChangelog :slug="course.slug" />
       </div>
 
       <!-- Specs -->
@@ -231,6 +233,7 @@ import type { Certificate, Course, Curriculum, Lesson } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
+import CourseChangelog from '~/components/learning/CourseChangelog.vue'
 import CourseRow from '~/components/courses/CourseRow.vue'
 import { formatDuration, useCurriculum } from '~/composables/useCurriculum'
 import { formatDiscount } from '~/composables/useDiscounts'
