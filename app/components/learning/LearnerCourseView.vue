@@ -159,6 +159,8 @@
 
     <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
       <div class="flex flex-col gap-5 lg:col-span-2">
+        <CoursePrerequisites :slug="course.slug" />
+
         <!-- Curriculum -->
         <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
           <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
@@ -229,6 +231,7 @@ import {
 } from 'lucide-vue-next'
 import type { Certificate, Course, Curriculum, Lesson } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
+import CoursePrerequisites from '~/components/learning/CoursePrerequisites.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
 import CourseRow from '~/components/courses/CourseRow.vue'
