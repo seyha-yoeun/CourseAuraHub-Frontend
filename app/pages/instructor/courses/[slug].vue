@@ -35,6 +35,8 @@
           </li>
         </ul>
       </section>
+
+      <AnnouncementManager :slug="data.course.slug" :published="data.course.status === 'published'" />
     </template>
   </div>
 </template>
@@ -42,6 +44,7 @@
 <script setup lang="ts">
 import CourseStatusBadge from '~/components/courses/CourseStatusBadge.vue'
 import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
+import AnnouncementManager from '~/components/courses/AnnouncementManager.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useInstructor } from '~/composables/useInstructor'
 import { getErrorMessage } from '~/utils/apiError'
