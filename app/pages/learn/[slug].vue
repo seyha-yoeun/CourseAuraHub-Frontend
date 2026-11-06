@@ -168,6 +168,9 @@
       <!-- Curriculum sidebar -->
       <aside class="rounded-[18px] border border-white/10 bg-white/5 p-4 lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto light:border-slate-200 light:bg-white">
         <h2 class="mb-3 px-1 text-sm font-bold text-slate-100 light:text-slate-900">{{ t('Course content') }}</h2>
+        <p v-if="curriculum.enrolled && curriculum.sequentialLessons" class="mb-3 px-1 text-[11px] text-white/45 light:text-slate-500">
+          {{ t('Lessons unlock in order: finish one to open the next.') }}
+        </p>
         <CurriculumOutline
           :curriculum="curriculum"
           :active-lesson-id="activeLesson?.id ?? null"

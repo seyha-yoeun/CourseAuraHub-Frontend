@@ -72,7 +72,10 @@
             </button>
 
             <span class="flex shrink-0 items-center gap-1.5 text-[11px] text-white/40 light:text-slate-500">
-              <Lock v-if="lesson.locked" :size="12" :aria-label="t('Locked')" />
+              <span v-if="lesson.locked && lesson.lockReason === 'drip' && lesson.availableOn" class="text-amber-300/80 light:text-amber-700">
+                {{ t('Opens {date}', { date: opensOn(lesson.availableOn) }) }}
+              </span>
+              <Lock v-if="lesson.locked" :size="12" :aria-label="lockLabel(lesson)" :title="lockLabel(lesson)" />
               {{ formatDuration(lesson.durationMinutes) }}
             </span>
           </div>
@@ -86,6 +89,7 @@
 import { Check, ChevronDown, FileText, HelpCircle, Lock, PlayCircle } from 'lucide-vue-next'
 import type { CourseSection, Curriculum, LessonType } from '~/types'
 import { formatDuration } from '~/composables/useCurriculum'
+import { formatDate } from '~/utils/dateTime'
 
 const { t } = useT()
 
@@ -107,6 +111,17 @@ defineEmits<{
   select: [lesson: CourseSection['lessons'][number]]
   'toggle-complete': [lesson: CourseSection['lessons'][number]]
 }>()
+
+// availableOn is a calendar date; read it as local midnight so it never shows the day before
+function opensOn(date: string) {
+  return formatDate(`${date}T00:00:00`)
+}
+
+function lockLabel(lesson: CourseSection['lessons'][number]) {
+  if (lesson.lockReason === 'drip' && lesson.availableOn) return t('Opens {date}', { date: opensOn(lesson.availableOn) })
+  if (lesson.lockReason === 'sequence') return t('Finish the earlier lessons first')
+  return t('Locked')
+}
 
 // Sections start expanded; the active lesson's section is always kept open
 const collapsed = ref(new Set<number>())
