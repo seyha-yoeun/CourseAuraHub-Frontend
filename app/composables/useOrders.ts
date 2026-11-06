@@ -1,4 +1,5 @@
 import type { AdminOrderPage, CouponPreview, Order, PaymentMethod } from '~/types'
+import { downloadFile } from '~/utils/download'
 
 /** Learner checkout and order history, plus the admin order list. */
 export function useOrders() {
@@ -31,11 +32,18 @@ export function useOrders() {
     return await $fetch<Order>(`/api/admin/orders/${encodeURIComponent(orderNumber)}/refund`, { method: 'POST' })
   }
 
+  /** PDF receipt for a paid or refunded order; admins can download anyone's. */
+  async function downloadReceipt(orderNumber: string, asAdmin = false) {
+    const base = asAdmin ? '/api/admin/orders' : '/api/me/orders'
+    await downloadFile(`${base}/${encodeURIComponent(orderNumber)}/receipt`, `receipt-${orderNumber}.pdf`)
+  }
+
   return {
     checkoutCourse, previewCourseCoupon, fetchMyOrders,
     fetchMyOrder,
     cancelOrder,
     fetchAdminOrders,
     refundOrder,
+    downloadReceipt,
   }
 }

@@ -62,6 +62,15 @@
               {{ t('Complete payment') }}
             </a>
           </div>
+          <button
+            v-else-if="order.status === 'PAID' || order.status === 'REFUNDED'"
+            type="button"
+            class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold text-violet-300 transition-colors hover:bg-violet-500/30 hover:text-white disabled:opacity-50 light:border-violet-300 light:bg-violet-50 light:text-violet-700"
+            :disabled="downloading === order.orderNumber"
+            @click="receipt(order)"
+          >
+            <Download :size="13" /> {{ t('Receipt') }}
+          </button>
         </div>
       </li>
     </ul>
@@ -69,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import { AlertCircle, BookOpen, Receipt } from 'lucide-vue-next'
+import { AlertCircle, BookOpen, Download, Receipt } from 'lucide-vue-next'
 import type { Order } from '~/types'
 import OrderStatusBadge from '~/components/orders/OrderStatusBadge.vue'
 import { useAppToast } from '~/composables/useAppToast'
@@ -82,11 +91,23 @@ const { t } = useT()
 useHead({ title: () => t('My Orders') })
 
 const toast = useAppToast()
-const { fetchMyOrders, cancelOrder } = useOrders()
+const { fetchMyOrders, cancelOrder, downloadReceipt } = useOrders()
 
 const { data, pending, error, refresh } = await useAsyncData('my-orders', fetchMyOrders, { server: false })
 const orders = computed(() => data.value ?? [])
 const cancelling = ref<string | null>(null)
+const downloading = ref<string | null>(null)
+
+async function receipt(order: Order) {
+  downloading.value = order.orderNumber
+  try {
+    await downloadReceipt(order.orderNumber)
+  } catch (err) {
+    toast.error(t('Download failed'), getErrorMessage(err, t('Unable to download the receipt')))
+  } finally {
+    downloading.value = null
+  }
+}
 
 async function cancel(order: Order) {
   cancelling.value = order.orderNumber
