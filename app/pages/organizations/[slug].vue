@@ -26,7 +26,7 @@
             </div>
             <form v-if="canManage && seat.used < seat.total" class="flex items-center gap-2" @submit.prevent="assign(seat)">
               <div class="w-52">
-                <AppDropdown v-model="assignees[seat.courseSlug]" :options="memberOptions" :placeholder="t('Choose a member')" size="sm" :aria-label="t('Member to assign')" />
+                <AppDropdown :model-value="assignees[seat.courseSlug] ?? ''" :options="memberOptions" :placeholder="t('Choose a member')" size="sm" :aria-label="t('Member to assign')" @update:model-value="value => assignees[seat.courseSlug] = String(value)" />
               </div>
               <button type="submit" :class="primaryAction" :disabled="!assignees[seat.courseSlug] || busy">{{ t('Assign') }}</button>
             </form>
