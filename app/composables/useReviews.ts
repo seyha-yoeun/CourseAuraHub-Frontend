@@ -21,11 +21,27 @@ export function useReviews() {
     return await $fetch(`/api/courses/${slug}/reviews/${reviewId}`, { method: 'DELETE' })
   }
 
+  async function setHelpful(reviewId: number, helpful: boolean) {
+    return await $fetch<Review>(`/api/me/reviews/${reviewId}/helpful`, { method: helpful ? 'PUT' : 'DELETE' })
+  }
+
+  /** The course staff's public answer to a review; posting again replaces it. */
+  async function replyToReview(slug: string, reviewId: number, body: string) {
+    return await $fetch<Review>(`/api/instructor/courses/${slug}/reviews/${reviewId}/reply`, { method: 'PUT', body: { body } })
+  }
+
+  async function deleteReply(slug: string, reviewId: number) {
+    return await $fetch(`/api/instructor/courses/${slug}/reviews/${reviewId}/reply`, { method: 'DELETE' })
+  }
+
   return {
     fetchReviews,
     fetchMyReview,
     saveMyReview,
     deleteMyReview,
     deleteReviewAsAdmin,
+    setHelpful,
+    replyToReview,
+    deleteReply,
   }
 }

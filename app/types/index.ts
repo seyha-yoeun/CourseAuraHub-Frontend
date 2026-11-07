@@ -582,6 +582,15 @@ export interface Review {
   reviewerAvatar: string | null
   createdAt: string
   updatedAt: string
+  helpfulCount?: number
+  /** The course staff's public reply */
+  reply?: ReviewReply | null
+}
+
+export interface ReviewReply {
+  body: string
+  authorName: string
+  repliedAt: string
 }
 
 export interface ReviewPage {
