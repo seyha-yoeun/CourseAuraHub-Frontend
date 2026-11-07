@@ -36,6 +36,48 @@
       </table>
     </div>
 
+    <section class="flex flex-col gap-3">
+      <div>
+        <h2 :class="sectionTitle">Changes to live courses</h2>
+        <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">Edits instructors made to published courses. Learners keep seeing the current version until you approve.</p>
+      </div>
+
+      <div v-if="revisionsPending" class="h-24 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
+      <p v-else-if="revisionsError" :class="emptyBox">{{ getErrorMessage(revisionsError, 'Unable to load course changes') }}</p>
+      <p v-else-if="!revisions.length" :class="emptyBox">No course changes are waiting for review.</p>
+
+      <ul v-else class="m-0 flex list-none flex-col gap-3 p-0">
+        <li v-for="revision in revisions" :key="revision.id" :class="cardClass">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div class="min-w-0">
+              <NuxtLink :to="`/courses/${revision.courseSlug}`" class="font-semibold text-violet-300 no-underline light:text-violet-700">{{ revision.courseTitle }}</NuxtLink>
+              <p class="text-xs text-white/45 light:text-slate-500">Submitted {{ formatDateTime(revision.updatedAt) }}</p>
+              <p v-if="revision.summary" class="mt-1.5 text-[13px] text-white/75 light:text-slate-700">{{ revision.summary }}</p>
+            </div>
+            <div class="flex shrink-0 gap-2">
+              <button type="button" :class="primaryAction" :disabled="busyRevision === revision.id" @click="approveChanges(revision)">Approve</button>
+              <button type="button" :class="dangerAction" :disabled="busyRevision === revision.id" @click="rejectingRevision = revision">Send Back</button>
+            </div>
+          </div>
+          <RevisionChanges :changes="revision.changes" class="mt-3" />
+        </li>
+      </ul>
+    </section>
+
+    <PromptModal
+      :is-open="Boolean(rejectingRevision)"
+      :title="`Send Back Changes to ${rejectingRevision?.courseTitle ?? ''}`"
+      description="The instructor sees this note. The live course stays as it is."
+      label="What to change"
+      confirm-label="Send Back"
+      tone="danger"
+      required
+      :maxlength="2000"
+      :loading="busyRevision === rejectingRevision?.id"
+      @close="rejectingRevision = null"
+      @confirm="rejectChanges"
+    />
+
     <Teleport to="body">
       <div v-if="rejecting" class="fixed inset-0 z-100 flex items-center justify-center bg-[#05050c]/82 p-4 backdrop-blur-xl" @click.self="rejecting = null">
         <form class="w-full max-w-120 rounded-[20px] border border-violet-500/25 bg-[#0f1019] p-5 light:border-violet-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="reject-course-title" @submit.prevent="reject">
@@ -54,16 +96,23 @@
 
 <script setup lang="ts">
 import type { Course } from '~/types'
+import type { CourseRevision } from '~/types/revision'
+import RevisionChanges from '~/components/courses/RevisionChanges.vue'
+import PromptModal from '~/components/shared/PromptModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { formatMoney } from '~/composables/useCart'
 import { useInstructor } from '~/composables/useInstructor'
+import { useRevisions } from '~/composables/useRevisions'
 import { getErrorMessage } from '~/utils/apiError'
+import { formatDateTime } from '~/utils/dateTime'
+import { cardClass, dangerAction, emptyBox, primaryAction, sectionTitle } from '~/utils/ui'
 
 definePageMeta({ requiresAdmin: true })
 useHead({ title: 'Course Reviews' })
 
 const toast = useAppToast()
 const { fetchAwaitingReview, approveCourse, rejectCourse } = useInstructor()
+const { fetchAwaitingReview: fetchRevisionsAwaitingReview, approve: approveRevision, reject: rejectRevision } = useRevisions()
 
 const { data, pending, error, refresh } = await useAsyncData('course-reviews', fetchAwaitingReview, { server: false })
 const courses = computed(() => data.value ?? [])
@@ -100,6 +149,45 @@ async function reject() {
     toast.error('Course Not Sent Back', getErrorMessage(err, 'Unable to send this course back'))
   } finally {
     busySlug.value = null
+  }
+}
+
+const {
+  data: revisionData,
+  pending: revisionsPending,
+  error: revisionsError,
+  refresh: refreshRevisions,
+} = await useAsyncData('course-revisions', fetchRevisionsAwaitingReview, { server: false })
+const revisions = computed(() => revisionData.value ?? [])
+const busyRevision = ref<number | null>(null)
+const rejectingRevision = ref<CourseRevision | null>(null)
+
+async function approveChanges(revision: CourseRevision) {
+  busyRevision.value = revision.id
+  try {
+    await approveRevision(revision.id)
+    toast.success('Changes Approved', `${revision.courseTitle} is updated.`)
+    await refreshRevisions()
+  } catch (err) {
+    toast.error('Changes Not Approved', getErrorMessage(err, 'Unable to approve the changes'))
+  } finally {
+    busyRevision.value = null
+  }
+}
+
+async function rejectChanges(note: string) {
+  const revision = rejectingRevision.value
+  if (!revision) return
+  busyRevision.value = revision.id
+  try {
+    await rejectRevision(revision.id, note)
+    toast.info('Changes Sent Back', revision.courseTitle)
+    rejectingRevision.value = null
+    await refreshRevisions()
+  } catch (err) {
+    toast.error('Changes Not Sent Back', getErrorMessage(err, 'Unable to send the changes back'))
+  } finally {
+    busyRevision.value = null
   }
 }
 </script>
