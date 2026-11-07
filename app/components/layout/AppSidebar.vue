@@ -115,6 +115,7 @@ import {
   Settings,
   BarChart3,
   Bell,
+  Flag,
   ClipboardCheck,
   FolderTree,
   HelpCircle,
@@ -243,6 +244,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
         { to: '/admin/course-reviews', label: 'Course Reviews', icon: ShieldCheck },
         { to: '/instructor/submissions', label: 'Submissions', icon: ClipboardCheck },
         { to: '/questions', label: 'Questions', icon: HelpCircle },
+        { to: '/admin/reports', label: 'Reported Content', icon: Flag },
       ],
     },
     {
