@@ -82,6 +82,10 @@ export function useMemberCard() {
     })
   }
 
+  async function fetchCard(id: number) {
+    return await $fetch<MemberCard>(`/api/admin/member-cards/${id}`)
+  }
+
   async function createCard(card: MemberCardCreate) {
     return await $fetch<MemberCard>('/api/admin/member-cards', { method: 'POST', body: card })
   }
@@ -113,6 +117,7 @@ export function useMemberCard() {
 
   return {
     fetchMine,
+    fetchCard,
     apply,
     fetchMyTransactions,
     fetchMyTopUps,
