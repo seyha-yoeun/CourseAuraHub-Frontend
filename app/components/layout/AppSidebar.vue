@@ -128,6 +128,7 @@ import {
   FileDown,
   Heart,
   CreditCard,
+  Building2,
   Receipt,
   ScrollText,
   ShieldAlert,
@@ -217,6 +218,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
           { to: '/account', label: 'Profile', icon: UserCog },
           { to: '/account/notifications', label: 'Notifications', icon: Bell },
           { to: '/account/security', label: 'Security', icon: ShieldCheck },
+          { to: '/organizations', label: 'Organizations', icon: Building2 },
         ],
       },
     ]
@@ -238,6 +240,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
         { to: '/admin/enrollments', label: 'Enrollments', icon: UserPlus },
         { to: '/admin/categories', label: 'Categories', icon: FolderTree },
         { to: '/admin/learning-paths', label: 'Learning Paths', icon: Route },
+        { to: '/admin/organizations', label: 'Organizations', icon: Building2 },
       ],
     },
     {
