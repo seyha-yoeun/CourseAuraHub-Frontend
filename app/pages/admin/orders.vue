@@ -51,7 +51,16 @@
               <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ item.studentEmail }}</td>
               <td class="px-4 py-3 font-semibold text-emerald-400 light:text-emerald-700">${{ Number(item.order.amount).toFixed(2) }}</td>
               <td class="px-4 py-3"><OrderStatusBadge :status="item.order.status" /></td>
-              <td class="px-4 py-3 text-right">
+              <td class="px-4 py-3 text-right whitespace-nowrap">
+                <button
+                  v-if="item.order.status === 'PAID' || item.order.status === 'REFUNDED'"
+                  type="button"
+                  class="mr-2 cursor-pointer rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-semibold text-white/75 transition-colors hover:bg-white/9 hover:text-white disabled:opacity-50 light:border-slate-200 light:bg-slate-100 light:text-slate-700"
+                  :disabled="downloading === item.order.orderNumber"
+                  @click="receipt(item)"
+                >
+                  Receipt
+                </button>
                 <button
                   v-if="item.order.status === 'PAID' && Number(item.order.amount) > 0"
                   type="button"
@@ -102,7 +111,20 @@ definePageMeta({ requiresAdmin: true })
 useHead({ title: 'Orders' })
 
 const toast = useAppToast()
-const { fetchAdminOrders, refundOrder } = useOrders()
+const { fetchAdminOrders, refundOrder, downloadReceipt } = useOrders()
+
+const downloading = ref<string | null>(null)
+
+async function receipt(item: AdminOrder) {
+  downloading.value = item.order.orderNumber
+  try {
+    await downloadReceipt(item.order.orderNumber, true)
+  } catch (err) {
+    toast.error('Download Failed', getErrorMessage(err, 'Unable to download the receipt'))
+  } finally {
+    downloading.value = null
+  }
+}
 
 const status = ref('all')
 const page = ref(0)
