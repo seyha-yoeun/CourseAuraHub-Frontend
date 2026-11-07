@@ -154,6 +154,10 @@
             </button>
           </div>
         </div>
+
+        <div v-if="auth.isAuthenticated && !isFree" class="mt-3">
+          <GiftCourseButton :course="course" />
+        </div>
       </div>
     </div>
 
@@ -232,6 +236,7 @@ import ProgressBar from '~/components/learning/ProgressBar.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
 import CourseRow from '~/components/courses/CourseRow.vue'
+import GiftCourseButton from '~/components/gifts/GiftCourseButton.vue'
 import { formatDuration, useCurriculum } from '~/composables/useCurriculum'
 import { formatDiscount } from '~/composables/useDiscounts'
 import { useLearning } from '~/composables/useLearning'

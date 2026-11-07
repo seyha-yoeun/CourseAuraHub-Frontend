@@ -118,6 +118,7 @@ import {
   ClipboardCheck,
   FolderTree,
   HelpCircle,
+  Gift,
   Route,
   Presentation,
   GraduationCap,
@@ -256,6 +257,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
       items: [
         { to: '/admin/discounts', label: 'Discounts', icon: Tag },
         { to: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
+        { to: '/admin/access-codes', label: 'Access Codes', icon: Gift },
       ],
     },
     {
