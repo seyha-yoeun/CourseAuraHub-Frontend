@@ -124,6 +124,7 @@ import {
   Presentation,
   GraduationCap,
   UserPlus,
+  FileDown,
   Heart,
   CreditCard,
   Receipt,
@@ -268,6 +269,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
         { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/settings', label: 'Settings', icon: Settings },
         { to: '/admin/audit-log', label: 'Audit Log', icon: ScrollText },
+        { to: '/admin/exports', label: 'CSV Exports', icon: FileDown },
       ],
     },
     {
