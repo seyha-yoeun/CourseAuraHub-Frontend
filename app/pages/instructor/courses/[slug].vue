@@ -13,6 +13,7 @@
         </div>
         <div class="flex flex-wrap items-center gap-2">
         <NuxtLink :to="`/instructor/analytics/${data.course.slug}`" class="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-semibold text-slate-200 no-underline transition-colors hover:bg-white/10 light:border-slate-200 light:bg-slate-100 light:text-slate-700">Analytics</NuxtLink>
+        <CourseExportButtons :slug="data.course.slug" />
         <button v-if="data.course.status === 'draft'" type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500" :disabled="submitting" @click="submit">Send for Review</button>
         </div>
       </div>
@@ -20,11 +21,15 @@
       <p v-if="data.reviewNote" class="rounded-xl border border-amber-400/30 bg-amber-400/10 px-3.5 py-2.5 text-xs text-amber-300 light:border-amber-200 light:bg-amber-50 light:text-amber-800">
         An admin asked for changes: {{ data.reviewNote }}
       </p>
+      <RevisionPanel :slug="data.course.slug" :pending="data.pendingRevision" @changed="refresh" />
+
       <p v-if="data.course.status === 'pending_review'" class="text-xs text-white/45 light:text-slate-500">This course is being reviewed. You can edit it again if it's sent back.</p>
 
       <CurriculumEditor v-else :slug="data.course.slug" @changed="refresh" />
 
       <QuizAttemptGrants :slug="data.course.slug" :students="students ?? []" />
+
+      <PrerequisiteEditor :slug="data.course.slug" />
 
       <section class="rounded-[18px] border border-white/10 bg-white/5 p-5 light:border-slate-200 light:bg-white">
         <h2 class="text-base font-bold text-slate-100 light:text-slate-900">Learners</h2>
@@ -39,15 +44,21 @@
       </section>
 
       <AnnouncementManager :slug="data.course.slug" :published="data.course.status === 'published'" />
+
+      <CourseReviews v-if="data.course.status === 'published'" :slug="data.course.slug" can-reply />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import QuizAttemptGrants from '~/components/courses/QuizAttemptGrants.vue'
+import CourseExportButtons from '~/components/courses/CourseExportButtons.vue'
 import CourseStatusBadge from '~/components/courses/CourseStatusBadge.vue'
+import RevisionPanel from '~/components/courses/RevisionPanel.vue'
 import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
+import PrerequisiteEditor from '~/components/courses/PrerequisiteEditor.vue'
 import AnnouncementManager from '~/components/courses/AnnouncementManager.vue'
+import CourseReviews from '~/components/learning/CourseReviews.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useInstructor } from '~/composables/useInstructor'
 import { getErrorMessage } from '~/utils/apiError'

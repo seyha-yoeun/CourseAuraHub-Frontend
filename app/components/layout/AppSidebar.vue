@@ -113,17 +113,22 @@ import {
   LayoutDashboard,
   BookOpen,
   Settings,
+  RotateCcw,
   BarChart3,
   Bell,
+  Flag,
   ClipboardCheck,
   FolderTree,
   HelpCircle,
+  Gift,
   Route,
   Presentation,
   GraduationCap,
   UserPlus,
+  FileDown,
   Heart,
   CreditCard,
+  Building2,
   Receipt,
   ScrollText,
   ShieldAlert,
@@ -213,6 +218,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
           { to: '/account', label: 'Profile', icon: UserCog },
           { to: '/account/notifications', label: 'Notifications', icon: Bell },
           { to: '/account/security', label: 'Security', icon: ShieldCheck },
+          { to: '/organizations', label: 'Organizations', icon: Building2 },
         ],
       },
     ]
@@ -234,6 +240,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
         { to: '/admin/enrollments', label: 'Enrollments', icon: UserPlus },
         { to: '/admin/categories', label: 'Categories', icon: FolderTree },
         { to: '/admin/learning-paths', label: 'Learning Paths', icon: Route },
+        { to: '/admin/organizations', label: 'Organizations', icon: Building2 },
       ],
     },
     {
@@ -242,6 +249,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
         { to: '/admin/course-reviews', label: 'Course Reviews', icon: ShieldCheck },
         { to: '/instructor/submissions', label: 'Submissions', icon: ClipboardCheck },
         { to: '/questions', label: 'Questions', icon: HelpCircle },
+        { to: '/admin/reports', label: 'Reported Content', icon: Flag },
       ],
     },
     {
@@ -249,6 +257,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
       items: [
         { to: '/admin/orders', label: 'Orders', icon: Receipt },
         { to: '/admin/member-cards', label: 'Member Cards', icon: CreditCard },
+        { to: '/admin/refund-requests', label: 'Refund Requests', icon: RotateCcw },
       ],
     },
     {
@@ -256,6 +265,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
       items: [
         { to: '/admin/discounts', label: 'Discounts', icon: Tag },
         { to: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
+        { to: '/admin/access-codes', label: 'Access Codes', icon: Gift },
       ],
     },
     {
@@ -264,6 +274,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
         { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/settings', label: 'Settings', icon: Settings },
         { to: '/admin/audit-log', label: 'Audit Log', icon: ScrollText },
+        { to: '/admin/exports', label: 'CSV Exports', icon: FileDown },
       ],
     },
     {
