@@ -1,5 +1,6 @@
 {
   "name": "next-testing",
+  "version": "0.0.50",
   "type": "module",
   "private": true,
   "scripts": {
