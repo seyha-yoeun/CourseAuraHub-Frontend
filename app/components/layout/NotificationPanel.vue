@@ -39,6 +39,22 @@
       </div>
     </div>
 
+    <!-- Feed filter -->
+    <div class="flex gap-1 border-b border-white/8 px-4 py-2 light:border-slate-200" role="tablist" :aria-label="t('Filter notifications')">
+      <button
+        v-for="item in filters"
+        :key="item.label"
+        type="button"
+        role="tab"
+        :aria-selected="unreadOnly === item.unreadOnly"
+        class="cursor-pointer rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+        :class="unreadOnly === item.unreadOnly ? 'bg-violet-600 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'"
+        @click="$emit('update:unread-only', item.unreadOnly)"
+      >
+        {{ t(item.label) }}
+      </button>
+    </div>
+
     <!-- Scrollable notification list -->
     <div
       class="flex flex-col overflow-y-auto overscroll-contain"
@@ -52,7 +68,7 @@
           <Bell :size="18" :stroke-width="1.5" class="text-white/35 light:text-slate-400" />
         </span>
         <span class="text-xs font-semibold text-slate-200 light:text-slate-800">{{ t('You\'re all caught up') }}</span>
-        <span class="text-[11px] text-white/40 light:text-slate-500">{{ t('New activity will show up here.') }}</span>
+        <span class="text-[11px] text-white/40 light:text-slate-500">{{ unreadOnly ? t('No unread notifications.') : t('New activity will show up here.') }}</span>
       </div>
 
       <div v-for="(notif, index) in notifications" :key="notif.id" class="group/row relative">
@@ -150,7 +166,14 @@ defineProps<{
   removable?: boolean
   hasMore?: boolean
   showAnalyticsLink?: boolean
+  // Show only unread notifications
+  unreadOnly?: boolean
 }>()
+
+const filters = [
+  { label: 'All', unreadOnly: false },
+  { label: 'Unread', unreadOnly: true },
+]
 
 defineEmits<{
   close: []
@@ -158,5 +181,6 @@ defineEmits<{
   'mark-read': [item: NotificationItem]
   remove: [item: NotificationItem]
   'load-more': []
+  'update:unread-only': [value: boolean]
 }>()
 </script>
