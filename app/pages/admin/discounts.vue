@@ -6,14 +6,25 @@
         <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Schedule sale prices that every learner sees automatically.</p>
       </div>
 
-      <button
-        type="button"
-        class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
-        @click="openCreate"
-      >
-        <Plus :size="16" />
-        <span>New Discount</span>
-      </button>
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="w-60">
+          <AppDropdown
+            :model-value="courseFilter"
+            :options="courseFilterOptions"
+            :icon="Filter"
+            aria-label="Filter discounts by course"
+            @update:model-value="value => courseFilter = String(value)"
+          />
+        </div>
+        <button
+          type="button"
+          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+          @click="openCreate"
+        >
+          <Plus :size="16" />
+          <span>New Discount</span>
+        </button>
+      </div>
     </div>
 
     <div v-if="pending" class="flex flex-col gap-3">
@@ -29,7 +40,7 @@
       <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-violet-500/30 bg-violet-500/12">
         <Tag :size="30" class="text-violet-300 light:text-violet-700" />
       </div>
-      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">No discounts yet</h3>
+      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">{{ courseFilter === ALL ? 'No discounts yet' : 'No discounts for this course' }}</h3>
       <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">Create one to put a course on sale.</p>
     </div>
 
@@ -109,8 +120,9 @@
 </template>
 
 <script setup lang="ts">
-import { AlertCircle, Edit3, Plus, Tag, Trash2 } from 'lucide-vue-next'
+import { AlertCircle, Edit3, Filter, Plus, Tag, Trash2 } from 'lucide-vue-next'
 import type { Course, CourseDiscount, CourseDiscountCreate, CourseDiscountUpdate } from '~/types'
+import AppDropdown from '~/components/shared/AppDropdown.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import DiscountFormModal from '~/components/courses/DiscountFormModal.vue'
 import { formatDiscount, useDiscounts } from '~/composables/useDiscounts'
@@ -124,11 +136,22 @@ useHead({ title: 'Discounts' })
 const toast = useAppToast()
 const { fetchDiscounts, createDiscount, updateDiscount, deleteDiscount } = useDiscounts()
 
-const { data, pending, error, refresh } = await useAsyncData('admin-discounts', fetchDiscounts, { server: false })
+const ALL = 'all'
+const courseFilter = ref(ALL)
+
+const { data, pending, error, refresh } = await useAsyncData(
+  'admin-discounts',
+  () => fetchDiscounts(courseFilter.value === ALL ? undefined : courseFilter.value),
+  { server: false, watch: [courseFilter] }
+)
 const { data: courseList } = await useAsyncData('discount-courses', () => $fetch<Course[]>('/api/courses').catch(() => []), { server: false })
 
 const discounts = computed(() => data.value ?? [])
 const courses = computed(() => courseList.value ?? [])
+const courseFilterOptions = computed(() => [
+  { value: ALL, label: 'All courses' },
+  ...courses.value.map(course => ({ value: course.slug, label: course.title })),
+])
 
 const isFormOpen = ref(false)
 const editing = ref<CourseDiscount | null>(null)

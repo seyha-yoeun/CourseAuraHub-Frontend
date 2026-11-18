@@ -8,8 +8,9 @@ export function formatDiscount(discount: Pick<CourseSale, 'discountType' | 'disc
 
 /** Admin management of scheduled sale prices (/api/admin/discounts). */
 export function useDiscounts() {
-  async function fetchDiscounts() {
-    return await $fetch<CourseDiscount[]>('/api/admin/discounts')
+  /** Every discount, or only one course's when a slug is given. */
+  async function fetchDiscounts(courseSlug?: string) {
+    return await $fetch<CourseDiscount[]>('/api/admin/discounts', { query: { courseSlug: courseSlug || undefined } })
   }
 
   async function createDiscount(data: CourseDiscountCreate) {
