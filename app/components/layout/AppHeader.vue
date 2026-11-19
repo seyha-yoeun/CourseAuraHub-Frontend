@@ -222,12 +222,14 @@
                 :mobile="isMobileNotif"
                 removable
                 :has-more="notificationCenter.hasMore.value"
+                :unread-only="notificationCenter.unreadOnly.value"
                 :show-analytics-link="auth.isAdmin"
                 @close="closeNotif"
                 @mark-all-read="markAllAsRead"
                 @mark-read="markItemRead"
                 @remove="removeNotification"
                 @load-more="loadOlderNotifications"
+                @update:unread-only="filterNotifications"
               />
             </div>
           </Transition>
@@ -730,6 +732,10 @@ function removeNotification(item: HeaderNotification) {
   if (notification) {
     notificationCenter.remove(notification).catch(() => toastError('Notification Not Deleted', 'Please try again.'))
   }
+}
+
+function filterNotifications(unreadOnly: boolean) {
+  notificationCenter.setUnreadOnly(unreadOnly).catch(() => toastError('Notifications Not Loaded', 'Please try again.'))
 }
 
 function loadOlderNotifications() {

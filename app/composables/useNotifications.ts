@@ -17,11 +17,13 @@ export function useNotifications() {
   const unreadCount = useState('notifications-unread', () => 0)
   const hasMore = useState('notifications-has-more', () => false)
   const nextPage = useState('notifications-next-page', () => 0)
+  // The feed can show every notification or only the unread ones
+  const unreadOnly = useState('notifications-unread-only', () => false)
   const toast = useAppToast()
 
   async function loadPage(page: number) {
     const result = await $fetch<NotificationPage>('/api/me/notifications', {
-      query: { page: String(page), size: String(PAGE_SIZE) },
+      query: { page: String(page), size: String(PAGE_SIZE), unreadOnly: String(unreadOnly.value) },
     })
     const known = new Set(items.value.map(item => item.id))
     const fresh = result.items.filter(item => !known.has(item.id))
@@ -32,6 +34,15 @@ export function useNotifications() {
 
   async function loadMore() {
     await loadPage(nextPage.value)
+  }
+
+  /** Switches the feed between all and unread notifications, reloading from the first page. */
+  async function setUnreadOnly(value: boolean) {
+    if (unreadOnly.value === value) return
+    unreadOnly.value = value
+    items.value = []
+    hasMore.value = false
+    await loadPage(0)
   }
 
   // Keeps the badge right when the stream is slow to open or can't connect
@@ -95,6 +106,7 @@ export function useNotifications() {
     items.value = []
     unreadCount.value = 0
     hasMore.value = false
+    unreadOnly.value = false
   }
 
   async function markRead(notification: AppNotification) {
@@ -106,9 +118,15 @@ export function useNotifications() {
 
   async function markAllRead() {
     await $fetch('/api/me/notifications/read-all', { method: 'POST' })
-    items.value.forEach((item) => {
-      item.read = true
-    })
+    if (unreadOnly.value) {
+      // Nothing is unread any more
+      items.value = []
+      hasMore.value = false
+    } else {
+      items.value.forEach((item) => {
+        item.read = true
+      })
+    }
     unreadCount.value = 0
   }
 
@@ -122,6 +140,8 @@ export function useNotifications() {
     items,
     unreadCount,
     hasMore,
+    unreadOnly,
+    setUnreadOnly,
     connect,
     disconnect,
     loadMore,
