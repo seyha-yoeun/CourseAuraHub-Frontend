@@ -10,10 +10,22 @@
           <template v-else>{{ t('No reviews yet') }}</template>
         </p>
       </div>
-      <span v-if="page?.averageRating" class="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/15 px-3 py-1 text-[13px] font-bold text-amber-400 light:border-amber-200 light:bg-amber-50 light:text-amber-600">
-        <Star :size="14" class="fill-amber-400 text-amber-400" />
-        {{ Number(page.averageRating).toFixed(1) }}
-      </span>
+      <div class="flex items-center gap-2">
+        <div v-if="page && page.totalElements > 1" class="w-40">
+          <AppDropdown
+            :model-value="sort"
+            :options="sortOptions"
+            :icon="ArrowDownWideNarrow"
+            size="sm"
+            :aria-label="t('Sort reviews')"
+            @update:model-value="value => sort = value === 'helpful' ? 'helpful' : 'newest'"
+          />
+        </div>
+        <span v-if="page?.averageRating" class="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/15 px-3 py-1 text-[13px] font-bold text-amber-400 light:border-amber-200 light:bg-amber-50 light:text-amber-600">
+          <Star :size="14" class="fill-amber-400 text-amber-400" />
+          {{ Number(page.averageRating).toFixed(1) }}
+        </span>
+      </div>
     </div>
 
     <!-- My review (enrolled learners only) -->
@@ -207,11 +219,12 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2, MessageSquare, Star, ThumbsUp, Trash2 } from 'lucide-vue-next'
+import { ArrowDownWideNarrow, Loader2, MessageSquare, Star, ThumbsUp, Trash2 } from 'lucide-vue-next'
 import type { Review, ReviewPage } from '~/types'
+import AppDropdown from '~/components/shared/AppDropdown.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import ReportButton from '~/components/learning/ReportButton.vue'
-import { useReviews } from '~/composables/useReviews'
+import { useReviews, type ReviewSort } from '~/composables/useReviews'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
 
@@ -300,6 +313,12 @@ async function removeReply(review: Review) {
 
 const PAGE_SIZE = 5
 
+const sort = ref<ReviewSort>('newest')
+const sortOptions = computed(() => [
+  { value: 'newest', label: t('Newest first') },
+  { value: 'helpful', label: t('Most helpful') },
+])
+
 const page = ref<ReviewPage | null>(null)
 const reviews = ref<Review[]>([])
 const loading = ref(false)
@@ -313,7 +332,7 @@ const moderating = ref<Review | null>(null)
 async function loadPage(pageIndex = 0, append = false) {
   loading.value = true
   try {
-    const result = await fetchReviews(props.slug, pageIndex, PAGE_SIZE)
+    const result = await fetchReviews(props.slug, pageIndex, PAGE_SIZE, sort.value)
     page.value = result
     reviews.value = append ? [...reviews.value, ...result.items] : result.items
   } catch (err) {
@@ -390,6 +409,9 @@ function formatDate(value: string) {
   const date = new Date(value)
   return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
+
+// A new order starts the list again from the first page
+watch(sort, () => loadPage())
 
 watch(() => [props.slug, props.canReview], () => {
   loadPage()

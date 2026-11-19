@@ -1,8 +1,11 @@
 import type { Review, ReviewPage } from '~/types'
 
+/** Review order the API supports: newest first, or most helpful votes first. */
+export type ReviewSort = 'newest' | 'helpful'
+
 export function useReviews() {
-  async function fetchReviews(slug: string, page = 0, size = 10) {
-    return await $fetch<ReviewPage>(`/api/courses/${slug}/reviews`, { query: { page, size } })
+  async function fetchReviews(slug: string, page = 0, size = 10, sort: ReviewSort = 'newest') {
+    return await $fetch<ReviewPage>(`/api/courses/${slug}/reviews`, { query: { page, size, sort } })
   }
 
   async function fetchMyReview(slug: string) {
