@@ -216,6 +216,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
         label: 'Account',
         items: [
           { to: '/account', label: 'Profile', icon: UserCog },
+          { to: '/referrals', label: 'Invite Friends', icon: Gift },
           { to: '/account/notifications', label: 'Notifications', icon: Bell },
           { to: '/account/security', label: 'Security', icon: ShieldCheck },
           { to: '/organizations', label: 'Organizations', icon: Building2 },
@@ -266,6 +267,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
         { to: '/admin/discounts', label: 'Discounts', icon: Tag },
         { to: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
         { to: '/admin/access-codes', label: 'Access Codes', icon: Gift },
+        { to: '/admin/referrals', label: 'Referrals', icon: UserPlus },
       ],
     },
     {

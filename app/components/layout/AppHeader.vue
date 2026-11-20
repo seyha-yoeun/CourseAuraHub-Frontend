@@ -579,6 +579,7 @@ const breadcrumbItems = computed(() => {
   }
 
   const adminPages: Record<string, string> = {
+    '/admin/referrals': 'Referrals',
     '/admin/orders': 'Orders',
     '/admin/discounts': 'Discounts',
     '/admin/coupons': 'Coupons'
@@ -850,6 +851,7 @@ const quickPages = [
   { name: 'Orders', desc: 'Review purchases and refund paid orders', to: '/admin/orders', icon: Receipt },
   { name: 'Discounts', desc: 'Schedule sale prices for courses', to: '/admin/discounts', icon: Tag },
   { name: 'Coupons', desc: 'Create discount codes for checkout', to: '/admin/coupons', icon: TicketPercent },
+  { name: 'Referrals', desc: 'Who invited whom, and the rewards paid', to: '/admin/referrals', icon: Users },
   { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
   { name: 'Notifications', desc: 'Connect Telegram and choose where updates reach you', to: '/account/notifications', icon: Bell },
   { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
@@ -863,6 +865,7 @@ const learnerPages = [
   { name: 'My Orders', desc: 'Your purchases and their status', to: '/orders', icon: Receipt },
   { name: 'Achievements', desc: 'Badges, streaks, and course certificates', to: '/achievements', icon: Trophy },
   { name: 'Profile', desc: 'Your name, avatar, and public details', to: '/account', icon: UserCog },
+  { name: 'Invite Friends', desc: 'Share your referral code and earn member card credit', to: '/referrals', icon: Users },
   { name: 'Notifications', desc: 'Connect Telegram and choose where updates reach you', to: '/account/notifications', icon: Bell },
   { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
 ]
