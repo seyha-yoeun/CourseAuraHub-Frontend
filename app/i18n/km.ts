@@ -280,6 +280,22 @@ export const km: Record<string, string> = {
   'What did you think of this course? (optional)': 'តើអ្នកគិតយ៉ាងណាចំពោះវគ្គនេះ? (ស្រេចចិត្ត)',
   'Your review': 'ការវាយតម្លៃរបស់អ្នក',
 
+  // AI study assistant
+  'AI assistant': 'ជំនួយការ AI',
+  'Ask about this lesson. Answers come from the lesson\'s own material.': 'សួរអំពីមេរៀននេះ។ ចម្លើយមកពីឯកសារផ្ទាល់របស់មេរៀន។',
+  '{count} tokens left today': 'នៅសល់ {count} តូខឹនសម្រាប់ថ្ងៃនេះ',
+  'Summarize this lesson': 'សង្ខេបមេរៀននេះ',
+  'Summarizing...': 'កំពុងសង្ខេប...',
+  'Summary': 'សេចក្តីសង្ខេប',
+  'Thinking...': 'កំពុងគិត...',
+  'Loading...': 'កំពុងផ្ទុក...',
+  'New conversation': 'ការសន្ទនាថ្មី',
+  'Stop': 'បញ្ឈប់',
+  'No summary': 'គ្មានសេចក្តីសង្ខេប',
+  'Unable to summarize this lesson': 'មិនអាចសង្ខេបមេរៀននេះបានទេ',
+  'I can only help with questions about this lesson.': 'ខ្ញុំអាចជួយបានតែសំណួរអំពីមេរៀននេះប៉ុណ្ណោះ។',
+  'No answer': 'គ្មានចម្លើយ',
+
   // Certificates
   'CERTIFICATE OF COMPLETION': 'វិញ្ញាបនបត្របញ្ចប់វគ្គសិក្សា',
   'COURSE INSTRUCTOR': 'គ្រូបង្រៀន',

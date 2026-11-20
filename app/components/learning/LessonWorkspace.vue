@@ -103,6 +103,9 @@
         <button type="button" class="shrink-0 cursor-pointer text-[11px] font-semibold text-rose-400" :disabled="working" @click="removeNote(note.id)">{{ t('Delete') }}</button>
       </article>
     </div>
+
+    <!-- AI study assistant -->
+    <LessonAssistant v-else-if="tab === 'assistant'" :lesson-id="lessonId" />
   </section>
 </template>
 
@@ -110,6 +113,7 @@
 import type { Assignment, LessonNote, LessonQuestion, StoredFile } from '~/types'
 import FileUploadButton from '~/components/shared/FileUploadButton.vue'
 import ReportButton from '~/components/learning/ReportButton.vue'
+import LessonAssistant from '~/components/learning/LessonAssistant.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { formatPosition } from '~/composables/useCurriculum'
 import { useLessonTools } from '~/composables/useLessonTools'
@@ -130,7 +134,7 @@ const { t } = useT()
 const toast = useAppToast()
 const api = useLessonTools()
 
-const tab = ref<'questions' | 'notes' | 'assignment'>('questions')
+const tab = ref<'questions' | 'notes' | 'assistant' | 'assignment'>('questions')
 const questions = ref<LessonQuestion[]>([])
 const notes = ref<LessonNote[]>([])
 const assignment = ref<Assignment | null>(null)
@@ -146,6 +150,7 @@ const workFile = ref<StoredFile | null>(null)
 const tabs = computed(() => [
   { value: 'questions' as const, label: 'Questions' },
   ...(props.enrolled ? [{ value: 'notes' as const, label: 'Notes' }] : []),
+  ...(props.enrolled ? [{ value: 'assistant' as const, label: 'AI assistant' }] : []),
   ...(assignment.value ? [{ value: 'assignment' as const, label: 'Assignment' }] : [])
 ])
 

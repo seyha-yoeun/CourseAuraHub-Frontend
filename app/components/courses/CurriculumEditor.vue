@@ -66,6 +66,7 @@
             <button type="button" :class="iconButtonClass" :aria-label="`Move ${lesson.title} down`" :disabled="busy || lessonIndex === section.lessons.length - 1" @click="moveLesson(section, lessonIndex, 1)"><ArrowDown :size="13" /></button>
             <button v-if="lesson.type === 'quiz'" type="button" :class="iconButtonClass" :aria-label="`Edit questions for ${lesson.title}`" title="Quiz questions" @click="quizLesson = lesson"><ListChecks :size="13" /></button>
             <button v-else type="button" :class="iconButtonClass" :aria-label="`Assignment for ${lesson.title}`" title="Assignment" @click="assignmentLesson = lesson"><ClipboardCheck :size="13" /></button>
+            <LessonStudyTextButton :lesson="lesson" />
             <button type="button" :class="iconButtonClass" :aria-label="`Edit ${lesson.title}`" @click="openLessonModal(section, lesson)"><Pencil :size="13" /></button>
             <button type="button" :class="dangerButtonClass" :aria-label="`Delete ${lesson.title}`" @click="pendingDelete = { kind: 'lesson', id: lesson.id, name: lesson.title }"><Trash2 :size="13" /></button>
           </li>
@@ -126,6 +127,7 @@ import { ArrowDown, ArrowUp, Check, ClipboardCheck, FileText, HelpCircle, ListCh
 import type { CourseSection, Curriculum, Lesson, LessonFormData, LessonType } from '~/types'
 import LessonFormModal from '~/components/courses/LessonFormModal.vue'
 import AssignmentEditorModal from '~/components/courses/AssignmentEditorModal.vue'
+import LessonStudyTextButton from '~/components/courses/LessonStudyTextButton.vue'
 import QuizEditorModal from '~/components/courses/QuizEditorModal.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import { formatDuration, useCurriculum } from '~/composables/useCurriculum'
