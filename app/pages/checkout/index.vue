@@ -119,6 +119,7 @@ import { useMemberCard } from '~/composables/useMemberCard'
 import { useOrders } from '~/composables/useOrders'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
+import { useFunnelAnalytics } from '~/composables/useFunnelAnalytics'
 
 const { t } = useT()
 useHead({ title: () => t('Checkout') })
@@ -208,6 +209,8 @@ async function pay() {
   }
 }
 
+const { track } = useFunnelAnalytics()
+
 onMounted(async () => {
   try {
     const current = await refresh()
@@ -218,6 +221,9 @@ onMounted(async () => {
     } else if (!current.items.length) {
       await router.replace('/cart')
     }
+    // Each course being bought counts as a started checkout in the enrollment funnel
+    const slugs = courseSlug.value ? [courseSlug.value] : current.items.map(item => item.slug)
+    slugs.forEach(slug => track(slug, 'checkout_start'))
   } catch (err) {
     loadError.value = getErrorMessage(err, t('Unable to load your cart'))
   } finally {

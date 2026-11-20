@@ -121,6 +121,9 @@
         </table>
       </div>
     </div>
+
+    <!-- Catalog funnel and retention cohorts -->
+    <FunnelAnalytics />
   </div>
 </template>
 
@@ -135,6 +138,7 @@ import {
 } from 'lucide-vue-next'
 import StatCard from '~/components/shared/StatCard.vue'
 import SalesChart from '~/components/dashboard/SalesChart.vue'
+import FunnelAnalytics from '~/components/dashboard/FunnelAnalytics.vue'
 import { useDashboardStats } from '~/composables/useDashboardStats'
 
 definePageMeta({ requiresAdmin: true })
