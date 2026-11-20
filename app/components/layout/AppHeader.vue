@@ -862,6 +862,7 @@ const learnerPages = [
   { name: 'Your cart', desc: 'Courses ready for checkout', to: '/cart', icon: ShoppingCart },
   { name: 'My Orders', desc: 'Your purchases and their status', to: '/orders', icon: Receipt },
   { name: 'Achievements', desc: 'Badges, streaks, and course certificates', to: '/achievements', icon: Trophy },
+  { name: 'Live Sessions', desc: 'Live classes in your courses and a calendar link', to: '/live-sessions', icon: Video },
   { name: 'Profile', desc: 'Your name, avatar, and public details', to: '/account', icon: UserCog },
   { name: 'Notifications', desc: 'Connect Telegram and choose where updates reach you', to: '/account/notifications', icon: Bell },
   { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },

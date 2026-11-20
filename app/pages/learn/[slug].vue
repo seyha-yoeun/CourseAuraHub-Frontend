@@ -31,6 +31,7 @@
     </div>
 
     <CourseAnnouncements v-if="curriculum.enrolled" :slug="slug" :highlight-id="highlightedAnnouncement" />
+    <CourseLiveSessions v-if="curriculum.enrolled" :slug="slug" :highlight-id="highlightedLive" />
 
     <div class="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
       <!-- Lesson content -->
@@ -204,6 +205,7 @@ import type { Certificate, Course, Curriculum, Lesson, LessonProgressResult } fr
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import CourseAnnouncements from '~/components/learning/CourseAnnouncements.vue'
+import CourseLiveSessions from '~/components/learning/CourseLiveSessions.vue'
 import LessonWorkspace from '~/components/learning/LessonWorkspace.vue'
 import QuizPlayer from '~/components/learning/QuizPlayer.vue'
 import { flattenLessons, formatDuration, useCurriculum } from '~/composables/useCurriculum'
@@ -216,6 +218,8 @@ const route = useRoute()
 const router = useRouter()
 // Notification links open the course with ?announcement=<id>
 const highlightedAnnouncement = computed(() => Number(route.query.announcement) || null)
+// Live session notifications and calendar events open it with ?live=<id>
+const highlightedLive = computed(() => Number(route.query.live) || null)
 const toast = useAppToast()
 const { fetchCurriculum } = useCurriculum()
 const { setLessonCompleted, saveLessonPosition, fetchAchievements, findCertificate } = useLearning()
