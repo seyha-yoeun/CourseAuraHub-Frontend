@@ -180,6 +180,8 @@
       </article>
     </div>
 
+    <WeeklyGoalCard />
+
     <GiftsPanel />
 
     <CourseRow v-if="!pending" :title="t('Recommended for you')" :subtitle="t('Based on the courses you take and save.')" :courses="recommended ?? []" />
@@ -191,6 +193,7 @@ import { Award, BookOpen, CheckCircle2, Clock, Flame, GraduationCap, ListChecks,
 import type { MyCourse } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import GiftsPanel from '~/components/gifts/GiftsPanel.vue'
+import WeeklyGoalCard from '~/components/learning/WeeklyGoalCard.vue'
 import { useLearningPaths } from '~/composables/useLearningPaths'
 import { formatPosition } from '~/composables/useCurriculum'
 import { useLearning } from '~/composables/useLearning'

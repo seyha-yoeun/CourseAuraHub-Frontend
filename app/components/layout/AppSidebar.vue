@@ -202,6 +202,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
           { to: '/wishlist', label: 'Wishlist', icon: Heart },
           { to: '/achievements', label: 'Achievements', icon: Trophy },
           { to: '/learning-paths', label: 'Learning Paths', icon: Route },
+          { to: '/leaderboard', label: 'Leaderboard', icon: BarChart3 },
         ],
       },
       {
