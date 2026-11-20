@@ -45,6 +45,8 @@
 
       <AnnouncementManager :slug="data.course.slug" :published="data.course.status === 'published'" />
 
+      <SurveyManager :slug="data.course.slug" />
+
       <CourseReviews v-if="data.course.status === 'published'" :slug="data.course.slug" can-reply />
     </template>
   </div>
@@ -59,6 +61,7 @@ import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
 import PrerequisiteEditor from '~/components/courses/PrerequisiteEditor.vue'
 import AnnouncementManager from '~/components/courses/AnnouncementManager.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
+import SurveyManager from '~/components/courses/SurveyManager.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useInstructor } from '~/composables/useInstructor'
 import { getErrorMessage } from '~/utils/apiError'

@@ -140,6 +140,8 @@
       :monthly-enrollments="course.monthlyEnrollments || []"
     />
 
+    <SurveyManager :slug="course.slug" />
+
     <!-- Two-Column: Enrolled Students List & Course Metadata -->
     <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
       <!-- Enrolled Students Table -->
@@ -283,6 +285,7 @@ import type { Course, CourseFormData, Student } from '~/types'
 import CourseStatusBadge from '~/components/courses/CourseStatusBadge.vue'
 import StatCard from '~/components/shared/StatCard.vue'
 import SalesChart from '~/components/dashboard/SalesChart.vue'
+import SurveyManager from '~/components/courses/SurveyManager.vue'
 import CourseFormModal from '~/components/courses/CourseFormModal.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
