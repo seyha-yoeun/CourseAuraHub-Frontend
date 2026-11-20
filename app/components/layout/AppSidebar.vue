@@ -130,6 +130,7 @@ import {
   CreditCard,
   Building2,
   Receipt,
+  Repeat,
   ScrollText,
   ShieldAlert,
   ShieldCheck,
@@ -210,6 +211,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
           { to: '/cart', label: 'Cart', icon: ShoppingCart },
           { to: '/orders', label: 'My Orders', icon: Receipt },
           { to: '/member-card', label: 'Member Card', icon: CreditCard },
+          { to: '/subscription', label: 'Subscription', icon: Repeat },
         ],
       },
       {
@@ -257,6 +259,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
       items: [
         { to: '/admin/orders', label: 'Orders', icon: Receipt },
         { to: '/admin/member-cards', label: 'Member Cards', icon: CreditCard },
+        { to: '/admin/subscriptions', label: 'Subscriptions', icon: Repeat },
         { to: '/admin/refund-requests', label: 'Refund Requests', icon: RotateCcw },
       ],
     },

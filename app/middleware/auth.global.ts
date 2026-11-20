@@ -13,6 +13,8 @@ const PUBLIC_PATHS = [
   '/support',
   '/courses',
   '/instructors',
+  // Plans are public; subscribing asks the visitor to sign in
+  '/subscription',
 ]
 
 function normalizePath(path: string) {

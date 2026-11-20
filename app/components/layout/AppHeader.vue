@@ -580,6 +580,7 @@ const breadcrumbItems = computed(() => {
 
   const adminPages: Record<string, string> = {
     '/admin/orders': 'Orders',
+    '/admin/subscriptions': 'Subscriptions',
     '/admin/discounts': 'Discounts',
     '/admin/coupons': 'Coupons'
   }
@@ -848,6 +849,7 @@ const quickPages = [
   { name: 'Sales & Analytics', desc: 'Detailed financial and performance reports', to: '/analytics', icon: TrendingUp },
   { name: 'Platform Settings', desc: 'Storefront branding, preferences, and profile', to: '/settings', icon: Settings },
   { name: 'Orders', desc: 'Review purchases and refund paid orders', to: '/admin/orders', icon: Receipt },
+  { name: 'Subscriptions', desc: 'All-access plans and their subscribers', to: '/admin/subscriptions', icon: Repeat },
   { name: 'Discounts', desc: 'Schedule sale prices for courses', to: '/admin/discounts', icon: Tag },
   { name: 'Coupons', desc: 'Create discount codes for checkout', to: '/admin/coupons', icon: TicketPercent },
   { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
@@ -861,6 +863,7 @@ const learnerPages = [
   { name: 'Wishlist', desc: 'Courses saved for later', to: '/wishlist', icon: Heart },
   { name: 'Your cart', desc: 'Courses ready for checkout', to: '/cart', icon: ShoppingCart },
   { name: 'My Orders', desc: 'Your purchases and their status', to: '/orders', icon: Receipt },
+  { name: 'Subscription', desc: 'One plan for every course', to: '/subscription', icon: Repeat },
   { name: 'Achievements', desc: 'Badges, streaks, and course certificates', to: '/achievements', icon: Trophy },
   { name: 'Profile', desc: 'Your name, avatar, and public details', to: '/account', icon: UserCog },
   { name: 'Notifications', desc: 'Connect Telegram and choose where updates reach you', to: '/account/notifications', icon: Bell },
