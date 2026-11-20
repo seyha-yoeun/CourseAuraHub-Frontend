@@ -585,6 +585,9 @@ export const km: Record<string, string> = {
   '{lessons} lessons · {hours}h': '{lessons} មេរៀន · {hours} ម៉ោង',
   '{minutes} minutes to finish once you start. Unanswered questions count as wrong.': 'មាន {minutes} នាទី ដើម្បីបញ្ចប់ បន្ទាប់ពីអ្នកចាប់ផ្តើម។ សំណួរដែលមិនបានឆ្លើយ ត្រូវរាប់ថាខុស។',
   '{rate}% pass · avg. score {score}% · {tries} tries each': 'ជាប់ {rate}% · ពិន្ទុមធ្យម {score}% · {tries} ដងក្នុងម្នាក់',
+  // Certificate sharing
+  'Add to LinkedIn': 'បន្ថែមទៅ LinkedIn',
+
   // Review sorting
   'Sort reviews': 'តម្រៀបការវាយតម្លៃ',
   'Newest first': 'ថ្មីបំផុតមុន',

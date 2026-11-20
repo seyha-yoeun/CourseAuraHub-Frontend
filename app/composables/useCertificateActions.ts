@@ -29,5 +29,23 @@ export function useCertificateActions() {
     }
   }
 
-  return { downloading, download, copyLink }
+  /** Opens LinkedIn's add-certification form, filled in with the course, issue date and verification link. */
+  async function addToLinkedIn(certificateNumber: string) {
+    // Opened before the request so the browser doesn't block it as an unrequested pop-up
+    const tab = window.open('', '_blank')
+    try {
+      const { url } = await $fetch<{ url: string }>(`/api/me/certificates/${encodeURIComponent(certificateNumber)}/linkedin-url`)
+      if (tab) {
+        tab.opener = null
+        tab.location.href = url
+      } else {
+        window.location.href = url
+      }
+    } catch (err) {
+      tab?.close()
+      toast.error('LinkedIn link not ready', toApiError(err, 'Unable to prepare the LinkedIn link').message)
+    }
+  }
+
+  return { downloading, download, copyLink, addToLinkedIn }
 }

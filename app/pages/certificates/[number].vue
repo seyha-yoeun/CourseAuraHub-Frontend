@@ -31,6 +31,14 @@
             <button
               v-if="isOwner"
               type="button"
+              class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white/70 hover:text-white light:border-slate-200 light:bg-white light:text-slate-600 light:hover:text-slate-900"
+              @click="addToLinkedIn(certificate.certificateNumber)"
+            >
+              <Linkedin :size="14" /> {{ t('Add to LinkedIn') }}
+            </button>
+            <button
+              v-if="isOwner"
+              type="button"
               class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
               :disabled="downloading"
               @click="download(certificate.certificateNumber)"
@@ -68,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { AlertCircle, BadgeCheck, CheckCircle2, Download, Link2, Printer, XCircle } from 'lucide-vue-next'
+import { AlertCircle, BadgeCheck, CheckCircle2, Download, Link2, Linkedin, Printer, XCircle } from 'lucide-vue-next'
 import CertificateDocument from '~/components/learning/CertificateDocument.vue'
 import InfoPageShell from '~/components/shared/InfoPageShell.vue'
 import { useCertificateActions } from '~/composables/useCertificateActions'
@@ -84,7 +92,7 @@ const route = useRoute()
 const auth = useAuth()
 const requestOrigin = useRequestURL().origin
 const { verifyCertificate, fetchCertificates } = useLearning()
-const { downloading, download, copyLink } = useCertificateActions()
+const { downloading, download, copyLink, addToLinkedIn } = useCertificateActions()
 const number = computed(() => String(route.params.number))
 
 // A 404 is an expected outcome on this page. Anything else must not read as "this certificate is fake"
