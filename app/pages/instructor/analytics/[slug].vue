@@ -114,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, ClipboardCheck, FileText, GraduationCap, HelpCircle, PlayCircle, Star, Users } from 'lucide-vue-next'
+import { ArrowLeft, ClipboardCheck, Code2, FileText, GraduationCap, HelpCircle, PlayCircle, Star, Users } from 'lucide-vue-next'
 import type { LessonFunnel } from '~/types/analytics'
 import StatCard from '~/components/shared/StatCard.vue'
 import SalesChart from '~/components/dashboard/SalesChart.vue'
@@ -162,6 +162,7 @@ function ratingShare(stars: number) {
 
 function typeIcon(type: LessonFunnel['type']) {
   if (type === 'quiz') return HelpCircle
+  if (type === 'code') return Code2
   return type === 'video' ? PlayCircle : FileText
 }
 

@@ -86,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { Check, ChevronDown, FileText, HelpCircle, Lock, PlayCircle } from 'lucide-vue-next'
+import { Check, ChevronDown, Code2, FileText, HelpCircle, Lock, PlayCircle } from 'lucide-vue-next'
 import type { CourseSection, Curriculum, LessonType } from '~/types'
 import { formatDuration } from '~/composables/useCurriculum'
 import { formatDate } from '~/utils/dateTime'
@@ -147,6 +147,7 @@ function completedIn(section: CourseSection) {
 }
 
 function typeIcon(type: LessonType) {
+  if (type === 'code') return Code2
   if (type === 'article') return FileText
   if (type === 'quiz') return HelpCircle
   return PlayCircle

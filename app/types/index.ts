@@ -509,7 +509,7 @@ export interface LearnerProfile {
 
 export type LearnerProfileUpdate = Partial<Pick<LearnerProfile, 'firstName' | 'lastName' | 'imageUrl' | 'bio' | 'website' | 'twitter'>>
 
-export type LessonType = 'video' | 'article' | 'quiz'
+export type LessonType = 'video' | 'article' | 'quiz' | 'code'
 
 export interface Lesson {
   id: number

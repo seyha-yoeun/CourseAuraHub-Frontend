@@ -113,7 +113,8 @@ const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3
 const typeOptions = [
   { value: 'video', label: 'Video' },
   { value: 'article', label: 'Article' },
-  { value: 'quiz', label: 'Quiz' }
+  { value: 'quiz', label: 'Quiz' },
+  { value: 'code', label: 'Coding exercise' }
 ]
 
 const form = reactive<LessonFormData>({

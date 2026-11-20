@@ -68,6 +68,7 @@
             <button v-else type="button" :class="iconButtonClass" :aria-label="`Assignment for ${lesson.title}`" title="Assignment" @click="assignmentLesson = lesson"><ClipboardCheck :size="13" /></button>
             <button type="button" :class="iconButtonClass" :aria-label="`Edit ${lesson.title}`" @click="openLessonModal(section, lesson)"><Pencil :size="13" /></button>
             <button type="button" :class="dangerButtonClass" :aria-label="`Delete ${lesson.title}`" @click="pendingDelete = { kind: 'lesson', id: lesson.id, name: lesson.title }"><Trash2 :size="13" /></button>
+            <LessonExerciseButton v-if="lesson.type === 'code'" :lesson="lesson" />
           </li>
           <li>
             <button
@@ -122,11 +123,12 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDown, ArrowUp, Check, ClipboardCheck, FileText, HelpCircle, ListChecks, Pencil, PlayCircle, Plus, Trash2, X } from 'lucide-vue-next'
+import { ArrowDown, ArrowUp, Check, ClipboardCheck, Code2, FileText, HelpCircle, ListChecks, Pencil, PlayCircle, Plus, Trash2, X } from 'lucide-vue-next'
 import type { CourseSection, Curriculum, Lesson, LessonFormData, LessonType } from '~/types'
 import LessonFormModal from '~/components/courses/LessonFormModal.vue'
 import AssignmentEditorModal from '~/components/courses/AssignmentEditorModal.vue'
 import QuizEditorModal from '~/components/courses/QuizEditorModal.vue'
+import LessonExerciseButton from '~/components/courses/LessonExerciseButton.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import { formatDuration, useCurriculum } from '~/composables/useCurriculum'
 import { useAppToast } from '~/composables/useAppToast'
@@ -273,6 +275,7 @@ async function confirmDelete() {
 }
 
 function typeIcon(type: LessonType) {
+  if (type === 'code') return Code2
   if (type === 'article') return FileText
   if (type === 'quiz') return HelpCircle
   return PlayCircle
