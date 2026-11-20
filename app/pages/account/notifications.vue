@@ -19,6 +19,7 @@
       </section>
 
       <EmailPreferencesCard class="mt-5" />
+      <PushNotificationsCard class="mt-5" />
     </div>
   </div>
 </template>
@@ -26,6 +27,7 @@
 <script setup lang="ts">
 import TelegramCard from '~/components/account/TelegramCard.vue'
 import EmailPreferencesCard from '~/components/account/EmailPreferencesCard.vue'
+import PushNotificationsCard from '~/components/account/PushNotificationsCard.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
 

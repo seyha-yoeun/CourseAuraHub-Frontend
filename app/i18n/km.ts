@@ -200,6 +200,23 @@ export const km: Record<string, string> = {
   'Your new courses are in My Learning.': 'វគ្គសិក្សាថ្មីរបស់អ្នកមាននៅក្នុង «ការរៀនរបស់ខ្ញុំ»។',
   '{code} applied to {title}': 'បានប្រើ {code} លើ {title}',
 
+  // Browser notifications
+  'Browser notifications': 'ការជូនដំណឹងតាមកម្មវិធីរុករក',
+  'Get a pop-up on this device, even when the site is closed.': 'ទទួលការលោតផ្ទាំងនៅលើឧបករណ៍នេះ ទោះបីគេហទំព័របានបិទក៏ដោយ។',
+  'Turn off on this device': 'បិទនៅលើឧបករណ៍នេះ',
+  'Turn on': 'បើក',
+  'This browser doesn\'t support notifications.': 'កម្មវិធីរុករកនេះមិនគាំទ្រការជូនដំណឹងទេ។',
+  'Browser notifications aren\'t available on this platform yet.': 'ការជូនដំណឹងតាមកម្មវិធីរុករកមិនទាន់មាននៅលើវេទិកានេះទេ។',
+  'Notifications are blocked for this site. Allow them in your browser settings, then try again.': 'ការជូនដំណឹងត្រូវបានរារាំងសម្រាប់គេហទំព័រនេះ។ សូមអនុញ្ញាតវានៅក្នុងការកំណត់កម្មវិធីរុករករបស់អ្នក រួចសាកល្បងម្តងទៀត។',
+  'Notifications weren\'t allowed.': 'ការជូនដំណឹងមិនត្រូវបានអនុញ្ញាតទេ។',
+  'What to push': 'អ្វីដែលត្រូវជូនដំណឹង',
+  'Browser notifications on': 'បានបើកការជូនដំណឹងតាមកម្មវិធីរុករក',
+  'You\'ll get a pop-up on this device.': 'អ្នកនឹងទទួលបានការលោតផ្ទាំងនៅលើឧបករណ៍នេះ។',
+  'Browser notifications not turned on': 'មិនអាចបើកការជូនដំណឹងតាមកម្មវិធីរុករកបានទេ',
+  'Browser notifications off': 'បានបិទការជូនដំណឹងតាមកម្មវិធីរុករក',
+  'Browser notifications not turned off': 'មិនអាចបិទការជូនដំណឹងតាមកម្មវិធីរុករកបានទេ',
+  'Preference not saved': 'មិនអាចរក្សាទុកចំណូលចិត្តបានទេ',
+
   // Lessons
   'Article': 'អត្ថបទ',
   'Complete & continue': 'បញ្ចប់ ហើយបន្ត',
