@@ -24,6 +24,7 @@ export const km: Record<string, string> = {
   'Sales': 'ការលក់',
   'Teaching': 'ការបង្រៀន',
   'My Courses': 'វគ្គសិក្សារបស់ខ្ញុំ',
+  'Earnings': 'ប្រាក់ចំណូល',
   'Submissions': 'ការដាក់ស្នើ',
   'Questions': 'សំណួរ',
   'Notes': 'កំណត់ចំណាំ',

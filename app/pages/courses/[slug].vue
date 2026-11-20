@@ -247,6 +247,8 @@
 
     <AnnouncementManager :slug="course.slug" :published="course.status === 'published'" />
 
+    <RevenueShareCard :slug="course.slug" />
+
     <!-- Modals -->
     <CourseFormModal
       :is-open="isEditModalOpen"
@@ -288,6 +290,7 @@ import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
 import AnnouncementManager from '~/components/courses/AnnouncementManager.vue'
+import RevenueShareCard from '~/components/courses/RevenueShareCard.vue'
 import LearnerCourseView from '~/components/learning/LearnerCourseView.vue'
 import { useCourses } from '~/composables/useCourses'
 

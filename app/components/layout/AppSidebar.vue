@@ -138,6 +138,7 @@ import {
   TicketPercent,
   Trophy,
   UserCog,
+  Wallet,
   Users
 } from 'lucide-vue-next'
 
@@ -188,6 +189,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
             label: 'Teaching',
             items: [
               { to: '/instructor', label: 'My Courses', icon: Presentation },
+              { to: '/instructor/earnings', label: 'Earnings', icon: Wallet },
               { to: '/instructor/submissions', label: 'Submissions', icon: ClipboardCheck },
               { to: '/questions', label: 'Questions', icon: HelpCircle },
             ],
@@ -258,6 +260,7 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
         { to: '/admin/orders', label: 'Orders', icon: Receipt },
         { to: '/admin/member-cards', label: 'Member Cards', icon: CreditCard },
         { to: '/admin/refund-requests', label: 'Refund Requests', icon: RotateCcw },
+        { to: '/admin/payouts', label: 'Payouts', icon: Wallet },
       ],
     },
     {
