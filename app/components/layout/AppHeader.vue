@@ -865,6 +865,7 @@ const learnerPages = [
   { name: 'Browse Courses', desc: 'Explore the course catalog', to: '/courses', icon: BookOpen },
   { name: 'My Learning', desc: 'Enrolled courses and your progress', to: '/my-learning', icon: GraduationCap },
   { name: 'Wishlist', desc: 'Courses saved for later', to: '/wishlist', icon: Heart },
+  { name: 'Leaderboard', desc: 'XP rankings and your weekly goal', to: '/leaderboard', icon: BarChart3 },
   { name: 'Your cart', desc: 'Courses ready for checkout', to: '/cart', icon: ShoppingCart },
   { name: 'My Orders', desc: 'Your purchases and their status', to: '/orders', icon: Receipt },
   { name: 'Subscription', desc: 'One plan for every course', to: '/subscription', icon: Repeat },
