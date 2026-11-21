@@ -7,6 +7,9 @@
     <div class="mb-7 text-center short:mb-4">
       <h1 class="mb-2 text-[28px] font-extrabold tracking-[-0.5px] text-slate-100 max-[480px]:text-2xl short:text-2xl light:text-slate-900">Create your account</h1>
       <p class="text-[15px] leading-normal text-white/60 light:text-slate-500">Join CourseAuraHub Academy and start learning today</p>
+      <p v-if="referralCode" class="mt-3 rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-xs text-emerald-300 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-700">
+        A friend invited you. Their code <span class="font-mono font-bold">{{ referralCode }}</span> is applied once you're signed in.
+      </p>
     </div>
 
     <!-- Social Login -->
@@ -178,7 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useAuth } from '~/composables/useAuth'
 import { toApiError } from '~/utils/apiError'
 import { getOAuthErrorMessage, getSafeRedirect } from '~/utils/authRedirect'
@@ -191,6 +194,7 @@ import {
   Loader2,
 } from 'lucide-vue-next'
 import SocialLoginButtons from '~/components/auth/SocialLoginButtons.vue'
+import { useReferral } from '~/composables/useReferral'
 import PasswordStrengthMeter from '~/components/auth/PasswordStrengthMeter.vue'
 
 const route = useRoute()
@@ -233,6 +237,12 @@ const loginLink = computed(() => {
 })
 
 const oauthError = getOAuthErrorMessage(route.query.error)
+// Shared invite links carry ?ref=CODE; it's claimed after sign-up by the referral plugin
+const referralCode = ref<string | null>(null)
+onMounted(() => {
+  const referral = useReferral()
+  referralCode.value = referral.rememberCode(route.query.ref) ?? referral.pendingCode()
+})
 
 if (oauthError) {
   pageError.value = oauthError
