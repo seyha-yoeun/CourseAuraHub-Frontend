@@ -31,6 +31,8 @@
 
       <PrerequisiteEditor :slug="data.course.slug" />
 
+      <LiveSessionManager :slug="data.course.slug" />
+
       <section class="rounded-[18px] border border-white/10 bg-white/5 p-5 light:border-slate-200 light:bg-white">
         <h2 class="text-base font-bold text-slate-100 light:text-slate-900">Learners</h2>
         <p v-if="!students?.length" class="mt-2 text-xs text-white/45 light:text-slate-500">Nobody has joined yet.</p>
@@ -59,6 +61,7 @@ import CourseStatusBadge from '~/components/courses/CourseStatusBadge.vue'
 import RevisionPanel from '~/components/courses/RevisionPanel.vue'
 import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
 import PrerequisiteEditor from '~/components/courses/PrerequisiteEditor.vue'
+import LiveSessionManager from '~/components/courses/LiveSessionManager.vue'
 import AnnouncementManager from '~/components/courses/AnnouncementManager.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
 import SurveyManager from '~/components/courses/SurveyManager.vue'

@@ -869,6 +869,7 @@ const learnerPages = [
   { name: 'My Orders', desc: 'Your purchases and their status', to: '/orders', icon: Receipt },
   { name: 'Subscription', desc: 'One plan for every course', to: '/subscription', icon: Repeat },
   { name: 'Achievements', desc: 'Badges, streaks, and course certificates', to: '/achievements', icon: Trophy },
+  { name: 'Live Sessions', desc: 'Live classes in your courses and a calendar link', to: '/live-sessions', icon: Video },
   { name: 'Profile', desc: 'Your name, avatar, and public details', to: '/account', icon: UserCog },
   { name: 'Invite Friends', desc: 'Share your referral code and earn member card credit', to: '/referrals', icon: Users },
   { name: 'Notifications', desc: 'Connect Telegram and choose where updates reach you', to: '/account/notifications', icon: Bell },

@@ -241,6 +241,8 @@
       </div>
     </div>
 
+    <LiveSessionManager :slug="course.slug" />
+
     <!-- Curriculum & review management -->
     <div class="grid grid-cols-1 gap-5 xl:grid-cols-2">
       <CurriculumEditor :slug="course.slug" @changed="refresh" />
@@ -291,6 +293,7 @@ import SurveyManager from '~/components/courses/SurveyManager.vue'
 import CourseFormModal from '~/components/courses/CourseFormModal.vue'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import CurriculumEditor from '~/components/courses/CurriculumEditor.vue'
+import LiveSessionManager from '~/components/courses/LiveSessionManager.vue'
 import CourseReviews from '~/components/learning/CourseReviews.vue'
 import AnnouncementManager from '~/components/courses/AnnouncementManager.vue'
 import RevenueShareCard from '~/components/courses/RevenueShareCard.vue'
