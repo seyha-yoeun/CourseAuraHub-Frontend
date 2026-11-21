@@ -602,7 +602,7 @@ export interface ReviewPage {
   averageRating: number | null
 }
 
-export type FilePurpose = 'AVATAR' | 'COURSE_THUMBNAIL' | 'LESSON_CONTENT' | 'ASSIGNMENT_SUBMISSION' | 'TOP_UP_RECEIPT'
+export type FilePurpose = 'AVATAR' | 'COURSE_THUMBNAIL' | 'LESSON_CONTENT' | 'LESSON_CAPTION' | 'ASSIGNMENT_SUBMISSION' | 'TOP_UP_RECEIPT'
 
 export interface FileUploadRequest {
   purpose: FilePurpose

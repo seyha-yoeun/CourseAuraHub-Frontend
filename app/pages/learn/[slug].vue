@@ -65,7 +65,7 @@
               v-else-if="isPlayableVideo && !mediaFailed"
               ref="videoRef"
               :key="`video-${activeLesson.id}`"
-              :src="activeLesson.contentUrl || undefined"
+              :src="lessonStream.src(activeLesson.contentUrl)"
               class="aspect-video w-full bg-black"
               controls
               preload="metadata"
@@ -74,7 +74,17 @@
               @timeupdate="onVideoProgress"
               @pause="onVideoPause"
               @ended="onVideoPause"
-            />
+            >
+              <track
+                v-for="(caption, index) in lessonStream.captions.value"
+                :key="caption.language"
+                kind="subtitles"
+                :srclang="caption.language"
+                :label="caption.label"
+                :src="caption.src"
+                :default="index === 0"
+              >
+            </video>
             <div v-else class="flex aspect-video flex-col items-center justify-center gap-3 bg-linear-to-br from-violet-950/60 to-zinc-950 p-6 text-center light:from-violet-50 light:to-white">
               <component :is="lessonIcon" :size="40" class="text-violet-300 light:text-violet-600" />
               <p class="max-w-md text-[13px] text-white/65 light:text-slate-600">
@@ -94,6 +104,13 @@
               </a>
             </div>
           </div>
+
+          <LessonTranscript
+            v-if="isPlayableVideo && !mediaFailed && lessonStream.captions.value.length"
+            :key="`transcript-${activeLesson.id}`"
+            :lesson-id="activeLesson.id"
+            :captions="lessonStream.captions.value"
+          />
 
           <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 light:border-slate-200 light:bg-white">
             <div class="flex flex-wrap items-start justify-between gap-3">
@@ -202,12 +219,14 @@ import {
 } from 'lucide-vue-next'
 import type { Certificate, Course, Curriculum, Lesson, LessonProgressResult } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
+import LessonTranscript from '~/components/learning/LessonTranscript.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import CourseAnnouncements from '~/components/learning/CourseAnnouncements.vue'
 import LessonWorkspace from '~/components/learning/LessonWorkspace.vue'
 import QuizPlayer from '~/components/learning/QuizPlayer.vue'
 import { flattenLessons, formatDuration, useCurriculum } from '~/composables/useCurriculum'
 import { useLearning } from '~/composables/useLearning'
+import { useLessonStream } from '~/composables/useLessonStream'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
 
@@ -309,6 +328,9 @@ const isPlayableVideo = computed(() => {
   const lesson = activeLesson.value
   return Boolean(lesson?.contentUrl && lesson.type === 'video' && /\.(mp4|webm|ogg|m4v)(\?|#|$)/i.test(lesson.contentUrl))
 })
+
+// Uploaded videos switch to their adaptive stream once it's transcoded, and bring their captions
+const lessonStream = useLessonStream(videoRef, () => (isPlayableVideo.value && !embedUrl.value ? activeLesson.value?.id ?? null : null))
 
 const lessonIcon = computed(() => {
   if (activeLesson.value?.type === 'quiz') return HelpCircle

@@ -328,6 +328,11 @@ export const km: Record<string, string> = {
   '{correct} of {total} correct. You need {percent}% to pass, so try again.': 'ត្រឹមត្រូវ {correct} នៃ {total}។ អ្នកត្រូវការ {percent}% ដើម្បីជាប់ សូមសាកល្បងម្តងទៀត។',
   '{count} questions · Pass mark {percent}%': '{count} សំណួរ · ពិន្ទុជាប់ {percent}%',
 
+  // Video streaming
+  'Transcript': 'ប្រតិចារិក',
+  'Transcript language': 'ភាសាប្រតិចារិក',
+  'Unable to load the transcript': 'មិនអាចផ្ទុកប្រតិចារិកបានទេ',
+
   // My Learning and achievements
   'Badge unlocked': 'បានដោះសោផ្លាកសញ្ញា',
   'Badges': 'ផ្លាកសញ្ញា',
