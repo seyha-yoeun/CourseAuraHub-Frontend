@@ -89,6 +89,14 @@
             >
               <Download :size="14" /> {{ t('PDF') }}
             </button>
+            <button
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/70 hover:text-white light:border-slate-200 light:bg-white light:text-slate-600 light:hover:text-slate-900"
+              :title="t('Add to LinkedIn')"
+              @click="addToLinkedIn(certificate.certificateNumber)"
+            >
+              <Linkedin :size="14" /> LinkedIn
+            </button>
             <NuxtLink
               :to="verifyPath(certificate)"
               class="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold text-violet-300 no-underline hover:bg-violet-500/30 hover:text-white light:border-violet-300 light:bg-violet-50 light:text-violet-700"
@@ -103,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { Award, BadgeCheck, BookOpenCheck, Download, Flame, GraduationCap, Link2, MessageSquareQuote } from 'lucide-vue-next'
+import { Award, BadgeCheck, BookOpenCheck, Download, Flame, GraduationCap, Link2, Linkedin, MessageSquareQuote } from 'lucide-vue-next'
 import type { Achievement, Certificate } from '~/types'
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import { useCertificateActions } from '~/composables/useCertificateActions'
@@ -115,7 +123,7 @@ const { t } = useT()
 useHead({ title: () => t('Achievements') })
 
 const { fetchAchievements, fetchCertificates } = useLearning()
-const { downloading, download, copyLink } = useCertificateActions()
+const { downloading, download, copyLink, addToLinkedIn } = useCertificateActions()
 
 const { data: achievements, pending: achievementsPending, error: achievementsError } =
   await useAsyncData('my-achievements', fetchAchievements, { server: false })
