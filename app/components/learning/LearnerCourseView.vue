@@ -155,7 +155,8 @@
           </div>
         </div>
 
-        <div v-if="auth.isAuthenticated && !isFree" class="mt-3">
+        <div v-if="auth.isAuthenticated && !isFree" class="mt-3 flex flex-wrap items-center gap-3">
+          <SubscriptionEnrollButton v-if="!isEnrolled" :slug="course.slug" :title="course.title" />
           <GiftCourseButton :course="course" />
         </div>
       </div>
@@ -243,6 +244,7 @@ import CourseReviews from '~/components/learning/CourseReviews.vue'
 import CourseChangelog from '~/components/learning/CourseChangelog.vue'
 import CourseRow from '~/components/courses/CourseRow.vue'
 import GiftCourseButton from '~/components/gifts/GiftCourseButton.vue'
+import SubscriptionEnrollButton from '~/components/learning/SubscriptionEnrollButton.vue'
 import { formatDuration, useCurriculum } from '~/composables/useCurriculum'
 import { formatDiscount } from '~/composables/useDiscounts'
 import { useLearning } from '~/composables/useLearning'
