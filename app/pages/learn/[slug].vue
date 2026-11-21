@@ -52,7 +52,15 @@
             @passed="onQuizPassed"
           />
 
-          <div v-if="!showQuiz || quizGraded === false" class="overflow-hidden rounded-[20px] border border-white/10 bg-black light:border-slate-200">
+          <CodingExercise
+            v-if="activeLesson.type === 'code'"
+            :key="`exercise-${activeLesson.id}`"
+            :lesson-id="activeLesson.id"
+            :enrolled="curriculum.enrolled"
+            @completed="onExercisePassed"
+          />
+
+          <div v-else-if="!showQuiz || quizGraded === false" class="overflow-hidden rounded-[20px] border border-white/10 bg-black light:border-slate-200">
             <iframe
               v-if="embedUrl"
               :key="`embed-${activeLesson.id}`"
@@ -142,7 +150,7 @@
                   <RotateCcw :size="14" /> {{ t('Mark incomplete') }}
                 </button>
                 <button
-                  v-if="curriculum.enrolled && !activeLesson.completed && !mustPassQuiz"
+                  v-if="curriculum.enrolled && !activeLesson.completed && !mustPassQuiz && activeLesson.type !== 'code'"
                   type="button"
                   class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
                   :disabled="saving"
@@ -230,6 +238,7 @@ import type { Certificate, Course, Curriculum, Lesson, LessonProgressResult } fr
 import ProgressBar from '~/components/learning/ProgressBar.vue'
 import LessonTranscript from '~/components/learning/LessonTranscript.vue'
 import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
+import CodingExercise from '~/components/learning/CodingExercise.vue'
 import CourseAnnouncements from '~/components/learning/CourseAnnouncements.vue'
 import CourseLiveSessions from '~/components/learning/CourseLiveSessions.vue'
 import LessonWorkspace from '~/components/learning/LessonWorkspace.vue'
@@ -299,7 +308,7 @@ const activeLesson = computed<Lesson | null>(() => {
 // Null until the quiz says whether it has questions; one without them falls back to its link
 const quizGraded = ref<boolean | null>(null)
 const showQuiz = computed(() => activeLesson.value?.type === 'quiz' && Boolean(curriculum.value?.enrolled))
-const lessonTypeLabel = computed(() => ({ video: 'Video', article: 'Article', quiz: 'Quiz' }[activeLesson.value?.type ?? 'video']))
+const lessonTypeLabel = computed(() => ({ video: 'Video', article: 'Article', quiz: 'Quiz', code: 'Coding exercise' }[activeLesson.value?.type ?? 'video']))
 const mustPassQuiz = computed(() => showQuiz.value && quizGraded.value !== false)
 watch(() => activeLesson.value?.id, () => {
   quizGraded.value = null
@@ -448,6 +457,11 @@ function applyProgress(lesson: Lesson, result: LessonProgressResult) {
     toast.success(t('Course Completed! 🎉'), t('You finished {title}.', { title: course.value?.title ?? '' }))
     loadCertificate()
   }
+}
+
+// Passing every test already completed the lesson; this fetches the new progress through the usual path
+function onExercisePassed() {
+  if (activeLesson.value && !activeLesson.value.completed) setCompleted(activeLesson.value, true)
 }
 
 function onQuizPassed(result: LessonProgressResult) {

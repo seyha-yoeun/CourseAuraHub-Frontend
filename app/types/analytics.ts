@@ -13,7 +13,7 @@ export interface LessonFunnel {
   lessonId: number
   section: string
   title: string
-  type: 'video' | 'article' | 'quiz'
+  type: 'video' | 'article' | 'quiz' | 'code'
   completedLearners: number
   completionRate: number
   // Percentage points fewer learners than the lesson before
