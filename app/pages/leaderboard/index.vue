@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <WeeklyGoalCard @changed="refresh" />
+    <WeeklyGoalCard @changed="() => refresh()" />
 
     <div v-if="pending" class="flex flex-col gap-2">
       <div v-for="i in 5" :key="i" class="h-14 animate-pulse rounded-[14px] bg-white/5 light:bg-slate-100" />
