@@ -451,8 +451,10 @@ import {
   LogOut,
   Megaphone,
   Menu,
+  MessageSquareText,
   PlayCircle,
   Receipt,
+  Repeat,
   Search,
   SearchX,
   Settings,
@@ -465,6 +467,8 @@ import {
   Trophy,
   UserCog,
   Users,
+  Video,
+  Wallet,
   X
 } from 'lucide-vue-next'
 import { useMediaQuery } from '@vueuse/core'
@@ -637,18 +641,22 @@ interface HeaderNotification {
 
 const notificationStyles: Record<AppNotification['type'], Pick<HeaderNotification, 'icon' | 'iconClass' | 'bgClass'>> = {
   enrolled: { icon: GraduationCap, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
+  subscription: { icon: Repeat, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
   payment_failed: { icon: AlertTriangle, iconClass: 'text-rose-400', bgClass: 'bg-rose-400/15 light:bg-rose-50' },
   order_refunded: { icon: Receipt, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' },
   refund_request: { icon: Receipt, iconClass: 'text-amber-400', bgClass: 'bg-amber-400/15 light:bg-amber-50' },
   certificate_issued: { icon: Award, iconClass: 'text-amber-400', bgClass: 'bg-amber-400/15 light:bg-amber-50' },
   new_lesson: { icon: PlayCircle, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
+  live_session: { icon: Video, iconClass: 'text-rose-400', bgClass: 'bg-rose-400/15 light:bg-rose-50' },
   course_updated: { icon: BookOpen, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
   new_enrollment: { icon: Users, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
   course_completed: { icon: Award, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
   member_card: { icon: CreditCard, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
+  payout: { icon: Wallet, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
   lesson_question: { icon: HelpCircle, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' },
   assignment: { icon: ClipboardCheck, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
   course_review: { icon: ShieldCheck, iconClass: 'text-amber-400', bgClass: 'bg-amber-400/15 light:bg-amber-50' },
+  course_survey: { icon: MessageSquareText, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' },
   course_reminder: { icon: BellRing, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
   announcement: { icon: Megaphone, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
   weekly_report: { icon: BarChart3, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' }

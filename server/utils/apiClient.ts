@@ -607,6 +607,68 @@ export async function proxyBackendStream(event: H3Event, path: string) {
   }
 }
 
+/**
+ * Relays a write that answers with Server-Sent Events, such as the study assistant. Errors raised before the
+ * stream opens (validation, rate limits, access) come back as JSON, so they're rethrown like backendRequest's.
+ */
+export async function proxyBackendPostStream(event: H3Event, path: string, body: unknown, fallbackMessage: string) {
+  const abort = new AbortController()
+  event.node.req.on('close', () => abort.abort())
+
+  const send = async (accessToken: string, forceCsrf = false) => {
+    const csrf = await ensureCsrfToken(event, forceCsrf)
+    return await fetch(`${getApiBase()}${path}`, {
+      method: 'POST',
+      signal: abort.signal,
+      headers: {
+        'Accept': 'text/event-stream, application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        [csrf.headerName]: csrf.token,
+        'Cookie': `${CSRF_COOKIE}=${encodeURIComponent(csrf.token)}`,
+        ...getClientHeaders(event),
+      },
+      body: JSON.stringify(body ?? {}),
+    })
+  }
+
+  let accessToken = getCookie(event, ACCESS_COOKIE) || (await refreshSession(event)).accessToken
+  let upstream = await send(accessToken)
+
+  if (upstream.status === 401) {
+    accessToken = (await refreshSession(event)).accessToken
+    upstream = await send(accessToken)
+  }
+  // A stale CSRF cookie is refused like a missing permission; try once with a fresh token
+  if (upstream.status === 403) {
+    upstream = await send(accessToken, true)
+  }
+  if (upstream.status === 401) throw createSessionExpiredError()
+
+  const contentType = upstream.headers.get('content-type') || ''
+  if (!upstream.ok || !upstream.body || !contentType.includes('text/event-stream')) {
+    const data = await upstream.json().catch(() => null) as { message?: string, errors?: Record<string, string> } | null
+    const message = data?.message || fallbackMessage
+    throw createError({
+      statusCode: upstream.ok ? 502 : upstream.status,
+      statusMessage: message,
+      data: { message, errors: data?.errors || undefined },
+    })
+  }
+
+  setResponseHeaders(event, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'X-Accel-Buffering': 'no',
+  })
+
+  try {
+    await sendStream(event, upstream.body)
+  } catch (error) {
+    if (!abort.signal.aborted) throw error
+  }
+}
+
 /** Relays a binary download, which the JSON envelope in backendRequest can't carry. */
 export async function proxyBackendFile(event: H3Event, path: string, fallbackMessage: string) {
   const request = (accessToken: string) => fetch(`${getApiBase()}${path}`, {
