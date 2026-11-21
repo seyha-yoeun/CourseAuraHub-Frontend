@@ -248,6 +248,7 @@ import { formatDiscount } from '~/composables/useDiscounts'
 import { useLearning } from '~/composables/useLearning'
 import { useRecommendations } from '~/composables/useRecommendations'
 import { useCart } from '~/composables/useCart'
+import { useFunnelAnalytics } from '~/composables/useFunnelAnalytics'
 import { useInstructorProfile } from '~/composables/useInstructorProfile'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
@@ -334,6 +335,7 @@ async function addToCart() {
   checkingOut.value = true
   try {
     await cart.add(props.course.slug)
+    funnel.track(props.course.slug, 'add_to_cart')
     toast.success(t('Added to cart'), props.course.title)
   } catch (err) {
     toast.error(t('Not added to cart'), getErrorMessage(err, t('Please try again.')))
@@ -383,7 +385,11 @@ async function toggleComplete(lesson: Lesson) {
   }
 }
 
-watch(() => props.course.slug, () => {
+// Anonymous catalog analytics for the enrollment funnel
+const funnel = useFunnelAnalytics()
+
+watch(() => props.course.slug, (slug) => {
+  funnel.track(slug, 'view')
   curriculumPending.value = true
   loadCurriculum()
   loadWishlistState()
