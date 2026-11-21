@@ -35,7 +35,7 @@
     <template v-else>
       <section v-if="grouped.upcoming.length" class="flex flex-col gap-3">
         <h2 :class="sectionTitle">{{ t('Coming up') }}</h2>
-        <LiveSessionList :sessions="grouped.upcoming" show-course @joined="refresh" />
+        <LiveSessionList :sessions="grouped.upcoming" show-course @joined="() => refresh()" />
       </section>
       <section v-if="grouped.past.length" class="flex flex-col gap-3">
         <h2 :class="sectionTitle">{{ t('Last week') }}</h2>
