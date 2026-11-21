@@ -6,7 +6,7 @@
         <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Review applications, create cards and manage balances.</p>
       </div>
       <div class="flex gap-1 rounded-xl border border-white/10 bg-white/5 p-1 light:border-slate-200 light:bg-slate-100" role="tablist">
-        <button v-for="item in tabs" :key="item.value" type="button" role="tab" :aria-selected="tab === item.value" class="cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-colors" :class="tab === item.value ? 'bg-violet-600 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'" @click="tab = item.value">
+        <button v-for="item in tabs" :key="item.value" type="button" role="tab" :aria-selected="tab === item.value" class="cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-colors" :class="tab === item.value ? 'bg-brand-500 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'" @click="tab = item.value">
           {{ item.label }}
         </button>
       </div>
@@ -124,8 +124,8 @@
 
     <!-- Create a card without an application -->
     <Teleport to="body">
-      <div v-if="creating" class="fixed inset-0 z-100 flex items-center justify-center bg-[#05050c]/82 p-4 backdrop-blur-xl" @click.self="creating = false">
-        <form class="w-full max-w-110 rounded-[20px] border border-violet-500/25 bg-[#0f1019] p-5 light:border-violet-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="create-title" @submit.prevent="create">
+      <div v-if="creating" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl" @click.self="creating = false">
+        <form class="w-full max-w-110 rounded-[20px] border border-brand-500/25 bg-[#101814] p-5 light:border-brand-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="create-title" @submit.prevent="create">
           <h2 id="create-title" class="text-lg font-bold text-slate-50 light:text-slate-900">New Member Card</h2>
           <p class="mt-1 text-xs text-white/45 light:text-slate-500">Issues a card straight away. A pending application from this learner is approved with it.</p>
           <div class="mt-4 flex flex-col gap-3">
@@ -152,11 +152,11 @@
 
     <!-- Reject with a reason -->
     <Teleport to="body">
-      <div v-if="rejecting" class="fixed inset-0 z-100 flex items-center justify-center bg-[#05050c]/82 p-4 backdrop-blur-xl" @click.self="rejecting = null">
-        <form class="w-full max-w-110 rounded-[20px] border border-rose-500/25 bg-[#0f1019] p-5 light:border-rose-200 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="reject-title" @submit.prevent="reject">
+      <div v-if="rejecting" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl" @click.self="rejecting = null">
+        <form class="w-full max-w-110 rounded-[20px] border border-rose-500/25 bg-[#101814] p-5 light:border-rose-200 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="reject-title" @submit.prevent="reject">
           <h2 id="reject-title" class="text-lg font-bold text-slate-50 light:text-slate-900">Reject {{ rejecting.fullName }}</h2>
           <p class="mt-1 text-xs text-white/45 light:text-slate-500">The learner sees this reason and can apply again.</p>
-          <textarea v-model="rejectNote" rows="3" required maxlength="500" aria-label="Reason" class="mt-3 w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none focus:border-violet-500/50 light:border-slate-300 light:bg-white light:text-slate-900" />
+          <textarea v-model="rejectNote" rows="3" required maxlength="500" aria-label="Reason" class="mt-3 w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none focus:border-brand-500/50 light:border-slate-300 light:bg-white light:text-slate-900" />
           <div class="mt-3 flex justify-end gap-2">
             <button type="button" :class="approveButton" @click="rejecting = null">Cancel</button>
             <button type="submit" :class="rejectButton" :disabled="busyId === rejecting.id || !rejectNote.trim()">Reject</button>
@@ -189,11 +189,11 @@ const { fetchApplications, approveApplication, rejectApplication, fetchCards, fe
 const route = useRoute()
 
 const baseButton = 'cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50'
-const approveButton = `${baseButton} border-violet-500/35 bg-violet-500/15 text-violet-300 hover:bg-violet-500/25 light:border-violet-200 light:bg-violet-50 light:text-violet-700`
+const approveButton = `${baseButton} border-brand-500/35 bg-brand-500/15 text-brand-300 hover:bg-brand-500/25 light:border-brand-200 light:bg-brand-50 light:text-brand-700`
 const rejectButton = `${baseButton} border-rose-500/30 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 light:border-rose-200 light:bg-rose-50 light:text-rose-600`
-const primaryButton = `${baseButton} border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500`
+const primaryButton = `${baseButton} border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600`
 const labelClass = 'text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600'
-const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
+const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
 const messageClass = 'rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500'
 
 const tabs = [

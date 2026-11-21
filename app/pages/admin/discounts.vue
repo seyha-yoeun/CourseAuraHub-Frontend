@@ -18,7 +18,7 @@
         </div>
         <button
           type="button"
-          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:-translate-y-px hover:bg-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
           @click="openCreate"
         >
           <Plus :size="16" />
@@ -37,8 +37,8 @@
     </div>
 
     <div v-else-if="!discounts.length" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center light:border-slate-200 light:bg-white">
-      <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-violet-500/30 bg-violet-500/12">
-        <Tag :size="30" class="text-violet-300 light:text-violet-700" />
+      <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-brand-500/30 bg-brand-500/12">
+        <Tag :size="30" class="text-brand-300 light:text-brand-700" />
       </div>
       <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">{{ courseFilter === ALL ? 'No discounts yet' : 'No discounts for this course' }}</h3>
       <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">Create one to put a course on sale.</p>
@@ -59,7 +59,7 @@
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
           <tr v-for="discount in discounts" :key="discount.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
             <td class="px-4 py-3">
-              <NuxtLink :to="`/courses/${discount.courseSlug}`" class="font-semibold text-slate-100 no-underline hover:text-violet-300 light:text-slate-900 light:hover:text-violet-700">{{ discount.courseTitle }}</NuxtLink>
+              <NuxtLink :to="`/courses/${discount.courseSlug}`" class="font-semibold text-slate-100 no-underline hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700">{{ discount.courseTitle }}</NuxtLink>
             </td>
             <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ formatDiscount(discount) }}</td>
             <td class="px-4 py-3">
@@ -160,7 +160,7 @@ const busyId = ref<number | null>(null)
 const pendingDelete = ref<CourseDiscount | null>(null)
 const deleting = ref(false)
 
-const iconButton = 'flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900'
+const iconButton = 'flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900'
 
 function statusOf(discount: CourseDiscount) {
   if (discount.running) return { label: 'Running', class: 'border-emerald-400/30 bg-emerald-400/12 text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700' }

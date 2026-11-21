@@ -8,7 +8,7 @@
   <!-- Timed, pooled or shuffled quizzes draw their questions when the learner starts -->
   <section v-else-if="quiz && showStartScreen" class="rounded-[20px] border border-white/10 bg-white/5 p-5 sm:p-6 light:border-slate-200 light:bg-white">
     <h2 class="flex items-center gap-2 text-base font-bold text-slate-100 light:text-slate-900">
-      <HelpCircle :size="18" class="text-violet-400" /> {{ t('Quiz') }}
+      <HelpCircle :size="18" class="text-brand-400" /> {{ t('Quiz') }}
     </h2>
     <ul class="m-0 mt-3 flex list-none flex-col gap-1.5 p-0 text-xs text-white/60 light:text-slate-600">
       <li>{{ t('Pass mark {percent}%', { percent: quiz.passPercent }) }}</li>
@@ -21,7 +21,7 @@
     <p v-if="blockedReason" class="mt-4 rounded-xl border border-amber-400/30 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-300 light:border-amber-200 light:bg-amber-50 light:text-amber-700">
       {{ blockedReason }}
     </p>
-    <button v-else type="button" class="mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60" :disabled="starting" @click="start">
+    <button v-else type="button" class="mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500 px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60" :disabled="starting" @click="start">
       <Loader2 v-if="starting" :size="14" class="animate-spin" />
       <PlayCircle v-else :size="14" />
       {{ quiz.attempts ? t('Start a new attempt') : t('Start quiz') }}
@@ -32,7 +32,7 @@
     <div class="flex flex-wrap items-start justify-between gap-3 border-b border-white/8 pb-4 light:border-slate-200">
       <div>
         <h2 class="flex items-center gap-2 text-base font-bold text-slate-100 light:text-slate-900">
-          <HelpCircle :size="18" class="text-violet-400" /> {{ t('Quiz') }}
+          <HelpCircle :size="18" class="text-brand-400" /> {{ t('Quiz') }}
         </h2>
         <p class="mt-1 text-xs text-white/45 light:text-slate-500">
           {{ t('{count} questions · Pass mark {percent}%', { count: quiz.questions.length, percent: quiz.passPercent }) }}
@@ -86,7 +86,7 @@
               <input
                 v-model="answers[question.id]"
                 type="radio"
-                class="mt-0.5 size-4 accent-violet-500"
+                class="mt-0.5 size-4 accent-brand-500"
                 :name="`question-${question.id}`"
                 :value="option.id"
                 :disabled="Boolean(result) || submitting"
@@ -117,7 +117,7 @@
       <button
         v-else
         type="button"
-        class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+        class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500 px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         :disabled="submitting || (!timed && answeredCount < quiz.questions.length)"
         @click="submit"
       >
@@ -203,7 +203,7 @@ function optionClass(questionId: number, optionId: number) {
     return 'border-rose-400/40 bg-rose-500/10 text-rose-200 light:border-rose-300 light:bg-rose-50 light:text-rose-800'
   }
   if (chosen) {
-    return 'border-violet-500/50 bg-violet-500/12 text-slate-100 light:border-violet-300 light:bg-violet-50 light:text-slate-900'
+    return 'border-brand-500/50 bg-brand-500/12 text-slate-100 light:border-brand-300 light:bg-brand-50 light:text-slate-900'
   }
   return 'border-white/8 bg-white/3 text-white/75 hover:border-white/15 light:border-slate-200 light:bg-white light:text-slate-700'
 }

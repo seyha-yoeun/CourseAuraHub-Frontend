@@ -78,7 +78,7 @@
               <td class="px-4 py-2.5 font-mono text-xs text-slate-100 light:text-slate-800">…{{ code.hint }}</td>
               <td class="px-4 py-2.5 text-white/75 light:text-slate-700">{{ code.courseTitle }}</td>
               <td class="px-4 py-2.5 text-white/60 light:text-slate-500">
-                <button v-if="code.batch" type="button" class="cursor-pointer hover:text-violet-300 light:hover:text-violet-700" @click="batchInput = batchFilter = code.batch">{{ code.batch }}</button>
+                <button v-if="code.batch" type="button" class="cursor-pointer hover:text-brand-300 light:hover:text-brand-700" @click="batchInput = batchFilter = code.batch">{{ code.batch }}</button>
                 <span v-else>-</span>
               </td>
               <td class="px-4 py-2.5 text-white/70 light:text-slate-600">{{ code.uses }} / {{ code.maxUses }}</td>

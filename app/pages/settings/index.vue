@@ -11,7 +11,7 @@
 
       <button
         type="button"
-        class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5.5 py-2.5 text-[13px] font-semibold text-white transition-all enabled:hover:from-violet-500 enabled:hover:to-indigo-500 enabled:hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+        class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5.5 py-2.5 text-[13px] font-semibold text-white transition-all enabled:hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
         :disabled="saving || pending || Boolean(loadErrorMessage)"
         @click="saveSettings"
       >
@@ -48,7 +48,7 @@
       <p class="text-xs text-white/40 light:text-slate-500">{{ loadErrorMessage }}</p>
       <button
         type="button"
-        class="mt-1 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5.5 py-2.5 text-[13px] font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+        class="mt-1 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5.5 py-2.5 text-[13px] font-semibold text-white transition-all hover:bg-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
         @click="refresh()"
       >
         <RefreshCw :size="16" />
@@ -60,7 +60,7 @@
       <!-- Profile Settings -->
       <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
         <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
-          <User :size="20" class="text-violet-400" />
+          <User :size="20" class="text-brand-400" />
           <div>
             <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Admin Profile</h3>
             <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Personal details displayed across the platform</p>
@@ -71,7 +71,7 @@
           <img
             :src="form.profile.avatar || auth.userAvatar"
             alt="Avatar"
-            class="size-13 rounded-full border-2 border-violet-500/40 bg-violet-500/15"
+            class="size-13 rounded-full border-2 border-brand-500/40 bg-brand-500/15"
           >
           <div class="flex flex-col">
             <span class="text-[13px] font-semibold text-slate-100 light:text-slate-900">Profile Avatar</span>
@@ -83,7 +83,7 @@
           <div class="flex flex-col gap-3 sm:flex-row">
             <div class="flex flex-1 flex-col gap-1.5">
               <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Full Name</label>
-              <input v-model="form.profile.name" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
+              <input v-model="form.profile.name" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600" >
             </div>
             <div class="flex flex-1 flex-col gap-1.5">
               <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Email Address</label>
@@ -98,17 +98,17 @@
 
           <div class="flex flex-col gap-1.5">
             <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Bio</label>
-            <textarea v-model="form.profile.bio" rows="3" class="w-full resize-y rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" />
+            <textarea v-model="form.profile.bio" rows="3" class="w-full resize-y rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600" />
           </div>
 
           <div class="flex flex-col gap-3 sm:flex-row">
             <div class="flex flex-1 flex-col gap-1.5">
               <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Website</label>
-              <input v-model="form.profile.website" type="url" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
+              <input v-model="form.profile.website" type="url" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600" >
             </div>
             <div class="flex flex-1 flex-col gap-1.5">
               <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Twitter / X Handle</label>
-              <input v-model="form.profile.twitter" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
+              <input v-model="form.profile.twitter" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600" >
             </div>
           </div>
         </div>
@@ -129,12 +129,12 @@
           <div class="flex flex-col gap-3.5">
             <div class="flex flex-col gap-1.5">
               <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Platform Name</label>
-              <input v-model="form.platformName" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
+              <input v-model="form.platformName" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600" >
             </div>
 
             <div class="flex flex-col gap-1.5">
               <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Platform Tagline</label>
-              <input v-model="form.platformTagline" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600" >
+              <input v-model="form.platformTagline" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600" >
             </div>
 
             <div class="flex flex-col gap-3 sm:flex-row">
@@ -170,7 +170,7 @@
               <input
                 v-model="form.notifications.newEnrollment"
                 type="checkbox"
-                class="size-4.5 shrink-0 cursor-pointer accent-violet-600"
+                class="size-4.5 shrink-0 cursor-pointer accent-brand-600"
               >
             </label>
 
@@ -182,7 +182,7 @@
               <input
                 v-model="form.notifications.courseCompletion"
                 type="checkbox"
-                class="size-4.5 shrink-0 cursor-pointer accent-violet-600"
+                class="size-4.5 shrink-0 cursor-pointer accent-brand-600"
               >
             </label>
 
@@ -194,7 +194,7 @@
               <input
                 v-model="form.notifications.weeklyReport"
                 type="checkbox"
-                class="size-4.5 shrink-0 cursor-pointer accent-violet-600"
+                class="size-4.5 shrink-0 cursor-pointer accent-brand-600"
               >
             </label>
           </div>

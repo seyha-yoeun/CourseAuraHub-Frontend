@@ -8,7 +8,7 @@
       <h1 :class="authTitle">Completing sign in…</h1>
       <p :class="authSubtitle">Hang tight while we confirm your account with the provider.</p>
       <div class="mt-7 h-1 overflow-hidden rounded-full bg-white/8 light:bg-slate-200" aria-hidden="true">
-        <div class="h-full w-1/3 animate-[auth-progress_1.2s_ease-in-out_infinite] rounded-full bg-emerald-400 motion-reduce:animate-none light:bg-emerald-600" />
+        <div class="h-full w-1/3 animate-[auth-progress_1.2s_ease-in-out_infinite] rounded-full bg-brand-400 motion-reduce:animate-none light:bg-brand-600" />
       </div>
     </div>
 

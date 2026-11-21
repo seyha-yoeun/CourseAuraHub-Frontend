@@ -6,7 +6,7 @@
         v-for="link in links"
         :key="link.to"
         :to="link.to"
-        class="group relative text-xs text-white/35 no-underline transition-colors duration-200 hover:text-violet-300 focus-visible:outline-none focus-visible:text-violet-300 light:text-slate-500 light:hover:text-violet-700"
+        class="group relative text-xs text-white/35 no-underline transition-colors duration-200 hover:text-brand-300 focus-visible:outline-none focus-visible:text-brand-300 light:text-slate-500 light:hover:text-brand-700"
       >
         {{ link.label }}
         <span aria-hidden="true" class="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100" />

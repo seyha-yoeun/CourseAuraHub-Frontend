@@ -71,7 +71,7 @@
             :describedby="errors.confirmPassword ? 'confirmPassword-error' : undefined"
           />
           <p v-if="errors.confirmPassword" id="confirmPassword-error" :class="authFieldError">{{ errors.confirmPassword }}</p>
-          <p v-else-if="passwordsMatch" class="flex items-center gap-1.5 text-[12.5px] text-emerald-400 light:text-emerald-700">
+          <p v-else-if="passwordsMatch" class="flex items-center gap-1.5 text-[12.5px] text-brand-400 light:text-brand-700">
             <Check :size="13" aria-hidden="true" /> Passwords match
           </p>
         </div>

@@ -12,7 +12,7 @@
       :key="tab.id"
       :to="tab.to"
       :aria-current="active === tab.id ? 'page' : undefined"
-      class="relative z-1 rounded-[7px] py-1.5 text-center text-[13.5px] font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/40"
+      class="relative z-1 rounded-[7px] py-1.5 text-center text-[13.5px] font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/40"
       :class="active === tab.id
         ? 'text-slate-50 light:text-slate-900'
         : 'text-white/55 hover:text-slate-100 light:text-slate-500 light:hover:text-slate-800'"

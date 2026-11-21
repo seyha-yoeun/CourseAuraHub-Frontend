@@ -12,7 +12,7 @@
         >
           <span
             v-if="unreadCount > 0"
-            class="rounded-full border border-violet-500/35 bg-violet-500/20 px-1.75 py-0.5 text-[10px] font-bold text-violet-300 light:border-violet-200 light:bg-violet-100 light:text-violet-700"
+            class="rounded-full border border-brand-500/35 bg-brand-500/20 px-1.75 py-0.5 text-[10px] font-bold text-brand-300 light:border-brand-200 light:bg-brand-100 light:text-brand-700"
           >
             {{ unreadCount }} new
           </span>
@@ -23,14 +23,14 @@
         <button
           v-if="unreadCount > 0"
           type="button"
-          class="cursor-pointer rounded-md px-1.5 py-1 text-[11px] font-semibold whitespace-nowrap text-violet-300 transition-colors duration-200 hover:bg-violet-500/15 hover:text-violet-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-violet-700 light:hover:bg-violet-50 light:hover:text-violet-800"
+          class="cursor-pointer rounded-md px-1.5 py-1 text-[11px] font-semibold whitespace-nowrap text-brand-300 transition-colors duration-200 hover:bg-brand-500/15 hover:text-brand-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-brand-700 light:hover:bg-brand-50 light:hover:text-brand-800"
           @click="$emit('mark-all-read')"
         >
           {{ t('Mark all read') }}
         </button>
         <button
           type="button"
-          class="flex size-7.5 cursor-pointer items-center justify-center rounded-lg text-white/40 transition-all duration-200 hover:bg-white/8 hover:text-white active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-500 light:hover:bg-slate-100 light:hover:text-slate-900"
+          class="flex size-7.5 cursor-pointer items-center justify-center rounded-lg text-white/40 transition-all duration-200 hover:bg-white/8 hover:text-white active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-500 light:hover:bg-slate-100 light:hover:text-slate-900"
           :aria-label="t('Close notifications')"
           @click="$emit('close')"
         >
@@ -47,8 +47,8 @@
         type="button"
         role="tab"
         :aria-selected="unreadOnly === item.unreadOnly"
-        class="cursor-pointer rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
-        :class="unreadOnly === item.unreadOnly ? 'bg-violet-600 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'"
+        class="cursor-pointer rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
+        :class="unreadOnly === item.unreadOnly ? 'bg-brand-500 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'"
         @click="$emit('update:unread-only', item.unreadOnly)"
       >
         {{ t(item.label) }}
@@ -75,13 +75,13 @@
       <button
         type="button"
         class="notification-item-in group relative flex w-full cursor-pointer items-start gap-3 border-b border-white/4 px-4 py-3 text-left transition-colors duration-200 ease-out hover:bg-white/4 focus-visible:bg-white/6 focus-visible:outline-none light:border-slate-100 light:hover:bg-slate-50 light:focus-visible:bg-slate-50"
-        :class="{ 'bg-violet-500/[0.07] light:bg-violet-50': !notif.read }"
+        :class="{ 'bg-brand-500/[0.07] light:bg-brand-50': !notif.read }"
         :style="{ animationDelay: `${Math.min(index, 8) * 35}ms` }"
         @click="$emit('mark-read', notif)"
       >
         <span
           v-if="!notif.read"
-          class="absolute top-1/2 left-0 h-7 w-0.5 -translate-y-1/2 rounded-r-full bg-violet-500/80"
+          class="absolute top-1/2 left-0 h-7 w-0.5 -translate-y-1/2 rounded-r-full bg-brand-500/80"
           aria-hidden="true"
         />
 
@@ -100,14 +100,14 @@
 
         <span
           v-if="!notif.read"
-          class="mt-1.5 size-1.5 shrink-0 rounded-full bg-violet-600 shadow-[0_0_6px_rgba(124,58,237,0.7)] light:bg-violet-500"
+          class="mt-1.5 size-1.5 shrink-0 rounded-full bg-brand-500 light:bg-brand-500"
           :aria-label="t('Unread')"
         />
       </button>
       <button
         v-if="removable"
         type="button"
-        class="absolute right-2 bottom-2 flex size-6 cursor-pointer items-center justify-center rounded-md text-white/35 opacity-0 transition-opacity group-hover/row:opacity-100 hover:bg-white/8 hover:text-rose-300 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-400 light:hover:bg-slate-100 light:hover:text-rose-600"
+        class="absolute right-2 bottom-2 flex size-6 cursor-pointer items-center justify-center rounded-md text-white/35 opacity-0 transition-opacity group-hover/row:opacity-100 hover:bg-white/8 hover:text-rose-300 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-400 light:hover:bg-slate-100 light:hover:text-rose-600"
         :aria-label="`Delete notification: ${notif.title}`"
         @click="$emit('remove', notif)"
       >
@@ -118,7 +118,7 @@
       <button
         v-if="hasMore"
         type="button"
-        class="cursor-pointer px-4 py-2.5 text-[11px] font-semibold text-violet-300 transition-colors hover:bg-white/4 hover:text-violet-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-violet-700 light:hover:bg-slate-50"
+        class="cursor-pointer px-4 py-2.5 text-[11px] font-semibold text-brand-300 transition-colors hover:bg-white/4 hover:text-brand-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-brand-700 light:hover:bg-slate-50"
         @click="$emit('load-more')"
       >
         {{ t('Load older notifications') }}
@@ -129,7 +129,7 @@
     <div v-if="showAnalyticsLink" class="border-t border-white/6 bg-black/20 px-4 py-2.5 text-center light:border-slate-200 light:bg-slate-50">
       <NuxtLink
         to="/analytics"
-        class="group inline-flex items-center gap-1 text-[11px] font-semibold text-violet-300 no-underline transition-colors duration-200 hover:text-violet-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-violet-700 light:hover:text-violet-800"
+        class="group inline-flex items-center gap-1 text-[11px] font-semibold text-brand-300 no-underline transition-colors duration-200 hover:text-brand-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-brand-700 light:hover:text-brand-800"
         @click="$emit('close')"
       >
         <span>{{ t('View Full Analytics Activity') }}</span>

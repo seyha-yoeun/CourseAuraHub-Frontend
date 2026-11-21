@@ -16,7 +16,7 @@
     >
     <button
       type="button"
-      class="absolute inset-y-1.5 right-1.5 inline-flex cursor-pointer items-center gap-1.5 rounded-[7px] px-2.5 text-[12.5px] font-medium text-white/55 transition-colors hover:bg-white/6 hover:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/40 disabled:cursor-not-allowed light:text-slate-500 light:hover:bg-slate-100 light:hover:text-slate-800"
+      class="absolute inset-y-1.5 right-1.5 inline-flex cursor-pointer items-center gap-1.5 rounded-[7px] px-2.5 text-[12.5px] font-medium text-white/55 transition-colors hover:bg-white/6 hover:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/40 disabled:cursor-not-allowed light:text-slate-500 light:hover:bg-slate-100 light:hover:text-slate-800"
       :aria-label="visible ? 'Hide password' : 'Show password'"
       :aria-pressed="visible"
       :aria-controls="id"

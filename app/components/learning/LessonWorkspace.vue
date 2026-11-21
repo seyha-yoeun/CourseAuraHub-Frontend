@@ -8,7 +8,7 @@
         role="tab"
         :aria-selected="tab === item.value"
         class="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors"
-        :class="tab === item.value ? 'bg-violet-600 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'"
+        :class="tab === item.value ? 'bg-brand-500 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'"
         @click="tab = item.value"
       >
         {{ t(item.label) }}
@@ -29,17 +29,17 @@
           <template v-else>{{ assignment.submission.passed ? t('Passed') : t('Not passed yet') }}: {{ assignment.submission.score }}/100</template>
         </p>
         <p v-if="assignment.submission.feedback" class="mt-1 whitespace-pre-line text-xs text-white/45 light:text-slate-500">{{ assignment.submission.feedback }}</p>
-        <a v-if="assignment.submission.fileUrl" :href="assignment.submission.fileUrl" target="_blank" rel="noopener noreferrer" class="mt-1 inline-block text-xs font-semibold text-violet-300 light:text-violet-700">
+        <a v-if="assignment.submission.fileUrl" :href="assignment.submission.fileUrl" target="_blank" rel="noopener noreferrer" class="mt-1 inline-block text-xs font-semibold text-brand-300 light:text-brand-700">
           {{ assignment.submission.fileName || t('Your file') }}
         </a>
       </div>
 
       <form v-if="!assignment.submission?.passed" class="flex flex-col gap-2.5" @submit.prevent="submitWork">
-        <textarea v-model="workComment" rows="3" maxlength="4000" :placeholder="t('Add a comment')" :aria-label="t('Add a comment')" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" />
+        <textarea v-model="workComment" rows="3" maxlength="4000" :placeholder="t('Add a comment')" :aria-label="t('Add a comment')" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" />
         <div class="flex flex-wrap items-center gap-2">
           <FileUploadButton v-model:busy="uploading" purpose="ASSIGNMENT_SUBMISSION" accept="application/pdf,image/jpeg,image/png" label="Attach a file" @uploaded="workFile = $event" />
           <span v-if="workFile" class="text-xs text-white/45 light:text-slate-500">{{ workFile.fileName }}</span>
-          <button type="submit" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500 ml-auto" :disabled="working || uploading || (!workFile && !workComment.trim())">{{ assignment.submission ? t('Resubmit') : t('Submit') }}</button>
+          <button type="submit" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600 ml-auto" :disabled="working || uploading || (!workFile && !workComment.trim())">{{ assignment.submission ? t('Resubmit') : t('Submit') }}</button>
         </div>
       </form>
     </div>
@@ -47,8 +47,8 @@
     <!-- Q&A -->
     <div v-else-if="tab === 'questions'" class="mt-4 flex flex-col gap-3">
       <form class="flex items-start gap-2" @submit.prevent="ask">
-        <textarea v-model="newQuestion" rows="2" maxlength="4000" :placeholder="t('Ask a question about this lesson')" :aria-label="t('Ask a question about this lesson')" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" />
-        <button type="submit" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500 shrink-0" :disabled="working || !newQuestion.trim()">{{ t('Ask') }}</button>
+        <textarea v-model="newQuestion" rows="2" maxlength="4000" :placeholder="t('Ask a question about this lesson')" :aria-label="t('Ask a question about this lesson')" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" />
+        <button type="submit" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600 shrink-0" :disabled="working || !newQuestion.trim()">{{ t('Ask') }}</button>
       </form>
       <p v-if="error" class="text-[13px] text-rose-400">{{ error }}</p>
       <p v-else-if="!questions.length" class="text-xs text-white/45 light:text-slate-500">{{ t('No questions yet.') }}</p>
@@ -70,7 +70,7 @@
           <li v-for="answer in question.answers" :key="answer.id">
             <div class="flex flex-wrap items-center gap-2">
               <span class="text-xs font-semibold text-[13px] text-slate-100 light:text-slate-900">{{ answer.authorName }}</span>
-              <span v-if="answer.fromStaff" class="rounded-full border border-violet-500/30 bg-violet-500/15 px-2 py-px text-[10px] font-semibold text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">{{ t('Staff') }}</span>
+              <span v-if="answer.fromStaff" class="rounded-full border border-brand-500/30 bg-brand-500/15 px-2 py-px text-[10px] font-semibold text-brand-300 light:border-brand-200 light:bg-brand-50 light:text-brand-700">{{ t('Staff') }}</span>
               <span class="text-xs text-white/45 light:text-slate-500">{{ formatTimeAgo(answer.createdAt) }}</span>
               <button v-if="answer.canDelete" type="button" class="ml-auto cursor-pointer text-[11px] font-semibold text-rose-400" :disabled="working" @click="removeAnswer(question, answer.id)">{{ t('Delete') }}</button>
               <ReportButton v-else target-type="answer" :target-id="answer.id" class="ml-auto" />
@@ -80,7 +80,7 @@
         </ul>
 
         <form class="mt-2 flex items-center gap-2" @submit.prevent="reply(question)">
-          <input v-model="replies[question.id]" type="text" maxlength="4000" :placeholder="t('Write a reply')" :aria-label="t('Write a reply')" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400">
+          <input v-model="replies[question.id]" type="text" maxlength="4000" :placeholder="t('Write a reply')" :aria-label="t('Write a reply')" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400">
           <button type="submit" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-white/10 bg-white/5 text-white/75 hover:bg-white/9 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700 shrink-0" :disabled="working || !replies[question.id]?.trim()">{{ t('Reply') }}</button>
         </form>
       </article>
@@ -89,16 +89,16 @@
     <!-- Notes -->
     <div v-else-if="tab === 'notes'" class="mt-4 flex flex-col gap-3">
       <form class="flex flex-col gap-2" @submit.prevent="saveNote">
-        <textarea v-model="newNote" rows="2" maxlength="4000" :placeholder="t('Write a private note')" :aria-label="t('Write a private note')" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" />
+        <textarea v-model="newNote" rows="2" maxlength="4000" :placeholder="t('Write a private note')" :aria-label="t('Write a private note')" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" />
         <div class="flex flex-wrap items-center justify-end gap-2">
           <button v-if="positionSeconds !== null" type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-white/10 bg-white/5 text-white/75 hover:bg-white/9 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700" :disabled="working" @click="bookmark">{{ t('Bookmark {time}', { time: formatPosition(positionSeconds) }) }}</button>
-          <button type="submit" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500" :disabled="working || !newNote.trim()">{{ t('Save note') }}</button>
+          <button type="submit" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600" :disabled="working || !newNote.trim()">{{ t('Save note') }}</button>
         </div>
       </form>
       <p v-if="error" class="text-[13px] text-rose-400">{{ error }}</p>
       <p v-else-if="!notes.length" class="text-xs text-white/45 light:text-slate-500">{{ t('No notes yet. Only you can see these.') }}</p>
       <article v-for="note in notes" :key="note.id" class="flex items-start gap-2 rounded-xl border border-white/8 bg-white/3 p-3 light:border-slate-200 light:bg-slate-50">
-        <button v-if="note.positionSeconds !== null" type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-violet-500/35 bg-violet-500/15 text-violet-300 hover:bg-violet-500/25 light:border-violet-200 light:bg-violet-50 light:text-violet-700 shrink-0 font-mono" @click="$emit('seek', note.positionSeconds)">{{ formatPosition(note.positionSeconds) }}</button>
+        <button v-if="note.positionSeconds !== null" type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-brand-500/35 bg-brand-500/15 text-brand-300 hover:bg-brand-500/25 light:border-brand-200 light:bg-brand-50 light:text-brand-700 shrink-0 font-mono" @click="$emit('seek', note.positionSeconds)">{{ formatPosition(note.positionSeconds) }}</button>
         <p class="min-w-0 flex-1 whitespace-pre-line text-[13px] text-slate-100 light:text-slate-900">{{ note.body || t('Bookmark') }}</p>
         <button type="button" class="shrink-0 cursor-pointer text-[11px] font-semibold text-rose-400" :disabled="working" @click="removeNote(note.id)">{{ t('Delete') }}</button>
       </article>

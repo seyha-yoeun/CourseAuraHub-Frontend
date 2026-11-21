@@ -19,7 +19,7 @@
         :key="rule.label"
         class="flex items-center gap-1.5 transition-colors duration-200"
         :class="rule.met
-          ? 'text-emerald-400 light:text-emerald-700'
+          ? 'text-brand-400 light:text-brand-700'
           : flagUnmet ? 'font-medium text-rose-400 light:text-rose-600' : 'text-white/45 light:text-slate-500'"
       >
         <CircleCheck v-if="rule.met" :size="13" class="shrink-0" aria-hidden="true" />
@@ -66,15 +66,15 @@ const strengthLevel = computed(() => Math.max(0, passedChecks.value - 1))
 const barColor = computed(() => [
   'bg-rose-500',
   'bg-amber-400',
-  'bg-emerald-400 light:bg-emerald-500',
-  'bg-emerald-500 light:bg-emerald-600'
+  'bg-brand-400 light:bg-brand-500',
+  'bg-brand-500 light:bg-brand-600'
 ][strengthLevel.value])
 
 const textColor = computed(() => [
   'text-rose-400 light:text-rose-600',
   'text-amber-400 light:text-amber-600',
-  'text-emerald-400 light:text-emerald-600',
-  'text-emerald-400 light:text-emerald-700'
+  'text-brand-400 light:text-brand-600',
+  'text-brand-400 light:text-brand-700'
 ][strengthLevel.value])
 
 const strengthLabel = computed(() => ['Weak', 'Fair', 'Good', 'Strong'][strengthLevel.value])

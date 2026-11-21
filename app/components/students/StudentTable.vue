@@ -8,7 +8,7 @@
           v-model="searchQuery"
           type="text"
           placeholder="Search by student name, email, country..."
-          class="w-full rounded-[10px] border border-white/9 bg-white/4 py-2.5 pr-3.5 pl-9.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/35 focus:border-violet-500/50 focus:bg-white/7 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600"
+          class="w-full rounded-[10px] border border-white/9 bg-white/4 py-2.5 pr-3.5 pl-9.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/35 focus:border-brand-500/50 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600"
         >
       </div>
 
@@ -50,9 +50,9 @@
             <!-- Student profile -->
             <td class="border-b border-white/4 px-3.5 py-3.5 text-white/80 light:border-slate-100 light:text-slate-700">
               <div class="flex items-center gap-3">
-                <img :src="student.avatar" :alt="student.name" class="size-9.5 shrink-0 rounded-full border-2 border-violet-500/40 bg-violet-500/20" >
+                <img :src="student.avatar" :alt="student.name" class="size-9.5 shrink-0 rounded-full border-2 border-brand-500/40 bg-brand-500/20" >
                 <div class="flex flex-col">
-                  <button type="button" class="cursor-pointer text-left font-semibold text-slate-50 hover:text-violet-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-900 light:hover:text-violet-700" @click="$emit('select', student.id)">{{ student.name }}</button>
+                  <button type="button" class="cursor-pointer text-left font-semibold text-slate-50 hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-900 light:hover:text-brand-700" @click="$emit('select', student.id)">{{ student.name }}</button>
                   <span class="text-[11px] text-white/40 light:text-slate-500">{{ student.email }}</span>
                 </div>
               </div>
@@ -66,7 +66,7 @@
             <!-- Enrolled courses count -->
             <td class="hidden border-b border-white/4 px-3.5 py-3.5 sm:table-cell light:border-slate-100">
               <span class="inline-flex items-center gap-1.25 text-xs font-medium text-white/75 light:text-slate-700">
-                <BookOpen :size="13" class="text-violet-400" />
+                <BookOpen :size="13" class="text-brand-400" />
                 {{ student.enrolledCourses ? student.enrolledCourses.length : 0 }} courses
               </span>
             </td>

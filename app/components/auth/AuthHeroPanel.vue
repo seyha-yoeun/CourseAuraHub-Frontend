@@ -1,6 +1,6 @@
 <template>
   <!-- Always a deep-green panel; only the inner course card switches with the theme. -->
-  <div class="relative flex h-full flex-col overflow-hidden rounded-[24px] border border-white/6 bg-[#0b1f18] px-[clamp(2rem,4vw,3.5rem)] py-[clamp(2rem,5vh,3.25rem)] text-white light:border-transparent light:bg-[#0f2f24]">
+  <div class="relative flex h-full flex-col overflow-hidden rounded-[24px] border border-white/6 bg-[#0b1f18] px-[clamp(2rem,4vw,3.5rem)] py-[clamp(2rem,5vh,3.25rem)] text-white light:border-transparent light:bg-forest-900">
     <!-- Ambient light + faint grid -->
     <div class="pointer-events-none absolute inset-0" aria-hidden="true">
       <span class="absolute -top-1/4 -right-1/4 size-[70%] rounded-full bg-[radial-gradient(circle,rgba(52,211,153,0.16),transparent_65%)] blur-2xl" />
@@ -10,10 +10,10 @@
 
     <!-- Pitch -->
     <div v-motion="enter(0)" class="relative max-w-[520px]">
-      <p class="text-[11.5px] font-semibold tracking-[0.14em] text-emerald-300/80 uppercase">Courses built by working engineers</p>
+      <p class="text-[11.5px] font-semibold tracking-[0.14em] text-brand-300/80 uppercase">Courses built by working engineers</p>
       <h2 class="mt-3.5 text-[clamp(26px,1.6vw+12px,38px)] leading-[1.12] font-bold tracking-[-0.025em] text-white">
         Learn the skills teams
-        <em class="font-['Instrument_Serif',ui-serif,Georgia,serif] text-[1.08em] font-normal tracking-normal text-emerald-300">actually</em>
+        <em class="font-['Instrument_Serif',ui-serif,Georgia,serif] text-[1.08em] font-normal tracking-normal text-brand-300">actually</em>
         hire for — one real project at a time.
       </h2>
     </div>
@@ -28,20 +28,20 @@
             <div class="pl-4">function_name = <span class="text-amber-200">"orders-api"</span></div>
             <div class="pl-4">runtime&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="text-amber-200">"nodejs20.x"</span></div>
             <div class="pl-4 shorter:hidden">handler&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="text-amber-200">"index.handler"</span></div>
-            <div class="pl-4 opacity-50 shorter:hidden">memory_size&nbsp;&nbsp;= <span class="text-violet-300">512</span></div>
-            <span class="absolute bottom-3 left-4 rounded-full border border-emerald-300/30 bg-emerald-300/15 px-2.5 py-0.5 font-sans text-[10.5px] font-semibold text-emerald-200">Bestseller</span>
+            <div class="pl-4 opacity-50 shorter:hidden">memory_size&nbsp;&nbsp;= <span class="text-brand-300">512</span></div>
+            <span class="absolute bottom-3 left-4 rounded-full border border-brand-300/30 bg-brand-300/15 px-2.5 py-0.5 font-sans text-[10.5px] font-semibold text-brand-200">Bestseller</span>
             <span class="absolute right-4 bottom-2.5 flex size-8 items-center justify-center rounded-full bg-white text-[#0a110f] shadow-md">
               <Play :size="13" class="ml-0.5 fill-current" />
             </span>
           </div>
           <div class="p-4">
             <p class="flex flex-wrap items-center gap-x-1.5 text-[11px] text-white/45 light:text-slate-500">
-              <span class="font-semibold text-emerald-400 light:text-emerald-700">Cloud</span>
+              <span class="font-semibold text-brand-400 light:text-brand-700">Cloud</span>
               <span>·</span><span>Intermediate</span><span>·</span><span>42 lessons</span><span>·</span><span>18h</span>
             </p>
             <p class="mt-1.5 text-[15px] leading-snug font-bold text-white light:text-slate-900">Cloud Architecture on AWS: Ship a Production-Ready API</p>
             <div class="mt-3 flex items-center gap-2.5">
-              <span class="flex size-7 items-center justify-center rounded-full bg-violet-500 text-[10px] font-bold text-white">PR</span>
+              <span class="flex size-7 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white">PR</span>
               <div class="min-w-0 leading-tight">
                 <p class="text-[12px] font-semibold text-white/90 light:text-slate-800">Priya Raman</p>
                 <p class="truncate text-[10.5px] text-white/45 light:text-slate-500">Staff Engineer · 11 yrs in cloud infra</p>
@@ -53,7 +53,7 @@
                 <span>6,320 enrolled</span>
               </div>
               <div class="mt-2.5 h-1.5 overflow-hidden rounded-full bg-white/10 light:bg-slate-200">
-                <div class="h-full w-[34%] rounded-full bg-emerald-500 light:bg-emerald-700" />
+                <div class="h-full w-[34%] rounded-full bg-brand-500 light:bg-brand-700" />
               </div>
               <div class="mt-1.5 flex justify-between text-[10.5px] text-white/45 light:text-slate-500">
                 <span>Your progress · Lesson 14 of 42</span><span>34%</span>
@@ -74,7 +74,7 @@
               <span class="block text-[10.5px] text-white/50">Backend Engineer</span>
             </span>
           </figcaption>
-          <span class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-300/25 bg-emerald-300/10 px-2.5 py-1 text-[10.5px] font-medium text-emerald-200">
+          <span class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-brand-300/25 bg-brand-300/10 px-2.5 py-1 text-[10.5px] font-medium text-brand-200">
             <Check :size="11" /> Verified learner · 4 courses
           </span>
         </figure>
@@ -93,7 +93,7 @@
         <span
           v-for="avatar in avatars"
           :key="avatar.initials"
-          class="flex size-8 items-center justify-center rounded-full text-[10px] font-bold text-white ring-2 ring-[#0b1f18] light:ring-[#0f2f24]"
+          class="flex size-8 items-center justify-center rounded-full text-[10px] font-bold text-white ring-2 ring-[#0b1f18] light:ring-forest-900"
           :class="avatar.color"
         >{{ avatar.initials }}</span>
       </div>
@@ -113,7 +113,7 @@ const stats = [
 
 const avatars = [
   { initials: 'AK', color: 'bg-teal-600' },
-  { initials: 'JL', color: 'bg-violet-500' },
+  { initials: 'JL', color: 'bg-brand-500' },
   { initials: 'SM', color: 'bg-orange-500' },
   { initials: 'TN', color: 'bg-sky-600' },
 ]

@@ -41,7 +41,7 @@
           </div>
           <!-- The track is the hit target; the bar's rounded end sits at its value -->
           <div class="mt-1.5 h-3 rounded-full bg-white/6 py-0 light:bg-slate-100" :title="`${step.label}: ${step.count.toLocaleString()} (${formatPercent(step.fromFirst ?? 100)} of the first step)`">
-            <div class="h-full rounded-full bg-violet-500 transition-[width] duration-500 group-hover:bg-violet-400 light:bg-violet-600 light:group-hover:bg-violet-700" :style="{ width: barWidth(step) }" />
+            <div class="h-full rounded-full bg-brand-500 transition-[width] duration-500 group-hover:bg-brand-400 light:bg-brand-600 light:group-hover:bg-brand-700" :style="{ width: barWidth(step) }" />
           </div>
         </li>
       </ol>
@@ -153,7 +153,7 @@ function cell(cohort: RetentionCohort, offset: number) {
 function cellColor(rate: number | null | undefined) {
   if (rate === null || rate === undefined) return 'transparent'
   const alpha = 0.08 + Math.min(1, Math.max(0, Number(rate) / 100)) * 0.82
-  return `rgba(124, 58, 237, ${alpha.toFixed(2)})`
+  return `rgba(14,124,90, ${alpha.toFixed(2)})`
 }
 
 function cellText(rate: number | null | undefined) {

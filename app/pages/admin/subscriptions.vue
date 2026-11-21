@@ -27,7 +27,7 @@
         role="tab"
         :aria-selected="tab === item.value"
         class="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors"
-        :class="tab === item.value ? 'bg-violet-600 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'"
+        :class="tab === item.value ? 'bg-brand-500 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'"
         @click="tab = item.value"
       >
         {{ item.label }}
@@ -166,7 +166,7 @@
           />
         </div>
         <label class="flex items-center gap-2 text-[13px] text-slate-100 sm:col-span-2 light:text-slate-900">
-          <input v-model="form.active" type="checkbox" class="accent-violet-500">
+          <input v-model="form.active" type="checkbox" class="accent-brand-500">
           Learners can subscribe to this plan
         </label>
       </div>

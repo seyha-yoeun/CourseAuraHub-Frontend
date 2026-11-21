@@ -57,7 +57,7 @@
       <div v-else-if="!certificates?.length" class="flex flex-col items-center rounded-2xl border border-white/10 bg-white/4 px-6 py-10 text-center light:border-slate-200 light:bg-white">
         <Award :size="28" class="text-white/30 light:text-slate-400" />
         <p class="mt-2 text-[13px] text-white/50 light:text-slate-500">{{ t('Finish every lesson in a course to earn its certificate.') }}</p>
-        <NuxtLink to="/my-learning" class="mt-3 text-xs font-semibold text-violet-300 light:text-violet-700">{{ t('Go to My Learning') }}</NuxtLink>
+        <NuxtLink to="/my-learning" class="mt-3 text-xs font-semibold text-brand-300 light:text-brand-700">{{ t('Go to My Learning') }}</NuxtLink>
       </div>
       <ul v-else class="flex flex-col gap-3">
         <li
@@ -67,7 +67,7 @@
         >
           <img :src="certificate.thumbnail" alt="" class="hidden aspect-video w-28 shrink-0 rounded-lg object-cover sm:block">
           <div class="min-w-0 flex-1">
-            <NuxtLink :to="`/courses/${certificate.courseSlug}`" class="text-sm font-bold text-slate-100 no-underline hover:text-violet-300 light:text-slate-900 light:hover:text-violet-700">
+            <NuxtLink :to="`/courses/${certificate.courseSlug}`" class="text-sm font-bold text-slate-100 no-underline hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700">
               {{ certificate.courseTitle }}
             </NuxtLink>
             <p class="text-xs text-white/50 light:text-slate-500">{{ certificate.instructor }} · Issued {{ formatDate(certificate.issuedAt) }}</p>
@@ -99,7 +99,7 @@
             </button>
             <NuxtLink
               :to="verifyPath(certificate)"
-              class="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold text-violet-300 no-underline hover:bg-violet-500/30 hover:text-white light:border-violet-300 light:bg-violet-50 light:text-violet-700"
+              class="inline-flex items-center gap-1.5 rounded-lg border border-brand-500/35 bg-brand-500/15 px-3 py-1.5 text-xs font-semibold text-brand-300 no-underline hover:bg-brand-500/30 hover:text-white light:border-brand-300 light:bg-brand-50 light:text-brand-700"
             >
               <BadgeCheck :size="14" /> {{ t('View') }}
             </NuxtLink>

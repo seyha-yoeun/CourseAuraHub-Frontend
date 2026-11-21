@@ -27,7 +27,7 @@
           role="tab"
           :aria-selected="tab === item.value"
           class="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors"
-          :class="tab === item.value ? 'bg-violet-600 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'"
+          :class="tab === item.value ? 'bg-brand-500 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'"
           @click="tab = item.value"
         >
           {{ item.label }}
@@ -42,7 +42,7 @@
             <AppDropdown :model-value="form.trigger" :options="triggerOptions" aria-label="When learners are asked" @update:model-value="value => form.trigger = value as SurveyTrigger" />
           </div>
           <label class="flex items-center gap-2 self-end pb-2.5 text-[13px] text-slate-100 light:text-slate-900">
-            <input v-model="form.active" type="checkbox" class="accent-violet-500">
+            <input v-model="form.active" type="checkbox" class="accent-brand-500">
             Ask learners now (turn off to pause and keep responses)
           </label>
         </div>
@@ -68,7 +68,7 @@
               <textarea :id="`${uid}-options-${index}`" :value="(question.options ?? []).join('\n')" rows="3" :class="inputClass" @input="setOptions(question, ($event.target as HTMLTextAreaElement).value)" />
             </div>
             <label class="mt-2 flex items-center gap-2 pl-5 text-xs text-white/60 light:text-slate-600">
-              <input v-model="question.required" type="checkbox" class="accent-violet-500"> Required
+              <input v-model="question.required" type="checkbox" class="accent-brand-500"> Required
             </label>
           </li>
         </ol>
@@ -137,7 +137,7 @@
               <li v-for="(count, label) in question.distribution" :key="label" class="flex items-center gap-2 text-xs">
                 <span class="w-28 shrink-0 truncate text-white/60 light:text-slate-600">{{ question.type === 'rating' ? `${label} ★` : label }}</span>
                 <span class="h-2 flex-1 overflow-hidden rounded-full bg-white/8 light:bg-slate-100">
-                  <span class="block h-full rounded-full bg-violet-500" :style="{ width: question.answered ? `${(count / question.answered) * 100}%` : '0%' }" />
+                  <span class="block h-full rounded-full bg-brand-500" :style="{ width: question.answered ? `${(count / question.answered) * 100}%` : '0%' }" />
                 </span>
                 <span class="w-8 text-right text-white/55 light:text-slate-500">{{ count }}</span>
               </li>

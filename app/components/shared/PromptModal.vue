@@ -4,8 +4,8 @@
       <div v-if="isOpen" class="fixed inset-0 z-100 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md sm:p-6" @click.self="$emit('close')">
         <form
           ref="dialogRef"
-          class="w-full max-w-120 rounded-[20px] border bg-[#0f1019] p-5 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)] focus:outline-none sm:p-6 light:bg-white light:shadow-xl"
-          :class="tone === 'danger' ? 'border-rose-500/25 light:border-rose-200' : 'border-violet-500/25 light:border-violet-500/30'"
+          class="w-full max-w-120 rounded-[20px] border bg-[#101814] p-5 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)] focus:outline-none sm:p-6 light:bg-white light:shadow-xl"
+          :class="tone === 'danger' ? 'border-rose-500/25 light:border-rose-200' : 'border-brand-500/25 light:border-brand-500/30'"
           role="dialog"
           aria-modal="true"
           :aria-labelledby="titleId"
@@ -27,7 +27,7 @@
               :maxlength="maxlength"
               :placeholder="placeholder"
               :aria-label="label || title"
-              class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400"
+              class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400"
               :class="label ? '' : 'mt-4'"
             />
           </template>
@@ -46,7 +46,7 @@
               class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-[10px] border px-5 py-2.25 text-[13px] font-semibold text-white transition-all disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
               :class="tone === 'danger'
                 ? 'border-rose-500/40 bg-linear-to-br from-rose-600 to-rose-700 enabled:hover:from-rose-500 enabled:hover:to-rose-600'
-                : 'border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 enabled:hover:from-violet-500 enabled:hover:to-indigo-500'"
+                : 'border-brand-500/40 bg-brand-500 enabled:hover:bg-brand-600'"
               :disabled="loading || disabled || (showInput && required && !value.trim())"
             >
               <Loader2 v-if="loading" :size="16" class="animate-spin" />

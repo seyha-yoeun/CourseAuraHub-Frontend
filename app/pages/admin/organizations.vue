@@ -49,7 +49,7 @@
 
     <Teleport to="body">
       <div v-if="seatsFor" class="fixed inset-0 z-100 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md" @click.self="seatsFor = null">
-        <form class="w-full max-w-120 rounded-[20px] border border-violet-500/25 bg-[#0f1019] p-5 light:border-violet-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="org-seats-title" @submit.prevent="saveSeats">
+        <form class="w-full max-w-120 rounded-[20px] border border-brand-500/25 bg-[#101814] p-5 light:border-brand-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="org-seats-title" @submit.prevent="saveSeats">
           <h2 id="org-seats-title" class="text-lg font-bold text-slate-50 light:text-slate-900">Seats for {{ seatsFor.name }}</h2>
           <p class="mt-1 text-xs text-white/45 light:text-slate-500">The total seats the organization holds for a course. It can't go below the seats already assigned.</p>
           <label for="org-seat-course" :class="labelClass" class="mt-4">Course</label>

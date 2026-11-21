@@ -9,8 +9,8 @@
         <button
           v-for="tab in ['Revenue', 'Enrollments']"
           :key="tab"
-          class="cursor-pointer rounded-md border border-transparent px-3.5 py-1.25 text-xs font-medium text-white/45 transition-all hover:text-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-500 light:hover:text-slate-700"
-          :class="{ 'border-violet-500/30 bg-violet-500/25 text-violet-300 light:border-violet-200 light:bg-violet-100 light:text-violet-700': activeTab === tab }"
+          class="cursor-pointer rounded-md border border-transparent px-3.5 py-1.25 text-xs font-medium text-white/45 transition-all hover:text-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-500 light:hover:text-slate-700"
+          :class="{ 'border-brand-500/30 bg-brand-500/25 text-brand-300 light:border-brand-200 light:bg-brand-100 light:text-brand-700': activeTab === tab }"
           @click="activeTab = tab"
         >
           {{ tab }}
@@ -53,6 +53,9 @@ const activeTab = ref('Revenue')
 const colorMode = useColorMode()
 const isDark = computed(() => colorMode.value === 'dark')
 
+// brand-500 on light, brand-400 on dark (assets/css/main.css colour system)
+const lineColor = computed(() => (isDark.value ? '#4dbb8f' : '#0e7c5a'))
+
 const chartData = computed(() => {
   if (!props.months?.length) return null
   const isRevenue = activeTab.value === 'Revenue'
@@ -62,15 +65,14 @@ const chartData = computed(() => {
       {
         label: isRevenue ? 'Revenue ($)' : 'Enrollments',
         data: isRevenue ? props.monthlyRevenue : props.monthlyEnrollments,
-        borderColor: isRevenue ? '#7c3aed' : '#2563eb',
-        backgroundColor: isRevenue
-          ? 'rgba(124, 58, 237, 0.12)'
-          : 'rgba(37, 99, 235, 0.12)',
+        // One series at a time, so both use the brand colour (lighter brand-400 on dark).
+        borderColor: lineColor.value,
+        backgroundColor: isDark.value ? 'rgba(77, 187, 143, 0.12)' : 'rgba(14,124,90, 0.10)',
         borderWidth: 2.5,
         fill: true,
         tension: 0.4,
-        pointBackgroundColor: isRevenue ? '#7c3aed' : '#2563eb',
-        pointBorderColor: isDark.value ? '#0a0a0f' : '#ffffff',
+        pointBackgroundColor: lineColor.value,
+        pointBorderColor: isDark.value ? '#0a100d' : '#ffffff',
         pointBorderWidth: 2,
         pointRadius: 4,
         pointHoverRadius: 6,
@@ -80,9 +82,10 @@ const chartData = computed(() => {
 })
 
 const chartOptions = computed<ChartOptions<'line'>>(() => {
-  const gridColor = isDark.value ? 'rgba(255,255,255,0.04)' : 'rgba(15,23,42,0.06)'
-  const tickColor = isDark.value ? 'rgba(255,255,255,0.35)' : 'rgba(71,85,105,0.85)'
-  const borderColor = isDark.value ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.08)'
+  // ink-400 axis labels, line-coloured grid
+  const gridColor = isDark.value ? 'rgba(255,255,255,0.05)' : '#eef1ef'
+  const tickColor = isDark.value ? 'rgba(255,255,255,0.4)' : '#97a39d'
+  const borderColor = isDark.value ? 'rgba(255,255,255,0.08)' : '#e5eae7'
 
   return {
     responsive: true,
@@ -90,13 +93,14 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: isDark.value ? 'rgba(15, 15, 30, 0.95)' : 'rgba(255, 255, 255, 0.97)',
-        borderColor: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(15, 23, 42, 0.1)',
+        // forest-900 tooltip in both themes
+        backgroundColor: '#0d2a21',
+        borderColor: 'rgba(159,227,198, 0.2)',
         borderWidth: 1,
-        titleColor: isDark.value ? '#e2e8f0' : '#0f172a',
-        bodyColor: isDark.value ? 'rgba(255,255,255,0.65)' : 'rgba(51,65,85,0.9)',
-        padding: 12,
-        cornerRadius: 10,
+        titleColor: '#ffffff',
+        bodyColor: '#9fe3c6',
+        padding: 10,
+        cornerRadius: 8,
         callbacks: {
           label: (ctx) => {
             const v = ctx.parsed.y ?? 0

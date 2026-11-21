@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     :to="`/learning-paths/${path.slug}`"
-    class="group flex flex-col overflow-hidden rounded-[18px] border border-white/10 bg-white/5 no-underline transition-all hover:-translate-y-0.5 hover:border-violet-500/40 light:border-slate-200 light:bg-white"
+    class="group flex flex-col overflow-hidden rounded-[18px] border border-white/10 bg-white/5 no-underline transition-all hover:-translate-y-0.5 hover:border-brand-500/40 light:border-slate-200 light:bg-white"
   >
     <div class="relative aspect-video overflow-hidden bg-white/5">
       <img :src="cover" :alt="path.title" class="size-full object-cover transition-transform duration-300 group-hover:scale-105" @error="onImageError">

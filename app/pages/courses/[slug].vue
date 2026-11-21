@@ -19,19 +19,19 @@
   <div v-else class="flex flex-col gap-6">
     <!-- Back breadcrumb & actions topbar -->
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <NuxtLink to="/courses" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-violet-300 no-underline transition-colors hover:text-violet-200 light:text-violet-700 light:hover:text-violet-800">
+      <NuxtLink to="/courses" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand-300 no-underline transition-colors hover:text-brand-200 light:text-brand-700 light:hover:text-brand-800">
         <ArrowLeft :size="15" />
         <span>{{ t('All Courses') }}</span>
       </NuxtLink>
 
       <div class="flex items-center gap-2.5">
-        <NuxtLink :to="`/instructor/analytics/${course.slug}`" class="inline-flex items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/6 px-4 py-2 text-xs font-semibold text-slate-200 no-underline transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:hover:bg-slate-200 light:hover:text-slate-900">
+        <NuxtLink :to="`/instructor/analytics/${course.slug}`" class="inline-flex items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/6 px-4 py-2 text-xs font-semibold text-slate-200 no-underline transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:hover:bg-slate-200 light:hover:text-slate-900">
           <BarChart3 :size="15" />
           <span>{{ t('Learner Analytics') }}</span>
         </NuxtLink>
         <button
           type="button"
-          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-4 py-2 text-xs font-semibold text-violet-300 transition-all hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-brand-500/35 bg-brand-500/15 px-4 py-2 text-xs font-semibold text-brand-300 transition-all hover:bg-brand-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-brand-300 light:bg-brand-50 light:text-brand-700 light:hover:bg-brand-100 light:hover:text-brand-900"
           @click="isEditModalOpen = true"
         >
           <Edit3 :size="15" />
@@ -59,7 +59,7 @@
       <div class="flex flex-col justify-center p-5 sm:p-7 lg:px-8">
         <div class="mb-3 flex flex-wrap items-center gap-2">
           <CourseStatusBadge :status="course.status" />
-          <span class="rounded-md border border-violet-500/35 bg-violet-500/20 px-2.5 py-0.75 text-[11px] font-semibold text-violet-300 light:border-violet-300 light:bg-violet-50 light:text-violet-700">{{ course.category }}</span>
+          <span class="rounded-md border border-brand-500/35 bg-brand-500/20 px-2.5 py-0.75 text-[11px] font-semibold text-brand-300 light:border-brand-300 light:bg-brand-50 light:text-brand-700">{{ course.category }}</span>
           <span class="rounded-md border border-white/10 bg-white/6 px-2.5 py-0.75 text-[11px] font-semibold text-white/80 light:border-slate-200 light:bg-slate-100 light:text-slate-600">{{ course.level }}</span>
           <span v-if="course.rating > 0" class="inline-flex items-center gap-1 rounded-md border border-amber-400/30 bg-amber-400/15 px-2.5 py-0.75 text-[11px] font-semibold text-amber-400 light:border-amber-200 light:bg-amber-50 light:text-amber-600">
             <Star :size="12" class="fill-amber-400 text-amber-400" />
@@ -75,7 +75,7 @@
             <img
               :src="`https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(course.instructor || 'Instructor')}&backgroundColor=b6e3f4`"
               alt="Instructor"
-              class="size-9 rounded-full border-2 border-violet-500/40"
+              class="size-9 rounded-full border-2 border-brand-500/40"
             >
             <div>
               <span class="block text-[10px] tracking-wide text-white/40 uppercase light:text-slate-500">{{ t('Taught by') }}</span>
@@ -151,7 +151,7 @@
             <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Enrolled Students') }}</h3>
             <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">{{ t('Students actively studying this program') }}</p>
           </div>
-          <span class="rounded-full border border-violet-500/30 bg-violet-500/20 px-2.25 py-0.75 text-[11px] font-semibold text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">
+          <span class="rounded-full border border-brand-500/30 bg-brand-500/20 px-2.25 py-0.75 text-[11px] font-semibold text-brand-300 light:border-brand-200 light:bg-brand-50 light:text-brand-700">
             {{ enrolledStudents.length }} Enrolled
           </span>
         </div>
@@ -175,7 +175,7 @@
               <tr v-for="s in enrolledStudents" :key="s.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
                 <td class="border-b border-white/4 px-3 py-3 light:border-slate-100">
                   <div class="flex items-center gap-2.5">
-                    <img :src="s.avatar" :alt="s.name" class="size-8 shrink-0 rounded-full bg-violet-500/20" >
+                    <img :src="s.avatar" :alt="s.name" class="size-8 shrink-0 rounded-full bg-brand-500/20" >
                     <div class="flex flex-col">
                       <span class="font-semibold text-slate-100 light:text-slate-900">{{ s.name }}</span>
                       <span class="text-[11px] text-white/40 light:text-slate-500">{{ s.email }}</span>
@@ -233,7 +233,7 @@
         <div class="mt-5">
           <span class="mb-2 block text-[13px] text-white/45 light:text-slate-500">Technologies &amp; Tags:</span>
           <div class="flex flex-wrap gap-1.5">
-            <span v-for="tag in course.tags" :key="tag" class="rounded-md border border-violet-500/25 bg-violet-500/12 px-2.25 py-0.75 text-[11px] font-medium text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">
+            <span v-for="tag in course.tags" :key="tag" class="rounded-md border border-brand-500/25 bg-brand-500/12 px-2.25 py-0.75 text-[11px] font-medium text-brand-300 light:border-brand-200 light:bg-brand-50 light:text-brand-700">
               #{{ tag }}
             </span>
           </div>
@@ -335,7 +335,7 @@ const deleting = ref(false)
 function statusClass(status: string) {
   if (status === 'active') return 'bg-emerald-400/15 text-emerald-400 light:bg-emerald-50 light:text-emerald-700'
   if (status === 'inactive') return 'bg-slate-400/15 text-slate-400 light:bg-slate-100 light:text-slate-600'
-  return 'bg-violet-400/15 text-violet-300 light:bg-violet-50 light:text-violet-700'
+  return 'bg-brand-400/15 text-brand-300 light:bg-brand-50 light:text-brand-700'
 }
 
 async function handleUpdateCourse(formData: CourseFormData) {

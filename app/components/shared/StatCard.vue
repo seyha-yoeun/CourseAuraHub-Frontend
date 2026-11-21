@@ -1,37 +1,30 @@
 <template>
-  <div class="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/30 hover:bg-white/8 hover:shadow-xl hover:shadow-violet-500/10 light:border-slate-200 light:bg-white light:hover:border-violet-300 light:hover:shadow-violet-500/10">
-    <div class="mb-3.5 flex items-center justify-between">
-      <span class="text-[13px] font-medium tracking-wide text-white/50 light:text-slate-500">{{ label }}</span>
-      <div class="flex size-9 shrink-0 items-center justify-center rounded-xl border" :class="accent.iconWrap">
-        <component :is="icon" :size="18" :stroke-width="1.8" :class="accent.icon" />
-      </div>
+  <div class="flex flex-col rounded-[14px] border border-white/10 bg-white/[0.03] p-4.5 light:border-slate-200 light:bg-white">
+    <div class="flex items-center justify-between gap-3">
+      <p class="truncate text-[13px] font-medium text-white/55 light:text-slate-500">{{ label }}</p>
+      <component :is="icon" :size="16" :stroke-width="1.75" class="shrink-0 text-white/35 light:text-slate-400" aria-hidden="true" />
     </div>
-
-    <div class="relative z-1">
-      <div class="flex flex-wrap items-baseline gap-2.5">
-        <span class="text-3xl leading-tight font-extrabold tracking-tight text-slate-50 light:text-slate-900">{{ formattedValue }}</span>
-        <span
-          v-if="trend !== undefined"
-          class="inline-flex items-center gap-0.75 rounded-full border px-2 py-0.5 text-[11px] font-semibold"
-          :class="trend >= 0
-            ? 'border-emerald-400/25 bg-emerald-400/12 text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700'
-            : 'border-red-400/25 bg-red-400/12 text-red-400 light:border-red-300 light:bg-red-50 light:text-red-700'"
-        >
-          <TrendingUp v-if="trend >= 0" :size="12" />
-          <TrendingDown v-else :size="12" />
-          {{ Math.abs(trend) }}%
-        </span>
-      </div>
-      <p v-if="sub" class="mt-1.5 text-[11px] text-white/35 light:text-slate-400">{{ sub }}</p>
+    <div class="mt-2 flex flex-wrap items-baseline gap-2">
+      <span class="text-[26px] leading-tight font-bold tracking-[-0.02em] text-slate-50 tabular-nums light:text-slate-900">{{ formattedValue }}</span>
+      <span
+        v-if="trend !== undefined"
+        class="inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[11.5px] font-semibold tabular-nums"
+        :class="trend >= 0
+          ? 'bg-brand-500/15 text-brand-300 light:bg-brand-50 light:text-brand-600'
+          : 'bg-rose-500/15 text-rose-300 light:bg-negative-bg light:text-negative'"
+      >
+        <ArrowUp v-if="trend >= 0" :size="11" :stroke-width="2.5" aria-hidden="true" />
+        <ArrowDown v-else :size="11" :stroke-width="2.5" aria-hidden="true" />
+        <span class="sr-only">{{ trend >= 0 ? 'Up' : 'Down' }}</span>
+        {{ Math.abs(trend) }}%
+      </span>
     </div>
-
-    <!-- Soft glow backdrop -->
-    <div class="pointer-events-none absolute -top-5 -right-5 size-25 rounded-full opacity-60 blur-2xl" :class="accent.glow" />
+    <p v-if="sub" class="mt-1 text-[12px] text-white/40 light:text-slate-500">{{ sub }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { TrendingUp, TrendingDown } from 'lucide-vue-next'
+import { ArrowDown, ArrowUp } from 'lucide-vue-next'
 import type { Component } from 'vue'
 
 const props = withDefaults(
@@ -52,35 +45,8 @@ const props = withDefaults(
   }
 )
 
-const accents: Record<string, { iconWrap: string; icon: string; glow: string }> = {
-  '#7c3aed': {
-    iconWrap: 'border-violet-500/20 bg-violet-500/10 light:border-violet-300 light:bg-violet-50',
-    icon: 'text-violet-400 light:text-violet-700',
-    glow: 'bg-violet-500/20 light:bg-violet-500/10'
-  },
-  '#8b5cf6': {
-    iconWrap: 'border-violet-500/20 bg-violet-500/10 light:border-violet-300 light:bg-violet-50',
-    icon: 'text-violet-400 light:text-violet-700',
-    glow: 'bg-violet-500/20 light:bg-violet-500/10'
-  },
-  '#3b82f6': {
-    iconWrap: 'border-blue-500/20 bg-blue-500/10 light:border-blue-300 light:bg-blue-50',
-    icon: 'text-blue-400 light:text-blue-700',
-    glow: 'bg-blue-500/20 light:bg-blue-500/10'
-  },
-  '#10b981': {
-    iconWrap: 'border-emerald-500/20 bg-emerald-500/10 light:border-emerald-300 light:bg-emerald-50',
-    icon: 'text-emerald-400 light:text-emerald-700',
-    glow: 'bg-emerald-500/20 light:bg-emerald-500/10'
-  },
-  '#f59e0b': {
-    iconWrap: 'border-amber-500/20 bg-amber-500/10 light:border-amber-300 light:bg-amber-50',
-    icon: 'text-amber-400 light:text-amber-700',
-    glow: 'bg-amber-500/20 light:bg-amber-500/10'
-  }
-}
-
-const accent = computed(() => accents[props.accentColor] ?? accents['#7c3aed']!)
+// accentColor is still accepted for backwards compatibility; the clean card style
+// (assets/css/main.css colour system) uses one neutral icon treatment for every card.
 
 const formattedValue = computed(() => {
   const v = Number(props.value)

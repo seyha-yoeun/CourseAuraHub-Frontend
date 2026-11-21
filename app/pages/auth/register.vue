@@ -4,7 +4,7 @@
       <button
         v-if="step === 2"
         type="button"
-        class="mb-3 inline-flex cursor-pointer items-center gap-1 rounded-sm text-[13px] font-medium text-white/55 transition-colors hover:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/40 light:text-slate-500 light:hover:text-slate-900"
+        class="mb-3 inline-flex cursor-pointer items-center gap-1 rounded-sm text-[13px] font-medium text-white/55 transition-colors hover:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/40 light:text-slate-500 light:hover:text-slate-900"
         @click="goToDetailsStep"
       >
         <ArrowLeft :size="14" aria-hidden="true" /> Back
@@ -15,10 +15,10 @@
     <!-- Progress: two short steps keep the form inside one screen -->
     <div class="mt-3 flex items-center gap-3 short:mt-2">
       <div class="flex flex-1 gap-1.5" aria-hidden="true">
-        <span class="h-1 flex-1 rounded-full bg-emerald-400 light:bg-emerald-600" />
+        <span class="h-1 flex-1 rounded-full bg-brand-400 light:bg-brand-600" />
         <span
           class="h-1 flex-1 rounded-full transition-colors duration-300"
-          :class="step === 2 ? 'bg-emerald-400 light:bg-emerald-600' : 'bg-white/10 light:bg-slate-200'"
+          :class="step === 2 ? 'bg-brand-400 light:bg-brand-600' : 'bg-white/10 light:bg-slate-200'"
         />
       </div>
       <span class="shrink-0 text-[12px] font-medium text-white/50 light:text-slate-500" aria-live="polite">
@@ -148,7 +148,7 @@
                 :describedby="errors.confirmPassword ? 'confirmPassword-error' : undefined"
               />
               <p v-if="errors.confirmPassword" id="confirmPassword-error" :class="authFieldError">{{ errors.confirmPassword }}</p>
-              <p v-else-if="passwordsMatch" class="flex items-center gap-1.5 text-[12.5px] text-emerald-400 light:text-emerald-700">
+              <p v-else-if="passwordsMatch" class="flex items-center gap-1.5 text-[12.5px] text-brand-400 light:text-brand-700">
                 <Check :size="13" aria-hidden="true" /> Passwords match
               </p>
             </div>

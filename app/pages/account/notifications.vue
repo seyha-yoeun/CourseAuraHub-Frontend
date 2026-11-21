@@ -14,7 +14,7 @@
             <span class="block text-sm font-bold text-slate-100 light:text-slate-900">{{ t('Reminders') }}</span>
             <span class="mt-0.5 block text-xs text-white/45 light:text-slate-500">{{ t('Get a nudge when you haven\'t continued a course for a while.') }}</span>
           </span>
-          <input v-model="remindersOn" type="checkbox" class="size-4.5 shrink-0 accent-violet-600" :disabled="savingReminders" @change="saveReminders">
+          <input v-model="remindersOn" type="checkbox" class="size-4.5 shrink-0 accent-brand-600" :disabled="savingReminders" @change="saveReminders">
         </label>
       </section>
 

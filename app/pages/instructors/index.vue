@@ -20,12 +20,12 @@
         v-for="item in instructors"
         :key="item.handle"
         :to="`/instructors/${item.handle}`"
-        class="flex items-center gap-3.5 rounded-[18px] border border-white/10 bg-white/5 p-4 no-underline transition-all hover:-translate-y-0.5 hover:border-violet-500/40 light:border-slate-200 light:bg-white"
+        class="flex items-center gap-3.5 rounded-[18px] border border-white/10 bg-white/5 p-4 no-underline transition-all hover:-translate-y-0.5 hover:border-brand-500/40 light:border-slate-200 light:bg-white"
       >
         <img
           :src="item.avatarUrl || `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(item.name)}&backgroundColor=b6e3f4`"
           :alt="item.name"
-          class="size-14 shrink-0 rounded-full border-2 border-violet-500/30 bg-white/5 object-cover"
+          class="size-14 shrink-0 rounded-full border-2 border-brand-500/30 bg-white/5 object-cover"
         >
         <div class="min-w-0">
           <p class="truncate text-sm font-bold text-slate-100 light:text-slate-900">{{ item.name }}</p>

@@ -16,7 +16,7 @@
         </span>
         <button
           type="button"
-          class="cursor-pointer rounded-lg border border-violet-500/35 bg-violet-500/15 px-2.5 py-1 text-xs font-semibold text-violet-300 transition-colors hover:bg-violet-500/30 disabled:cursor-not-allowed disabled:opacity-50 light:border-violet-300 light:bg-violet-50 light:text-violet-700"
+          class="cursor-pointer rounded-lg border border-brand-500/35 bg-brand-500/15 px-2.5 py-1 text-xs font-semibold text-brand-300 transition-colors hover:bg-brand-500/30 disabled:cursor-not-allowed disabled:opacity-50 light:border-brand-300 light:bg-brand-50 light:text-brand-700"
           :disabled="!lessonId || busyId === student.id"
           @click="grant(student)"
         >

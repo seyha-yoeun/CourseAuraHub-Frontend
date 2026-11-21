@@ -17,9 +17,9 @@
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div class="min-w-0 flex-1">
               <div class="flex flex-wrap items-center gap-2 text-xs">
-                <span class="rounded-full border border-violet-500/30 bg-violet-500/12 px-2 py-0.5 font-semibold capitalize text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">{{ report.targetType }}</span>
+                <span class="rounded-full border border-brand-500/30 bg-brand-500/12 px-2 py-0.5 font-semibold capitalize text-brand-300 light:border-brand-200 light:bg-brand-50 light:text-brand-700">{{ report.targetType }}</span>
                 <span v-if="report.reportsOnTarget > 1" class="rounded-full border border-rose-500/30 bg-rose-500/10 px-2 py-0.5 font-semibold text-rose-300 light:border-rose-200 light:bg-rose-50 light:text-rose-600">{{ report.reportsOnTarget }} reports</span>
-                <NuxtLink v-if="report.courseSlug" :to="`/courses/${report.courseSlug}`" class="text-white/50 no-underline hover:text-violet-300 light:text-slate-500">{{ report.courseSlug }}</NuxtLink>
+                <NuxtLink v-if="report.courseSlug" :to="`/courses/${report.courseSlug}`" class="text-white/50 no-underline hover:text-brand-300 light:text-slate-500">{{ report.courseSlug }}</NuxtLink>
                 <span class="text-white/40 light:text-slate-400">{{ formatDateTime(report.createdAt) }}</span>
               </div>
               <blockquote class="mt-2.5 border-l-2 border-white/15 pl-3 text-[13px] whitespace-pre-line text-slate-200 light:border-slate-300 light:text-slate-800">

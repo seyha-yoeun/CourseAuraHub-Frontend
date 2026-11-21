@@ -61,6 +61,10 @@ export const km: Record<string, string> = {
   'Students': 'សិស្ស',
   'Wishlist': 'បញ្ជីចង់បាន',
   'Open profile settings': 'បើកការកំណត់ប្រវត្តិរូប',
+  'Main navigation': 'ការរុករកចម្បង',
+  'Collapse sidebar': 'បង្រួមរបារចំហៀង',
+  'Expand sidebar': 'ពង្រីករបារចំហៀង',
+  'Close sidebar': 'បិទរបារចំហៀង',
 
   // Catalog and course page
   'All Categories': 'ប្រភេទទាំងអស់',

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-5">
-    <NuxtLink :to="backLink" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-violet-300 no-underline hover:text-violet-200 light:text-violet-700">
+    <NuxtLink :to="backLink" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand-300 no-underline hover:text-brand-200 light:text-brand-700">
       <ArrowLeft :size="15" /> {{ t('Back to course') }}
     </NuxtLink>
 

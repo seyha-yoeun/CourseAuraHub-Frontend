@@ -37,7 +37,7 @@
           <h2 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Payment method') }}</h2>
           <div class="mt-3 flex flex-col gap-2" role="radiogroup" :aria-label="t('Payment method')">
             <label class="flex cursor-pointer items-center gap-2.5 rounded-xl border border-white/8 bg-white/3 p-3 light:border-slate-200 light:bg-slate-50">
-              <input v-model="paymentMethod" type="radio" value="MEMBER_CARD" class="size-4 accent-violet-600" :disabled="!cardCanPay">
+              <input v-model="paymentMethod" type="radio" value="MEMBER_CARD" class="size-4 accent-brand-600" :disabled="!cardCanPay">
               <span class="min-w-0 flex-1">
                 <span class="block text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ t('Member card') }}</span>
                 <span class="text-xs text-white/45 light:text-slate-500">{{ t('Balance {amount}', { amount: formatMoney(card.balance, card.currency) }) }}</span>
@@ -46,7 +46,7 @@
             <p v-if="card.status === 'SUSPENDED'" class="text-xs text-amber-400 light:text-amber-700">{{ t('This card is suspended, so it can\'t pay for courses right now.') }}</p>
             <p v-else-if="total > card.balance" class="text-xs text-amber-400 light:text-amber-700">{{ t('Your balance doesn\'t cover this order.') }}</p>
             <label class="flex cursor-pointer items-center gap-2.5 rounded-xl border border-white/8 bg-white/3 p-3 light:border-slate-200 light:bg-slate-50">
-              <input v-model="paymentMethod" type="radio" value="ONLINE" class="size-4 accent-violet-600">
+              <input v-model="paymentMethod" type="radio" value="ONLINE" class="size-4 accent-brand-600">
               <span class="text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ t('Pay online') }}</span>
             </label>
           </div>
@@ -61,7 +61,7 @@
               maxlength="40"
               :placeholder="t('Enter a coupon code')"
               :aria-label="t('Coupon code')"
-              class="h-10 min-w-0 flex-1 rounded-[10px] border border-white/9 bg-white/4 px-3 text-[13px] text-slate-100 uppercase outline-none placeholder:text-white/35 placeholder:normal-case focus:border-violet-500/65 light:border-slate-300 light:bg-white light:text-slate-900"
+              class="h-10 min-w-0 flex-1 rounded-[10px] border border-white/9 bg-white/4 px-3 text-[13px] text-slate-100 uppercase outline-none placeholder:text-white/35 placeholder:normal-case focus:border-brand-500/65 light:border-slate-300 light:bg-white light:text-slate-900"
             >
             <button
               type="submit"
@@ -97,7 +97,7 @@
         </dl>
         <button
           type="button"
-          class="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
+          class="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white hover:bg-brand-600 disabled:cursor-wait disabled:opacity-60"
           :disabled="paying || (paymentMethod === 'MEMBER_CARD' && !cardCanPay)"
           @click="pay"
         >

@@ -25,8 +25,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   colorMode: {
-    preference: 'dark',
-    fallback: 'dark',
+    // Light-first colour system (assets/css/main.css); dark stays one toggle away.
+    preference: 'light',
+    fallback: 'light',
   },
   runtimeConfig: {
     apiBase: process.env.NUXT_API_BASE || 'http://localhost:8080/api/v1',

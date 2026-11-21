@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-5">
-    <NuxtLink to="/learning-paths" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-violet-300 no-underline hover:text-violet-200 light:text-violet-700">
+    <NuxtLink to="/learning-paths" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand-300 no-underline hover:text-brand-200 light:text-brand-700">
       <ArrowLeft :size="15" /> {{ t('All learning paths') }}
     </NuxtLink>
 
@@ -14,7 +14,7 @@
       <div class="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div class="flex min-w-0 flex-col gap-5">
           <div>
-            <p class="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-widest text-violet-400 uppercase light:text-violet-700">
+            <p class="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-widest text-brand-400 uppercase light:text-brand-700">
               <Route :size="13" /> {{ t('Learning path') }}
             </p>
             <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[28px] light:text-slate-900">{{ path.title }}</h1>
@@ -25,14 +25,14 @@
             <li v-for="(course, index) in path.courses" :key="course.slug">
               <NuxtLink
                 :to="`/courses/${course.slug}`"
-                class="flex items-center gap-4 rounded-[18px] border border-white/10 bg-white/5 p-3.5 no-underline transition-colors hover:border-violet-500/40 light:border-slate-200 light:bg-white"
+                class="flex items-center gap-4 rounded-[18px] border border-white/10 bg-white/5 p-3.5 no-underline transition-colors hover:border-brand-500/40 light:border-slate-200 light:bg-white"
               >
                 <span
                   class="flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold"
                   :class="stepState(course.slug) === 'completed'
                     ? 'bg-emerald-500 text-zinc-950'
                     : stepState(course.slug) === 'enrolled'
-                      ? 'border border-violet-400 text-violet-300 light:text-violet-700'
+                      ? 'border border-brand-400 text-brand-300 light:text-brand-700'
                       : 'border border-white/20 text-white/50 light:border-slate-300 light:text-slate-500'"
                 >
                   <Check v-if="stepState(course.slug) === 'completed'" :size="15" :stroke-width="3" />
@@ -45,7 +45,7 @@
                     {{ course.level }} · {{ t('{lessons} lessons', { lessons: course.totalLessons }) }} · {{ course.instructor }}
                   </p>
                 </div>
-                <span v-if="progress?.nextCourseSlug === course.slug" class="shrink-0 rounded-md bg-violet-500/20 px-2 py-0.5 text-[11px] font-semibold text-violet-200 light:bg-violet-50 light:text-violet-700">{{ t('Up next') }}</span>
+                <span v-if="progress?.nextCourseSlug === course.slug" class="shrink-0 rounded-md bg-brand-500/20 px-2 py-0.5 text-[11px] font-semibold text-brand-200 light:bg-brand-50 light:text-brand-700">{{ t('Up next') }}</span>
                 <span v-else class="shrink-0 text-xs font-semibold text-white/60 light:text-slate-600">{{ Number(course.price) > 0 ? formatMoney(course.price) : t('Free') }}</span>
               </NuxtLink>
             </li>
@@ -55,7 +55,7 @@
         <!-- Summary and actions -->
         <aside class="flex flex-col gap-4 rounded-[18px] border border-white/10 bg-white/5 p-5 lg:sticky lg:top-20 light:border-slate-200 light:bg-white">
           <ul class="m-0 flex list-none flex-col gap-2 p-0 text-[13px] text-white/70 light:text-slate-600">
-            <li class="flex items-center gap-2"><BookOpen :size="15" class="text-violet-400" /> {{ t('{count} courses', { count: path.courseCount }) }}</li>
+            <li class="flex items-center gap-2"><BookOpen :size="15" class="text-brand-400" /> {{ t('{count} courses', { count: path.courseCount }) }}</li>
             <li class="flex items-center gap-2"><ListChecks :size="15" class="text-blue-400" /> {{ t('{count} lessons', { count: path.totalLessons }) }}</li>
             <li class="flex items-center gap-2"><Clock :size="15" class="text-emerald-400" /> {{ t('{hours} hours', { hours: Number(path.totalHours).toFixed(1) }) }}</li>
             <li class="flex items-center gap-2"><Award :size="15" class="text-amber-400" /> {{ t('Certificate when you finish every course') }}</li>
@@ -87,7 +87,7 @@
             <NuxtLink
               v-if="progress.certificate"
               :to="`/certificates/${progress.certificate.certificateNumber}`"
-              class="text-center text-xs font-semibold text-violet-300 light:text-violet-700"
+              class="text-center text-xs font-semibold text-brand-300 light:text-brand-700"
             >
               {{ t('View verification page') }}
             </NuxtLink>
@@ -96,14 +96,14 @@
           <NuxtLink
             v-if="!auth.isAuthenticated"
             :to="{ path: '/auth/login', query: { redirect: `/learning-paths/${path.slug}` } }"
-            class="inline-flex items-center justify-center rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2.5 text-[13px] font-semibold text-white no-underline"
+            class="inline-flex items-center justify-center rounded-xl border border-brand-500/40 bg-brand-500 px-4 py-2.5 text-[13px] font-semibold text-white no-underline"
           >
             {{ t('Sign in to start this path') }}
           </NuxtLink>
           <button
             v-else-if="!progress?.completed && hasUnenrolledCourses"
             type="button"
-            class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2.5 text-[13px] font-semibold text-white hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
+            class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-4 py-2.5 text-[13px] font-semibold text-white hover:bg-brand-600 disabled:cursor-wait disabled:opacity-60"
             :disabled="enrolling"
             @click="enroll"
           >

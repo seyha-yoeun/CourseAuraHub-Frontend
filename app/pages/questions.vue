@@ -13,7 +13,7 @@
       v-for="item in items"
       :key="item.id"
       :to="`/learn/${item.courseSlug}?lesson=${item.lessonId}`"
-      class="rounded-[18px] border border-white/10 bg-white/5 p-5 light:border-slate-200 light:bg-white block no-underline transition-colors hover:border-violet-500/40"
+      class="rounded-[18px] border border-white/10 bg-white/5 p-5 light:border-slate-200 light:bg-white block no-underline transition-colors hover:border-brand-500/40"
     >
       <div class="flex flex-wrap items-center gap-2 text-xs text-white/45 light:text-slate-500">
         <span class="font-semibold">{{ item.authorName }}</span>

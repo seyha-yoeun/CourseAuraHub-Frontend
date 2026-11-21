@@ -19,7 +19,7 @@
       <!-- Profile -->
       <form class="rounded-[18px] border border-white/10 bg-white/5 p-5 sm:p-6 light:border-slate-200 light:bg-white" @submit.prevent="saveProfile">
         <div class="mb-5 flex items-center gap-4">
-          <img :src="profileForm.imageUrl || auth.userAvatar" alt="" class="size-16 rounded-full border-2 border-violet-500/40 bg-violet-500/15 object-cover">
+          <img :src="profileForm.imageUrl || auth.userAvatar" alt="" class="size-16 rounded-full border-2 border-brand-500/40 bg-brand-500/15 object-cover">
           <div class="min-w-0">
             <h2 class="truncate text-base font-bold text-slate-100 light:text-slate-900">{{ displayName }}</h2>
             <p class="truncate text-xs text-white/45 light:text-slate-500">{{ profile.email }}</p>
@@ -84,7 +84,7 @@
         @submit.prevent="savePassword"
       >
         <h2 class="flex items-center gap-2 text-base font-bold text-slate-100 light:text-slate-900">
-          <KeyRound :size="17" class="text-violet-400" /> Change password
+          <KeyRound :size="17" class="text-brand-400" /> Change password
         </h2>
         <p class="mt-1 text-xs text-white/45 light:text-slate-500">You'll stay signed in here; other devices will be signed out.</p>
 
@@ -116,7 +116,7 @@
 
       <div v-else class="rounded-[18px] border border-white/10 bg-white/5 p-5 text-[13px] text-white/55 sm:p-6 light:border-slate-200 light:bg-white light:text-slate-600">
         <h2 class="mb-1 flex items-center gap-2 text-base font-bold text-slate-100 light:text-slate-900">
-          <KeyRound :size="17" class="text-violet-400" /> Sign-in
+          <KeyRound :size="17" class="text-brand-400" /> Sign-in
         </h2>
         You sign in with {{ profile.provider.toLowerCase() }}, so there's no password to manage here.
       </div>
@@ -140,8 +140,8 @@ const toast = useAppToast()
 const { fetchProfile, updateProfile, changePassword } = useLearning()
 
 const labelClass = 'text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600'
-const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600'
-const primaryButton = 'inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.25 text-[13px] font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-50'
+const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600'
+const primaryButton = 'inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-brand-500/40 bg-brand-500 px-5 py-2.25 text-[13px] font-semibold text-white transition-all hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50'
 
 // Mirrors the backend @PasswordStrength rule
 const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/

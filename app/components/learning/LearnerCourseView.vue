@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-6">
-    <NuxtLink to="/courses" class="inline-flex w-fit items-center gap-1.5 text-[13px] font-semibold text-violet-300 no-underline transition-colors hover:text-violet-200 light:text-violet-700 light:hover:text-violet-800">
+    <NuxtLink to="/courses" class="inline-flex w-fit items-center gap-1.5 text-[13px] font-semibold text-brand-300 no-underline transition-colors hover:text-brand-200 light:text-brand-700 light:hover:text-brand-800">
       <ArrowLeft :size="15" />
       <span>{{ t('All Courses') }}</span>
     </NuxtLink>
@@ -14,7 +14,7 @@
 
       <div class="flex flex-col justify-center p-5 sm:p-7 lg:px-8">
         <div class="mb-3 flex flex-wrap items-center gap-2">
-          <span class="rounded-md border border-violet-500/35 bg-violet-500/20 px-2.5 py-0.75 text-[11px] font-semibold text-violet-300 light:border-violet-300 light:bg-violet-50 light:text-violet-700">{{ course.category }}</span>
+          <span class="rounded-md border border-brand-500/35 bg-brand-500/20 px-2.5 py-0.75 text-[11px] font-semibold text-brand-300 light:border-brand-300 light:bg-brand-50 light:text-brand-700">{{ course.category }}</span>
           <span class="rounded-md border border-white/10 bg-white/6 px-2.5 py-0.75 text-[11px] font-semibold text-white/80 light:border-slate-200 light:bg-slate-100 light:text-slate-600">{{ course.level }}</span>
           <span v-if="course.rating > 0" class="inline-flex items-center gap-1 rounded-md border border-amber-400/30 bg-amber-400/15 px-2.5 py-0.75 text-[11px] font-semibold text-amber-400 light:border-amber-200 light:bg-amber-50 light:text-amber-600">
             <Star :size="12" class="fill-amber-400 text-amber-400" />
@@ -33,7 +33,7 @@
           <img
             :src="`https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(course.instructor || 'Instructor')}&backgroundColor=b6e3f4`"
             alt=""
-            class="size-8 rounded-full border-2 border-violet-500/40"
+            class="size-8 rounded-full border-2 border-brand-500/40"
           >
           <span class="text-[13px] text-white/55 light:text-slate-500">{{ t('Taught by') }}
             <NuxtLink v-if="instructorCard" :to="`/instructors/${instructorCard.handle}`" class="font-bold text-slate-100 underline-offset-2 hover:underline light:text-slate-900">{{ course.instructor }}</NuxtLink>
@@ -54,7 +54,7 @@
           <div class="mt-4 flex flex-wrap items-center gap-2">
             <NuxtLink
               :to="`/learn/${course.slug}`"
-              class="inline-flex items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white no-underline shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500"
+              class="inline-flex items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white no-underline transition-all hover:-translate-y-px hover:bg-brand-600"
             >
               <PlayCircle :size="16" />
               {{ progress?.completedLessons ? (progress.completed ? t('Review course') : t('Continue learning')) : t('Start learning') }}
@@ -92,7 +92,7 @@
             <NuxtLink
               v-if="!auth.isAuthenticated"
               :to="signInLink"
-              class="inline-flex items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white no-underline shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500"
+              class="inline-flex items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white no-underline transition-all hover:-translate-y-px hover:bg-brand-600"
             >
               <GraduationCap :size="16" />
               {{ t('Sign in to enroll') }}
@@ -101,7 +101,7 @@
             <button
               v-if="auth.isAuthenticated"
               type="button"
-              class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border px-4 py-2.5 text-[13px] font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 disabled:cursor-wait disabled:opacity-60"
+              class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border px-4 py-2.5 text-[13px] font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 disabled:cursor-wait disabled:opacity-60"
               :class="inWishlist
                 ? 'border-rose-400/40 bg-rose-500/15 text-rose-300 hover:bg-rose-500/25 light:border-rose-200 light:bg-rose-50 light:text-rose-600'
                 : 'border-white/10 bg-white/5 text-white/75 hover:bg-white/10 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700'"
@@ -116,7 +116,7 @@
             <button
               v-if="auth.isAuthenticated && isFree"
               type="button"
-              class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
+              class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:-translate-y-px hover:bg-brand-600 disabled:cursor-wait disabled:opacity-60"
               :disabled="enrolling"
               @click="handleEnroll"
             >
@@ -145,7 +145,7 @@
             <button
               v-if="auth.isAuthenticated && !isFree"
               type="button"
-              class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
+              class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:-translate-y-px hover:bg-brand-600 disabled:cursor-wait disabled:opacity-60"
               :disabled="checkingOut"
               @click="buyNow"
             >
@@ -199,7 +199,7 @@
       <div class="h-fit rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
         <h3 class="mb-3 text-base font-bold text-slate-100 light:text-slate-900">{{ t('This course includes') }}</h3>
         <ul class="m-0 flex list-none flex-col gap-2.5 p-0 text-[13px] text-white/70 light:text-slate-600">
-          <li class="flex items-center gap-2.5"><Clock :size="15" class="text-violet-400" /> {{ course.totalHours }} hours of content</li>
+          <li class="flex items-center gap-2.5"><Clock :size="15" class="text-brand-400" /> {{ course.totalHours }} hours of content</li>
           <li class="flex items-center gap-2.5"><BookOpen :size="15" class="text-blue-400" /> {{ course.totalLessons }} lessons</li>
           <li class="flex items-center gap-2.5"><BarChart3 :size="15" class="text-emerald-400" /> {{ course.level }} level</li>
           <li class="flex items-center gap-2.5"><RefreshCw :size="15" class="text-amber-400" /> Updated {{ course.updatedAt }}</li>
@@ -208,7 +208,7 @@
         <div v-if="course.tags?.length" class="mt-5">
           <span class="mb-2 block text-[13px] text-white/45 light:text-slate-500">{{ t('Topics') }}</span>
           <div class="flex flex-wrap gap-1.5">
-            <span v-for="tag in course.tags" :key="tag" class="rounded-md border border-violet-500/25 bg-violet-500/12 px-2.25 py-0.75 text-[11px] font-medium text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700">
+            <span v-for="tag in course.tags" :key="tag" class="rounded-md border border-brand-500/25 bg-brand-500/12 px-2.25 py-0.75 text-[11px] font-medium text-brand-300 light:border-brand-200 light:bg-brand-50 light:text-brand-700">
               #{{ tag }}
             </span>
           </div>

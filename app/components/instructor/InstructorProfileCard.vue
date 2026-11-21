@@ -5,7 +5,7 @@
         <h2 class="text-base font-bold text-slate-100 light:text-slate-900">Public profile</h2>
         <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">
           Learners see this page from your courses. Your name, photo, bio, website and Twitter come from
-          <NuxtLink to="/account" class="font-semibold text-violet-300 light:text-violet-700">your account</NuxtLink>.
+          <NuxtLink to="/account" class="font-semibold text-brand-300 light:text-brand-700">your account</NuxtLink>.
         </p>
       </div>
       <NuxtLink
@@ -47,7 +47,7 @@
       <div class="flex items-end justify-end">
         <button
           type="submit"
-          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:from-violet-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
           :disabled="saving"
         >
           <Loader2 v-if="saving" :size="14" class="animate-spin" />
@@ -70,7 +70,7 @@ const toast = useAppToast()
 const { fetchMine, updateMine } = useInstructorProfile()
 
 const labelClass = 'text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600'
-const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600'
+const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600'
 
 const profile = ref<InstructorProfile | null>(null)
 const pending = ref(true)

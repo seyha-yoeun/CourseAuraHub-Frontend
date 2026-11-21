@@ -43,7 +43,7 @@
         </span>
         <input
           type="checkbox"
-          class="size-4 shrink-0 cursor-pointer accent-violet-500"
+          class="size-4 shrink-0 cursor-pointer accent-brand-500"
           :checked="status.enabled"
           :disabled="busy"
           @change="toggle(($event.target as HTMLInputElement).checked)"
@@ -100,7 +100,7 @@
       <div>
         <button
           type="button"
-          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2.5 text-[13px] font-semibold text-white hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
+          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-4 py-2.5 text-[13px] font-semibold text-white hover:bg-brand-600 disabled:cursor-wait disabled:opacity-60"
           :disabled="busy"
           @click="connect"
         >

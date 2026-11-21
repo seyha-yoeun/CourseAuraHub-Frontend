@@ -4,7 +4,7 @@
     <Transition v-bind="backdropAnim">
       <div
         v-if="isOpen"
-        class="fixed inset-0 z-[9998] bg-[#03040a]/82 backdrop-blur-xl print:hidden light:bg-slate-950/45"
+        class="fixed inset-0 z-[9998] bg-[#040806]/82 backdrop-blur-xl print:hidden light:bg-slate-950/45"
         aria-hidden="true"
         @click="dismissNotice('user')"
       />
@@ -18,7 +18,7 @@
       >
         <div
           ref="dialogRef"
-          class="pointer-events-auto relative flex max-h-[calc(100dvh-1.5rem)] w-full max-w-145 flex-col overflow-hidden rounded-3xl border border-violet-500/35 bg-[#0f101a] shadow-[0_25px_60px_-10px_rgba(0,0,0,0.9),0_0_50px_rgba(124,58,237,0.2)] focus:outline-none sm:max-h-[90dvh] light:border-violet-500/30 light:bg-white light:shadow-[0_25px_60px_-10px_rgba(0,0,0,0.18),0_0_40px_rgba(124,58,237,0.15)]"
+          class="pointer-events-auto relative flex max-h-[calc(100dvh-1.5rem)] w-full max-w-145 flex-col overflow-hidden rounded-3xl border border-brand-500/35 bg-[#101814] shadow-[0_25px_60px_-10px_rgba(0,0,0,0.9)] focus:outline-none sm:max-h-[90dvh] light:border-brand-500/30 light:bg-white light:shadow-[0_25px_60px_-10px_rgba(0,0,0,0.18)]"
           role="dialog"
           aria-modal="true"
           aria-labelledby="notice-title"
@@ -32,7 +32,7 @@
           <!-- Auto-close progress bar -->
           <div class="relative h-1 shrink-0 overflow-hidden bg-white/8 light:bg-slate-100" aria-hidden="true">
             <div
-              class="h-full rounded-r-full bg-linear-to-r from-violet-500 via-fuchsia-400 to-indigo-400 transition-[width,opacity] duration-150 ease-linear"
+              class="h-full rounded-r-full bg-brand-500 transition-[width,opacity] duration-150 ease-linear"
               :class="{ 'opacity-45': autoClosePaused }"
               :style="{ width: `${countdownProgress}%` }"
             />
@@ -40,21 +40,21 @@
 
           <div class="relative flex-1 overflow-y-auto overscroll-contain p-5 pb-5 sm:p-7 sm:pb-6" @scroll.passive="pauseAutoClose">
             <!-- Ambient Glow decoration -->
-            <div class="pointer-events-none absolute -top-20 -right-20 size-60 rounded-full bg-[radial-gradient(circle,rgba(124,58,237,0.25),transparent_70%)]" />
+            <div class="pointer-events-none absolute -top-20 -right-20 size-60 rounded-full bg-[radial-gradient(circle,rgba(14,124,90,0.25),transparent_70%)]" />
 
             <!-- Header badge -->
             <div class="relative mb-4.5 flex flex-wrap items-center justify-between gap-2">
-              <span class="inline-flex items-center gap-1.5 rounded-full border border-violet-500/35 bg-violet-500/16 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-violet-300 uppercase light:border-violet-200 light:bg-violet-50 light:text-violet-700">
-                <FlaskConical :size="13" class="text-violet-400" />
+              <span class="inline-flex items-center gap-1.5 rounded-full border border-brand-500/35 bg-brand-500/16 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-brand-300 uppercase light:border-brand-200 light:bg-brand-50 light:text-brand-700">
+                <FlaskConical :size="13" class="text-brand-400" />
                 <span>Experimental Platform Sandbox</span>
               </span>
               <span
-                class="inline-flex items-center gap-1.25 rounded-full border border-violet-500/25 bg-violet-500/10 py-1 pr-2.5 pl-1.5 text-[11px] font-medium text-violet-200 tabular-nums transition-colors duration-300 light:border-violet-200 light:bg-violet-50 light:text-violet-800"
+                class="inline-flex items-center gap-1.25 rounded-full border border-brand-500/25 bg-brand-500/10 py-1 pr-2.5 pl-1.5 text-[11px] font-medium text-brand-200 tabular-nums transition-colors duration-300 light:border-brand-200 light:bg-brand-50 light:text-brand-800"
                 role="timer"
                 aria-live="off"
               >
                 <template v-if="autoClosePaused">
-                  <Pause :size="12" class="text-violet-400" />
+                  <Pause :size="12" class="text-brand-400" />
                   <span>Auto-close paused</span>
                 </template>
                 <template v-else>
@@ -66,7 +66,7 @@
                       fill="none"
                       stroke="currentColor"
                       stroke-width="2"
-                      class="text-white/15 light:text-violet-200"
+                      class="text-white/15 light:text-brand-200"
                     />
                     <circle
                       cx="10"
@@ -76,7 +76,7 @@
                       stroke="currentColor"
                       stroke-width="2"
                       stroke-linecap="round"
-                      class="text-violet-400 transition-[stroke-dashoffset] duration-150 ease-linear"
+                      class="text-brand-400 transition-[stroke-dashoffset] duration-150 ease-linear"
                       :stroke-dasharray="countdownCircumference"
                       :stroke-dashoffset="countdownOffset"
                     />
@@ -89,8 +89,8 @@
 
             <!-- Header Title -->
             <div class="relative mb-5 flex items-center gap-4">
-              <div class="flex size-12 shrink-0 items-center justify-center rounded-[14px] border border-violet-500/35 bg-violet-500/18 shadow-[0_0_20px_rgba(124,58,237,0.25)] light:border-violet-200 light:bg-violet-50">
-                <Sparkles :size="24" class="text-violet-400" />
+              <div class="flex size-12 shrink-0 items-center justify-center rounded-[14px] border border-brand-500/35 bg-brand-500/18 light:border-brand-200 light:bg-brand-50">
+                <Sparkles :size="24" class="text-brand-400" />
               </div>
               <div>
                 <h2 id="notice-title" class="text-lg font-bold tracking-tight text-slate-50 sm:text-xl light:text-slate-900">Welcome to CourseAuraHub Academy</h2>
@@ -101,9 +101,9 @@
             <!-- Key Notices List -->
             <div class="relative mb-4.5 flex flex-col gap-3">
               <!-- Point 1: Experimental Only -->
-              <div class="flex items-start gap-3.5 rounded-[14px] border border-white/6 bg-white/3 p-3 transition-all hover:border-violet-500/25 hover:bg-white/5 sm:px-3.5 light:border-slate-200 light:bg-slate-50 light:hover:border-violet-300 light:hover:bg-white">
-                <div class="flex size-9 shrink-0 items-center justify-center rounded-[10px] border border-violet-500/30 bg-violet-500/15">
-                  <FlaskConical :size="18" class="text-violet-400" />
+              <div class="flex items-start gap-3.5 rounded-[14px] border border-white/6 bg-white/3 p-3 transition-all hover:border-brand-500/25 hover:bg-white/5 sm:px-3.5 light:border-slate-200 light:bg-slate-50 light:hover:border-brand-300 light:hover:bg-white">
+                <div class="flex size-9 shrink-0 items-center justify-center rounded-[10px] border border-brand-500/30 bg-brand-500/15">
+                  <FlaskConical :size="18" class="text-brand-400" />
                 </div>
                 <div class="flex-1">
                   <h4 class="text-[13px] leading-snug font-semibold text-slate-100 light:text-slate-900">Experimental &amp; Educational Purpose Only</h4>
@@ -114,7 +114,7 @@
               </div>
 
               <!-- Point 2: No Advertisements -->
-              <div class="flex items-start gap-3.5 rounded-[14px] border border-white/6 bg-white/3 p-3 transition-all hover:border-violet-500/25 hover:bg-white/5 sm:px-3.5 light:border-slate-200 light:bg-slate-50 light:hover:border-violet-300 light:hover:bg-white">
+              <div class="flex items-start gap-3.5 rounded-[14px] border border-white/6 bg-white/3 p-3 transition-all hover:border-brand-500/25 hover:bg-white/5 sm:px-3.5 light:border-slate-200 light:bg-slate-50 light:hover:border-brand-300 light:hover:bg-white">
                 <div class="flex size-9 shrink-0 items-center justify-center rounded-[10px] border border-amber-500/30 bg-amber-500/15">
                   <ShieldCheck :size="18" class="text-amber-400" />
                 </div>
@@ -127,7 +127,7 @@
               </div>
 
               <!-- Point 3: Live Backend API -->
-              <div class="flex items-start gap-3.5 rounded-[14px] border border-white/6 bg-white/3 p-3 transition-all hover:border-violet-500/25 hover:bg-white/5 sm:px-3.5 light:border-slate-200 light:bg-slate-50 light:hover:border-violet-300 light:hover:bg-white">
+              <div class="flex items-start gap-3.5 rounded-[14px] border border-white/6 bg-white/3 p-3 transition-all hover:border-brand-500/25 hover:bg-white/5 sm:px-3.5 light:border-slate-200 light:bg-slate-50 light:hover:border-brand-300 light:hover:bg-white">
                 <div class="flex size-9 shrink-0 items-center justify-center rounded-[10px] border border-emerald-500/30 bg-emerald-500/15">
                   <Database :size="18" class="text-emerald-400" />
                 </div>
@@ -152,7 +152,7 @@
             <div class="relative flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
-                class="inline-flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-3 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.3)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_25px_rgba(124,58,237,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+                class="inline-flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-3 text-[13px] font-semibold text-white transition-all hover:-translate-y-px hover:bg-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
                 @click="dismissNotice('user')"
               >
                 <CheckCircle2 :size="16" />
@@ -161,7 +161,7 @@
 
               <button
                 type="button"
-                class="inline-flex cursor-pointer items-center justify-center gap-1.75 rounded-xl border border-white/10 bg-white/5 px-4.5 py-3 text-[13px] font-medium text-white/75 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:hover:bg-slate-200 light:hover:text-slate-900"
+                class="inline-flex cursor-pointer items-center justify-center gap-1.75 rounded-xl border border-white/10 bg-white/5 px-4.5 py-3 text-[13px] font-medium text-white/75 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:hover:bg-slate-200 light:hover:text-slate-900"
                 @click="exploreCatalog"
               >
                 <BookOpen :size="15" />

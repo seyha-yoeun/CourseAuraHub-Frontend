@@ -3,7 +3,7 @@
     <div class="flex flex-wrap items-start justify-between gap-2">
       <div>
         <h2 class="flex items-center gap-2 text-base font-bold text-slate-100 light:text-slate-900">
-          <Megaphone :size="17" class="text-violet-400" /> {{ t('Announcements') }}
+          <Megaphone :size="17" class="text-brand-400" /> {{ t('Announcements') }}
         </h2>
         <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">
           {{ t('Every enrolled learner is notified, including on Telegram. Up to 5 a day.') }}
@@ -22,7 +22,7 @@
         <span class="text-[11px] text-white/35 light:text-slate-400">{{ form.body.length }}/5000</span>
         <button
           type="submit"
-          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500 px-4 py-2 text-xs font-semibold text-white transition-all hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
           :disabled="sending || !form.title.trim() || !form.body.trim()"
         >
           <Loader2 v-if="sending" :size="14" class="animate-spin" />
@@ -88,7 +88,7 @@ const { t } = useT()
 const toast = useAppToast()
 const { fetchForStaff, send, remove } = useAnnouncements()
 
-const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:bg-white/7 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600'
+const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600'
 
 const form = reactive({ title: '', body: '' })
 const items = ref<Announcement[]>([])

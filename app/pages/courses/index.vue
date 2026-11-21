@@ -12,7 +12,7 @@
       <button
         v-if="auth.isAdmin"
         type="button"
-        class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+        class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:-translate-y-px hover:bg-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
         @click="openCreateModal"
       >
         <Plus :size="16" />
@@ -29,7 +29,7 @@
           v-model="searchQuery"
           type="text"
           :placeholder="t('Search by title, instructor, or tags...')"
-          class="h-10.5 w-full rounded-[10px] border border-white/9 bg-white/4 pr-9 pl-10 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/35 focus:border-violet-500/65 focus:bg-white/7 focus:ring-2 focus:ring-violet-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600"
+          class="h-10.5 w-full rounded-[10px] border border-white/9 bg-white/4 pr-9 pl-10 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/35 focus:border-brand-500/65 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600"
           @input="onFilterChange"
         >
         <button
@@ -91,14 +91,14 @@
       <div class="flex flex-wrap items-center gap-2">
         <button
           type="button"
-          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-semibold text-slate-200 transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-white light:text-slate-700 light:hover:bg-slate-50"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-semibold text-slate-200 transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-white light:text-slate-700 light:hover:bg-slate-50"
           :aria-expanded="showMoreFilters"
           aria-controls="catalog-more-filters"
           @click="showMoreFilters = !showMoreFilters"
         >
           <SlidersHorizontal :size="14" />
           {{ t('More filters') }}
-          <span v-if="activeFilterCount" class="rounded-full bg-violet-500/25 px-1.75 text-[10px] text-violet-200 light:bg-violet-100 light:text-violet-700">{{ activeFilterCount }}</span>
+          <span v-if="activeFilterCount" class="rounded-full bg-brand-500/25 px-1.75 text-[10px] text-brand-200 light:bg-brand-100 light:text-brand-700">{{ activeFilterCount }}</span>
         </button>
         <button
           v-if="activeFilterCount"
@@ -125,11 +125,11 @@
         </div>
         <label class="flex flex-col gap-1.5">
           <span class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Min price ($)') }}</span>
-          <input v-model="filters.minPrice" type="number" min="0" step="1" inputmode="decimal" :placeholder="t('Any')" class="h-10 w-full rounded-[10px] border border-white/9 bg-white/4 px-3 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/35 focus:border-violet-500/65 focus:ring-2 focus:ring-violet-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" @input="onFilterChange">
+          <input v-model="filters.minPrice" type="number" min="0" step="1" inputmode="decimal" :placeholder="t('Any')" class="h-10 w-full rounded-[10px] border border-white/9 bg-white/4 px-3 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/35 focus:border-brand-500/65 focus:ring-2 focus:ring-brand-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" @input="onFilterChange">
         </label>
         <label class="flex flex-col gap-1.5">
           <span class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Max price ($)') }}</span>
-          <input v-model="filters.maxPrice" type="number" min="0" step="1" inputmode="decimal" :placeholder="t('Any')" class="h-10 w-full rounded-[10px] border border-white/9 bg-white/4 px-3 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/35 focus:border-violet-500/65 focus:ring-2 focus:ring-violet-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" @input="onFilterChange">
+          <input v-model="filters.maxPrice" type="number" min="0" step="1" inputmode="decimal" :placeholder="t('Any')" class="h-10 w-full rounded-[10px] border border-white/9 bg-white/4 px-3 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/35 focus:border-brand-500/65 focus:ring-2 focus:ring-brand-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" @input="onFilterChange">
         </label>
         <div class="flex flex-col gap-1.5" :class="{ 'z-30': activeDropdown === 'rating' }">
           <span class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Rating') }}</span>
@@ -140,7 +140,7 @@
           <AppDropdown v-model="filters.duration" :options="durationOptions" :aria-label="t('Duration')" @change="onFilterChange" @toggle="(open) => handleDropdownToggle('duration', open)" />
         </div>
         <label class="flex cursor-pointer items-center gap-2 text-[13px] text-slate-200 sm:col-span-2 lg:col-span-3 xl:col-span-6 light:text-slate-700">
-          <input v-model="filters.onSale" type="checkbox" class="size-4 accent-violet-600" @change="onFilterChange">
+          <input v-model="filters.onSale" type="checkbox" class="size-4 accent-brand-600" @change="onFilterChange">
           {{ t('On sale now') }}
         </label>
       </div>
@@ -180,9 +180,9 @@
           v-for="option in viewOptions"
           :key="option.value"
           type="button"
-          class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
           :class="viewMode === option.value
-            ? 'bg-violet-500/25 text-violet-200 light:bg-white light:text-violet-700 light:shadow-sm'
+            ? 'bg-brand-500/25 text-brand-200 light:bg-white light:text-brand-700 light:shadow-sm'
             : 'text-white/50 hover:text-white light:text-slate-500 light:hover:text-slate-900'"
           :aria-pressed="viewMode === option.value"
           @click="viewMode = option.value"
@@ -203,8 +203,8 @@
     </div>
 
     <div v-else-if="courses.length === 0" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center backdrop-blur-md light:border-slate-200 light:bg-white">
-      <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-violet-500/30 bg-violet-500/15">
-        <BookOpen :size="32" class="text-violet-400" />
+      <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-brand-500/30 bg-brand-500/15">
+        <BookOpen :size="32" class="text-brand-400" />
       </div>
       <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">{{ t('No courses found') }}</h3>
       <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">
@@ -213,7 +213,7 @@
       <button
         v-if="auth.isAdmin"
         type="button"
-        class="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+        class="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:-translate-y-px hover:bg-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
         @click="openCreateModal"
       >
         <Plus :size="16" />

@@ -11,7 +11,7 @@
         </p>
       </div>
       <label v-if="curriculum" class="flex cursor-pointer items-center gap-2 rounded-lg border border-white/8 bg-white/3 px-3 py-1.5 text-xs text-slate-200 light:border-slate-200 light:bg-slate-50 light:text-slate-700" title="Each lesson opens once the lessons before it are complete">
-        <input type="checkbox" class="size-4 accent-violet-600" :checked="curriculum.sequentialLessons" :disabled="busy" @change="toggleSequential(($event.target as HTMLInputElement).checked)">
+        <input type="checkbox" class="size-4 accent-brand-600" :checked="curriculum.sequentialLessons" :disabled="busy" @change="toggleSequential(($event.target as HTMLInputElement).checked)">
         Unlock lessons in order
       </label>
     </div>
@@ -75,7 +75,7 @@
           <li>
             <button
               type="button"
-              class="flex w-full cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-2 text-left text-xs font-semibold text-violet-300 transition-colors hover:bg-violet-500/10 light:text-violet-700 light:hover:bg-violet-50"
+              class="flex w-full cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-2 text-left text-xs font-semibold text-brand-300 transition-colors hover:bg-brand-500/10 light:text-brand-700 light:hover:bg-brand-50"
               @click="openLessonModal(section, null)"
             >
               <Plus :size="14" /> Add lesson
@@ -88,7 +88,7 @@
         <input v-model="newSectionTitle" type="text" maxlength="200" placeholder="New section title" aria-label="New section title" :class="inputClass">
         <button
           type="submit"
-          class="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-3.5 py-2 text-xs font-semibold text-violet-300 transition-all hover:bg-violet-500/30 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 light:border-violet-300 light:bg-violet-50 light:text-violet-700"
+          class="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[10px] border border-brand-500/35 bg-brand-500/15 px-3.5 py-2 text-xs font-semibold text-brand-300 transition-all hover:bg-brand-500/30 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 light:border-brand-300 light:bg-brand-50 light:text-brand-700"
           :disabled="busy || !newSectionTitle.trim()"
         >
           <Plus :size="14" /> Add section
@@ -149,8 +149,8 @@ const assignmentLesson = ref<Lesson | null>(null)
 const api = useCurriculum()
 const toast = useAppToast()
 
-const inputClass = 'w-full min-w-0 rounded-[10px] border border-white/10 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
-const iconButtonClass = 'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-white/45 transition-colors hover:bg-white/8 hover:text-white disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900'
+const inputClass = 'w-full min-w-0 rounded-[10px] border border-white/10 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
+const iconButtonClass = 'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-white/45 transition-colors hover:bg-white/8 hover:text-white disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900'
 const dangerButtonClass = 'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-rose-400 transition-colors hover:bg-rose-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:text-rose-600 light:hover:bg-rose-50'
 
 const curriculum = ref<Curriculum | null>(null)

@@ -13,7 +13,7 @@
           <p v-else class="mt-0.5 text-xs text-white/50 light:text-slate-500">{{ t('Set a target to keep a steady pace.') }}</p>
         </div>
       </div>
-      <button v-if="!editing" type="button" class="cursor-pointer text-xs font-semibold text-violet-300 light:text-violet-700" @click="startEditing">
+      <button v-if="!editing" type="button" class="cursor-pointer text-xs font-semibold text-brand-300 light:text-brand-700" @click="startEditing">
         {{ goal?.weeklyLessonsTarget ? t('Change') : t('Set a goal') }}
       </button>
     </div>
@@ -22,7 +22,7 @@
     <template v-else-if="goal">
       <div v-if="goal.weeklyLessonsTarget && !editing" class="mt-3">
         <div class="h-2 overflow-hidden rounded-full bg-white/8 light:bg-slate-100">
-          <div class="h-full rounded-full transition-all" :class="goal.achieved ? 'bg-emerald-500' : 'bg-violet-500'" :style="{ width: `${goal.progressPercent}%` }" />
+          <div class="h-full rounded-full transition-all" :class="goal.achieved ? 'bg-emerald-500' : 'bg-brand-500'" :style="{ width: `${goal.progressPercent}%` }" />
         </div>
         <p v-if="goal.achieved" class="mt-2 text-xs font-semibold text-emerald-400 light:text-emerald-700">{{ t('Goal reached this week. Nice work!') }}</p>
       </div>
@@ -36,7 +36,7 @@
       </form>
 
       <label class="mt-3 flex cursor-pointer items-center gap-2 text-xs text-white/60 light:text-slate-600">
-        <input type="checkbox" :checked="goal.leaderboardVisible" :disabled="saving" class="accent-violet-500" @change="toggleVisible">
+        <input type="checkbox" :checked="goal.leaderboardVisible" :disabled="saving" class="accent-brand-500" @change="toggleVisible">
         {{ t('Show me on leaderboards') }}
       </label>
     </template>

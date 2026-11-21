@@ -20,8 +20,8 @@
     </div>
 
     <div v-else-if="!items.length" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center light:border-slate-200 light:bg-white">
-      <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-violet-500/30 bg-violet-500/12">
-        <Receipt :size="30" class="text-violet-300 light:text-violet-700" />
+      <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-brand-500/30 bg-brand-500/12">
+        <Receipt :size="30" class="text-brand-300 light:text-brand-700" />
       </div>
       <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">No orders found</h3>
     </div>
@@ -46,7 +46,7 @@
                 <span class="text-xs text-white/40 light:text-slate-500">{{ formatDateTime(item.order.createdAt) }}</span>
               </td>
               <td class="px-4 py-3">
-                <NuxtLink :to="`/courses/${item.order.courseSlug}`" class="text-white/70 no-underline hover:text-violet-300 light:text-slate-600 light:hover:text-violet-700">{{ item.order.courseTitle }}</NuxtLink>
+                <NuxtLink :to="`/courses/${item.order.courseSlug}`" class="text-white/70 no-underline hover:text-brand-300 light:text-slate-600 light:hover:text-brand-700">{{ item.order.courseTitle }}</NuxtLink>
               </td>
               <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ item.studentEmail }}</td>
               <td class="px-4 py-3 font-semibold text-emerald-400 light:text-emerald-700">${{ Number(item.order.amount).toFixed(2) }}</td>

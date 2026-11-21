@@ -32,7 +32,7 @@
           <tbody class="divide-y divide-white/6 light:divide-slate-200">
             <tr v-for="item in items" :key="item.request.id" class="align-top">
               <td class="px-4 py-3">
-                <NuxtLink :to="`/courses/${item.request.courseSlug}`" class="font-semibold text-violet-300 no-underline light:text-violet-700">{{ item.request.courseTitle }}</NuxtLink>
+                <NuxtLink :to="`/courses/${item.request.courseSlug}`" class="font-semibold text-brand-300 no-underline light:text-brand-700">{{ item.request.courseTitle }}</NuxtLink>
                 <span class="block text-xs text-white/45 light:text-slate-500">{{ item.request.orderNumber }} · {{ formatDateTime(item.request.createdAt) }}</span>
               </td>
               <td class="px-4 py-3 text-white/70 light:text-slate-600">

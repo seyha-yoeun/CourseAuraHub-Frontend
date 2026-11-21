@@ -8,12 +8,12 @@
     <AlertCircle :size="40" class="text-rose-400" />
     <h2 class="mt-3 text-xl font-bold text-slate-50 light:text-slate-900">{{ t('Course Unavailable') }}</h2>
     <p class="mt-1.5 text-[13px] text-white/50 light:text-slate-500">{{ t('We couldn\'t load this course\'s lessons.') }}</p>
-    <NuxtLink to="/my-learning" class="mt-4 text-[13px] font-semibold text-violet-300 light:text-violet-700">{{ t('Back to My Learning') }}</NuxtLink>
+    <NuxtLink to="/my-learning" class="mt-4 text-[13px] font-semibold text-brand-300 light:text-brand-700">{{ t('Back to My Learning') }}</NuxtLink>
   </div>
 
   <div v-else class="flex flex-col gap-5">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <NuxtLink :to="`/courses/${slug}`" class="inline-flex min-w-0 items-center gap-1.5 text-[13px] font-semibold text-violet-300 no-underline hover:text-violet-200 light:text-violet-700">
+      <NuxtLink :to="`/courses/${slug}`" class="inline-flex min-w-0 items-center gap-1.5 text-[13px] font-semibold text-brand-300 no-underline hover:text-brand-200 light:text-brand-700">
         <ArrowLeft :size="15" class="shrink-0" />
         <span class="truncate">{{ course.title }}</span>
       </NuxtLink>
@@ -94,8 +94,8 @@
                 :default="index === 0"
               >
             </video>
-            <div v-else class="flex aspect-video flex-col items-center justify-center gap-3 bg-linear-to-br from-violet-950/60 to-zinc-950 p-6 text-center light:from-violet-50 light:to-white">
-              <component :is="lessonIcon" :size="40" class="text-violet-300 light:text-violet-600" />
+            <div v-else class="flex aspect-video flex-col items-center justify-center gap-3 bg-linear-to-br from-brand-950/60 to-zinc-950 p-6 text-center light:from-brand-50 light:to-white">
+              <component :is="lessonIcon" :size="40" class="text-brand-300 light:text-brand-600" />
               <p class="max-w-md text-[13px] text-white/65 light:text-slate-600">
                 <template v-if="mediaFailed">{{ t('This video couldn\'t be played in the browser.') }}</template>
                 <template v-else-if="activeLesson.type === 'quiz'">{{ t('This lesson is a quiz hosted with the course materials.') }}</template>
@@ -106,7 +106,7 @@
                 :href="activeLesson.contentUrl"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-violet-500/20 px-4 py-2 text-xs font-semibold text-violet-200 no-underline hover:bg-violet-500/35 light:text-violet-800"
+                class="inline-flex items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500/20 px-4 py-2 text-xs font-semibold text-brand-200 no-underline hover:bg-brand-500/35 light:text-brand-800"
               >
                 Open {{ activeLesson.type === 'quiz' ? 'quiz' : 'resource' }}
                 <ExternalLink :size="13" />
@@ -152,7 +152,7 @@
                 <button
                   v-if="curriculum.enrolled && !activeLesson.completed && !mustPassQuiz && activeLesson.type !== 'code'"
                   type="button"
-                  class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
+                  class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500 px-4 py-2 text-xs font-semibold text-white transition-all hover:bg-brand-600 disabled:cursor-wait disabled:opacity-60"
                   :disabled="saving"
                   @click="completeAndContinue"
                 >

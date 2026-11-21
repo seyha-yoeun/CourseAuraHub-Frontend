@@ -17,7 +17,7 @@
           <span :class="session.cancelled ? 'line-through opacity-60' : ''">{{ session.title }}</span>
         </p>
         <p class="mt-0.5 text-xs text-white/50 light:text-slate-500">
-          <NuxtLink v-if="showCourse" :to="`/learn/${session.courseSlug}?live=${session.id}`" class="font-semibold text-violet-300 no-underline light:text-violet-700">{{ session.courseTitle }}</NuxtLink>
+          <NuxtLink v-if="showCourse" :to="`/learn/${session.courseSlug}?live=${session.id}`" class="font-semibold text-brand-300 no-underline light:text-brand-700">{{ session.courseTitle }}</NuxtLink>
           <template v-if="showCourse"> · </template>
           {{ formatDateTime(session.startsAt) }} – {{ formatTime(session.endsAt) }}
         </p>
@@ -39,7 +39,7 @@
       <NuxtLink
         v-else-if="isOver(session) && session.recordingLessonId"
         :to="{ path: `/learn/${session.courseSlug}`, query: { lesson: String(session.recordingLessonId) } }"
-        class="inline-flex items-center gap-1.5 text-xs font-semibold text-violet-300 no-underline light:text-violet-700"
+        class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-300 no-underline light:text-brand-700"
       >
         <PlayCircle :size="14" /> {{ t('Watch the recording') }}
       </NuxtLink>

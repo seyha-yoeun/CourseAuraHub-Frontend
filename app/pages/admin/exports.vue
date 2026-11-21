@@ -20,8 +20,8 @@
     <ul class="m-0 grid list-none gap-3 p-0 sm:grid-cols-2">
       <li v-for="item in exportsList" :key="item.name" :class="cardClass" class="flex flex-col gap-3">
         <div class="flex items-start gap-3">
-          <div class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/12">
-            <component :is="item.icon" :size="20" class="text-violet-300 light:text-violet-700" />
+          <div class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-brand-500/30 bg-brand-500/12">
+            <component :is="item.icon" :size="20" class="text-brand-300 light:text-brand-700" />
           </div>
           <div>
             <h2 :class="sectionTitle">{{ item.title }}</h2>

@@ -8,14 +8,14 @@
     <div v-if="pending" class="h-28 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
     <p v-else-if="error" :class="emptyBox">{{ getErrorMessage(error, t('Unable to load your organizations')) }}</p>
     <div v-else-if="!organizations.length" :class="emptyBox">
-      <Building2 :size="30" class="mx-auto mb-2 text-violet-300 light:text-violet-700" />
+      <Building2 :size="30" class="mx-auto mb-2 text-brand-300 light:text-brand-700" />
       <p>{{ t('You are not part of an organization. Ask your team owner for an invitation link.') }}</p>
     </div>
     <ul v-else class="m-0 grid list-none gap-3 p-0 sm:grid-cols-2">
       <li v-for="organization in organizations" :key="organization.slug">
-        <NuxtLink :to="`/organizations/${organization.slug}`" :class="cardClass" class="flex items-center gap-3 no-underline transition-colors hover:border-violet-500/40">
-          <div class="flex size-11 shrink-0 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/12">
-            <Building2 :size="22" class="text-violet-300 light:text-violet-700" />
+        <NuxtLink :to="`/organizations/${organization.slug}`" :class="cardClass" class="flex items-center gap-3 no-underline transition-colors hover:border-brand-500/40">
+          <div class="flex size-11 shrink-0 items-center justify-center rounded-xl border border-brand-500/30 bg-brand-500/12">
+            <Building2 :size="22" class="text-brand-300 light:text-brand-700" />
           </div>
           <div class="min-w-0">
             <h2 :class="sectionTitle" class="truncate">{{ organization.name }}</h2>

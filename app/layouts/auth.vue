@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-dvh bg-[#0a0a0f] text-slate-100 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)] light:bg-white light:text-slate-900">
+  <div class="min-h-dvh bg-[#0a100d] text-slate-100 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)] light:bg-white light:text-slate-900">
     <!-- Form column -->
     <div class="relative flex min-h-dvh flex-col px-4 py-4 sm:px-10 sm:py-7 lg:px-12 xl:px-16 sm:short:py-5">
       <header class="flex items-center justify-between gap-3">
         <NuxtLink
           to="/courses"
-          class="group flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/40"
+          class="group flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/40"
           aria-label="CourseAuraHub - browse courses"
         >
           <AuthLogo class="size-8 transition-transform duration-200 group-hover:-rotate-6" />
@@ -93,7 +93,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => resizeObserver?.disconnect())
 
-const footerLink = 'rounded-sm px-1 transition-colors hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/40 light:hover:text-slate-800'
+const footerLink = 'rounded-sm px-1 transition-colors hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/40 light:hover:text-slate-800'
 
 useHead({
   titleTemplate: (titleChunk) => {
@@ -102,7 +102,7 @@ useHead({
   meta: [
     { name: 'description', content: 'Sign in to CourseAuraHub Academy - Master modern web development' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-    { name: 'theme-color', content: '#0f2f24' }
+    { name: 'theme-color', content: '#0d2a21' }
   ],
   link: [
     { rel: 'icon', type: 'image/svg+xml', href: '/favicon.ico' },

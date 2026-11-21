@@ -1,8 +1,8 @@
 <template>
   <section class="rounded-[18px] border border-white/10 bg-white/5 p-5 light:border-slate-200 light:bg-white">
     <div class="flex items-start gap-3">
-      <div class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/12">
-        <Mail :size="20" class="text-violet-300 light:text-violet-700" />
+      <div class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-brand-500/30 bg-brand-500/12">
+        <Mail :size="20" class="text-brand-300 light:text-brand-700" />
       </div>
       <div>
         <h2 class="text-sm font-bold text-slate-100 light:text-slate-900">{{ t('Email') }}</h2>
@@ -27,7 +27,7 @@
             :aria-checked="preference.mode === mode.value"
             class="cursor-pointer rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-colors disabled:cursor-wait"
             :class="preference.mode === mode.value
-              ? 'bg-violet-500/25 text-violet-200 light:bg-white light:text-violet-700 light:shadow-sm'
+              ? 'bg-brand-500/25 text-brand-200 light:bg-white light:text-brand-700 light:shadow-sm'
               : 'text-white/50 hover:text-white light:text-slate-500 light:hover:text-slate-800'"
             :disabled="saving === preference.type"
             @click="choose(preference, mode.value)"

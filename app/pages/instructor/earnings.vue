@@ -71,7 +71,7 @@
             <tbody class="divide-y divide-white/6 light:divide-slate-200">
               <tr v-for="item in items" :key="item.id">
                 <td class="px-4 py-3">
-                  <NuxtLink :to="`/instructor/courses/${item.courseSlug}`" class="font-semibold text-slate-100 no-underline hover:text-violet-300 light:text-slate-900 light:hover:text-violet-700">{{ item.courseTitle }}</NuxtLink>
+                  <NuxtLink :to="`/instructor/courses/${item.courseSlug}`" class="font-semibold text-slate-100 no-underline hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700">{{ item.courseTitle }}</NuxtLink>
                   <p class="text-xs text-white/45 light:text-slate-500">{{ formatDate(item.createdAt) }}<template v-if="item.type === 'refund'"> · Refund</template></p>
                 </td>
                 <td class="px-4 py-3 font-mono text-xs text-white/55 light:text-slate-500">{{ item.orderNumber }}</td>

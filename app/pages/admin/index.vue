@@ -1,13 +1,13 @@
 <template>
   <div class="flex flex-col gap-5">
     <!-- Console header -->
-    <section class="relative overflow-hidden rounded-[20px] border border-violet-500/25 bg-linear-to-br from-violet-600/10 via-blue-600/5 to-transparent p-5 backdrop-blur-md sm:p-6 lg:p-7 light:border-violet-200 light:from-violet-50 light:via-white light:to-white">
-      <div class="pointer-events-none absolute -top-23 -right-18 size-60 rounded-full bg-[radial-gradient(circle,rgba(124,58,237,0.16),transparent_70%)] blur-2xl light:bg-[radial-gradient(circle,rgba(124,58,237,0.09),transparent_70%)]" />
+    <section class="relative overflow-hidden rounded-[20px] border border-brand-500/25 bg-linear-to-br from-brand-600/10 via-blue-600/5 to-transparent p-5 backdrop-blur-md sm:p-6 lg:p-7 light:border-brand-200 light:from-brand-50 light:via-white light:to-white">
+      <div class="pointer-events-none absolute -top-23 -right-18 size-60 rounded-full bg-[radial-gradient(circle,rgba(14,124,90,0.16),transparent_70%)] blur-2xl light:bg-[radial-gradient(circle,rgba(14,124,90,0.09),transparent_70%)]" />
 
       <div class="relative flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
         <div class="flex min-w-0 items-start gap-4">
-          <div class="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-violet-500/35 bg-violet-500/15 shadow-[0_0_24px_rgba(124,58,237,0.18)] light:border-violet-200 light:bg-violet-50">
-            <ShieldAlert :size="24" class="text-violet-300 light:text-violet-700" />
+          <div class="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-brand-500/35 bg-brand-500/15 light:border-brand-200 light:bg-brand-50">
+            <ShieldAlert :size="24" class="text-brand-300 light:text-brand-700" />
           </div>
 
           <div class="min-w-0">
@@ -44,7 +44,7 @@
         <div class="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-3.5 py-2.25 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
+            class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-3.5 py-2.25 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
             :disabled="refreshing"
             @click="handleRefresh"
           >
@@ -54,7 +54,7 @@
 
           <button
             type="button"
-            class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-3.5 py-2.25 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
+            class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-3.5 py-2.25 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
             :disabled="courses.length === 0 && students.length === 0"
             @click="exportSnapshot"
           >
@@ -64,7 +64,7 @@
 
           <button
             type="button"
-            class="inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4.5 py-2.25 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+            class="inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-brand-500/40 bg-brand-500 px-4.5 py-2.25 text-[13px] font-semibold text-white transition-all hover:-translate-y-px hover:bg-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
             @click="openCreateCourse"
           >
             <Plus :size="16" />
@@ -136,9 +136,9 @@
             v-for="tab in tabs"
             :key="tab.id"
             type="button"
-            class="inline-flex flex-1 shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-[12px] font-semibold whitespace-nowrap transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 sm:flex-none"
+            class="inline-flex flex-1 shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-[12px] font-semibold whitespace-nowrap transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 sm:flex-none"
             :class="activeTab === tab.id
-              ? 'border-violet-500/35 bg-violet-500/15 text-violet-300 shadow-[0_0_18px_rgba(124,58,237,0.08)] light:border-violet-200 light:bg-white light:text-violet-700 light:shadow-sm'
+              ? 'border-brand-500/35 bg-brand-500/15 text-brand-300 light:border-brand-200 light:bg-white light:text-brand-700 light:shadow-sm'
               : 'border-transparent text-white/50 hover:bg-white/5 hover:text-white/80 light:text-slate-500 light:hover:bg-white light:hover:text-slate-800'"
             @click="activeTab = tab.id"
           >
@@ -148,7 +148,7 @@
               v-if="tab.count !== null"
               class="rounded-full px-1.5 py-px text-[10px] font-bold"
               :class="activeTab === tab.id
-                ? 'bg-violet-500/20 text-violet-200 light:bg-violet-100 light:text-violet-700'
+                ? 'bg-brand-500/20 text-brand-200 light:bg-brand-100 light:text-brand-700'
                 : 'bg-white/6 text-white/40 light:bg-slate-200 light:text-slate-600'"
             >
               {{ tab.count }}
@@ -181,7 +181,7 @@
                     v-model="courseSearch"
                     type="text"
                     placeholder="Search courses, instructors..."
-                    class="w-full rounded-[10px] border border-white/9 bg-white/4 py-2.25 pr-8 pl-9 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/60 focus:bg-white/7 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-slate-50 light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
+                    class="w-full rounded-[10px] border border-white/9 bg-white/4 py-2.25 pr-8 pl-9 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/60 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-slate-50 light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600 light:focus:bg-white"
                   >
                   <button
                     v-if="courseSearch"
@@ -200,7 +200,7 @@
                   </span>
                   <button
                     type="button"
-                    class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-violet-500/35 bg-violet-500/15 px-3 py-1.75 text-xs font-semibold text-violet-300 transition-all hover:bg-violet-500/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
+                    class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-brand-500/35 bg-brand-500/15 px-3 py-1.75 text-xs font-semibold text-brand-300 transition-all hover:bg-brand-500/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-brand-300 light:bg-brand-50 light:text-brand-700 light:hover:bg-brand-100 light:hover:text-brand-900"
                     @click="openCreateCourse"
                   >
                     <Plus :size="14" />
@@ -213,8 +213,8 @@
                 v-if="filteredCourses.length === 0"
                 class="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-white/10 px-6 py-12 text-center light:border-slate-200"
               >
-                <span class="mb-1 flex size-11 items-center justify-center rounded-xl border border-violet-500/25 bg-violet-500/10">
-                  <BookOpen :size="20" class="text-violet-400" />
+                <span class="mb-1 flex size-11 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10">
+                  <BookOpen :size="20" class="text-brand-400" />
                 </span>
                 <span class="text-sm font-semibold text-slate-200 light:text-slate-800">
                   {{ courseSearch ? 'No courses match your search' : 'No courses yet' }}
@@ -239,7 +239,7 @@
                     <div class="min-w-0">
                       <NuxtLink
                         :to="`/courses/${course.slug}`"
-                        class="block truncate text-[13px] font-semibold text-slate-100 no-underline transition-colors hover:text-violet-300 light:text-slate-900 light:hover:text-violet-700"
+                        class="block truncate text-[13px] font-semibold text-slate-100 no-underline transition-colors hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700"
                       >
                         {{ course.title }}
                       </NuxtLink>
@@ -266,7 +266,7 @@
                     <select
                       :value="course.status"
                       :disabled="updatingCourseSlug === course.slug"
-                      class="cursor-pointer rounded-full border px-2.5 py-1 text-[11px] font-semibold outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-violet-500/60 disabled:cursor-wait disabled:opacity-60"
+                      class="cursor-pointer rounded-full border px-2.5 py-1 text-[11px] font-semibold outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-brand-500/60 disabled:cursor-wait disabled:opacity-60"
                       :class="courseStatusClass(course.status)"
                       :aria-label="`Status for ${course.title}`"
                       @change="updateCourseStatus(course, $event)"
@@ -279,7 +279,7 @@
                     <div class="flex items-center gap-1.5">
                       <NuxtLink
                         :to="`/courses/${course.slug}`"
-                        class="flex size-7.5 items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/55 transition-all duration-200 hover:border-violet-500/30 hover:bg-violet-500/15 hover:text-violet-300 light:border-slate-200 light:bg-slate-50 light:text-slate-600 light:hover:bg-violet-50 light:hover:text-violet-700"
+                        class="flex size-7.5 items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/55 transition-all duration-200 hover:border-brand-500/30 hover:bg-brand-500/15 hover:text-brand-300 light:border-slate-200 light:bg-slate-50 light:text-slate-600 light:hover:bg-brand-50 light:hover:text-brand-700"
                         :aria-label="`View ${course.title}`"
                         title="View course"
                       >
@@ -287,7 +287,7 @@
                       </NuxtLink>
                       <button
                         type="button"
-                        class="flex size-7.5 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/55 transition-all duration-200 hover:border-violet-500/30 hover:bg-violet-500/15 hover:text-violet-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-50 light:text-slate-600 light:hover:bg-violet-50 light:hover:text-violet-700"
+                        class="flex size-7.5 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/55 transition-all duration-200 hover:border-brand-500/30 hover:bg-brand-500/15 hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-50 light:text-slate-600 light:hover:bg-brand-50 light:hover:text-brand-700"
                         :aria-label="`Edit ${course.title}`"
                         title="Edit course"
                         @click="openEditCourse(course)"
@@ -318,7 +318,7 @@
                     v-model="studentSearch"
                     type="text"
                     placeholder="Search students, emails, countries..."
-                    class="w-full rounded-[10px] border border-white/9 bg-white/4 py-2.25 pr-8 pl-9 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/60 focus:bg-white/7 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-slate-50 light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
+                    class="w-full rounded-[10px] border border-white/9 bg-white/4 py-2.25 pr-8 pl-9 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/60 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-slate-50 light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600 light:focus:bg-white"
                   >
                   <button
                     v-if="studentSearch"
@@ -337,7 +337,7 @@
                   </span>
                   <button
                     type="button"
-                    class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-violet-500/35 bg-violet-500/15 px-3 py-1.75 text-xs font-semibold text-violet-300 transition-all hover:bg-violet-500/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
+                    class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-brand-500/35 bg-brand-500/15 px-3 py-1.75 text-xs font-semibold text-brand-300 transition-all hover:bg-brand-500/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-brand-300 light:bg-brand-50 light:text-brand-700 light:hover:bg-brand-100 light:hover:text-brand-900"
                     @click="showAddStudent = !showAddStudent"
                   >
                     <UserPlus :size="14" />
@@ -346,9 +346,9 @@
                 </div>
               </div>
 
-              <div v-if="showAddStudent" class="rounded-xl border border-violet-500/25 bg-violet-500/6 p-4 light:border-violet-200 light:bg-violet-50/50">
+              <div v-if="showAddStudent" class="rounded-xl border border-brand-500/25 bg-brand-500/6 p-4 light:border-brand-200 light:bg-brand-50/50">
                 <div class="mb-3 flex items-center gap-2">
-                  <UserPlus :size="16" class="text-violet-400" />
+                  <UserPlus :size="16" class="text-brand-400" />
                   <h3 class="text-[13px] font-bold text-slate-100 light:text-slate-900">Quick add student</h3>
                 </div>
                 <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
@@ -356,33 +356,33 @@
                     v-model="newStudent.name"
                     type="text"
                     placeholder="Full name *"
-                    class="w-full rounded-lg border border-white/10 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600"
+                    class="w-full rounded-lg border border-white/10 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600"
                   >
                   <input
                     v-model="newStudent.email"
                     type="email"
                     placeholder="Email address *"
-                    class="w-full rounded-lg border border-white/10 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600"
+                    class="w-full rounded-lg border border-white/10 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600"
                   >
                   <input
                     v-model="newStudent.country"
                     type="text"
                     placeholder="Country"
-                    class="w-full rounded-lg border border-white/10 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600"
+                    class="w-full rounded-lg border border-white/10 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600"
                   >
                   <AppDropdown id="new-student-status" v-model="newStudent.status" :options="studentStatusOptions" size="sm" aria-label="Student status" />
                 </div>
                 <div class="mt-3 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                   <button
                     type="button"
-                    class="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-medium text-white/60 transition-colors hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
+                    class="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-medium text-white/60 transition-colors hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
                     @click="showAddStudent = false"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
-                    class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-3.5 py-2 text-xs font-semibold text-white transition-all enabled:hover:from-violet-500 enabled:hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+                    class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-brand-500/40 bg-brand-500 px-3.5 py-2 text-xs font-semibold text-white transition-all enabled:hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
                     :disabled="creatingStudent"
                     @click="submitNewStudent"
                   >
@@ -418,7 +418,7 @@
                     <img
                       :src="student.avatar"
                       :alt="student.name"
-                      class="size-10 shrink-0 rounded-full border border-violet-500/30 object-cover light:border-violet-200"
+                      class="size-10 shrink-0 rounded-full border border-brand-500/30 object-cover light:border-brand-200"
                     >
                     <div class="min-w-0">
                       <span class="block truncate text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ student.name }}</span>
@@ -448,7 +448,7 @@
 
                     <button
                       type="button"
-                      class="cursor-pointer rounded-full border px-2.5 py-1 text-[11px] font-semibold capitalize transition-all duration-200 disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+                      class="cursor-pointer rounded-full border px-2.5 py-1 text-[11px] font-semibold capitalize transition-all duration-200 disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
                       :class="studentStatusClass(student.status)"
                       :disabled="updatingStudentId === student.id"
                       :aria-label="`Toggle status for ${student.name}`"
@@ -519,8 +519,8 @@
 
               <div class="flex flex-col rounded-[14px] border border-white/8 bg-white/2 p-4.5 light:border-slate-200 light:bg-slate-50">
                 <div class="flex items-start justify-between gap-3">
-                  <span class="flex size-10 items-center justify-center rounded-xl border border-violet-500/25 bg-violet-500/10">
-                    <Settings :size="19" class="text-violet-400" />
+                  <span class="flex size-10 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10">
+                    <Settings :size="19" class="text-brand-400" />
                   </span>
                   <span class="rounded-full border border-white/8 bg-white/4 px-2 py-0.5 text-[10px] font-semibold text-white/40 light:border-slate-200 light:bg-white light:text-slate-500">Config</span>
                 </div>
@@ -530,7 +530,7 @@
                 </p>
                 <NuxtLink
                   to="/settings"
-                  class="mt-4 inline-flex w-fit items-center justify-center gap-1.5 rounded-lg border border-violet-500/30 bg-violet-500/10 px-3.5 py-2 text-xs font-semibold text-violet-300 no-underline transition-all hover:bg-violet-500/20 hover:text-violet-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-200 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100"
+                  class="mt-4 inline-flex w-fit items-center justify-center gap-1.5 rounded-lg border border-brand-500/30 bg-brand-500/10 px-3.5 py-2 text-xs font-semibold text-brand-300 no-underline transition-all hover:bg-brand-500/20 hover:text-brand-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-brand-200 light:bg-brand-50 light:text-brand-700 light:hover:bg-brand-100"
                 >
                   <Settings :size="14" />
                   <span>Open Settings</span>

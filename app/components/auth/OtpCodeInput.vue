@@ -13,12 +13,12 @@
       :aria-label="`${label} digit ${index + 1}`"
       :disabled="disabled"
       :class="[
-        'h-12 w-full min-w-0 rounded-[10px] border bg-white/[0.035] text-center font-mono text-xl font-semibold text-slate-100 caret-emerald-500 outline-none transition-[border-color,box-shadow,background-color] duration-150 focus:bg-white/[0.06] focus:ring-[3px] disabled:cursor-not-allowed disabled:opacity-60 sm:h-13 light:bg-white light:text-slate-900',
+        'h-12 w-full min-w-0 rounded-[10px] border bg-white/[0.035] text-center font-mono text-xl font-semibold text-slate-100 caret-brand-500 outline-none transition-[border-color,box-shadow,background-color] duration-150 focus:bg-white/[0.06] focus:ring-[3px] disabled:cursor-not-allowed disabled:opacity-60 sm:h-13 light:bg-white light:text-slate-900',
         invalid
           ? 'border-rose-400/70 ring-[3px] ring-rose-500/12 focus:border-rose-400 focus:ring-rose-500/15 light:border-rose-400'
           : digits[index]
-            ? 'border-emerald-400/50 focus:border-emerald-400/70 focus:ring-emerald-400/15 light:border-emerald-600/50 light:focus:border-emerald-600 light:focus:ring-emerald-600/15'
-            : 'border-white/12 hover:border-white/20 focus:border-emerald-400/70 focus:ring-emerald-400/15 light:border-slate-300 light:hover:border-slate-400 light:focus:border-emerald-600 light:focus:ring-emerald-600/15',
+            ? 'border-brand-400/50 focus:border-brand-400/70 focus:ring-brand-400/15 light:border-brand-600/50 light:focus:border-brand-600 light:focus:ring-brand-600/15'
+            : 'border-white/12 hover:border-white/20 focus:border-brand-400/70 focus:ring-brand-400/15 light:border-slate-300 light:hover:border-slate-400 light:focus:border-brand-600 light:focus:ring-brand-600/15',
       ]"
       @input="handleInput($event, index)"
       @keydown="handleKeydown($event, index)"

@@ -1,14 +1,14 @@
 <template>
   <Teleport to="body">
     <Transition v-bind="modalFade">
-      <div v-if="card" class="fixed inset-0 z-100 flex items-center justify-center bg-[#05050c]/82 p-4 backdrop-blur-xl sm:p-6" @click.self="$emit('close')">
-        <div ref="dialogRef" class="max-h-[90dvh] w-full max-w-140 overflow-y-auto overscroll-contain rounded-[20px] border border-violet-500/25 bg-[#0f1019] p-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_40px_rgba(124,58,237,0.15)] focus:outline-none sm:p-6 light:border-violet-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="card-modal-title" tabindex="-1">
+      <div v-if="card" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl sm:p-6" @click.self="$emit('close')">
+        <div ref="dialogRef" class="max-h-[90dvh] w-full max-w-140 overflow-y-auto overscroll-contain rounded-[20px] border border-brand-500/25 bg-[#101814] p-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] focus:outline-none sm:p-6 light:border-brand-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="card-modal-title" tabindex="-1">
           <div class="flex items-start justify-between gap-4 border-b border-white/8 pb-4 light:border-slate-200">
             <div class="min-w-0">
               <h2 id="card-modal-title" class="truncate text-lg font-bold text-slate-50 light:text-slate-900">{{ card.holderName }}</h2>
               <p class="mt-0.5 truncate text-xs text-white/45 light:text-slate-500">{{ card.cardNumber }} · {{ card.studentEmail }}</p>
             </div>
-            <button type="button" aria-label="Close" class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900" @click="$emit('close')">
+            <button type="button" aria-label="Close" class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900" @click="$emit('close')">
               <X :size="18" />
             </button>
           </div>
@@ -46,7 +46,7 @@
               <label :class="labelClass" for="adjust-note">Reason</label>
               <input id="adjust-note" v-model="form.note" type="text" required maxlength="500" placeholder="e.g. Cash received at the front desk" :class="inputClass">
             </div>
-            <button type="submit" class="inline-flex cursor-pointer items-center justify-center gap-2 self-end rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2 text-[13px] font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-50" :disabled="working || !canSubmit">
+            <button type="submit" class="inline-flex cursor-pointer items-center justify-center gap-2 self-end rounded-[10px] border border-brand-500/40 bg-brand-500 px-5 py-2 text-[13px] font-semibold text-white transition-all hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50" :disabled="working || !canSubmit">
               <Loader2 v-if="working" :size="16" class="animate-spin" />
               {{ form.type === 'TOP_UP' ? 'Add Money' : 'Deduct' }}
             </button>
@@ -110,7 +110,7 @@ const modalFade = {
 }
 
 const labelClass = 'text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600'
-const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
+const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
 const secondaryButton = 'cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3 py-1.75 text-xs font-semibold text-white/75 transition-colors hover:bg-white/9 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 light:border-slate-200 light:bg-slate-100 light:text-slate-700'
 
 const typeOptions = [

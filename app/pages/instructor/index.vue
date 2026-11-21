@@ -5,7 +5,7 @@
         <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">My Courses</h1>
         <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Build your courses, then send them for review to go live.</p>
       </div>
-      <button type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500" @click="openForm(null)">New Course</button>
+      <button type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600" @click="openForm(null)">New Course</button>
     </div>
 
     <div v-if="summary" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -35,7 +35,7 @@
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
           <tr v-for="item in items" :key="item.course.id">
             <td class="px-4 py-3">
-              <NuxtLink :to="`/instructor/courses/${item.course.slug}`" class="font-semibold text-violet-300 no-underline light:text-violet-700">{{ item.course.title }}</NuxtLink>
+              <NuxtLink :to="`/instructor/courses/${item.course.slug}`" class="font-semibold text-brand-300 no-underline light:text-brand-700">{{ item.course.title }}</NuxtLink>
               <span v-if="item.reviewNote" class="mt-0.5 block max-w-96 text-xs text-amber-400 light:text-amber-700">Needs changes: {{ item.reviewNote }}</span>
             </td>
             <td class="px-4 py-3"><CourseStatusBadge :status="item.course.status" /></td>

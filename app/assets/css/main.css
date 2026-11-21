@@ -10,6 +10,72 @@
 @custom-variant tiny (@media (max-height: 640px));
 
 /* ---------------------------------------------------------------------------
+ * Colour system (from the auth pages)
+ *
+ *   forest-900  #0D2A21  logo, tooltips, dark panels
+ *   brand-600   #0A6A4C  hover, link text, active nav text
+ *   brand-500   #0E7C5A  primary buttons, chart highlight, progress bars
+ *   brand-100   #D5EDE2  regular chart bars, count pills on the active item
+ *   brand-50    #ECF6F1  active nav background, "up" badge background
+ *   mint-300    #9FE3C6  accents on dark backgrounds only (= brand-300)
+ *   ink-900/700/500/400  headings / body / secondary / placeholders
+ *   line        #E5EAE7  borders, dividers
+ *   surface     #F5F7F6 / #FAFBFA  input and page backgrounds
+ *   negative    #B42318 on #FEF1F0   drops, errors, refunds
+ *   warning     #B7791F  pending, "needs review"
+ *
+ * `slate` is re-tinted to the ink neutrals so the existing slate-* classes
+ * follow the system; new code can use ink-* / line / surface directly.
+ * Accent classes use `brand-*` (dark mode reads the light end: brand-300/400).
+ * ------------------------------------------------------------------------- */
+@theme {
+  --color-brand-50: #ecf6f1;
+  --color-brand-100: #d5ede2;
+  --color-brand-200: #bde6d3;
+  --color-brand-300: #9fe3c6;
+  --color-brand-400: #4dbb8f;
+  --color-brand-500: #0e7c5a;
+  --color-brand-600: #0a6a4c;
+  --color-brand-700: #08583f;
+  --color-brand-800: #094533;
+  --color-brand-900: #0d2a21;
+  --color-brand-950: #071811;
+
+  --color-forest-900: #0d2a21;
+  --color-mint-300: #9fe3c6;
+
+  --color-slate-50: #fafbfa;
+  --color-slate-100: #f5f7f6;
+  --color-slate-200: #e5eae7;
+  --color-slate-300: #cbd4cf;
+  --color-slate-400: #97a39d;
+  --color-slate-500: #6b7a73;
+  --color-slate-600: #53635b;
+  --color-slate-700: #3d4f47;
+  --color-slate-800: #22332b;
+  --color-slate-900: #0b1f17;
+  --color-slate-950: #06120d;
+
+  --color-ink-900: #0b1f17;
+  --color-ink-700: #3d4f47;
+  --color-ink-500: #6b7a73;
+  --color-ink-400: #97a39d;
+  --color-line: #e5eae7;
+  --color-surface: #f5f7f6;
+  --color-surface-subtle: #fafbfa;
+
+  /* Dark-mode surfaces (zinc is only used for app backgrounds) */
+  --color-zinc-900: #111915;
+  --color-zinc-950: #0a100d;
+
+  --color-negative: #b42318;
+  --color-negative-bg: #fef1f0;
+  --color-rose-50: #fef1f0;
+  --color-rose-700: #b42318;
+  --color-warning: #b7791f;
+}
+
+/* ---------------------------------------------------------------------------
  * Auth pages
  * - auth-slide / auth-slide-back: Log in <-> Sign up page switch and the
  *   register steps; direction follows the tab order.
@@ -90,7 +156,7 @@
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(139, 92, 246, 0.4) transparent;
+  scrollbar-color: rgba(14,124,90, 0.4) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -99,29 +165,29 @@
 }
 *::-webkit-scrollbar-track { background: transparent; }
 *::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.4);
+  background: rgba(14,124,90, 0.4);
   border-radius: 99px;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(139, 92, 246, 0.7);
+  background: rgba(14,124,90, 0.7);
 }
 
 body {
   font-family: var(--font-sans);
-  background: #0a0a0f;
-  color: #e2e8f0;
+  background: #0a100d;
+  color: #e5eae7;
   -webkit-font-smoothing: antialiased;
 }
 
 html.light body {
-  background: #f8fafc;
-  color: #0f172a;
+  background: #fafbfa;
+  color: #0b1f17;
 }
 
 /* Override Nuxt UI dark theme */
 .dark {
-  --ui-background: #0a0a0f;
-  --ui-foreground: #e2e8f0;
+  --ui-background: #0a100d;
+  --ui-foreground: #e5eae7;
 }
 
 /* ---------------------------------------------------------------------------

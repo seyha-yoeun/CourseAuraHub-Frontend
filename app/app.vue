@@ -20,7 +20,7 @@ useHead({
   meta: [
     { name: 'description', content: 'Production-ready CourseAuraHub Academy course sales dashboard built with Nuxt 3, Nuxt UI, and Vue 3' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-    { name: 'theme-color', content: '#0a0a0f' }
+    { name: 'theme-color', content: '#0a100d' }
   ],
   link: [
     { rel: 'icon', type: 'image/svg+xml', href: '/favicon.ico' },

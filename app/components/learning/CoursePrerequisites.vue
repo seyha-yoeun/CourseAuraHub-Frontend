@@ -16,7 +16,7 @@
       <li v-for="item in requirements.prerequisites" :key="item.courseSlug" class="flex items-center gap-2.5 text-[13px]">
         <CheckCircle2 v-if="item.completed" :size="16" class="shrink-0 text-emerald-400" />
         <Circle v-else :size="16" class="shrink-0 text-white/30 light:text-slate-300" />
-        <NuxtLink :to="`/courses/${item.courseSlug}`" class="min-w-0 flex-1 truncate font-semibold text-slate-100 no-underline hover:text-violet-300 light:text-slate-900 light:hover:text-violet-700">
+        <NuxtLink :to="`/courses/${item.courseSlug}`" class="min-w-0 flex-1 truncate font-semibold text-slate-100 no-underline hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700">
           {{ item.courseTitle }}
         </NuxtLink>
         <span

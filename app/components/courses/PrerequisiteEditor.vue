@@ -14,7 +14,7 @@
       <li v-for="(item, index) in items" :key="item.courseSlug" class="flex flex-wrap items-center gap-3 rounded-xl border border-white/8 bg-white/3 px-3 py-2 light:border-slate-200 light:bg-slate-50">
         <span class="min-w-0 flex-1 truncate text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ titleOf(item.courseSlug) }}</span>
         <label class="inline-flex items-center gap-2 text-xs text-white/70 light:text-slate-600">
-          <input v-model="item.hard" type="checkbox" class="size-4 accent-violet-600" @change="dirty = true">
+          <input v-model="item.hard" type="checkbox" class="size-4 accent-brand-600" @change="dirty = true">
           Required
         </label>
         <button type="button" :class="dangerAction" @click="removeAt(index)">Remove</button>
@@ -98,7 +98,7 @@ async function save() {
 }
 
 const actionBase = 'cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50'
-const primaryAction = `${actionBase} border-violet-500/35 bg-violet-500/15 text-violet-300 hover:bg-violet-500/25 light:border-violet-200 light:bg-violet-50 light:text-violet-700`
+const primaryAction = `${actionBase} border-brand-500/35 bg-brand-500/15 text-brand-300 hover:bg-brand-500/25 light:border-brand-200 light:bg-brand-50 light:text-brand-700`
 const neutralAction = `${actionBase} border-white/10 bg-white/5 text-white/75 hover:bg-white/9 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700`
 const dangerAction = `${actionBase} border-rose-500/30 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 light:border-rose-200 light:bg-rose-50 light:text-rose-600`
 

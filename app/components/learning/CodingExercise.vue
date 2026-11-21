@@ -6,7 +6,7 @@
     <template v-else>
       <div class="flex flex-wrap items-center justify-between gap-2">
         <h2 class="flex items-center gap-2 text-base font-bold text-slate-100 light:text-slate-900">
-          <Code2 :size="18" class="text-violet-400" /> {{ t('Coding exercise') }}
+          <Code2 :size="18" class="text-brand-400" /> {{ t('Coding exercise') }}
         </h2>
         <div class="flex flex-wrap items-center gap-2 text-[11px]">
           <span class="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-white/70 light:border-slate-200 light:bg-slate-100 light:text-slate-600">{{ exercise.language }}</span>

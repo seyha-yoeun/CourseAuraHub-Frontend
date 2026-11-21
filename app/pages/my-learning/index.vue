@@ -15,7 +15,7 @@
           :aria-selected="activeTab === tab.value"
           class="cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-colors"
           :class="activeTab === tab.value
-            ? 'bg-violet-500/25 text-violet-200 light:bg-white light:text-violet-700 light:shadow-sm'
+            ? 'bg-brand-500/25 text-brand-200 light:bg-white light:text-brand-700 light:shadow-sm'
             : 'text-white/55 hover:text-white light:text-slate-600 light:hover:text-slate-900'"
           @click="activeTab = tab.value"
         >
@@ -45,18 +45,18 @@
         <NuxtLink
           v-if="dashboard.continueLearning"
           :to="learnLink(dashboard.continueLearning)"
-          class="group flex items-center gap-4 rounded-2xl border border-violet-500/25 bg-violet-500/8 p-4 no-underline transition-colors hover:border-violet-500/45 light:border-violet-200 light:bg-violet-50"
+          class="group flex items-center gap-4 rounded-2xl border border-brand-500/25 bg-brand-500/8 p-4 no-underline transition-colors hover:border-brand-500/45 light:border-brand-200 light:bg-brand-50"
         >
           <img :src="dashboard.continueLearning.thumbnail" alt="" class="hidden aspect-video w-32 shrink-0 rounded-lg object-cover sm:block">
           <div class="min-w-0 flex-1">
-            <p class="text-[11px] font-semibold tracking-wide text-violet-300 uppercase light:text-violet-700">{{ t('Continue learning') }}</p>
+            <p class="text-[11px] font-semibold tracking-wide text-brand-300 uppercase light:text-brand-700">{{ t('Continue learning') }}</p>
             <p class="mt-0.5 truncate text-[15px] font-bold text-slate-100 light:text-slate-900">{{ dashboard.continueLearning.title }}</p>
             <p v-if="dashboard.continueLearning.nextLesson" class="truncate text-xs text-white/50 light:text-slate-500">
               {{ dashboard.continueLearning.nextLesson.resumePositionSeconds ? `Resume at ${formatPosition(dashboard.continueLearning.nextLesson.resumePositionSeconds)}:` : t('Next:') }} {{ dashboard.continueLearning.nextLesson.title }}
             </p>
             <ProgressBar class="mt-2" :value="dashboard.continueLearning.progress.progressPercent" />
           </div>
-          <PlayCircle :size="28" class="shrink-0 text-violet-300 transition-transform group-hover:scale-110 light:text-violet-600" />
+          <PlayCircle :size="28" class="shrink-0 text-brand-300 transition-transform group-hover:scale-110 light:text-brand-600" />
         </NuxtLink>
         <div v-else class="flex items-center gap-3 rounded-2xl border border-emerald-500/25 bg-emerald-500/8 p-4 text-[13px] text-emerald-300 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-700">
           <CheckCircle2 :size="20" class="shrink-0" /> {{ t('You\'ve finished every course you\'re enrolled in. Time to pick a new one!') }}
@@ -68,7 +68,7 @@
             <div v-for="day in dashboard.lastSevenDays" :key="day.date" class="flex flex-1 flex-col items-center gap-1">
               <div
                 class="w-full rounded-sm"
-                :class="day.lessonsCompleted ? 'bg-violet-500' : 'bg-white/8 light:bg-slate-200'"
+                :class="day.lessonsCompleted ? 'bg-brand-500' : 'bg-white/8 light:bg-slate-200'"
                 :style="{ height: `${barHeight(day.lessonsCompleted)}px` }"
                 :title="`${day.lessonsCompleted} on ${dayLabel(day.date, 'long')}`"
               />
@@ -85,17 +85,17 @@
     <section v-if="myPaths?.length" :aria-label="t('My learning paths')" class="flex flex-col gap-3">
       <div class="flex items-center justify-between gap-3">
         <h2 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('My learning paths') }}</h2>
-        <NuxtLink to="/learning-paths" class="text-xs font-semibold text-violet-300 light:text-violet-700">{{ t('Browse paths') }}</NuxtLink>
+        <NuxtLink to="/learning-paths" class="text-xs font-semibold text-brand-300 light:text-brand-700">{{ t('Browse paths') }}</NuxtLink>
       </div>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <NuxtLink
           v-for="item in myPaths"
           :key="item.slug"
           :to="`/learning-paths/${item.slug}`"
-          class="flex flex-col gap-2.5 rounded-[18px] border border-white/10 bg-white/5 p-4 no-underline transition-colors hover:border-violet-500/40 light:border-slate-200 light:bg-white"
+          class="flex flex-col gap-2.5 rounded-[18px] border border-white/10 bg-white/5 p-4 no-underline transition-colors hover:border-brand-500/40 light:border-slate-200 light:bg-white"
         >
           <div class="flex items-start justify-between gap-2">
-            <p class="flex items-center gap-1.5 text-sm font-bold text-slate-100 light:text-slate-900"><Route :size="15" class="text-violet-400" /> {{ item.title }}</p>
+            <p class="flex items-center gap-1.5 text-sm font-bold text-slate-100 light:text-slate-900"><Route :size="15" class="text-brand-400" /> {{ item.title }}</p>
             <span v-if="item.certificate" class="inline-flex shrink-0 items-center gap-1 rounded-md bg-emerald-500 px-2 py-0.5 text-[11px] font-bold text-zinc-950"><Award :size="12" /> {{ t('Completed') }}</span>
           </div>
           <ProgressBar :value="item.percent" />
@@ -116,12 +116,12 @@
     </div>
 
     <div v-else-if="!courses.length" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center light:border-slate-200 light:bg-white">
-      <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-violet-500/30 bg-violet-500/15">
-        <GraduationCap :size="32" class="text-violet-400" />
+      <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-brand-500/30 bg-brand-500/15">
+        <GraduationCap :size="32" class="text-brand-400" />
       </div>
       <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">{{ t('You haven\'t enrolled in any courses yet') }}</h3>
       <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">{{ t('Browse the catalog to find something you\'d like to learn. Free courses can be started right away.') }}</p>
-      <NuxtLink to="/courses" class="mt-4 inline-flex items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white no-underline">
+      <NuxtLink to="/courses" class="mt-4 inline-flex items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white no-underline">
         <BookOpen :size="16" /> {{ t('Browse courses') }}
       </NuxtLink>
     </div>
@@ -134,7 +134,7 @@
       <article
         v-for="item in visibleCourses"
         :key="item.courseId"
-        class="group flex flex-col overflow-hidden rounded-[18px] border border-white/8 bg-zinc-950/65 transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/30 light:border-slate-200 light:bg-white light:hover:border-violet-300"
+        class="group flex flex-col overflow-hidden rounded-[18px] border border-white/8 bg-zinc-950/65 transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/30 light:border-slate-200 light:bg-white light:hover:border-brand-300"
       >
         <NuxtLink :to="`/courses/${item.slug}`" class="relative block aspect-video overflow-hidden">
           <img :src="item.thumbnail" :alt="item.title" loading="lazy" class="size-full object-cover transition-transform duration-500 group-hover:scale-105">
@@ -146,7 +146,7 @@
         <div class="flex flex-1 flex-col p-4.5">
           <span class="text-xs text-white/45 light:text-slate-500">{{ item.instructor }} · {{ item.level }}</span>
           <NuxtLink :to="`/courses/${item.slug}`" class="mt-1 no-underline">
-            <h3 class="line-clamp-2 text-base leading-snug font-bold text-slate-100 hover:text-violet-300 light:text-slate-900 light:hover:text-violet-700">{{ item.title }}</h3>
+            <h3 class="line-clamp-2 text-base leading-snug font-bold text-slate-100 hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700">{{ item.title }}</h3>
           </NuxtLink>
 
           <div class="mt-auto pt-4">
@@ -161,7 +161,7 @@
             <div class="mt-4 flex gap-2">
               <NuxtLink
                 :to="learnLink(item)"
-                class="flex flex-1 items-center justify-center gap-1.5 rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-3 py-2 text-xs font-semibold text-violet-300 no-underline transition-all hover:bg-violet-500/30 hover:text-white light:border-violet-300 light:bg-violet-50 light:text-violet-700"
+                class="flex flex-1 items-center justify-center gap-1.5 rounded-[10px] border border-brand-500/35 bg-brand-500/15 px-3 py-2 text-xs font-semibold text-brand-300 no-underline transition-all hover:bg-brand-500/30 hover:text-white light:border-brand-300 light:bg-brand-50 light:text-brand-700"
               >
                 <PlayCircle :size="14" />
                 {{ item.progress.completed ? t('Review course') : item.progress.completedLessons ? t('Continue') : t('Start course') }}
@@ -232,7 +232,7 @@ const stats = computed(() => {
   if (!d) return []
   return [
     { label: d.streak.longestDays > d.streak.currentDays ? `Day streak · best ${d.streak.longestDays}` : 'Day streak', value: d.streak.currentDays, icon: Flame, tone: 'bg-orange-500/15 text-orange-400 light:text-orange-600' },
-    { label: 'Lessons completed', value: d.lessonsCompleted, icon: ListChecks, tone: 'bg-violet-500/15 text-violet-300 light:text-violet-600' },
+    { label: 'Lessons completed', value: d.lessonsCompleted, icon: ListChecks, tone: 'bg-brand-500/15 text-brand-300 light:text-brand-600' },
     { label: 'Time learned', value: formatMinutes(d.minutesLearned), icon: Clock, tone: 'bg-sky-500/15 text-sky-300 light:text-sky-600' },
     { label: 'Certificates', value: d.certificatesEarned, icon: Award, tone: 'bg-emerald-500/15 text-emerald-400 light:text-emerald-600' }
   ]

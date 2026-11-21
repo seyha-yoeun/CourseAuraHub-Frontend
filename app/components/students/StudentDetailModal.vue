@@ -1,11 +1,11 @@
 <template>
   <Teleport to="body">
     <Transition v-bind="modalFade">
-      <div v-if="isOpen" class="fixed inset-0 z-100 flex items-center justify-center bg-[#05050c]/82 p-4 backdrop-blur-xl sm:p-6" @click.self="$emit('close')">
-        <div ref="dialogRef" class="max-h-[90dvh] w-full max-w-130 overflow-y-auto overscroll-contain rounded-[20px] border border-violet-500/25 bg-[#0f1019] p-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_40px_rgba(124,58,237,0.15)] focus:outline-none sm:p-6 light:border-violet-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="student-modal-title" tabindex="-1">
+      <div v-if="isOpen" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl sm:p-6" @click.self="$emit('close')">
+        <div ref="dialogRef" class="max-h-[90dvh] w-full max-w-130 overflow-y-auto overscroll-contain rounded-[20px] border border-brand-500/25 bg-[#101814] p-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] focus:outline-none sm:p-6 light:border-brand-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="student-modal-title" tabindex="-1">
           <div class="flex items-start justify-between gap-4 border-b border-white/8 pb-4 light:border-slate-200">
             <h2 id="student-modal-title" class="text-lg font-bold text-slate-50 light:text-slate-900">Student Details</h2>
-            <button type="button" aria-label="Close" class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900" @click="$emit('close')">
+            <button type="button" aria-label="Close" class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900" @click="$emit('close')">
               <X :size="18" />
             </button>
           </div>
@@ -15,7 +15,7 @@
 
           <template v-else-if="student">
             <div class="mt-5 flex items-center gap-3.5">
-              <img :src="student.avatar" :alt="student.name" class="size-14 shrink-0 rounded-full border-2 border-violet-500/40 bg-violet-500/20 object-cover">
+              <img :src="student.avatar" :alt="student.name" class="size-14 shrink-0 rounded-full border-2 border-brand-500/40 bg-brand-500/20 object-cover">
               <div class="min-w-0">
                 <p class="truncate text-base font-bold text-slate-100 light:text-slate-900">{{ student.name }}</p>
                 <p class="truncate text-xs text-white/45 light:text-slate-500">{{ student.email }}</p>

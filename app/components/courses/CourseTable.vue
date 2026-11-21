@@ -32,7 +32,7 @@
                   @error="onImageError"
                 >
                 <div class="flex min-w-0 flex-col">
-                  <NuxtLink :to="`/courses/${course.slug}`" class="line-clamp-1 font-semibold text-slate-50 no-underline transition-colors hover:text-violet-300 light:text-slate-900 light:hover:text-violet-700">{{ course.title }}</NuxtLink>
+                  <NuxtLink :to="`/courses/${course.slug}`" class="line-clamp-1 font-semibold text-slate-50 no-underline transition-colors hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700">{{ course.title }}</NuxtLink>
                   <span class="text-[11px] text-white/40 light:text-slate-500">by {{ course.instructor }}</span>
                 </div>
               </div>
@@ -66,7 +66,7 @@
             <!-- Students -->
             <td class="hidden border-b border-white/4 px-3.5 py-3 md:table-cell light:border-slate-100">
               <span class="inline-flex items-center gap-1.25 text-xs font-medium text-white/75 light:text-slate-700">
-                <Users :size="13" class="text-violet-400" />
+                <Users :size="13" class="text-brand-400" />
                 {{ course.totalStudents.toLocaleString() }}
               </span>
             </td>
@@ -90,7 +90,7 @@
               <div class="flex items-center justify-end gap-1.5">
                 <NuxtLink
                   :to="`/courses/${course.slug}`"
-                  class="flex size-8 items-center justify-center rounded-lg border border-violet-500/35 bg-violet-500/15 text-violet-300 transition-all hover:border-violet-500/60 hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
+                  class="flex size-8 items-center justify-center rounded-lg border border-brand-500/35 bg-brand-500/15 text-brand-300 transition-all hover:border-brand-500/60 hover:bg-brand-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-brand-300 light:bg-brand-50 light:text-brand-700 light:hover:bg-brand-100 light:hover:text-brand-900"
                   title="View Details & Analytics"
                   :aria-label="`View details for ${course.title}`"
                 >
@@ -98,7 +98,7 @@
                 </NuxtLink>
                 <button
                   type="button"
-                  class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
+                  class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
                   title="Edit Course"
                   :aria-label="`Edit ${course.title}`"
                   @click="$emit('edit', course)"

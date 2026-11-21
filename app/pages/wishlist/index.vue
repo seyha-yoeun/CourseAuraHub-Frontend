@@ -15,7 +15,7 @@
       </div>
       <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">{{ t('Your wishlist is empty') }}</h3>
       <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">Tap "Save" on any course page to keep it here.</p>
-      <NuxtLink to="/courses" class="mt-4 inline-flex items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white no-underline">
+      <NuxtLink to="/courses" class="mt-4 inline-flex items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white no-underline">
         <BookOpen :size="16" /> {{ t('Browse courses') }}
       </NuxtLink>
     </div>
@@ -32,7 +32,7 @@
 
         <div class="min-w-0 flex-1">
           <NuxtLink :to="`/courses/${item.slug}`" class="no-underline">
-            <h3 class="line-clamp-2 text-[15px] font-bold text-slate-100 hover:text-violet-300 light:text-slate-900 light:hover:text-violet-700">{{ item.title }}</h3>
+            <h3 class="line-clamp-2 text-[15px] font-bold text-slate-100 hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700">{{ item.title }}</h3>
           </NuxtLink>
           <p class="mt-1 text-xs text-white/45 light:text-slate-500">
             {{ item.instructor }} · {{ item.level }}
@@ -57,7 +57,7 @@
             </button>
             <NuxtLink
               :to="`/courses/${item.slug}`"
-              class="rounded-[10px] border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold text-violet-300 no-underline hover:bg-violet-500/30 hover:text-white light:border-violet-300 light:bg-violet-50 light:text-violet-700"
+              class="rounded-[10px] border border-brand-500/35 bg-brand-500/15 px-3 py-1.5 text-xs font-semibold text-brand-300 no-underline hover:bg-brand-500/30 hover:text-white light:border-brand-300 light:bg-brand-50 light:text-brand-700"
             >
               {{ t('View course') }}
             </NuxtLink>

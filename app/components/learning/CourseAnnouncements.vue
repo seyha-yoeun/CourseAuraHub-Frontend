@@ -1,7 +1,7 @@
 <template>
-  <section v-if="items.length" :aria-label="t('Announcements')" class="rounded-[18px] border border-violet-500/20 bg-violet-500/6 p-4 light:border-violet-200 light:bg-violet-50/60">
+  <section v-if="items.length" :aria-label="t('Announcements')" class="rounded-[18px] border border-brand-500/20 bg-brand-500/6 p-4 light:border-brand-200 light:bg-brand-50/60">
     <h2 class="flex items-center gap-2 text-sm font-bold text-slate-100 light:text-slate-900">
-      <Megaphone :size="16" class="text-violet-400" /> {{ t('Announcements') }}
+      <Megaphone :size="16" class="text-brand-400" /> {{ t('Announcements') }}
     </h2>
     <ul class="m-0 mt-3 flex list-none flex-col gap-2.5 p-0">
       <li
@@ -10,7 +10,7 @@
         :key="item.id"
         class="rounded-xl border p-3.5 transition-colors"
         :class="item.id === highlightId
-          ? 'border-violet-400/60 bg-violet-500/15 ring-2 ring-violet-500/30 light:border-violet-400 light:bg-white'
+          ? 'border-brand-400/60 bg-brand-500/15 ring-2 ring-brand-500/30 light:border-brand-400 light:bg-white'
           : 'border-white/8 bg-white/4 light:border-slate-200 light:bg-white'"
       >
         <p class="text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ item.title }}</p>
@@ -21,7 +21,7 @@
     <button
       v-if="items.length > COLLAPSED"
       type="button"
-      class="mt-2.5 cursor-pointer text-xs font-semibold text-violet-300 hover:text-violet-200 light:text-violet-700"
+      class="mt-2.5 cursor-pointer text-xs font-semibold text-brand-300 hover:text-brand-200 light:text-brand-700"
       @click="expanded = !expanded"
     >
       {{ expanded ? t('Show fewer') : t('Show all {count}', { count: items.length }) }}

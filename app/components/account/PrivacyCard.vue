@@ -1,7 +1,7 @@
 <template>
   <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
     <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
-      <ShieldCheck :size="20" class="text-violet-400" />
+      <ShieldCheck :size="20" class="text-brand-400" />
       <div>
         <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Your data') }}</h3>
         <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">{{ t('Download a copy or delete your account') }}</p>

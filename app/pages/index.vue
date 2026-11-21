@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col gap-6">
     <!-- Top Welcome Banner -->
-    <div class="flex flex-wrap items-center justify-between gap-4 rounded-[20px] border border-violet-500/20 bg-linear-to-br from-violet-600/8 to-blue-600/4 p-5 backdrop-blur-md sm:p-6 lg:px-7 light:border-violet-200 light:from-violet-50 light:to-white">
+    <div class="flex flex-wrap items-center justify-between gap-4 rounded-[20px] border border-brand-500/20 bg-brand-600/8 p-5 backdrop-blur-md sm:p-6 lg:px-7 light:border-brand-200 light:from-brand-50 light:to-white">
       <div>
         <h1 class="text-xl font-extrabold tracking-tight text-slate-50 sm:text-2xl light:text-slate-900">
           Welcome back,
-          <span class="bg-linear-to-r from-violet-400 via-blue-400 to-emerald-400 bg-clip-text text-transparent light:from-violet-600 light:via-blue-600 light:to-emerald-600">{{ auth.userName || 'Account' }}</span>
+          <span class="bg-linear-to-r from-brand-400 via-blue-400 to-emerald-400 bg-clip-text text-transparent light:from-brand-600 light:via-blue-600 light:to-emerald-600">{{ auth.userName || 'Account' }}</span>
           👋
         </h1>
         <p class="mt-1 text-[13px] text-white/50 light:text-slate-600">
@@ -17,7 +17,7 @@
       <div class="flex items-center gap-2.5">
         <button
           type="button"
-          class="flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-4 py-2.25 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
+          class="flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-4 py-2.25 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
           :disabled="isRefreshing"
           @click="refresh()"
         >
@@ -27,7 +27,7 @@
 
         <NuxtLink
           to="/courses"
-          class="flex items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4.5 py-2.25 text-[13px] font-semibold text-white no-underline transition-all hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+          class="flex items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500 px-4.5 py-2.25 text-[13px] font-semibold text-white no-underline transition-all hover:bg-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
         >
           <Plus :size="16" />
           <span>New Course</span>
@@ -92,7 +92,7 @@
             <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Revenue by Category</h3>
             <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Category distribution</p>
           </div>
-          <Tag :size="18" class="text-violet-400" />
+          <Tag :size="18" class="text-brand-400" />
         </div>
 
         <div class="flex flex-col gap-4">
@@ -132,7 +132,7 @@
             <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Top Performing Courses</h3>
             <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Highest revenue generating programs</p>
           </div>
-          <NuxtLink to="/courses" class="flex items-center gap-1 text-xs font-semibold text-violet-300 no-underline transition-colors hover:text-violet-200 light:text-violet-700 light:hover:text-violet-800">
+          <NuxtLink to="/courses" class="flex items-center gap-1 text-xs font-semibold text-brand-300 no-underline transition-colors hover:text-brand-200 light:text-brand-700 light:hover:text-brand-800">
             <span>View All</span>
             <ArrowRight :size="14" />
           </NuxtLink>
@@ -143,7 +143,7 @@
             v-for="(course, index) in topCourses"
             :key="course.slug"
             :to="`/courses/${course.slug}`"
-            class="flex items-center gap-3 rounded-xl border border-white/5 bg-white/2 px-3 py-2.5 no-underline transition-all hover:translate-x-0.75 hover:border-violet-500/30 hover:bg-white/6 light:border-slate-100 light:bg-slate-50 light:hover:bg-slate-100"
+            class="flex items-center gap-3 rounded-xl border border-white/5 bg-white/2 px-3 py-2.5 no-underline transition-all hover:translate-x-0.75 hover:border-brand-500/30 hover:bg-white/6 light:border-slate-100 light:bg-slate-50 light:hover:bg-slate-100"
           >
             <div
               class="flex size-7 shrink-0 items-center justify-center rounded-lg border text-[11px] font-bold"
@@ -214,7 +214,7 @@ const {
 } = useDashboardStats();
 
 const categoryBarClasses: Record<string, string> = {
-  "Web Development": "bg-linear-to-r from-violet-600 to-indigo-500",
+  "Web Development": "bg-brand-500",
   Programming: "bg-linear-to-r from-blue-600 to-sky-400",
   Design: "bg-linear-to-r from-pink-500 to-rose-500",
   DevOps: "bg-linear-to-r from-emerald-500 to-emerald-400",
@@ -222,7 +222,7 @@ const categoryBarClasses: Record<string, string> = {
 };
 
 function getCategoryBarClass(cat: string) {
-  return categoryBarClasses[cat] ?? "bg-linear-to-r from-violet-500 to-blue-500";
+  return categoryBarClasses[cat] ?? "bg-brand-500";
 }
 
 function rankClass(index: number) {

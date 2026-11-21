@@ -28,7 +28,7 @@
             role="radio"
             :aria-checked="nps === score - 1"
             class="flex size-9 cursor-pointer items-center justify-center rounded-lg border text-[13px] font-semibold transition-colors"
-            :class="nps === score - 1 ? 'border-violet-500 bg-violet-600 text-white' : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10 light:border-slate-200 light:bg-white light:text-slate-700'"
+            :class="nps === score - 1 ? 'border-brand-500 bg-brand-500 text-white' : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10 light:border-slate-200 light:bg-white light:text-slate-700'"
             @click="nps = score - 1"
           >
             {{ score - 1 }}
@@ -59,7 +59,7 @@
         </div>
         <div v-else-if="question.type === 'choice'" class="mt-2 flex flex-col gap-1.5">
           <label v-for="option in question.options ?? []" :key="option" class="flex cursor-pointer items-center gap-2 text-[13px] text-white/75 light:text-slate-700">
-            <input v-model="answers[question.id]" type="radio" :name="`survey-${question.id}`" :value="option" class="accent-violet-500">
+            <input v-model="answers[question.id]" type="radio" :name="`survey-${question.id}`" :value="option" class="accent-brand-500">
             {{ option }}
           </label>
         </div>

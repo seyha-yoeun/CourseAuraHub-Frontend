@@ -13,7 +13,7 @@
       <div v-if="open" class="fixed inset-0 z-100 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md sm:p-6" @click.self="open = false">
         <form
           ref="dialogRef"
-          class="w-full max-w-120 rounded-[20px] border border-violet-500/25 bg-[#0f1019] p-5 focus:outline-none sm:p-6 light:border-violet-500/30 light:bg-white"
+          class="w-full max-w-120 rounded-[20px] border border-brand-500/25 bg-[#101814] p-5 focus:outline-none sm:p-6 light:border-brand-500/30 light:bg-white"
           role="dialog"
           aria-modal="true"
           aria-labelledby="gift-course-title"
@@ -32,8 +32,8 @@
           <fieldset class="mt-3">
             <legend :class="labelClass">{{ t('Pay with') }}</legend>
             <div class="flex flex-wrap gap-4 text-[13px] text-white/75 light:text-slate-700">
-              <label class="inline-flex items-center gap-2"><input v-model="paymentMethod" type="radio" value="ONLINE" class="size-4 accent-violet-600"> {{ t('Online payment') }}</label>
-              <label class="inline-flex items-center gap-2"><input v-model="paymentMethod" type="radio" value="MEMBER_CARD" class="size-4 accent-violet-600"> {{ t('Member card') }}</label>
+              <label class="inline-flex items-center gap-2"><input v-model="paymentMethod" type="radio" value="ONLINE" class="size-4 accent-brand-600"> {{ t('Online payment') }}</label>
+              <label class="inline-flex items-center gap-2"><input v-model="paymentMethod" type="radio" value="MEMBER_CARD" class="size-4 accent-brand-600"> {{ t('Member card') }}</label>
             </div>
           </fieldset>
 

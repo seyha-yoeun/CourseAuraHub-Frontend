@@ -2,8 +2,8 @@
   <section class="rounded-[18px] border border-white/10 bg-white/5 p-5 light:border-slate-200 light:bg-white">
     <div class="flex flex-wrap items-start justify-between gap-3">
       <div class="flex items-start gap-3">
-        <div class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/12">
-          <BellRing :size="20" class="text-violet-300 light:text-violet-700" />
+        <div class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-brand-500/30 bg-brand-500/12">
+          <BellRing :size="20" class="text-brand-300 light:text-brand-700" />
         </div>
         <div>
           <h2 class="text-sm font-bold text-slate-100 light:text-slate-900">{{ t('Browser notifications') }}</h2>
@@ -16,7 +16,7 @@
         class="cursor-pointer rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors disabled:cursor-wait disabled:opacity-60"
         :class="subscribed
           ? 'border-white/10 bg-white/5 text-white/75 hover:bg-white/9 light:border-slate-200 light:bg-slate-100 light:text-slate-700'
-          : 'border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500'"
+          : 'border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600'"
         :disabled="busy"
         @click="subscribed ? turnOff() : turnOn()"
       >
@@ -40,7 +40,7 @@
             :aria-checked="preference.enabled"
             :aria-label="t(EMAIL_TYPE_LABELS[preference.type] ?? preference.type)"
             class="relative h-5 w-9 shrink-0 cursor-pointer rounded-full transition-colors disabled:cursor-wait"
-            :class="preference.enabled ? 'bg-violet-600' : 'bg-white/15 light:bg-slate-300'"
+            :class="preference.enabled ? 'bg-brand-500' : 'bg-white/15 light:bg-slate-300'"
             :disabled="savingType === preference.type"
             @click="toggle(preference)"
           >
