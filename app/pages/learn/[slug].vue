@@ -179,6 +179,14 @@
               <NuxtLink :to="`/courses/${slug}`" class="font-semibold underline">{{ t('Leave a review') }}</NuxtLink>
             </div>
           </div>
+
+          <!-- The survey notification links here with ?survey=1 -->
+          <CourseSurveyCard
+            v-if="curriculum.enrolled"
+            :slug="slug"
+            :focus="route.query.survey === '1'"
+            :progress-key="curriculum.progress?.progressPercent ?? null"
+          />
         </template>
       </div>
 
@@ -224,6 +232,7 @@ import CurriculumOutline from '~/components/learning/CurriculumOutline.vue'
 import CourseAnnouncements from '~/components/learning/CourseAnnouncements.vue'
 import LessonWorkspace from '~/components/learning/LessonWorkspace.vue'
 import QuizPlayer from '~/components/learning/QuizPlayer.vue'
+import CourseSurveyCard from '~/components/learning/CourseSurveyCard.vue'
 import { flattenLessons, formatDuration, useCurriculum } from '~/composables/useCurriculum'
 import { useLearning } from '~/composables/useLearning'
 import { useLessonStream } from '~/composables/useLessonStream'

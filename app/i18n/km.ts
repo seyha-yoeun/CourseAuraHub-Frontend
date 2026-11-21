@@ -350,6 +350,19 @@ export const km: Record<string, string> = {
   'Your progress': 'វឌ្ឍនភាពរបស់អ្នក',
   '(unlocked)': '(បានដោះសោ)',
 
+  // Course surveys
+  'Course feedback': 'មតិកែលម្អវគ្គសិក្សា',
+  'Thanks for your feedback! It helps us improve the course.': 'អរគុណសម្រាប់មតិកែលម្អរបស់អ្នក! វាជួយយើងកែលម្អវគ្គសិក្សា។',
+  'You already answered this course\'s survey. Thank you!': 'អ្នកបានឆ្លើយការស្ទង់មតិនៃវគ្គសិក្សានេះរួចហើយ។ សូមអរគុណ!',
+  'You\'ll be asked for feedback when you finish the course.': 'អ្នកនឹងត្រូវបានសុំមតិកែលម្អនៅពេលអ្នកបញ្ចប់វគ្គសិក្សា។',
+  'You\'ll be asked for feedback once you\'re halfway through.': 'អ្នកនឹងត្រូវបានសុំមតិកែលម្អនៅពេលអ្នករៀនបានពាក់កណ្តាល។',
+  'Two minutes of feedback helps us improve it.': 'មតិកែលម្អរយៈពេលពីរនាទីជួយយើងកែលម្អវា។',
+  'Not likely': 'មិនទំនង',
+  'Very likely': 'ទំនងខ្លាំង',
+  '{count} out of 5': '{count} ក្នុងចំណោម 5',
+  'Send feedback': 'ផ្ញើមតិកែលម្អ',
+  'Feedback not sent': 'មិនអាចផ្ញើមតិកែលម្អបានទេ',
+
   // Reviews
   'Be the first to share your thoughts.': 'ក្លាយជាអ្នកដំបូងដែលចែករំលែកគំនិតរបស់អ្នក។',
   'Delete Failed': 'លុបមិនបានសម្រេច',
