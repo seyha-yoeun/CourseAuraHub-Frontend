@@ -583,6 +583,7 @@ const breadcrumbItems = computed(() => {
     '/admin/orders': 'Orders',
     '/admin/subscriptions': 'Subscriptions',
     '/admin/discounts': 'Discounts',
+    '/admin/payouts': 'Payouts',
     '/admin/coupons': 'Coupons'
   }
   if (adminPages[path]) {
@@ -852,6 +853,7 @@ const quickPages = [
   { name: 'Orders', desc: 'Review purchases and refund paid orders', to: '/admin/orders', icon: Receipt },
   { name: 'Subscriptions', desc: 'All-access plans and their subscribers', to: '/admin/subscriptions', icon: Repeat },
   { name: 'Discounts', desc: 'Schedule sale prices for courses', to: '/admin/discounts', icon: Tag },
+  { name: 'Payouts', desc: 'Approve and record instructor payouts', to: '/admin/payouts', icon: Wallet },
   { name: 'Coupons', desc: 'Create discount codes for checkout', to: '/admin/coupons', icon: TicketPercent },
   { name: 'Referrals', desc: 'Who invited whom, and the rewards paid', to: '/admin/referrals', icon: Users },
   { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
