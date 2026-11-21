@@ -44,6 +44,14 @@ export default defineNuxtConfig({
     routeRules: {
       '/auth/**': { cors: true },
       '/api/auth/**': { cors: true }
+    },
+    hooks: {
+      // Nitro types every server/api route for $fetch. With this many routes, matching a call against them
+      // is too deep for vue-tsc (TS2589), which fails CI. App code always names the response type
+      // ($fetch<T>(...)), so the generated route table isn't needed.
+      'types:extend'(types) {
+        types.routes = {}
+      }
     }
   }
 })
