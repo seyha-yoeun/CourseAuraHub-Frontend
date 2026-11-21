@@ -1,60 +1,50 @@
 <template>
-  <div
-    v-motion="cardMotion"
-    class="w-full max-w-[420px] rounded-3xl border border-white/10 bg-white/[0.03] p-8 shadow-[0_25px_50px_rgba(0,0,0,0.5),0_0_60px_rgba(16,185,129,0.05)] backdrop-blur-xl short:p-6 light:border-black/10 light:bg-white/90 light:shadow-[0_25px_50px_rgba(0,0,0,0.1),0_0_60px_rgba(16,185,129,0.08)]"
-  >
-    <!-- Header -->
-    <div class="mb-7 flex flex-col items-center text-center short:mb-4">
-      <div class="mb-4 flex size-14 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/12 text-emerald-400 short:hidden light:border-emerald-200 light:bg-emerald-50 light:text-emerald-600">
-        <MailCheck :size="28" />
-      </div>
-      <h1 class="mb-2 text-[28px] font-extrabold tracking-[-0.5px] text-slate-100 max-[480px]:text-2xl short:text-2xl light:text-slate-900">Verify your email</h1>
-      <p v-if="emailLocked" class="text-[15px] leading-normal text-white/60 light:text-slate-500">
-        Enter the {{ codeLength }}-digit code we sent to
-        <strong class="break-all text-slate-100 light:text-slate-900">{{ form.email }}</strong>
-      </p>
-      <p v-else class="text-[15px] leading-normal text-white/60 light:text-slate-500">
-        Enter your email and the code from your verification email
-      </p>
+  <div>
+    <NuxtLink :to="loginLink" :class="authBackLink">
+      <ArrowLeft :size="15" aria-hidden="true" /> Back to log in
+    </NuxtLink>
+
+    <div :class="authIconBadge">
+      <MailCheck :size="22" aria-hidden="true" />
     </div>
+    <h1 :class="authTitle">Check your email</h1>
+    <p v-if="emailLocked" :class="authSubtitle">
+      Enter the {{ codeLength }}-digit code we sent to
+      <strong class="font-semibold break-all text-slate-100 light:text-slate-900">{{ form.email }}</strong>
+    </p>
+    <p v-else :class="authSubtitle">Enter your email and the code from your verification email.</p>
 
-    <form class="flex flex-col gap-5 short:gap-3" @submit.prevent="handleVerify">
-      <div
-        v-if="pageError"
-        class="rounded-xl border border-red-500/30 bg-red-500/10 px-3.5 py-2.75 text-[13px] leading-relaxed text-red-300 light:border-red-200 light:bg-red-50 light:text-red-700"
-        role="alert"
-      >
-        {{ pageError }}
+    <form :class="[authBodyGap, authForm]" novalidate @submit.prevent="handleVerify">
+      <div v-if="pageError" :class="authAlertError" role="alert">
+        <AlertCircle :size="16" class="mt-0.5 shrink-0" aria-hidden="true" />
+        <span>{{ pageError }}</span>
       </div>
 
-      <div
-        v-if="notice"
-        class="rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-3.5 py-2.75 text-[13px] leading-relaxed text-emerald-300 light:border-emerald-200 light:bg-emerald-50 light:text-emerald-700"
-        role="status"
-      >
-        {{ notice }}
+      <div v-if="notice" :class="authAlertSuccess" role="status">
+        <CircleCheck :size="16" class="mt-0.5 shrink-0" aria-hidden="true" />
+        <span>{{ notice }}</span>
       </div>
 
-      <div v-if="!emailLocked" v-motion="fieldMotion(0)" class="flex flex-col gap-2">
-        <label for="email" class="text-[13px] font-semibold text-slate-200 light:text-slate-700">Email</label>
-        <div class="group relative flex items-center">
-          <Mail :size="18" class="pointer-events-none absolute left-3.5 z-10 text-white/40 transition-colors group-focus-within:text-emerald-500 light:text-black/40" />
-          <input
-            id="email"
-            v-model="form.email"
-            type="email"
-            :class="errors.email ? inputErrorClass : inputClass"
-            placeholder="you@example.com"
-            autocomplete="email"
-            required
-            :disabled="loading"
-          >
-        </div>
-        <p v-if="errors.email" class="min-h-4 text-xs text-red-500">{{ errors.email }}</p>
+      <div v-if="!emailLocked" :class="authField">
+        <label for="email" :class="authLabel">Email</label>
+        <input
+          id="email"
+          v-model="form.email"
+          type="email"
+          :class="errors.email ? authInputError : authInput"
+          placeholder="you@example.com"
+          autocomplete="email"
+          inputmode="email"
+          required
+          :disabled="loading"
+          :aria-invalid="Boolean(errors.email) || undefined"
+          :aria-describedby="errors.email ? 'email-error' : undefined"
+        >
+        <p v-if="errors.email" id="email-error" :class="authFieldError">{{ errors.email }}</p>
       </div>
 
-      <div v-motion="fieldMotion(0.08)" class="flex flex-col gap-2">
-        <label class="text-[13px] font-semibold text-slate-200 light:text-slate-700">Verification code</label>
+      <div :class="authField">
+        <span :class="authLabel">Verification code</span>
         <OtpCodeInput
           ref="codeInput"
           v-model="form.code"
@@ -64,43 +54,38 @@
           :autofocus="emailLocked"
           @complete="handleVerify"
         />
-        <p v-if="errors.code" class="min-h-4 text-xs text-red-500">{{ errors.code }}</p>
-        <p v-else class="text-xs text-white/40 light:text-slate-400">The code expires {{ codeTtlMinutes }} minutes after it was sent.</p>
+        <p v-if="errors.code" :class="authFieldError" role="alert">{{ errors.code }}</p>
+        <p v-else :class="authHint">The code expires {{ codeTtlMinutes }} minutes after it was sent.</p>
       </div>
 
-      <button
-        type="submit"
-        class="mt-2 flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 px-6 py-4 text-[15px] font-semibold text-white transition-all duration-200 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none enabled:hover:-translate-y-0.5 enabled:hover:shadow-[0_8px_25px_rgba(16,185,129,0.4)] enabled:active:translate-y-0 enabled:active:shadow-[0_4px_15px_rgba(16,185,129,0.3)] disabled:cursor-not-allowed disabled:opacity-60 short:py-3"
-        :disabled="loading || !isFormValid"
-        :class="{ 'pointer-events-none': loading }"
-      >
-        <Loader2 v-if="loading" :size="20" class="animate-spin" />
-        <span v-else>Verify &amp; Continue</span>
+      <button type="submit" :class="[authPrimaryButton, 'mt-1.5']" :disabled="loading" :aria-busy="loading">
+        <Loader2 v-if="loading" :size="18" class="animate-spin" aria-hidden="true" />
+        <template v-else>
+          <span>Verify &amp; continue</span>
+          <ArrowRight :size="16" aria-hidden="true" />
+        </template>
       </button>
     </form>
 
-    <!-- Resend -->
-    <p class="mt-6 text-center text-[13px] text-white/45 light:text-slate-400">
-      Didn't receive it? Check your spam folder or
-      <button
-        type="button"
-        class="cursor-pointer font-semibold text-emerald-500 transition-colors enabled:hover:text-emerald-400 enabled:hover:underline disabled:cursor-not-allowed disabled:text-white/35 light:text-emerald-600 light:disabled:text-slate-400"
-        :disabled="resending || cooldown > 0 || loading"
-        @click="handleResend"
-      >
-        <template v-if="resending">sending…</template>
-        <template v-else-if="cooldown > 0">resend in {{ cooldown }}s</template>
-        <template v-else>send a new code</template>
-      </button>
-    </p>
-
-    <!-- Footer -->
-    <p class="mt-5 text-center text-sm text-white/60 short:mt-4 light:text-slate-500">
-      Wrong email?
-      <NuxtLink :to="registerLink" class="font-semibold text-emerald-500 no-underline transition-colors hover:text-emerald-400 hover:underline light:text-emerald-600" @click="clearPendingVerification()">Start over</NuxtLink>
-      or
-      <NuxtLink :to="loginLink" class="font-semibold text-emerald-500 no-underline transition-colors hover:text-emerald-400 hover:underline light:text-emerald-600">sign in</NuxtLink>
-    </p>
+    <div class="mt-6 flex flex-col gap-2 border-t border-white/8 pt-5 short:mt-4 short:pt-4 light:border-slate-200">
+      <p :class="[authHint, 'text-[13.5px]']">
+        Didn't get it? Check your spam folder or
+        <button
+          type="button"
+          :class="[authLink, 'cursor-pointer disabled:cursor-not-allowed disabled:text-white/35 disabled:no-underline light:disabled:text-slate-400']"
+          :disabled="resending || cooldown > 0 || loading"
+          @click="handleResend"
+        >
+          <template v-if="resending">sending…</template>
+          <template v-else-if="cooldown > 0">resend in {{ cooldown }}s</template>
+          <template v-else>send a new code</template>
+        </button>
+      </p>
+      <p :class="[authHint, 'text-[13.5px]']">
+        Wrong email?
+        <NuxtLink :to="registerLink" :class="authStrongLink" @click="clearPendingVerification()">Start over</NuxtLink>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -114,10 +99,32 @@ import {
   getSafeRedirect,
 } from '~/utils/authRedirect'
 import {
-  Mail,
-  MailCheck,
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  CircleCheck,
   Loader2,
+  MailCheck,
 } from 'lucide-vue-next'
+import {
+  authAlertError,
+  authAlertSuccess,
+  authBackLink,
+  authBodyGap,
+  authField,
+  authFieldError,
+  authForm,
+  authHint,
+  authIconBadge,
+  authInput,
+  authInputError,
+  authLabel,
+  authLink,
+  authPrimaryButton,
+  authStrongLink,
+  authSubtitle,
+  authTitle,
+} from '~/utils/authUi'
 import OtpCodeInput from '~/components/auth/OtpCodeInput.vue'
 
 const route = useRoute()
@@ -137,10 +144,6 @@ const errors = reactive({
   code: '',
 })
 
-const inputClass = 'w-full rounded-xl border border-white/10 bg-white/4 py-3.5 pr-4 pl-12 text-[15px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-emerald-500 focus:bg-white/[0.07] focus:ring-[3px] focus:ring-emerald-500/15 disabled:opacity-60 short:py-3 light:border-slate-200 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
-
-const inputErrorClass = 'w-full rounded-xl border border-red-500 bg-white/4 py-3.5 pr-4 pl-12 text-[15px] text-slate-100 outline-none ring-[3px] ring-red-500/15 transition-all duration-200 placeholder:text-white/30 focus:border-red-500 focus:ring-red-500/15 disabled:opacity-60 short:py-3 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
-
 const codeInput = ref<InstanceType<typeof OtpCodeInput> | null>(null)
 const emailLocked = ref(false)
 const codeLength = ref(6)
@@ -154,10 +157,6 @@ let ticker: ReturnType<typeof setInterval> | undefined
 
 const cooldown = computed(() => Math.max(0, Math.ceil((resendAvailableAt.value - now.value) / 1000)))
 
-const isFormValid = computed(() => {
-  return EMAIL_PATTERN.test(form.email.trim()) && form.code.length === codeLength.value
-})
-
 const redirectQuery = computed(() => {
   const redirect = getSafeRedirect(route.query.redirect)
   return redirect ? { redirect } : undefined
@@ -165,18 +164,6 @@ const redirectQuery = computed(() => {
 
 const registerLink = computed(() => ({ path: '/auth/register', query: redirectQuery.value }))
 const loginLink = computed(() => ({ path: '/auth/login', query: redirectQuery.value }))
-
-const cardMotion = {
-  initial: { opacity: 0, y: 30 },
-  enter: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
-}
-
-function fieldMotion(delay = 0) {
-  return {
-    initial: { opacity: 0, x: -20 },
-    enter: { opacity: 1, x: 0, transition: { duration: 0.4, delay, ease: [0.16, 1, 0.3, 1] } }
-  }
-}
 
 function validateEmail() {
   errors.email = ''

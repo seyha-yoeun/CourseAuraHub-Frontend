@@ -10,66 +10,74 @@
 @custom-variant tiny (@media (max-height: 640px));
 
 /* ---------------------------------------------------------------------------
- * Theme extensions: ambient hero/globe animations used by the auth pages
+ * Auth pages
+ * - auth-slide / auth-slide-back: Log in <-> Sign up page switch and the
+ *   register steps; direction follows the tab order.
+ * - auth-fade: every other auth-to-auth navigation.
+ * The leaving view is taken out of flow so the frame in layouts/auth.vue can
+ * ease its height straight to the incoming view.
  * ------------------------------------------------------------------------- */
-@theme {
-  --animate-globe-spin: spin-360 14s linear infinite;
-  --animate-globe-texture: spin-360 9s linear infinite;
-  --animate-orbit-1: spin-360 20s linear infinite;
-  --animate-orbit-2: spin-360 30s linear infinite reverse;
-  --animate-orbit-3: spin-360 44s linear infinite;
-  --animate-blob-1: blob-drift 18s ease-in-out infinite;
-  --animate-blob-2: blob-drift 18s ease-in-out -6s infinite;
-  --animate-blob-3: blob-drift 18s ease-in-out -12s infinite;
-  --animate-float-1: float-globe 12s ease-in-out infinite;
-  --animate-float-2: float-globe 12s ease-in-out -4s infinite;
-  --animate-float-3: float-globe 12s ease-in-out -8s infinite;
-  --animate-sheen: sheen-pulse 6s ease-in-out infinite;
-  --animate-pulse-ring: pulse-ring 2s ease-out infinite;
+.auth-slide-enter-active,
+.auth-slide-leave-active,
+.auth-slide-back-enter-active,
+.auth-slide-back-leave-active {
+  transition:
+    opacity 220ms ease,
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-  @keyframes spin-360 {
-    to { transform: rotate(360deg); }
+.auth-fade-enter-active,
+.auth-fade-leave-active {
+  transition: opacity 200ms ease;
+}
+
+.auth-slide-leave-active,
+.auth-slide-back-leave-active,
+.auth-fade-leave-active {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+.auth-slide-enter-from,
+.auth-slide-back-leave-to {
+  opacity: 0;
+  transform: translateX(28px);
+}
+
+.auth-slide-leave-to,
+.auth-slide-back-enter-from {
+  opacity: 0;
+  transform: translateX(-28px);
+}
+
+.auth-fade-enter-from,
+.auth-fade-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-slide-enter-active,
+  .auth-slide-leave-active,
+  .auth-slide-back-enter-active,
+  .auth-slide-back-leave-active {
+    transition: opacity 150ms ease;
   }
 
-  @keyframes blob-drift {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(26px, -20px) scale(1.08); }
-    66% { transform: translate(-20px, 24px) scale(0.94); }
-  }
-
-  @keyframes float-globe {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-16px); }
-  }
-
-  @keyframes sheen-pulse {
-    0%, 100% { opacity: 0.75; }
-    50% { opacity: 1; }
-  }
-
-  @keyframes pulse-ring {
-    0% { transform: scale(0.9); opacity: 0.8; }
-    100% { transform: scale(1.2); opacity: 0; }
+  .auth-slide-enter-from,
+  .auth-slide-leave-to,
+  .auth-slide-back-enter-from,
+  .auth-slide-back-leave-to {
+    transform: none;
   }
 }
 
-/* Thin emerald scrollbar for the auth form column */
-@utility scrollbar-emerald {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(16, 185, 129, 0.35) transparent;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(16, 185, 129, 0.35);
-    border-radius: 99px;
-  }
+/* Indeterminate progress bar on the OAuth callback screen
+   (`animate-[auth-progress_1.2s_ease-in-out_infinite]` + `motion-reduce:animate-none`) */
+@keyframes auth-progress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
 }
 
 /* ===========================================================================
