@@ -1,5 +1,6 @@
 <template>
-  <UApp :toaster="{ position: 'bottom-right' }">
+  <!-- Toasts stack compactly (hover to fan out), max 3 at once; per-kind timing lives in useAppToast -->
+  <UApp :toaster="{ position: 'bottom-right', expand: false, max: 3 }">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

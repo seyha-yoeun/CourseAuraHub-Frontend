@@ -44,7 +44,7 @@
       <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">Create one to put a course on sale.</p>
     </div>
 
-    <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 backdrop-blur-md light:border-slate-200 light:bg-white">
+    <DataTableFrame v-else label="Discounts" :scroll-key="tableScrollKey">
       <table class="w-full min-w-200 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -57,7 +57,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
-          <tr v-for="discount in discounts" :key="discount.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
+          <tr v-for="discount in tableItems" :key="discount.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
             <td class="px-4 py-3">
               <NuxtLink :to="`/courses/${discount.courseSlug}`" class="font-semibold text-slate-100 no-underline hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700">{{ discount.courseTitle }}</NuxtLink>
             </td>
@@ -95,7 +95,10 @@
           </tr>
         </tbody>
       </table>
-    </div>
+      <template #footer>
+        <TablePagination v-model:page="tablePage" v-model:page-size="tablePageSize" :total="tableTotal" />
+      </template>
+    </DataTableFrame>
 
     <DiscountFormModal
       :is-open="isFormOpen"
@@ -120,6 +123,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { useClientPagination } from '~/composables/useClientPagination'
 import { AlertCircle, Edit3, Filter, Plus, Tag, Trash2 } from 'lucide-vue-next'
 import type { Course, CourseDiscount, CourseDiscountCreate, CourseDiscountUpdate } from '~/types'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
@@ -147,6 +153,7 @@ const { data, pending, error, refresh } = await useAsyncData(
 const { data: courseList } = await useAsyncData('discount-courses', () => $fetch<Course[]>('/api/courses').catch(() => []), { server: false })
 
 const discounts = computed(() => data.value ?? [])
+const { page: tablePage, pageSize: tablePageSize, total: tableTotal, items: tableItems, scrollKey: tableScrollKey } = useClientPagination(discounts, { resetOn: [courseFilter] })
 const courses = computed(() => courseList.value ?? [])
 const courseFilterOptions = computed(() => [
   { value: ALL, label: 'All courses' },

@@ -7,7 +7,7 @@
     <p>Restoring your session...</p>
   </div>
 
-  <div v-else class="relative flex min-h-dvh overflow-x-hidden bg-zinc-950 light:bg-slate-50">
+  <div v-else class="relative flex min-h-dvh overflow-x-clip bg-zinc-950 light:bg-slate-50">
     <!-- Sidebar with desktop collapse + mobile drawer -->
     <AppSidebar
       :collapsed="sidebarCollapsed"
@@ -26,7 +26,7 @@
         @toggle-sidebar="toggleSidebar"
       />
 
-      <main class="min-w-0 flex-1 overflow-x-hidden px-4 py-4 sm:px-6 sm:py-6 lg:p-8">
+      <main class="min-w-0 flex-1 overflow-x-clip px-4 py-4 sm:px-6 sm:py-6 lg:p-8">
         <div v-motion-fade-visible-once class="mx-auto w-full max-w-[1400px]">
           <slot />
         </div>

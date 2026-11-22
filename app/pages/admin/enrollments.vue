@@ -35,7 +35,7 @@
 
     <p v-else-if="!enrollments.length" class="rounded-[20px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">No enrollments yet.</p>
 
-    <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 backdrop-blur-md light:border-slate-200 light:bg-white">
+    <DataTableFrame v-else label="Enrollments" :scroll-key="tableScrollKey">
       <table class="w-full min-w-160 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -47,7 +47,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
-          <tr v-for="item in enrollments" :key="item.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
+          <tr v-for="item in tableItems" :key="item.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
             <td class="px-4 py-3 font-semibold text-slate-100 light:text-slate-900">{{ item.studentName }}</td>
             <td class="px-4 py-3">
               <NuxtLink :to="`/courses/${item.courseSlug}`" class="text-white/70 no-underline hover:text-brand-300 light:text-slate-600 light:hover:text-brand-700">{{ item.courseTitle }}</NuxtLink>
@@ -62,7 +62,10 @@
           </tr>
         </tbody>
       </table>
-    </div>
+      <template #footer>
+        <TablePagination v-model:page="tablePage" v-model:page-size="tablePageSize" :total="tableTotal" />
+      </template>
+    </DataTableFrame>
 
     <ConfirmDeleteModal
       :is-open="pendingDelete !== null"
@@ -77,6 +80,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { useClientPagination } from '~/composables/useClientPagination'
 import { AlertCircle, Loader2 } from 'lucide-vue-next'
 import type { Course, Enrollment, Student } from '~/types'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
@@ -98,6 +104,7 @@ const { data: students } = await useAsyncData<Student[]>('enrollment-students', 
 const { data: courses } = await useAsyncData<Course[]>('enrollment-courses', () => $fetch<Course[]>('/api/courses'), { server: false })
 
 const enrollments = computed(() => data.value ?? [])
+const { page: tablePage, pageSize: tablePageSize, total: tableTotal, items: tableItems, scrollKey: tableScrollKey } = useClientPagination(enrollments)
 const studentOptions = computed(() => (students.value ?? []).map(s => ({ value: s.id, label: `${s.name} (${s.email})` })))
 const courseOptions = computed(() => (courses.value ?? []).map(c => ({ value: c.id, label: c.title })))
 

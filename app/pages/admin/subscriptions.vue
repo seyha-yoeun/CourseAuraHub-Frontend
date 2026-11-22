@@ -41,7 +41,7 @@
       </div>
       <p v-else-if="plansError" :class="emptyBox">{{ getErrorMessage(plansError, 'Unable to load subscription plans') }}</p>
       <p v-else-if="!plans.length" :class="emptyBox">No plans yet. Create one so learners can subscribe.</p>
-      <div v-else :class="tableWrap">
+      <DataTableFrame v-else label="Subscription plans" :scroll-key="planScrollKey">
         <table class="w-full min-w-180 border-collapse text-left text-[13px]">
           <thead>
             <tr :class="headRow">
@@ -53,7 +53,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-white/6 light:divide-slate-200">
-            <tr v-for="plan in plans" :key="plan.id">
+            <tr v-for="plan in pagedPlans" :key="plan.id">
               <td class="px-4 py-3">
                 <p class="font-semibold text-slate-100 light:text-slate-900">{{ plan.name }}</p>
                 <p v-if="plan.description" class="mt-0.5 line-clamp-1 text-xs text-white/45 light:text-slate-500">{{ plan.description }}</p>
@@ -76,18 +76,21 @@
             </tr>
           </tbody>
         </table>
-      </div>
+        <template #footer>
+          <TablePagination v-model:page="planPage" v-model:page-size="planPageSize" :total="planTotal" />
+        </template>
+      </DataTableFrame>
     </template>
 
     <!-- Subscribers -->
     <template v-else>
-      <div v-if="subsPending" class="flex flex-col gap-3">
+      <div v-if="subsPending && !subsData" class="flex flex-col gap-3">
         <div v-for="i in 3" :key="i" class="h-16 animate-pulse rounded-[14px] bg-white/5 light:bg-slate-100" />
       </div>
       <p v-else-if="subsError" :class="emptyBox">{{ getErrorMessage(subsError, 'Unable to load subscriptions') }}</p>
       <p v-else-if="!subscriptions.length" :class="emptyBox">No subscriptions here.</p>
       <template v-else>
-        <div :class="tableWrap">
+        <DataTableFrame label="Subscriptions" :scroll-key="`${page}:${pageSize}`" :class="subsPending && 'opacity-60 transition-opacity'">
           <table class="w-full min-w-200 border-collapse text-left text-[13px]">
             <thead>
               <tr :class="headRow">
@@ -116,15 +119,10 @@
               </tr>
             </tbody>
           </table>
-        </div>
-
-        <div v-if="totalPages > 1" class="flex items-center justify-between gap-3 text-xs text-white/50 light:text-slate-500">
-          <span>Page {{ page + 1 }} of {{ totalPages }}</span>
-          <div class="flex items-center gap-2">
-            <button type="button" :class="pagerButton" :disabled="page === 0" @click="page--">Previous</button>
-            <button type="button" :class="pagerButton" :disabled="page + 1 >= totalPages" @click="page++">Next</button>
-          </div>
-        </div>
+          <template #footer>
+            <TablePagination v-model:page="page" v-model:page-size="pageSize" :total="total" :disabled="subsPending" />
+          </template>
+        </DataTableFrame>
       </template>
     </template>
 
@@ -175,6 +173,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { DEFAULT_PAGE_SIZE, useClientPagination } from '~/composables/useClientPagination'
 import { Plus } from 'lucide-vue-next'
 import type { BillingInterval, SubscriptionPlan, SubscriptionPlanForm, SubscriptionStatus } from '~/types/subscription'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
@@ -184,7 +185,7 @@ import { useAppToast } from '~/composables/useAppToast'
 import { SUBSCRIPTION_STATUS_CLASSES, SUBSCRIPTION_STATUS_LABELS, intervalLabel, useSubscription } from '~/composables/useSubscription'
 import { getErrorMessage } from '~/utils/apiError'
 import { formatDate } from '~/utils/dateTime'
-import { emptyBox, headRow, inputClass, labelClass, neutralAction, pageSubtitle, pageTitle, pagerButton, primaryAction, primaryButton, tableWrap } from '~/utils/ui'
+import { emptyBox, headRow, inputClass, labelClass, neutralAction, pageSubtitle, pageTitle, primaryAction, primaryButton } from '~/utils/ui'
 
 definePageMeta({ requiresAdmin: true })
 useHead({ title: 'Subscriptions' })
@@ -204,9 +205,11 @@ const { data: planData, pending: plansPending, error: plansError, refresh: refre
   { server: false },
 )
 const plans = computed(() => planData.value ?? [])
+const { page: planPage, pageSize: planPageSize, total: planTotal, items: pagedPlans, scrollKey: planScrollKey } = useClientPagination(plans)
 
 const status = ref<SubscriptionStatus | 'all'>('active')
 const page = ref(0)
+const pageSize = ref(DEFAULT_PAGE_SIZE)
 const statusOptions = [
   { value: 'active', label: 'Active' },
   { value: 'past_due', label: 'Payment due' },
@@ -217,11 +220,11 @@ const statusOptions = [
 ]
 const { data: subsData, pending: subsPending, error: subsError } = await useAsyncData(
   'admin-subscriptions',
-  () => fetchSubscriptions(status.value, page.value),
-  { server: false, watch: [status, page] },
+  () => fetchSubscriptions(status.value, page.value, pageSize.value),
+  { server: false, watch: [status, page, pageSize] },
 )
 const subscriptions = computed(() => subsData.value?.items ?? [])
-const totalPages = computed(() => subsData.value?.totalPages ?? 0)
+const total = computed(() => subsData.value?.totalElements ?? 0)
 
 // A new filter starts again from the first page
 watch(status, () => {

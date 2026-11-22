@@ -29,7 +29,7 @@
       </label>
     </div>
 
-    <div v-if="pending" class="flex flex-col gap-3">
+    <div v-if="pending && !data" class="flex flex-col gap-3">
       <div v-for="i in 4" :key="i" class="h-14 animate-pulse rounded-[14px] bg-white/5 light:bg-slate-100" />
     </div>
 
@@ -46,8 +46,7 @@
     </div>
 
     <template v-else>
-      <p class="text-xs text-white/45 light:text-slate-500">{{ t('{count} actions', { count: data?.totalElements ?? 0 }) }}</p>
-      <div class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 backdrop-blur-md light:border-slate-200 light:bg-white">
+      <DataTableFrame :label="t('Audit log')" :scroll-key="`${page}:${pageSize}`" :class="pending && 'opacity-60 transition-opacity'">
         <table class="w-full min-w-220 border-collapse text-left text-[13px]">
           <thead>
             <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -104,20 +103,18 @@
             </tr>
           </tbody>
         </table>
-      </div>
-
-      <div v-if="totalPages > 1" class="flex items-center justify-between gap-3 text-xs text-white/50 light:text-slate-500">
-        <span>{{ t('Page {page} of {total}', { page: page + 1, total: totalPages }) }}</span>
-        <div class="flex items-center gap-2">
-          <button type="button" :class="pagerButton" :disabled="page === 0" @click="page--">{{ t('Previous') }}</button>
-          <button type="button" :class="pagerButton" :disabled="page + 1 >= totalPages" @click="page++">{{ t('Next') }}</button>
-        </div>
-      </div>
+        <template #footer>
+          <TablePagination v-model:page="page" v-model:page-size="pageSize" :total="total" :disabled="pending" />
+        </template>
+      </DataTableFrame>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { DEFAULT_PAGE_SIZE } from '~/composables/useClientPagination'
 import { AlertCircle, Copy, ScrollText } from 'lucide-vue-next'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
 import { useAppToast } from '~/composables/useAppToast'
@@ -135,7 +132,6 @@ const { fetchAuditLog } = useAuditLog()
 
 const labelClass = 'text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500'
 const inputClass = 'h-10 w-full rounded-[10px] border border-white/9 bg-white/4 px-3 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/35 focus:border-brand-500/65 focus:ring-2 focus:ring-brand-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
-const pagerButton = 'cursor-pointer rounded-[10px] border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/70 transition-colors enabled:hover:bg-white/10 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-40 light:border-slate-200 light:bg-slate-100 light:text-slate-700'
 
 const actor = ref('')
 const appliedActor = ref('')
@@ -144,6 +140,7 @@ const outcome = ref('all')
 const fromDate = ref('')
 const toDate = ref('')
 const page = ref(0)
+const pageSize = ref(DEFAULT_PAGE_SIZE)
 
 // The first path segment after /api/v1 (and /admin or /instructor) of the changed endpoint
 const resourceOptions = computed(() => [
@@ -176,13 +173,13 @@ const { data, pending, error } = await useAsyncData(
     from: startOfDay(fromDate.value),
     to: startOfDay(toDate.value, 1),
     page: page.value,
-    size: 50
+    size: pageSize.value
   }),
-  { server: false, watch: [appliedActor, resource, outcome, fromDate, toDate, page] }
+  { server: false, watch: [appliedActor, resource, outcome, fromDate, toDate, page, pageSize] }
 )
 
 const items = computed(() => data.value?.items ?? [])
-const totalPages = computed(() => data.value?.totalPages ?? 0)
+const total = computed(() => data.value?.totalElements ?? 0)
 
 watch([appliedActor, resource, outcome, fromDate, toDate], () => {
   page.value = 0

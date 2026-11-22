@@ -60,7 +60,7 @@
       <div v-if="pending" class="h-32 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
       <p v-else-if="error" :class="emptyBox">{{ getErrorMessage(error, 'Unable to load access codes') }}</p>
       <p v-else-if="!codes.length" :class="emptyBox">No codes yet.</p>
-      <div v-else :class="tableWrap">
+      <DataTableFrame v-else label="Access codes" :scroll-key="tableScrollKey">
         <table class="w-full min-w-200 border-collapse text-left text-[13px]">
           <thead>
             <tr :class="headRow">
@@ -74,7 +74,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-white/6 light:divide-slate-200">
-            <tr v-for="code in codes" :key="code.id">
+            <tr v-for="code in tableItems" :key="code.id">
               <td class="px-4 py-2.5 font-mono text-xs text-slate-100 light:text-slate-800">…{{ code.hint }}</td>
               <td class="px-4 py-2.5 text-white/75 light:text-slate-700">{{ code.courseTitle }}</td>
               <td class="px-4 py-2.5 text-white/60 light:text-slate-500">
@@ -90,12 +90,18 @@
             </tr>
           </tbody>
         </table>
-      </div>
+        <template #footer>
+          <TablePagination v-model:page="tablePage" v-model:page-size="tablePageSize" :total="tableTotal" />
+        </template>
+      </DataTableFrame>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { useClientPagination } from '~/composables/useClientPagination'
 import { Loader2 } from 'lucide-vue-next'
 import type { AccessCode, IssuedAccessCodes } from '~/types/gift'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
@@ -106,7 +112,7 @@ import { getErrorMessage } from '~/utils/apiError'
 import { formatDate, fromLocalInput } from '~/utils/dateTime'
 import {
   cardClass, dangerAction, emptyBox, headRow, inputClass, labelClass, neutralAction, pageSubtitle, pageTitle,
-  primaryAction, primaryButton, sectionTitle, tableWrap,
+  primaryAction, primaryButton, sectionTitle,
 } from '~/utils/ui'
 
 definePageMeta({ requiresAdmin: true })
@@ -128,6 +134,7 @@ const { data, pending, error, refresh } = await useAsyncData(
   { server: false, watch: [batchFilter] },
 )
 const codes = computed(() => data.value ?? [])
+const { page: tablePage, pageSize: tablePageSize, total: tableTotal, items: tableItems, scrollKey: tableScrollKey } = useClientPagination(codes, { resetOn: [batchFilter] })
 const revokingId = ref<number | null>(null)
 
 async function issue() {

@@ -14,7 +14,7 @@
     <p v-else-if="error" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">{{ getErrorMessage(error, 'Unable to load categories') }}</p>
     <p v-else-if="!categories.length" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">No categories yet.</p>
 
-    <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 light:border-slate-200 light:bg-white">
+    <DataTableFrame v-else label="Categories" :scroll-key="tableScrollKey">
       <table class="w-full min-w-120 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -24,7 +24,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
-          <tr v-for="item in categories" :key="item.id">
+          <tr v-for="item in tableItems" :key="item.id">
             <td class="px-4 py-3">
               <form v-if="editingId === item.id" class="flex items-center gap-2" @submit.prevent="rename(item)">
                 <input v-model="editName" type="text" required maxlength="100" aria-label="Category name" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400">
@@ -41,7 +41,10 @@
           </tr>
         </tbody>
       </table>
-    </div>
+      <template #footer>
+        <TablePagination v-model:page="tablePage" v-model:page-size="tablePageSize" :total="tableTotal" />
+      </template>
+    </DataTableFrame>
 
     <ConfirmDeleteModal
       :is-open="pendingDelete !== null"
@@ -56,6 +59,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { useClientPagination } from '~/composables/useClientPagination'
 import type { Category } from '~/types'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
@@ -70,6 +76,7 @@ const { fetchCategories, createCategory, renameCategory, deleteCategory } = useI
 
 const { data, pending, error, refresh } = await useAsyncData('admin-categories', fetchCategories, { server: false })
 const categories = computed(() => data.value ?? [])
+const { page: tablePage, pageSize: tablePageSize, total: tableTotal, items: tableItems, scrollKey: tableScrollKey } = useClientPagination(categories)
 
 const newName = ref('')
 const editName = ref('')

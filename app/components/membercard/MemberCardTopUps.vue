@@ -4,11 +4,11 @@
       <AppDropdown v-model="status" :options="statusOptions" aria-label="Filter top-up requests by status" />
     </div>
 
-    <div v-if="pending" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
+    <div v-if="pending && !data" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
     <p v-else-if="error" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">{{ getErrorMessage(error, 'Unable to load top-up requests') }}</p>
     <p v-else-if="!items.length" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">No top-up requests found.</p>
 
-    <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 light:border-slate-200 light:bg-white">
+    <DataTableFrame v-else label="Member card top-ups" :scroll-key="`${page}:${pageSize}`" :class="pending && 'opacity-60 transition-opacity'">
       <table class="w-full min-w-200 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -43,13 +43,10 @@
           </tr>
         </tbody>
       </table>
-    </div>
-
-    <div v-if="totalPages > 1" class="flex items-center justify-end gap-3 text-xs text-white/45 light:text-slate-500">
-      <button type="button" class="cursor-pointer font-semibold disabled:cursor-not-allowed disabled:opacity-40" :disabled="page === 0" @click="page -= 1">Previous</button>
-      <span>Page {{ page + 1 }} of {{ totalPages }}</span>
-      <button type="button" class="cursor-pointer font-semibold disabled:cursor-not-allowed disabled:opacity-40" :disabled="page + 1 >= totalPages" @click="page += 1">Next</button>
-    </div>
+      <template #footer>
+        <TablePagination v-model:page="page" v-model:page-size="pageSize" :total="total" :disabled="pending" />
+      </template>
+    </DataTableFrame>
 
     <Teleport to="body">
       <div v-if="rejecting" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl" @click.self="rejecting = null">
@@ -68,6 +65,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { DEFAULT_PAGE_SIZE } from '~/composables/useClientPagination'
 import type { MemberCardTopUp } from '~/types'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
 import { useAppToast } from '~/composables/useAppToast'
@@ -89,17 +89,18 @@ const statusOptions = [
 ]
 const status = ref('')
 const page = ref(0)
+const pageSize = ref(DEFAULT_PAGE_SIZE)
 const busyId = ref<number | null>(null)
 const rejecting = ref<MemberCardTopUp | null>(null)
 const rejectNote = ref('')
 
 const { data, pending, error, refresh } = await useAsyncData(
   'admin-top-ups',
-  () => fetchTopUps(status.value, page.value),
-  { server: false, watch: [status, page] }
+  () => fetchTopUps(status.value, page.value, pageSize.value),
+  { server: false, watch: [status, page, pageSize] }
 )
 const items = computed(() => data.value?.items ?? [])
-const totalPages = computed(() => data.value?.totalPages ?? 0)
+const total = computed(() => data.value?.totalElements ?? 0)
 
 watch(status, () => {
   page.value = 0

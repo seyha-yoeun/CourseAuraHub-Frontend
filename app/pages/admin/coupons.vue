@@ -33,7 +33,7 @@
       <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">Create a code to share with learners.</p>
     </div>
 
-    <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 backdrop-blur-md light:border-slate-200 light:bg-white">
+    <DataTableFrame v-else label="Coupons" :scroll-key="tableScrollKey">
       <table class="w-full min-w-200 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -47,7 +47,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
-          <tr v-for="coupon in coupons" :key="coupon.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
+          <tr v-for="coupon in tableItems" :key="coupon.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
             <td class="px-4 py-3 font-mono font-semibold text-slate-100 light:text-slate-900">{{ coupon.code }}</td>
             <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ formatDiscount(coupon) }}</td>
             <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ coupon.courseSlug || 'All courses' }}</td>
@@ -87,7 +87,10 @@
           </tr>
         </tbody>
       </table>
-    </div>
+      <template #footer>
+        <TablePagination v-model:page="tablePage" v-model:page-size="tablePageSize" :total="tableTotal" />
+      </template>
+    </DataTableFrame>
 
     <CouponFormModal
       :is-open="isFormOpen"
@@ -102,6 +105,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { useClientPagination } from '~/composables/useClientPagination'
 import { AlertCircle, Edit3, Plus, TicketPercent } from 'lucide-vue-next'
 import type { Coupon, CouponCreate, CouponUpdate, Course } from '~/types'
 import CouponFormModal from '~/components/orders/CouponFormModal.vue'
@@ -121,6 +127,7 @@ const { data, pending, error, refresh } = await useAsyncData('admin-coupons', fe
 const { data: courseList } = await useAsyncData('coupon-courses', () => $fetch<Course[]>('/api/courses').catch(() => []), { server: false })
 
 const coupons = computed(() => data.value ?? [])
+const { page: tablePage, pageSize: tablePageSize, total: tableTotal, items: tableItems, scrollKey: tableScrollKey } = useClientPagination(coupons)
 const courses = computed(() => courseList.value ?? [])
 
 const isFormOpen = ref(false)

@@ -162,7 +162,6 @@ import {
   ScrollText,
   ShieldAlert,
   ShieldCheck,
-  ShoppingCart,
   Tag,
   TicketPercent,
   Trophy,
@@ -200,17 +199,18 @@ interface NavItem {
   badge?: string
 }
 
+// Grouped by what people come to do, most-used first. Every group has 2-6 items.
+// Admins: monitor -> act on queues -> manage catalog/people/money -> configure.
+// Everyone else: learn -> discover -> pay -> account (instructors get Teaching first).
 const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
+  const discover: NavItem[] = [
+    { to: '/courses', label: 'Browse Courses', icon: BookOpen },
+    { to: '/learning-paths', label: 'Learning Paths', icon: Route },
+    { to: '/instructors', label: 'Instructors', icon: Users },
+  ]
+
   if (!auth.isAuthenticated) {
-    return [
-      {
-        label: 'Learning',
-        items: [
-          { to: '/courses', label: 'Browse Courses', icon: BookOpen },
-          { to: '/instructors', label: 'Instructors', icon: Users },
-        ],
-      },
-    ]
+    return [{ label: 'Discover', items: discover }]
   }
 
   if (!auth.isAdmin) {
@@ -220,42 +220,41 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
             label: 'Teaching',
             items: [
               { to: '/instructor', label: 'My Courses', icon: Presentation },
-              { to: '/instructor/earnings', label: 'Earnings', icon: Wallet },
               { to: '/instructor/submissions', label: 'Submissions', icon: ClipboardCheck },
               { to: '/questions', label: 'Questions', icon: HelpCircle },
+              { to: '/instructor/earnings', label: 'Earnings', icon: Wallet },
             ],
           }]
         : []),
       {
-        label: 'Learning',
+        label: 'Learn',
         items: [
           { to: '/my-learning', label: 'My Learning', icon: GraduationCap },
-          { to: '/courses', label: 'Browse Courses', icon: BookOpen },
-          { to: '/instructors', label: 'Instructors', icon: Users },
-          { to: '/wishlist', label: 'Wishlist', icon: Heart },
-          { to: '/achievements', label: 'Achievements', icon: Trophy },
           { to: '/live-sessions', label: 'Live Sessions', icon: Video },
-          { to: '/learning-paths', label: 'Learning Paths', icon: Route },
+          { to: '/achievements', label: 'Achievements', icon: Trophy },
           { to: '/leaderboard', label: 'Leaderboard', icon: BarChart3 },
         ],
       },
       {
-        label: 'Purchases',
+        label: 'Discover',
+        items: [...discover, { to: '/wishlist', label: 'Wishlist', icon: Heart }],
+      },
+      {
+        label: 'Billing',
         items: [
-          { to: '/cart', label: 'Cart', icon: ShoppingCart },
           { to: '/orders', label: 'My Orders', icon: Receipt },
-          { to: '/member-card', label: 'Member Card', icon: CreditCard },
           { to: '/subscription', label: 'Subscription', icon: Repeat },
+          { to: '/member-card', label: 'Member Card', icon: CreditCard },
         ],
       },
       {
         label: 'Account',
         items: [
           { to: '/account', label: 'Profile', icon: UserCog },
-          { to: '/referrals', label: 'Invite Friends', icon: Gift },
           { to: '/account/notifications', label: 'Notifications', icon: Bell },
           { to: '/account/security', label: 'Security', icon: ShieldCheck },
           { to: '/organizations', label: 'Organizations', icon: Building2 },
+          { to: '/referrals', label: 'Invite Friends', icon: Gift },
         ],
       },
     ]
@@ -270,37 +269,43 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
       ],
     },
     {
-      label: 'Learning',
+      // Everything waiting on an admin decision, in one place
+      label: 'Needs review',
       items: [
-        { to: '/courses', label: 'Courses', icon: BookOpen },
-        { to: '/students', label: 'Students', icon: GraduationCap },
-        { to: '/admin/enrollments', label: 'Enrollments', icon: UserPlus },
-        { to: '/admin/categories', label: 'Categories', icon: FolderTree },
-        { to: '/admin/learning-paths', label: 'Learning Paths', icon: Route },
-        { to: '/admin/organizations', label: 'Organizations', icon: Building2 },
+        { to: '/admin/course-reviews', label: 'Course Reviews', icon: ShieldCheck },
+        { to: '/admin/refund-requests', label: 'Refund Requests', icon: RotateCcw },
+        { to: '/admin/payouts', label: 'Payouts', icon: Wallet },
+        { to: '/admin/reports', label: 'Reported Content', icon: Flag },
+        { to: '/instructor/submissions', label: 'Submissions', icon: ClipboardCheck },
+        { to: '/questions', label: 'Questions', icon: HelpCircle },
       ],
     },
     {
-      label: 'Teaching',
+      label: 'Catalog',
       items: [
-        { to: '/admin/course-reviews', label: 'Course Reviews', icon: ShieldCheck },
-        { to: '/instructor/submissions', label: 'Submissions', icon: ClipboardCheck },
-        { to: '/questions', label: 'Questions', icon: HelpCircle },
-        { to: '/admin/reports', label: 'Reported Content', icon: Flag },
+        { to: '/courses', label: 'Courses', icon: BookOpen },
+        { to: '/admin/categories', label: 'Categories', icon: FolderTree },
+        { to: '/admin/learning-paths', label: 'Learning Paths', icon: Route },
+      ],
+    },
+    {
+      label: 'People',
+      items: [
+        { to: '/students', label: 'Students', icon: GraduationCap },
+        { to: '/admin/enrollments', label: 'Enrollments', icon: UserPlus },
+        { to: '/admin/organizations', label: 'Organizations', icon: Building2 },
       ],
     },
     {
       label: 'Sales',
       items: [
         { to: '/admin/orders', label: 'Orders', icon: Receipt },
-        { to: '/admin/member-cards', label: 'Member Cards', icon: CreditCard },
         { to: '/admin/subscriptions', label: 'Subscriptions', icon: Repeat },
-        { to: '/admin/refund-requests', label: 'Refund Requests', icon: RotateCcw },
-        { to: '/admin/payouts', label: 'Payouts', icon: Wallet },
+        { to: '/admin/member-cards', label: 'Member Cards', icon: CreditCard },
       ],
     },
     {
-      label: 'Promotions',
+      label: 'Marketing',
       items: [
         { to: '/admin/discounts', label: 'Discounts', icon: Tag },
         { to: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
@@ -309,10 +314,10 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
       ],
     },
     {
-      label: 'Platform',
+      label: 'System',
       items: [
-        { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/settings', label: 'Settings', icon: Settings },
+        { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/admin/audit-log', label: 'Audit Log', icon: ScrollText },
         { to: '/admin/exports', label: 'CSV Exports', icon: FileDown },
       ],

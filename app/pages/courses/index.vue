@@ -224,6 +224,7 @@
     <CourseTable
       v-else-if="showTable"
       :courses="courses"
+      :reset-key="`${searchQuery}|${selectedCategory}|${selectedStatus}|${selectedSort}`"
       @edit="openEditModal"
       @delete="openDeleteConfirm"
     />

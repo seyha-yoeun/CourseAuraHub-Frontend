@@ -10,14 +10,14 @@
       </div>
     </div>
 
-    <div v-if="pending" class="flex flex-col gap-3">
+    <div v-if="pending && !data" class="flex flex-col gap-3">
       <div v-for="i in 3" :key="i" class="h-16 animate-pulse rounded-[14px] bg-white/5 light:bg-slate-100" />
     </div>
     <p v-else-if="error" :class="emptyBox">{{ getErrorMessage(error, 'Unable to load refund requests') }}</p>
     <p v-else-if="!items.length" :class="emptyBox">No refund requests here.</p>
 
     <template v-else>
-      <div class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 light:border-slate-200 light:bg-white">
+      <DataTableFrame label="Refund requests" :scroll-key="`${page}:${pageSize}`" :class="pending && 'opacity-60 transition-opacity'">
         <table class="w-full min-w-220 border-collapse text-left text-[13px]">
           <thead>
             <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -57,15 +57,10 @@
             </tr>
           </tbody>
         </table>
-      </div>
-
-      <div v-if="totalPages > 1" class="flex items-center justify-between gap-3 text-xs text-white/50 light:text-slate-500">
-        <span>Page {{ page + 1 }} of {{ totalPages }}</span>
-        <div class="flex items-center gap-2">
-          <button type="button" :class="pagerButton" :disabled="page === 0" @click="page--">Previous</button>
-          <button type="button" :class="pagerButton" :disabled="page + 1 >= totalPages" @click="page++">Next</button>
-        </div>
-      </div>
+        <template #footer>
+          <TablePagination v-model:page="page" v-model:page-size="pageSize" :total="total" :disabled="pending" />
+        </template>
+      </DataTableFrame>
     </template>
 
     <PromptModal
@@ -95,6 +90,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { DEFAULT_PAGE_SIZE } from '~/composables/useClientPagination'
 import type { AdminRefundRequest } from '~/types/refund'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
 import PromptModal from '~/components/shared/PromptModal.vue'
@@ -102,7 +100,7 @@ import { useAppToast } from '~/composables/useAppToast'
 import { formatMoney } from '~/composables/useCart'
 import { useRefunds } from '~/composables/useRefunds'
 import { getErrorMessage } from '~/utils/apiError'
-import { dangerAction, emptyBox, pagerButton, primaryAction } from '~/utils/ui'
+import { dangerAction, emptyBox, primaryAction } from '~/utils/ui'
 import { formatDateTime } from '~/utils/dateTime'
 
 definePageMeta({ requiresAdmin: true })
@@ -113,6 +111,7 @@ const { fetchForAdmin: fetchRefundRequests, approve: approveRefundRequest, rejec
 
 const status = ref('pending')
 const page = ref(0)
+const pageSize = ref(DEFAULT_PAGE_SIZE)
 const statusOptions = [
   { value: 'pending', label: 'Pending' },
   { value: 'approved', label: 'Approved' },
@@ -122,11 +121,11 @@ const statusOptions = [
 
 const { data, pending, error, refresh } = await useAsyncData(
   'admin-refund-requests',
-  () => fetchRefundRequests(status.value, page.value),
-  { server: false, watch: [status, page] },
+  () => fetchRefundRequests(status.value, page.value, pageSize.value),
+  { server: false, watch: [status, page, pageSize] },
 )
 const items = computed(() => data.value?.items ?? [])
-const totalPages = computed(() => data.value?.totalPages ?? 0)
+const total = computed(() => data.value?.totalElements ?? 0)
 
 watch(status, () => {
   page.value = 0

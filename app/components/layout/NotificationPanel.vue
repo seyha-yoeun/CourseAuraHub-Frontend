@@ -125,18 +125,23 @@
       </button>
     </div>
 
-    <!-- Footer link -->
-    <div v-if="showAnalyticsLink" class="border-t border-white/6 bg-black/20 px-4 py-2.5 text-center light:border-slate-200 light:bg-slate-50">
+    <!-- Footer: full inbox for everyone, analytics for admins -->
+    <div class="flex items-center justify-between gap-3 border-t border-white/8 px-4 py-2.5 light:border-slate-200 light:bg-slate-50">
       <NuxtLink
-        to="/analytics"
-        class="group inline-flex items-center gap-1 text-[11px] font-semibold text-brand-300 no-underline transition-colors duration-200 hover:text-brand-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-brand-700 light:hover:text-brand-800"
+        to="/account/notifications"
+        class="group inline-flex items-center gap-1 rounded-sm text-[12px] font-semibold text-brand-300 no-underline transition-colors duration-200 hover:text-brand-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-brand-600 light:hover:text-brand-700"
         @click="$emit('close')"
       >
-        <span>{{ t('View Full Analytics Activity') }}</span>
-        <ArrowRight
-          :size="12"
-          class="transition-transform duration-200 ease-out group-hover:translate-x-0.5"
-        />
+        <span>{{ t('See all notifications') }}</span>
+        <ArrowRight :size="12" class="transition-transform duration-200 ease-out group-hover:translate-x-0.5" aria-hidden="true" />
+      </NuxtLink>
+      <NuxtLink
+        v-if="showAnalyticsLink"
+        to="/analytics"
+        class="rounded-sm text-[12px] font-medium text-white/50 no-underline transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-500 light:hover:text-slate-800"
+        @click="$emit('close')"
+      >
+        {{ t('Analytics') }}
       </NuxtLink>
     </div>
   </div>

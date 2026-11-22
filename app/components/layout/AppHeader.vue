@@ -437,24 +437,16 @@
 
 <script setup lang="ts">
 import {
-  AlertTriangle,
-  Award,
   BarChart3,
   Bell,
-  BellRing,
   BookOpen,
   ChevronRight,
-  ClipboardCheck,
   Compass,
-  CreditCard,
   GraduationCap,
   Heart,
   HelpCircle,
   LogOut,
-  Megaphone,
   Menu,
-  MessageSquareText,
-  PlayCircle,
   Receipt,
   Repeat,
   Search,
@@ -482,9 +474,10 @@ import { useAppToast } from '~/composables/useAppToast'
 import { useAuth } from '~/composables/useAuth'
 import { useNotifications } from '~/composables/useNotifications'
 import { formatTimeAgo } from '~/utils/dateTime'
+import { notificationStyles } from '~/utils/notificationStyles'
 import { useBodyScrollLock } from '~/composables/useBodyScrollLock'
 import { useCart } from '~/composables/useCart'
-import type { AppNotification, Course, Student } from '~/types'
+import type { Course, Student } from '~/types'
 import type { Component } from 'vue'
 
 defineProps<{ sidebarCollapsed: boolean }>()
@@ -642,29 +635,6 @@ interface HeaderNotification {
   iconClass: string
   bgClass: string
   read: boolean
-}
-
-const notificationStyles: Record<AppNotification['type'], Pick<HeaderNotification, 'icon' | 'iconClass' | 'bgClass'>> = {
-  enrolled: { icon: GraduationCap, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
-  subscription: { icon: Repeat, iconClass: 'text-brand-400', bgClass: 'bg-brand-400/15 light:bg-brand-50' },
-  payment_failed: { icon: AlertTriangle, iconClass: 'text-rose-400', bgClass: 'bg-rose-400/15 light:bg-rose-50' },
-  order_refunded: { icon: Receipt, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' },
-  refund_request: { icon: Receipt, iconClass: 'text-amber-400', bgClass: 'bg-amber-400/15 light:bg-amber-50' },
-  certificate_issued: { icon: Award, iconClass: 'text-amber-400', bgClass: 'bg-amber-400/15 light:bg-amber-50' },
-  new_lesson: { icon: PlayCircle, iconClass: 'text-brand-400', bgClass: 'bg-brand-400/15 light:bg-brand-50' },
-  live_session: { icon: Video, iconClass: 'text-rose-400', bgClass: 'bg-rose-400/15 light:bg-rose-50' },
-  course_updated: { icon: BookOpen, iconClass: 'text-brand-400', bgClass: 'bg-brand-400/15 light:bg-brand-50' },
-  new_enrollment: { icon: Users, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
-  course_completed: { icon: Award, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
-  member_card: { icon: CreditCard, iconClass: 'text-brand-400', bgClass: 'bg-brand-400/15 light:bg-brand-50' },
-  payout: { icon: Wallet, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
-  lesson_question: { icon: HelpCircle, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' },
-  assignment: { icon: ClipboardCheck, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
-  course_review: { icon: ShieldCheck, iconClass: 'text-amber-400', bgClass: 'bg-amber-400/15 light:bg-amber-50' },
-  course_survey: { icon: MessageSquareText, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' },
-  course_reminder: { icon: BellRing, iconClass: 'text-brand-400', bgClass: 'bg-brand-400/15 light:bg-brand-50' },
-  announcement: { icon: Megaphone, iconClass: 'text-brand-400', bgClass: 'bg-brand-400/15 light:bg-brand-50' },
-  weekly_report: { icon: BarChart3, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' }
 }
 
 const notificationCenter = useNotifications()

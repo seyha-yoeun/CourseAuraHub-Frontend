@@ -23,7 +23,7 @@
     <div v-if="pending" class="h-32 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
     <p v-else-if="error" :class="emptyBox">{{ getErrorMessage(error, 'Unable to load organizations') }}</p>
     <p v-else-if="!organizations.length" :class="emptyBox">No organizations yet.</p>
-    <div v-else :class="tableWrap">
+    <DataTableFrame v-else label="Organizations" :scroll-key="tableScrollKey">
       <table class="w-full min-w-160 border-collapse text-left text-[13px]">
         <thead>
           <tr :class="headRow">
@@ -33,7 +33,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
-          <tr v-for="organization in organizations" :key="organization.slug">
+          <tr v-for="organization in tableItems" :key="organization.slug">
             <td class="px-4 py-3">
               <span class="font-semibold text-slate-100 light:text-slate-900">{{ organization.name }}</span>
               <span class="block text-xs text-white/45 light:text-slate-500">{{ organization.slug }}</span>
@@ -45,7 +45,10 @@
           </tr>
         </tbody>
       </table>
-    </div>
+      <template #footer>
+        <TablePagination v-model:page="tablePage" v-model:page-size="tablePageSize" :total="tableTotal" />
+      </template>
+    </DataTableFrame>
 
     <Teleport to="body">
       <div v-if="seatsFor" class="fixed inset-0 z-100 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md" @click.self="seatsFor = null">
@@ -67,6 +70,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { useClientPagination } from '~/composables/useClientPagination'
 import { Loader2 } from 'lucide-vue-next'
 import type { OrganizationSummary } from '~/types/organization'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
@@ -75,7 +81,7 @@ import { useCourseOptions } from '~/composables/useCourseOptions'
 import { useOrganizations } from '~/composables/useOrganizations'
 import { getErrorMessage } from '~/utils/apiError'
 import {
-  cardClass, emptyBox, headRow, inputClass, labelClass, neutralAction, pageSubtitle, pageTitle, primaryAction, primaryButton, tableWrap,
+  cardClass, emptyBox, headRow, inputClass, labelClass, neutralAction, pageSubtitle, pageTitle, primaryAction, primaryButton,
 } from '~/utils/ui'
 
 definePageMeta({ requiresAdmin: true })
@@ -87,6 +93,7 @@ const { courseOptions } = await useCourseOptions()
 
 const { data, pending, error, refresh } = await useAsyncData('admin-organizations', fetchAllOrganizations, { server: false })
 const organizations = computed(() => data.value ?? [])
+const { page: tablePage, pageSize: tablePageSize, total: tableTotal, items: tableItems, scrollKey: tableScrollKey } = useClientPagination(organizations)
 
 const name = ref('')
 const ownerEmail = ref('')

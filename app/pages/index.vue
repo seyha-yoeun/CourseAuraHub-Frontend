@@ -95,31 +95,56 @@
           <Tag :size="18" class="text-brand-400" />
         </div>
 
-        <div class="flex flex-col gap-4">
-          <div
-            v-for="(amount, cat) in charts.revenueByCategory"
-            :key="cat"
-          >
-            <div class="flex justify-between text-[13px] font-semibold text-slate-200 light:text-slate-800">
-              <span>{{ cat }}</span>
-              <span>${{ Number(amount).toLocaleString() }}</span>
+        <!-- Top categories always; the rest expand in place -->
+        <ul class="m-0 flex list-none flex-col gap-3.5 p-0">
+          <li v-for="category in topCategories" :key="category.name">
+            <div class="flex items-baseline justify-between gap-3 text-[13px]">
+              <span class="min-w-0 truncate font-medium text-slate-200 light:text-slate-800">{{ category.name }}</span>
+              <span class="shrink-0 tabular-nums">
+                <span class="font-semibold text-slate-100 light:text-slate-900">{{ formatMoney(category.amount) }}</span>
+                <span class="ml-1.5 text-[12px] text-white/40 light:text-slate-400">{{ category.share }}%</span>
+              </span>
             </div>
-            <div class="mt-1.5 mb-1 h-1.5 w-full overflow-hidden rounded-full bg-white/6 light:bg-slate-200">
-              <div
-                class="h-full rounded-full transition-[width] duration-700 ease-out"
-                :class="getCategoryBarClass(String(cat))"
-                :style="{ width: `${kpis.totalRevenue ? Math.min(100, Math.round((Number(amount) / kpis.totalRevenue) * 100)) : 0}%` }"
-              />
+            <div class="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/6 light:bg-slate-100">
+              <div class="h-full rounded-full bg-brand-400 transition-[width] duration-700 ease-out light:bg-brand-500" :style="{ width: `${category.share}%` }" />
             </div>
-            <div class="text-[11px] text-white/40 light:text-slate-500">
-              {{
-                kpis.totalRevenue
-                  ? Math.round((Number(amount) / kpis.totalRevenue) * 100)
-                  : 0
-              }}% of total revenue
-            </div>
-          </div>
+          </li>
+        </ul>
+
+        <div
+          v-if="moreCategories.length"
+          id="more-categories"
+          class="grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+          :class="showAllCategories ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+          :inert="!showAllCategories || undefined"
+        >
+          <ul class="m-0 flex min-h-0 list-none flex-col gap-3.5 overflow-hidden p-0" :class="showAllCategories && 'pt-3.5'">
+            <li v-for="category in moreCategories" :key="category.name">
+              <div class="flex items-baseline justify-between gap-3 text-[13px]">
+                <span class="min-w-0 truncate font-medium text-slate-200 light:text-slate-800">{{ category.name }}</span>
+                <span class="shrink-0 tabular-nums">
+                  <span class="font-semibold text-slate-100 light:text-slate-900">{{ formatMoney(category.amount) }}</span>
+                  <span class="ml-1.5 text-[12px] text-white/40 light:text-slate-400">{{ category.share }}%</span>
+                </span>
+              </div>
+              <div class="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/6 light:bg-slate-100">
+                <div class="h-full rounded-full bg-brand-400/70 transition-[width] duration-700 ease-out light:bg-brand-500/70" :style="{ width: `${category.share}%` }" />
+              </div>
+            </li>
+          </ul>
         </div>
+
+        <button
+          v-if="moreCategories.length"
+          type="button"
+          class="mt-4 inline-flex cursor-pointer items-center gap-1 self-start rounded-md text-[13px] font-semibold text-brand-300 transition-colors hover:text-brand-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50 light:text-brand-600 light:hover:text-brand-700"
+          :aria-expanded="showAllCategories"
+          aria-controls="more-categories"
+          @click="showAllCategories = !showAllCategories"
+        >
+          {{ showAllCategories ? 'Show top 5' : `Show all ${allCategories.length} categories` }}
+          <ChevronDown :size="15" aria-hidden="true" class="transition-transform duration-200" :class="showAllCategories && 'rotate-180'" />
+        </button>
       </div>
     </div>
 
@@ -190,6 +215,7 @@ import {
   Plus,
   Tag,
   ArrowRight,
+  ChevronDown,
 } from "lucide-vue-next";
 import KpiCard from "~/components/dashboard/KpiCard.vue";
 import SalesChart from "~/components/dashboard/SalesChart.vue";
@@ -213,16 +239,27 @@ const {
   refresh,
 } = useDashboardStats();
 
-const categoryBarClasses: Record<string, string> = {
-  "Web Development": "bg-brand-500",
-  Programming: "bg-linear-to-r from-blue-600 to-sky-400",
-  Design: "bg-linear-to-r from-pink-500 to-rose-500",
-  DevOps: "bg-linear-to-r from-emerald-500 to-emerald-400",
-  Backend: "bg-linear-to-r from-amber-500 to-amber-400",
-};
+// Revenue by category: biggest first, top 5 shown, the rest behind "Show all".
+const TOP_CATEGORY_COUNT = 5
+const showAllCategories = ref(false)
 
-function getCategoryBarClass(cat: string) {
-  return categoryBarClasses[cat] ?? "bg-brand-500";
+const allCategories = computed(() => Object.entries(charts.value.revenueByCategory ?? {})
+  .map(([name, amount]) => {
+    const value = Number(amount) || 0
+    return {
+      name,
+      amount: value,
+      share: kpis.value.totalRevenue ? Math.min(100, Math.round((value / kpis.value.totalRevenue) * 100)) : 0,
+    }
+  })
+  .sort((a, b) => b.amount - a.amount))
+
+const topCategories = computed(() => allCategories.value.slice(0, TOP_CATEGORY_COUNT))
+const moreCategories = computed(() => allCategories.value.slice(TOP_CATEGORY_COUNT))
+
+const moneyFormat = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" })
+function formatMoney(value: number) {
+  return moneyFormat.format(value)
 }
 
 function rankClass(index: number) {

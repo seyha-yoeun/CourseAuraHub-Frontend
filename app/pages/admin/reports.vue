@@ -5,14 +5,14 @@
       <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Reviews, questions and answers that learners flagged. Hiding removes the content for everyone.</p>
     </div>
 
-    <div v-if="pending" class="flex flex-col gap-3">
+    <div v-if="pending && !data" class="flex flex-col gap-3">
       <div v-for="i in 3" :key="i" class="h-20 animate-pulse rounded-[14px] bg-white/5 light:bg-slate-100" />
     </div>
     <p v-else-if="error" :class="emptyBox">{{ getErrorMessage(error, 'Unable to load reports') }}</p>
     <p v-else-if="!items.length" :class="emptyBox">Nothing is waiting for review.</p>
 
     <template v-else>
-      <ul class="m-0 flex list-none flex-col gap-3 p-0">
+      <ul class="m-0 flex list-none flex-col gap-3 p-0 transition-opacity" :class="pending && 'opacity-60'">
         <li v-for="report in items" :key="report.id" class="rounded-[18px] border border-white/10 bg-white/5 p-4 light:border-slate-200 light:bg-white">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div class="min-w-0 flex-1">
@@ -36,12 +36,8 @@
         </li>
       </ul>
 
-      <div v-if="totalPages > 1" class="flex items-center justify-between gap-3 text-xs text-white/50 light:text-slate-500">
-        <span>Page {{ page + 1 }} of {{ totalPages }}</span>
-        <div class="flex items-center gap-2">
-          <button type="button" :class="pagerButton" :disabled="page === 0" @click="page--">Previous</button>
-          <button type="button" :class="pagerButton" :disabled="page + 1 >= totalPages" @click="page++">Next</button>
-        </div>
+      <div class="rounded-[14px] border border-white/10 bg-white/[0.03] px-3.5 py-2.5 sm:px-4 light:border-slate-200 light:bg-white">
+        <TablePagination v-model:page="page" v-model:page-size="pageSize" :total="total" :disabled="pending" />
       </div>
     </template>
 
@@ -60,12 +56,14 @@
 </template>
 
 <script setup lang="ts">
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { DEFAULT_PAGE_SIZE } from '~/composables/useClientPagination'
 import type { ContentReport } from '~/types/moderation'
 import PromptModal from '~/components/shared/PromptModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useModeration } from '~/composables/useModeration'
 import { getErrorMessage } from '~/utils/apiError'
-import { dangerAction, emptyBox, neutralAction, pagerButton } from '~/utils/ui'
+import { dangerAction, emptyBox, neutralAction } from '~/utils/ui'
 import { formatDateTime } from '~/utils/dateTime'
 
 definePageMeta({ requiresAdmin: true })
@@ -75,13 +73,14 @@ const toast = useAppToast()
 const { fetchOpenReports, hideReported, dismissReport } = useModeration()
 
 const page = ref(0)
+const pageSize = ref(DEFAULT_PAGE_SIZE)
 const { data, pending, error, refresh } = await useAsyncData(
   'admin-reports',
-  () => fetchOpenReports(page.value),
-  { server: false, watch: [page] },
+  () => fetchOpenReports(page.value, pageSize.value),
+  { server: false, watch: [page, pageSize] },
 )
 const items = computed(() => data.value?.items ?? [])
-const totalPages = computed(() => data.value?.totalPages ?? 0)
+const total = computed(() => data.value?.totalElements ?? 0)
 
 const busyId = ref<number | null>(null)
 const hiding = ref<ContentReport | null>(null)

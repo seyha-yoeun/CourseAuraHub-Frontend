@@ -9,7 +9,7 @@
     <p v-else-if="error" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">{{ getErrorMessage(error, 'Unable to load courses waiting for review') }}</p>
     <p v-else-if="!courses.length" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">No courses are waiting for review.</p>
 
-    <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 light:border-slate-200 light:bg-white">
+    <DataTableFrame v-else label="Courses waiting for review" :scroll-key="tableScrollKey">
       <table class="w-full min-w-180 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -20,7 +20,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
-          <tr v-for="course in courses" :key="course.id">
+          <tr v-for="course in tableItems" :key="course.id">
             <td class="px-4 py-3">
               <NuxtLink :to="`/courses/${course.slug}`" class="font-semibold text-brand-300 no-underline light:text-brand-700">{{ course.title }}</NuxtLink>
               <span class="block text-xs text-white/45 light:text-slate-500">{{ course.category }} · {{ formatMoney(course.price) }}</span>
@@ -34,7 +34,10 @@
           </tr>
         </tbody>
       </table>
-    </div>
+      <template #footer>
+        <TablePagination v-model:page="tablePage" v-model:page-size="tablePageSize" :total="tableTotal" />
+      </template>
+    </DataTableFrame>
 
     <section class="flex flex-col gap-3">
       <div>
@@ -95,6 +98,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { useClientPagination } from '~/composables/useClientPagination'
 import type { Course } from '~/types'
 import type { CourseRevision } from '~/types/revision'
 import RevisionChanges from '~/components/courses/RevisionChanges.vue'
@@ -116,6 +122,7 @@ const { fetchAwaitingReview: fetchRevisionsAwaitingReview, approve: approveRevis
 
 const { data, pending, error, refresh } = await useAsyncData('course-reviews', fetchAwaitingReview, { server: false })
 const courses = computed(() => data.value ?? [])
+const { page: tablePage, pageSize: tablePageSize, total: tableTotal, items: tableItems, scrollKey: tableScrollKey } = useClientPagination(courses)
 
 const busySlug = ref<string | null>(null)
 const rejecting = ref<Course | null>(null)

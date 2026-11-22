@@ -18,11 +18,11 @@
         <AppDropdown v-model="statusFilter" :options="statusOptions" aria-label="Filter applications by status" />
       </div>
 
-      <div v-if="applicationsPending" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
+      <div v-if="applicationsPending && !applicationData" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
       <p v-else-if="applicationsError" :class="messageClass">{{ getErrorMessage(applicationsError, 'Unable to load applications') }}</p>
       <p v-else-if="!applications.length" :class="messageClass">No applications found.</p>
 
-      <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 light:border-slate-200 light:bg-white">
+      <DataTableFrame v-else label="Member card applications" :scroll-key="`${applicationPage}:${applicationPageSize}`" :class="applicationsPending && 'opacity-60 transition-opacity'">
         <table class="w-full min-w-200 border-collapse text-left text-[13px]">
           <thead>
             <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -57,7 +57,10 @@
             </tr>
           </tbody>
         </table>
-      </div>
+        <template #footer>
+          <TablePagination v-model:page="applicationPage" v-model:page-size="applicationPageSize" :total="applicationData?.totalElements ?? 0" :disabled="applicationsPending" />
+        </template>
+      </DataTableFrame>
     </template>
 
     <MemberCardTopUps v-else-if="tab === 'top-ups'" @changed="refreshCards()" />
@@ -70,11 +73,11 @@
         <button type="button" :class="primaryButton" @click="openCreate">New Card</button>
       </div>
 
-      <div v-if="cardsPending" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
+      <div v-if="cardsPending && !cardData" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
       <p v-else-if="cardsError" :class="messageClass">{{ getErrorMessage(cardsError, 'Unable to load member cards') }}</p>
       <p v-else-if="!cards.length" :class="messageClass">{{ cardSearch ? 'No cards match your search.' : 'No member cards yet.' }}</p>
 
-      <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 light:border-slate-200 light:bg-white">
+      <DataTableFrame v-else label="Member cards" :scroll-key="`${cardPage}:${cardPageSize}`" :class="cardsPending && 'opacity-60 transition-opacity'">
         <table class="w-full min-w-180 border-collapse text-left text-[13px]">
           <thead>
             <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -101,14 +104,11 @@
             </tr>
           </tbody>
         </table>
-      </div>
+        <template #footer>
+          <TablePagination v-model:page="cardPage" v-model:page-size="cardPageSize" :total="cardData?.totalElements ?? 0" :disabled="cardsPending" />
+        </template>
+      </DataTableFrame>
     </template>
-
-    <div v-if="pageCount > 1 && (tab === 'applications' || tab === 'cards')" class="flex items-center justify-end gap-3 text-xs text-white/50 light:text-slate-500">
-      <button type="button" class="cursor-pointer font-semibold disabled:cursor-not-allowed disabled:opacity-40" :disabled="page === 0" @click="page -= 1">Previous</button>
-      <span>Page {{ page + 1 }} of {{ pageCount }}</span>
-      <button type="button" class="cursor-pointer font-semibold disabled:cursor-not-allowed disabled:opacity-40" :disabled="page + 1 >= pageCount" @click="page += 1">Next</button>
-    </div>
 
     <MemberCardManageModal :card="selectedCard" @close="selectedId = null" @changed="onCardChanged" @delete="askDelete" />
 
@@ -168,6 +168,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { DEFAULT_PAGE_SIZE } from '~/composables/useClientPagination'
 import { refDebounced } from '@vueuse/core'
 import type { MemberCard, MemberCardApplication, Student } from '~/types'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
@@ -212,32 +215,26 @@ const statusOptions = [
 const tab = ref('applications')
 const statusFilter = ref('')
 const applicationPage = ref(0)
+const applicationPageSize = ref(DEFAULT_PAGE_SIZE)
 const cardPage = ref(0)
+const cardPageSize = ref(DEFAULT_PAGE_SIZE)
 const searchInput = ref('')
 const cardSearch = refDebounced(searchInput, 300)
 
 const { data: applicationData, pending: applicationsPending, error: applicationsError, refresh: refreshApplications } = await useAsyncData(
   'admin-card-applications',
-  () => fetchApplications(statusFilter.value, applicationPage.value),
-  { server: false, watch: [statusFilter, applicationPage] }
+  () => fetchApplications(statusFilter.value, applicationPage.value, applicationPageSize.value),
+  { server: false, watch: [statusFilter, applicationPage, applicationPageSize] }
 )
 const { data: cardData, pending: cardsPending, error: cardsError, refresh: refreshCards } = await useAsyncData(
   'admin-member-cards',
-  () => fetchCards(cardSearch.value.trim(), cardPage.value),
-  { server: false, watch: [cardPage, cardSearch] }
+  () => fetchCards(cardSearch.value.trim(), cardPage.value, cardPageSize.value),
+  { server: false, watch: [cardPage, cardPageSize, cardSearch] }
 )
 
 const applications = computed(() => applicationData.value?.items ?? [])
 const cards = computed(() => cardData.value?.items ?? [])
 
-const page = computed({
-  get: () => tab.value === 'applications' ? applicationPage.value : cardPage.value,
-  set: (value) => {
-    if (tab.value === 'applications') applicationPage.value = value
-    else cardPage.value = value
-  }
-})
-const pageCount = computed(() => (tab.value === 'applications' ? applicationData.value : cardData.value)?.totalPages ?? 0)
 
 watch(statusFilter, () => {
   applicationPage.value = 0
