@@ -1,5 +1,5 @@
 import type { Order } from '~/types'
-import type { AccessCode, AccessCodeIssue, GiftRequest, IssuedAccessCodes, RedeemedCode, SentGift } from '~/types/gift'
+import type { AccessCode, AccessCodeIssue, GiftRequest, IssuedAccessCodes, RedeemedCode, RevealedAccessCode, SentGift } from '~/types/gift'
 
 /** Gifting a course, redeeming an access code, and the admin code batches. */
 export function useGifts() {
@@ -28,7 +28,12 @@ export function useGifts() {
     return await $fetch<AccessCode>(`/api/admin/access-codes/${id}`, { method: 'DELETE' })
   }
 
-  return { sendGift, fetchSentGifts, redeemCode, fetchAccessCodes, issueAccessCodes, revokeAccessCode }
+  /** The full code of an admin-issued code. Each call is recorded in the admin audit log. */
+  async function revealAccessCode(id: number) {
+    return await $fetch<RevealedAccessCode>(`/api/admin/access-codes/${id}/reveal`, { method: 'POST' })
+  }
+
+  return { sendGift, fetchSentGifts, redeemCode, fetchAccessCodes, issueAccessCodes, revokeAccessCode, revealAccessCode }
 }
 
 export const ACCESS_CODE_STATUS_LABELS: Record<string, string> = {

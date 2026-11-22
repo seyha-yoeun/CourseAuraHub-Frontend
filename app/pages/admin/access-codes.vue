@@ -38,7 +38,7 @@
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 :class="sectionTitle">{{ issued.codes.length }} codes in batch {{ issued.batch }}</h2>
-          <p class="text-xs text-white/55 light:text-slate-600">Copy them now. Only the last characters are shown again later.</p>
+          <p class="text-xs text-white/55 light:text-slate-600">Copy them now if you need them. You can also show any code again later from its details.</p>
         </div>
         <div class="flex gap-2">
           <button type="button" :class="primaryAction" @click="copyCodes">Copy All</button>
@@ -68,6 +68,7 @@
               <th class="px-4 py-3 font-semibold">Course</th>
               <th class="px-4 py-3 font-semibold">Batch</th>
               <th class="px-4 py-3 font-semibold">Uses</th>
+              <th class="px-4 py-3 font-semibold">Issued</th>
               <th class="px-4 py-3 font-semibold">Expires</th>
               <th class="px-4 py-3 font-semibold">Status</th>
               <th class="px-4 py-3 text-right font-semibold">Actions</th>
@@ -75,17 +76,30 @@
           </thead>
           <tbody class="divide-y divide-white/6 light:divide-slate-200">
             <tr v-for="code in tableItems" :key="code.id">
-              <td class="px-4 py-2.5 font-mono text-xs text-slate-100 light:text-slate-800">…{{ code.hint }}</td>
+              <td class="px-4 py-2.5">
+                <button
+                  type="button"
+                  class="cursor-pointer rounded font-mono text-[13px] text-slate-100 hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50 light:text-slate-800 light:hover:text-brand-600"
+                  :aria-label="`View details for code ending in ${code.hint}`"
+                  @click="selectedId = code.id"
+                >
+                  <span class="text-white/30 light:text-slate-300" aria-hidden="true">••••</span> {{ code.hint }}
+                </button>
+              </td>
               <td class="px-4 py-2.5 text-white/75 light:text-slate-700">{{ code.courseTitle }}</td>
               <td class="px-4 py-2.5 text-white/60 light:text-slate-500">
                 <button v-if="code.batch" type="button" class="cursor-pointer hover:text-brand-300 light:hover:text-brand-700" @click="batchInput = batchFilter = code.batch">{{ code.batch }}</button>
                 <span v-else>-</span>
               </td>
               <td class="px-4 py-2.5 text-white/70 light:text-slate-600">{{ code.uses }} / {{ code.maxUses }}</td>
-              <td class="px-4 py-2.5 text-white/60 light:text-slate-500">{{ code.expiresAt ? formatDate(code.expiresAt) : 'Never' }}</td>
-              <td class="px-4 py-2.5 text-white/70 light:text-slate-600">{{ ACCESS_CODE_STATUS_LABELS[code.status] ?? code.status }}</td>
-              <td class="px-4 py-2.5 text-right">
-                <button v-if="code.status === 'active'" type="button" :class="dangerAction" :disabled="revokingId === code.id" @click="revoke(code)">Revoke</button>
+              <td class="px-4 py-2.5 whitespace-nowrap text-white/60 light:text-slate-500">{{ formatDate(code.createdAt) }}</td>
+              <td class="px-4 py-2.5 whitespace-nowrap text-white/60 light:text-slate-500">{{ code.expiresAt ? formatDate(code.expiresAt) : 'Never' }}</td>
+              <td class="px-4 py-2.5">
+                <span class="rounded-full px-2 py-0.5 text-[12px] font-medium whitespace-nowrap" :class="statusBadge(code.status)">{{ ACCESS_CODE_STATUS_LABELS[code.status] ?? code.status }}</span>
+              </td>
+              <td class="px-4 py-2.5 text-right whitespace-nowrap">
+                <button type="button" :class="neutralAction" @click="selectedId = code.id">Details</button>
+                <button v-if="code.status === 'active'" type="button" :class="[dangerAction, 'ml-2']" :disabled="revokingId === code.id" @click="revoke(code)">Revoke</button>
               </td>
             </tr>
           </tbody>
@@ -95,6 +109,14 @@
         </template>
       </DataTableFrame>
     </section>
+
+    <AccessCodeDetailsModal
+      :code="selectedCode"
+      :revoking="revokingId === selectedCode?.id"
+      @close="selectedId = null"
+      @revoke="revoke"
+      @filter-batch="showBatch"
+    />
   </div>
 </template>
 
@@ -105,6 +127,7 @@ import { useClientPagination } from '~/composables/useClientPagination'
 import { Loader2 } from 'lucide-vue-next'
 import type { AccessCode, IssuedAccessCodes } from '~/types/gift'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
+import AccessCodeDetailsModal from '~/components/gifts/AccessCodeDetailsModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useCourseOptions } from '~/composables/useCourseOptions'
 import { ACCESS_CODE_STATUS_LABELS, useGifts } from '~/composables/useGifts'
@@ -136,6 +159,23 @@ const { data, pending, error, refresh } = await useAsyncData(
 const codes = computed(() => data.value ?? [])
 const { page: tablePage, pageSize: tablePageSize, total: tableTotal, items: tableItems, scrollKey: tableScrollKey } = useClientPagination(codes, { resetOn: [batchFilter] })
 const revokingId = ref<number | null>(null)
+
+// Details dialog follows the row by id, so it shows fresh data after a revoke
+const selectedId = ref<number | null>(null)
+const selectedCode = computed(() => codes.value.find(code => code.id === selectedId.value) ?? null)
+
+function showBatch(batch: string) {
+  batchInput.value = batch
+  batchFilter.value = batch
+  selectedId.value = null
+}
+
+function statusBadge(status: string) {
+  if (status === 'active') return 'bg-emerald-400/12 text-emerald-300 light:bg-emerald-50 light:text-emerald-700'
+  if (status === 'awaiting_payment') return 'bg-amber-400/12 text-amber-300 light:bg-amber-50 light:text-warning'
+  if (status === 'revoked') return 'bg-rose-400/12 text-rose-300 light:bg-negative-bg light:text-negative'
+  return 'bg-white/8 text-white/60 light:bg-slate-100 light:text-slate-600'
+}
 
 async function issue() {
   issuing.value = true
