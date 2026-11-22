@@ -1,18 +1,18 @@
 <template>
-  <button type="button" :class="iconButtonClass" :aria-label="`Study text for ${lesson.title}`" title="AI assistant study text" @click="isOpen = true">
+  <button type="button" :class="iconButtonClass" :aria-label="`Study text for ${lesson.title}`" :title="t('AI assistant study text')" @click="isOpen = true">
     <Sparkles :size="13" />
   </button>
 
   <PromptModal
     :is-open="isOpen"
     :title="`Study text · ${lesson.title}`"
-    description="The AI assistant answers learners' questions and writes summaries from this text, such as the article or the video's transcript. Saving replaces the text saved before."
-    label="Lesson text"
-    placeholder="Paste the lesson's full text"
+    :description="t('The AI assistant answers learners\' questions and writes summaries from this text, such as the article or the video\'s transcript. Saving replaces the text saved before.')"
+    :label="t('Lesson text')"
+    :placeholder="t('Paste the lesson\'s full text')"
     required
     :maxlength="150000"
     :rows="12"
-    confirm-label="Save Study Text"
+    :confirm-label="t('Save Study Text')"
     :loading="saving"
     @close="isOpen = false"
     @confirm="save"
@@ -26,6 +26,8 @@ import PromptModal from '~/components/shared/PromptModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useAssistant } from '~/composables/useAssistant'
 import { getErrorMessage } from '~/utils/apiError'
+
+const { t } = useT()
 
 /** A curriculum row button: the text the AI study assistant answers from for this lesson. */
 const props = defineProps<{ lesson: Lesson }>()
@@ -43,9 +45,9 @@ async function save(text: string) {
   try {
     const source = await saveSource(props.lesson.id, text)
     isOpen.value = false
-    toast.success('Study Text Saved', `${source.characters.toLocaleString()} characters for ${props.lesson.title}`)
+    toast.success(t('Study Text Saved'), `${source.characters.toLocaleString()} characters for ${props.lesson.title}`)
   } catch (err) {
-    toast.error('Study Text Not Saved', getErrorMessage(err, 'Unable to save the study text'))
+    toast.error(t('Study Text Not Saved'), getErrorMessage(err, t('Unable to save the study text')))
   } finally {
     saving.value = false
   }

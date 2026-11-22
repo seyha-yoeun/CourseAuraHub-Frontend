@@ -176,8 +176,8 @@ defineProps<{
 }>()
 
 const filters = [
-  { label: 'All', unreadOnly: false },
-  { label: 'Unread', unreadOnly: true },
+  { label: t('All'), unreadOnly: false },
+  { label: t('Unread'), unreadOnly: true },
 ]
 
 defineEmits<{

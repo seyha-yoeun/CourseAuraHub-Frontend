@@ -5,8 +5,8 @@
       <div :class="authIconBadge">
         <Loader2 :size="22" class="animate-spin" aria-hidden="true" />
       </div>
-      <h1 :class="authTitle">Completing sign in…</h1>
-      <p :class="authSubtitle">Hang tight while we confirm your account with the provider.</p>
+      <h1 :class="authTitle">{{ t('Completing sign in…') }}</h1>
+      <p :class="authSubtitle">{{ t('Hang tight while we confirm your account with the provider.') }}</p>
       <div class="mt-7 h-1 overflow-hidden rounded-full bg-white/8 light:bg-slate-200" aria-hidden="true">
         <div class="h-full w-1/3 animate-[auth-progress_1.2s_ease-in-out_infinite] rounded-full bg-brand-400 motion-reduce:animate-none light:bg-brand-600" />
       </div>
@@ -17,11 +17,11 @@
       <div :class="authIconBadge">
         <CircleCheck :size="22" aria-hidden="true" />
       </div>
-      <h1 :class="authTitle">You're signed in</h1>
-      <p :class="authSubtitle">Taking you to where you left off…</p>
+      <h1 :class="authTitle">{{ t('You\'re signed in') }}</h1>
+      <p :class="authSubtitle">{{ t('Taking you to where you left off…') }}</p>
       <div class="mt-7 inline-flex items-center gap-2 text-[13px] text-white/55 light:text-slate-500">
         <Loader2 :size="15" class="animate-spin" aria-hidden="true" />
-        Redirecting
+        {{ t('Redirecting') }}
       </div>
     </div>
 
@@ -30,14 +30,14 @@
       <div :class="authIconBadgeDanger">
         <AlertCircle :size="22" aria-hidden="true" />
       </div>
-      <h1 :class="authTitle">We couldn't sign you in</h1>
+      <h1 :class="authTitle">{{ t('We couldn\'t sign you in') }}</h1>
       <p :class="authSubtitle">{{ errorMessage }}</p>
       <div class="mt-7 flex flex-col gap-2.5 short:mt-5">
         <button type="button" :class="authPrimaryButton" @click="retryLogin">
           <RotateCw :size="16" aria-hidden="true" />
-          <span>Try again</span>
+          <span>{{ t('Try again') }}</span>
         </button>
-        <NuxtLink :to="loginLink" :class="authSecondaryButton">Back to log in</NuxtLink>
+        <NuxtLink :to="loginLink" :class="authSecondaryButton">{{ t('Back to log in') }}</NuxtLink>
       </div>
     </div>
   </div>
@@ -70,6 +70,8 @@ import {
   authSubtitle,
   authTitle,
 } from '~/utils/authUi'
+
+const { t } = useT()
 
 const router = useRouter()
 const route = useRoute()
@@ -122,7 +124,7 @@ async function handleCallback() {
     status.value = 'error'
     errorMessage.value = toApiError(
       error,
-      'Unable to complete authentication. Please try again.',
+      t('Unable to complete authentication. Please try again.'),
     ).message
   }
 }
@@ -150,9 +152,9 @@ onUnmounted(() => {
 })
 
 useHead({
-  title: 'Signing In...',
+  title: t('Signing In...'),
   meta: [
-    { name: 'description', content: 'Completing authentication...' }
+    { name: 'description', content: t('Completing authentication...') }
   ]
 })
 

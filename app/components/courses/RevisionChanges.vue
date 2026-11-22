@@ -35,8 +35,8 @@ defineProps<{ changes: CourseRevision['changes'] }>()
 const { t } = useT()
 
 const FIELD_LABELS: Record<string, string> = {
-  title: 'Title',
-  description: 'Description',
+  title: t('Title'),
+  description: t('Description'),
   price: 'Price',
   originalPrice: 'Original price',
   category: 'Category',

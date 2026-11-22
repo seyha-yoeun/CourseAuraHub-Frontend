@@ -1,7 +1,7 @@
 <template>
   <div>
     <NuxtLink :to="loginLink" :class="authBackLink">
-      <ArrowLeft :size="15" aria-hidden="true" /> Back to log in
+      <ArrowLeft :size="15" aria-hidden="true" /> {{ t('Back to log in') }}
     </NuxtLink>
 
     <!-- Expired challenge -->
@@ -9,9 +9,9 @@
       <div :class="authIconBadgeDanger">
         <TimerOff :size="22" aria-hidden="true" />
       </div>
-      <h1 :class="authTitle">Sign-in timed out</h1>
+      <h1 :class="authTitle">{{ t('Sign-in timed out') }}</h1>
       <p :class="authSubtitle" role="alert">{{ pageError }}</p>
-      <NuxtLink :to="loginLink" :class="[authPrimaryButton, 'mt-7 short:mt-5']">Log in again</NuxtLink>
+      <NuxtLink :to="loginLink" :class="[authPrimaryButton, 'mt-7 short:mt-5']">{{ t('Log in again') }}</NuxtLink>
     </div>
 
     <template v-else>
@@ -19,10 +19,10 @@
         <KeyRound v-if="useRecoveryCode" :size="22" aria-hidden="true" />
         <ShieldCheck v-else :size="22" aria-hidden="true" />
       </div>
-      <h1 :class="authTitle">{{ useRecoveryCode ? 'Use a recovery code' : 'Two-factor verification' }}</h1>
+      <h1 :class="authTitle">{{ useRecoveryCode ? t('Use a recovery code') : t('Two-factor verification') }}</h1>
       <p :class="authSubtitle">
-        <template v-if="useRecoveryCode">Enter one of the recovery codes you saved when you turned on two-factor authentication.</template>
-        <template v-else>Open your authenticator app and enter the 6-digit code for CourseAuraHub.</template>
+        <template v-if="useRecoveryCode">{{ t('Enter one of the recovery codes you saved when you turned on two-factor authentication.') }}</template>
+        <template v-else>{{ t('Open your authenticator app and enter the 6-digit code for CourseAuraHub.') }}</template>
       </p>
 
       <form :class="[authBodyGap, authForm]" novalidate @submit.prevent="handleVerify">
@@ -32,7 +32,7 @@
         </div>
 
         <div v-if="useRecoveryCode" :class="authField">
-          <label for="recoveryCode" :class="authLabel">Recovery code</label>
+          <label for="recoveryCode" :class="authLabel">{{ t('Recovery code') }}</label>
           <input
             id="recoveryCode"
             ref="recoveryInput"
@@ -49,36 +49,36 @@
             aria-describedby="code-help"
           >
           <p v-if="errors.code" id="code-help" :class="authFieldError">{{ errors.code }}</p>
-          <p v-else id="code-help" :class="authHint">Each recovery code works only once.</p>
+          <p v-else id="code-help" :class="authHint">{{ t('Each recovery code works only once.') }}</p>
         </div>
 
         <div v-else :class="authField">
-          <span :class="authLabel">Authentication code</span>
+          <span :class="authLabel">{{ t('Authentication code') }}</span>
           <OtpCodeInput
             ref="codeInput"
             v-model="form.code"
-            label="Authentication code"
+            :label="t('Authentication code')"
             :disabled="loading"
             :invalid="Boolean(errors.code)"
             @complete="handleVerify"
           />
           <p v-if="errors.code" :class="authFieldError" role="alert">{{ errors.code }}</p>
-          <p v-else :class="authHint">Codes refresh every 30 seconds. You can paste the whole code.</p>
+          <p v-else :class="authHint">{{ t('Codes refresh every 30 seconds. You can paste the whole code.') }}</p>
         </div>
 
         <button type="submit" :class="[authPrimaryButton, 'mt-1.5']" :disabled="loading" :aria-busy="loading">
           <Loader2 v-if="loading" :size="18" class="animate-spin" aria-hidden="true" />
-          <span v-else>Verify &amp; log in</span>
+          <span v-else>{{ t('Verify & log in') }}</span>
         </button>
       </form>
 
       <div class="mt-6 border-t border-white/8 pt-5 short:mt-4 short:pt-4 light:border-slate-200">
         <button type="button" :class="[authLink, 'cursor-pointer text-[13.5px]']" :disabled="loading" @click="toggleMethod">
-          {{ useRecoveryCode ? 'Use your authenticator app instead' : 'Lost your device? Use a recovery code' }}
+          {{ useRecoveryCode ? t('Use your authenticator app instead') : t('Lost your device? Use a recovery code') }}
         </button>
         <p :class="[authHint, 'mt-2']">
-          Not you?
-          <NuxtLink :to="loginLink" :class="authStrongLink">Log in with a different account</NuxtLink>
+          {{ t('Not you?') }}
+          <NuxtLink :to="loginLink" :class="authStrongLink">{{ t('Log in with a different account') }}</NuxtLink>
         </p>
       </div>
     </template>
@@ -118,6 +118,8 @@ import {
   authTitle,
 } from '~/utils/authUi'
 import OtpCodeInput from '~/components/auth/OtpCodeInput.vue'
+
+const { t } = useT()
 
 const route = useRoute()
 const auth = useAuth()
@@ -172,8 +174,8 @@ async function handleVerify() {
 
   if (!isFormValid.value) {
     errors.code = useRecoveryCode.value
-      ? 'Enter one of your recovery codes'
-      : 'Enter the 6-digit code from your authenticator app'
+      ? t('Enter one of your recovery codes')
+      : t('Enter the 6-digit code from your authenticator app')
     return
   }
 
@@ -182,7 +184,7 @@ async function handleVerify() {
       ? { recoveryCode: form.recoveryCode.trim() }
       : { code: form.code })
   } catch (error) {
-    const apiError = toApiError(error, 'Two-factor verification failed')
+    const apiError = toApiError(error, t('Two-factor verification failed'))
 
     if (apiError.code === 'MFA_CHALLENGE_EXPIRED') {
       challengeExpired.value = true
@@ -192,7 +194,7 @@ async function handleVerify() {
       form.code = ''
       codeInput.value?.focus()
     } else if (apiError.status === 429) {
-      pageError.value = 'Too many attempts. Please wait a moment and try again.'
+      pageError.value = t('Too many attempts. Please wait a moment and try again.')
     } else {
       // Locked or disabled accounts cannot finish signing in with this challenge.
       pageError.value = apiError.message
@@ -202,9 +204,9 @@ async function handleVerify() {
 }
 
 useHead({
-  title: 'Two-Factor Sign In',
+  title: t('Two-Factor Sign In'),
   meta: [
-    { name: 'description', content: 'Confirm your sign-in to CourseAuraHub Academy with your authenticator app' }
+    { name: 'description', content: t('Confirm your sign-in to CourseAuraHub Academy with your authenticator app') }
   ]
 })
 

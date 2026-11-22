@@ -4,7 +4,7 @@
     class="flex min-h-dvh flex-col items-center justify-center gap-3.5 bg-zinc-950 text-[13px] text-white/60 light:bg-slate-50 light:text-slate-500"
   >
     <div class="size-8 animate-spin rounded-full border-[3px] border-brand-500/20 border-t-brand-500" />
-    <p>Restoring your session...</p>
+    <p>{{ t('Restoring your session...') }}</p>
   </div>
 
   <div v-else class="relative flex min-h-dvh overflow-x-clip bg-zinc-950 light:bg-slate-50">
@@ -42,6 +42,8 @@ import AppSidebar from '~/components/layout/AppSidebar.vue'
 import AppHeader from '~/components/layout/AppHeader.vue'
 import AppFooter from '~/components/layout/AppFooter.vue'
 import { useAuth } from '~/composables/useAuth'
+
+const { t } = useT()
 
 const auth = useAuth()
 const isHydrated = ref(false)

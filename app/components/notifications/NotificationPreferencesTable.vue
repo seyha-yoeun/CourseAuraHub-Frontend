@@ -113,7 +113,7 @@ const card = 'overflow-hidden rounded-[14px] border border-white/10 bg-white/[0.
 const modes: { value: EmailMode, label: string }[] = [
   { value: 'instant', label: 'Right away' },
   { value: 'digest', label: 'Daily digest' },
-  { value: 'off', label: 'Off' },
+  { value: 'off', label: t('Off') },
 ]
 
 interface Loaded {

@@ -93,7 +93,7 @@ const links = computed(() => {
   const twitter = value.twitter ? `https://x.com/${value.twitter.replace(/^@/, '').replace(/^https?:\/\/(www\.)?(twitter|x)\.com\//i, '')}` : null
   const candidates: { label: string, href: string | null, icon: Component }[] = [
     { label: t('Website'), href: safeUrl(value.website), icon: Globe },
-    { label: 'Twitter', href: twitter, icon: Twitter },
+    { label: t('Twitter'), href: twitter, icon: Twitter },
     { label: 'LinkedIn', href: safeUrl(value.linkedin), icon: Linkedin },
     { label: 'GitHub', href: safeUrl(value.github), icon: Github },
     { label: 'YouTube', href: safeUrl(value.youtube), icon: Youtube }

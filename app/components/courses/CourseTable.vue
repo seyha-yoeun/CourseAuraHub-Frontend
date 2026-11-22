@@ -1,17 +1,17 @@
 <template>
-  <DataTableFrame label="Courses" :scroll-key="scrollKey" class="relative z-10">
+  <DataTableFrame :label="t('Courses')" :scroll-key="scrollKey" class="relative z-10">
     <table class="w-full border-collapse text-left text-[13px]">
       <thead>
         <tr>
-          <th class="border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">Course</th>
-          <th class="hidden border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase lg:table-cell light:border-slate-200 light:text-slate-500">Category</th>
-          <th class="hidden border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase xl:table-cell light:border-slate-200 light:text-slate-500">Level</th>
-          <th class="border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">Status</th>
-          <th class="hidden border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase sm:table-cell light:border-slate-200 light:text-slate-500">Price</th>
-          <th class="hidden border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase md:table-cell light:border-slate-200 light:text-slate-500">Students</th>
-          <th class="hidden border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase md:table-cell light:border-slate-200 light:text-slate-500">Revenue</th>
-          <th class="hidden border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase lg:table-cell light:border-slate-200 light:text-slate-500">Rating</th>
-          <th class="border-b border-white/8 px-3.5 py-3 text-right text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">Actions</th>
+          <th class="border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">{{ t('Course') }}</th>
+          <th class="hidden border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase lg:table-cell light:border-slate-200 light:text-slate-500">{{ t('Category') }}</th>
+          <th class="hidden border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase xl:table-cell light:border-slate-200 light:text-slate-500">{{ t('Level') }}</th>
+          <th class="border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">{{ t('Status') }}</th>
+          <th class="hidden border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase sm:table-cell light:border-slate-200 light:text-slate-500">{{ t('Price') }}</th>
+          <th class="hidden border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase md:table-cell light:border-slate-200 light:text-slate-500">{{ t('Students') }}</th>
+          <th class="hidden border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase md:table-cell light:border-slate-200 light:text-slate-500">{{ t('Revenue') }}</th>
+          <th class="hidden border-b border-white/8 px-3.5 py-3 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase lg:table-cell light:border-slate-200 light:text-slate-500">{{ t('Rating') }}</th>
+          <th class="border-b border-white/8 px-3.5 py-3 text-right text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">{{ t('Actions') }}</th>
         </tr>
       </thead>
       <tbody>
@@ -32,7 +32,7 @@
               >
               <div class="flex min-w-0 flex-col">
                 <NuxtLink :to="`/courses/${course.slug}`" class="line-clamp-1 font-semibold text-slate-50 no-underline transition-colors hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700">{{ course.title }}</NuxtLink>
-                <span class="text-[11px] text-white/40 light:text-slate-500">by {{ course.instructor }}</span>
+                <span class="text-[11px] text-white/40 light:text-slate-500">{{ t('by {instructor}', { instructor: course.instructor }) }}</span>
               </div>
             </div>
           </td>
@@ -53,7 +53,7 @@
           <!-- Price -->
           <td class="hidden border-b border-white/4 px-3.5 py-3 sm:table-cell light:border-slate-100">
             <div class="flex items-baseline gap-1.5 whitespace-nowrap">
-              <span v-if="course.price <= 0" class="font-bold text-emerald-400 light:text-emerald-700">Free</span>
+              <span v-if="course.price <= 0" class="font-bold text-emerald-400 light:text-emerald-700">{{ t('Free') }}</span>
               <span v-else class="font-bold text-slate-50 light:text-slate-900">${{ course.price.toFixed(2) }}</span>
               <span v-if="course.price > 0 && course.originalPrice > course.price" class="text-[11px] text-white/35 line-through light:text-slate-400">${{ course.originalPrice.toFixed(2) }}</span>
             </div>
@@ -81,7 +81,7 @@
               <Star :size="13" class="fill-amber-400 text-amber-400" />
               {{ course.rating.toFixed(1) }}
             </span>
-            <span v-else class="text-xs text-white/40 light:text-slate-400">New</span>
+            <span v-else class="text-xs text-white/40 light:text-slate-400">{{ t('New') }}</span>
           </td>
 
           <!-- Actions -->
@@ -90,7 +90,7 @@
               <NuxtLink
                 :to="`/courses/${course.slug}`"
                 class="flex size-8 items-center justify-center rounded-lg border border-brand-500/35 bg-brand-500/15 text-brand-300 transition-all hover:border-brand-500/60 hover:bg-brand-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-brand-300 light:bg-brand-50 light:text-brand-700 light:hover:bg-brand-100 light:hover:text-brand-900"
-                title="View Details & Analytics"
+                :title="t('View Details & Analytics')"
                 :aria-label="`View details for ${course.title}`"
               >
                 <ArrowRight :size="15" />
@@ -98,7 +98,7 @@
               <button
                 type="button"
                 class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
-                title="Edit Course"
+                :title="t('Edit Course')"
                 :aria-label="`Edit ${course.title}`"
                 @click="$emit('edit', course)"
               >
@@ -107,7 +107,7 @@
               <button
                 type="button"
                 class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-rose-400 transition-all hover:bg-rose-500/10 hover:text-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:border-slate-200 light:bg-slate-100 light:text-rose-600 light:hover:bg-rose-50 light:hover:text-rose-700"
-                title="Delete Course"
+                :title="t('Delete Course')"
                 :aria-label="`Delete ${course.title}`"
                 @click="$emit('delete', course)"
               >
@@ -132,6 +132,8 @@ import { formatDiscount } from '~/composables/useDiscounts'
 import DataTableFrame from '~/components/shared/DataTableFrame.vue'
 import TablePagination from '~/components/shared/TablePagination.vue'
 import { useClientPagination } from '~/composables/useClientPagination'
+
+const { t } = useT()
 
 const props = defineProps<{
   courses: Course[]

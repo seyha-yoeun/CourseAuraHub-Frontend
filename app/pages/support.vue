@@ -14,8 +14,8 @@
           class="group flex flex-col gap-2 rounded-2xl border border-white/8 bg-white/3 p-4.5 no-underline transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-brand-500/35 hover:bg-brand-500/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-white light:hover:border-brand-300"
         >
           <component :is="channel.icon" :size="18" class="text-brand-300 transition-transform duration-300 group-hover:scale-110 light:text-brand-600" />
-          <span class="text-sm font-bold text-slate-100 light:text-slate-900">{{ channel.label }}</span>
-          <span class="text-xs text-white/50 light:text-slate-500">{{ channel.desc }}</span>
+          <span class="text-sm font-bold text-slate-100 light:text-slate-900">{{ t(channel.label) }}</span>
+          <span class="text-xs text-white/50 light:text-slate-500">{{ channel.href.startsWith('mailto:') ? channel.desc : t(channel.desc) }}</span>
         </NuxtLink>
       </div>
     </template>
@@ -26,8 +26,10 @@
 import { LifeBuoy, Mail, BookOpen, ShieldCheck } from 'lucide-vue-next'
 import InfoPageShell from '~/components/shared/InfoPageShell.vue'
 
+const { t } = useT()
+
 definePageMeta({ layout: false })
-useHead({ title: 'Support' })
+useHead({ title: () => t('Support') })
 
 const channels = [
   { label: 'Email support', desc: 'support@courseaurahub.com', href: 'mailto:support@courseaurahub.com', icon: Mail },

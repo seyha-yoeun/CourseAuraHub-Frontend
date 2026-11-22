@@ -83,7 +83,7 @@ const tiles = computed(() => data.value
       { label: 'Signed up', value: data.value.signedUp },
       { label: 'Bought a course', value: data.value.qualified },
       { label: 'Rewards paid', value: data.value.rewarded },
-      { label: 'Earned', value: formatMoney(data.value.earned, data.value.currency) },
+      { label: t('Earned'), value: formatMoney(data.value.earned, data.value.currency) },
     ]
   : [])
 

@@ -2,28 +2,28 @@
   <Teleport to="body">
     <div v-if="lesson" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl" @click.self="$emit('close')">
       <form class="w-full max-w-120 rounded-[20px] border border-brand-500/25 bg-[#101814] p-5 light:border-brand-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="assignment-title" @submit.prevent="save">
-        <h2 id="assignment-title" class="text-lg font-bold text-slate-50 light:text-slate-900">Assignment</h2>
+        <h2 id="assignment-title" class="text-lg font-bold text-slate-50 light:text-slate-900">{{ t('Assignment') }}</h2>
         <p class="mt-0.5 truncate text-xs text-white/45 light:text-slate-500">{{ lesson.title }}</p>
 
         <div class="mt-4 flex flex-col gap-3">
           <div class="flex flex-col gap-1.5">
-            <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="assignment-instructions">Instructions</label>
+            <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="assignment-instructions">{{ t('Instructions') }}</label>
             <textarea id="assignment-instructions" v-model="form.instructions" rows="5" required maxlength="5000" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" />
           </div>
           <div class="flex flex-col gap-1.5">
-            <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="assignment-pass">Pass Score (0 to 100)</label>
+            <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="assignment-pass">{{ t('Pass Score (0 to 100)') }}</label>
             <input id="assignment-pass" v-model.number="form.passScore" type="number" min="0" max="100" required class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400">
           </div>
           <label class="flex items-center gap-2 text-[13px] text-slate-100 light:text-slate-900">
             <input v-model="form.required" type="checkbox" class="size-4 accent-brand-600">
-            Learners must pass this to complete the lesson
+            {{ t('Learners must pass this to complete the lesson') }}
           </label>
         </div>
 
         <div class="mt-4 flex flex-wrap justify-end gap-2">
-          <button v-if="exists" type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-rose-500/30 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 light:border-rose-200 light:bg-rose-50 light:text-rose-600 mr-auto" :disabled="working" @click="remove">Remove</button>
-          <button type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-white/10 bg-white/5 text-white/75 hover:bg-white/9 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700" @click="$emit('close')">Cancel</button>
-          <button type="submit" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600" :disabled="working || loading || !form.instructions.trim()">Save</button>
+          <button v-if="exists" type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-rose-500/30 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 light:border-rose-200 light:bg-rose-50 light:text-rose-600 mr-auto" :disabled="working" @click="remove">{{ t('Remove') }}</button>
+          <button type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-white/10 bg-white/5 text-white/75 hover:bg-white/9 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700" @click="$emit('close')">{{ t('Cancel') }}</button>
+          <button type="submit" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600" :disabled="working || loading || !form.instructions.trim()">{{ t('Save') }}</button>
         </div>
       </form>
     </div>
@@ -35,6 +35,8 @@ import type { AssignmentForm, Lesson } from '~/types'
 import { useAppToast } from '~/composables/useAppToast'
 import { useLessonTools } from '~/composables/useLessonTools'
 import { getErrorMessage } from '~/utils/apiError'
+
+const { t } = useT()
 
 const props = defineProps<{ lesson: Lesson | null }>()
 const emit = defineEmits<{ close: [] }>()
@@ -64,7 +66,7 @@ watch(() => props.lesson?.id, async (id) => {
       exists.value = true
     }
   } catch (err) {
-    toast.error('Assignment Not Loaded', getErrorMessage(err, 'Unable to load this assignment'))
+    toast.error(t('Assignment Not Loaded'), getErrorMessage(err, t('Unable to load this assignment')))
   } finally {
     loading.value = false
   }
@@ -75,10 +77,10 @@ async function save() {
   working.value = true
   try {
     await saveAssignment(props.lesson.id, { ...form, instructions: form.instructions.trim() })
-    toast.success('Assignment Saved')
+    toast.success(t('Assignment Saved'))
     emit('close')
   } catch (err) {
-    toast.error('Assignment Not Saved', getErrorMessage(err, 'Unable to save this assignment'))
+    toast.error(t('Assignment Not Saved'), getErrorMessage(err, t('Unable to save this assignment')))
   } finally {
     working.value = false
   }
@@ -89,10 +91,10 @@ async function remove() {
   working.value = true
   try {
     await removeAssignment(props.lesson.id)
-    toast.success('Assignment Removed')
+    toast.success(t('Assignment Removed'))
     emit('close')
   } catch (err) {
-    toast.error('Assignment Not Removed', getErrorMessage(err, 'Unable to remove this assignment'))
+    toast.error(t('Assignment Not Removed'), getErrorMessage(err, t('Unable to remove this assignment')))
   } finally {
     working.value = false
   }

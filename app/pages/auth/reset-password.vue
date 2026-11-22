@@ -1,7 +1,7 @@
 <template>
   <div>
     <NuxtLink v-if="!success" to="/auth/login" :class="authBackLink">
-      <ArrowLeft :size="15" aria-hidden="true" /> Back to log in
+      <ArrowLeft :size="15" aria-hidden="true" /> {{ t('Back to log in') }}
     </NuxtLink>
 
     <!-- Missing or unusable link -->
@@ -9,9 +9,9 @@
       <div :class="authIconBadgeDanger">
         <Link2Off :size="22" aria-hidden="true" />
       </div>
-      <h1 :class="authTitle">This link is incomplete</h1>
-      <p :class="authSubtitle">Open the reset link from your email again, or request a new one. Reset links expire after 30 minutes.</p>
-      <NuxtLink to="/auth/forgot-password" :class="[authPrimaryButton, 'mt-7 short:mt-5']">Request a new link</NuxtLink>
+      <h1 :class="authTitle">{{ t('This link is incomplete') }}</h1>
+      <p :class="authSubtitle">{{ t('Open the reset link from your email again, or request a new one. Reset links expire after 30 minutes.') }}</p>
+      <NuxtLink to="/auth/forgot-password" :class="[authPrimaryButton, 'mt-7 short:mt-5']">{{ t('Request a new link') }}</NuxtLink>
     </div>
 
     <!-- Done -->
@@ -19,10 +19,10 @@
       <div :class="authIconBadge">
         <CircleCheck :size="22" aria-hidden="true" />
       </div>
-      <h1 :class="authTitle">Password updated</h1>
-      <p :class="authSubtitle">For your security we signed you out on every device. Log in with your new password to continue.</p>
+      <h1 :class="authTitle">{{ t('Password updated') }}</h1>
+      <p :class="authSubtitle">{{ t('For your security we signed you out on every device. Log in with your new password to continue.') }}</p>
       <NuxtLink to="/auth/login" :class="[authPrimaryButton, 'mt-7 short:mt-5']">
-        <span>Log in</span>
+        <span>{{ t('Log in') }}</span>
         <ArrowRight :size="16" aria-hidden="true" />
       </NuxtLink>
     </div>
@@ -32,24 +32,24 @@
       <div :class="authIconBadge">
         <LockKeyhole :size="22" aria-hidden="true" />
       </div>
-      <h1 :class="authTitle">Set a new password</h1>
-      <p :class="authSubtitle">Choose a strong password that you don't use anywhere else.</p>
+      <h1 :class="authTitle">{{ t('Set a new password') }}</h1>
+      <p :class="authSubtitle">{{ t('Choose a strong password that you don\'t use anywhere else.') }}</p>
 
       <form :class="[authBodyGap, authForm]" novalidate @submit.prevent="handleResetPassword">
         <div v-if="pageError" :class="authAlertError" role="alert">
           <AlertCircle :size="16" class="mt-0.5 shrink-0" aria-hidden="true" />
           <span>
             {{ pageError }}
-            <NuxtLink v-if="linkExpired" to="/auth/forgot-password" class="font-semibold underline underline-offset-2">Request a new link</NuxtLink>
+            <NuxtLink v-if="linkExpired" to="/auth/forgot-password" class="font-semibold underline underline-offset-2">{{ t('Request a new link') }}</NuxtLink>
           </span>
         </div>
 
         <div :class="authField">
-          <label for="password" :class="authLabel">New password</label>
+          <label for="password" :class="authLabel">{{ t('New password') }}</label>
           <PasswordInput
             id="password"
             v-model="form.password"
-            placeholder="Create a strong password"
+            :placeholder="t('Create a strong password')"
             autocomplete="new-password"
             :disabled="loading"
             :invalid="Boolean(errors.password)"
@@ -60,11 +60,11 @@
         </div>
 
         <div :class="authField">
-          <label for="confirmPassword" :class="authLabel">Confirm new password</label>
+          <label for="confirmPassword" :class="authLabel">{{ t('Confirm new password') }}</label>
           <PasswordInput
             id="confirmPassword"
             v-model="form.confirmPassword"
-            placeholder="Re-enter your new password"
+            :placeholder="t('Re-enter your new password')"
             autocomplete="new-password"
             :disabled="loading"
             :invalid="Boolean(errors.confirmPassword)"
@@ -72,13 +72,13 @@
           />
           <p v-if="errors.confirmPassword" id="confirmPassword-error" :class="authFieldError">{{ errors.confirmPassword }}</p>
           <p v-else-if="passwordsMatch" class="flex items-center gap-1.5 text-[12.5px] text-brand-400 light:text-brand-700">
-            <Check :size="13" aria-hidden="true" /> Passwords match
+            <Check :size="13" aria-hidden="true" /> {{ t('Passwords match') }}
           </p>
         </div>
 
         <button type="submit" :class="[authPrimaryButton, 'mt-1.5']" :disabled="loading" :aria-busy="loading">
           <Loader2 v-if="loading" :size="18" class="animate-spin" aria-hidden="true" />
-          <span v-else>Update password</span>
+          <span v-else>{{ t('Update password') }}</span>
         </button>
       </form>
     </template>
@@ -116,6 +116,8 @@ import {
 import PasswordStrengthMeter from '~/components/auth/PasswordStrengthMeter.vue'
 import { useAuth } from '~/composables/useAuth'
 import { toApiError } from '~/utils/apiError'
+
+const { t } = useT()
 
 const route = useRoute()
 const auth = useAuth()
@@ -156,23 +158,23 @@ function validateForm() {
   linkExpired.value = false
 
   if (!token.value) {
-    errors.password = 'Invalid or expired reset token'
+    errors.password = t('Invalid or expired reset token')
     return false
   }
 
   if (!form.password) {
-    errors.password = 'Password is required'
+    errors.password = t('Password is required')
     valid = false
   } else if (!PASSWORD_PATTERN.test(form.password)) {
-    errors.password = 'Use at least 8 characters with uppercase, lowercase, a number, and a special character'
+    errors.password = t('Use at least 8 characters with uppercase, lowercase, a number, and a special character')
     valid = false
   }
 
   if (!form.confirmPassword) {
-    errors.confirmPassword = 'Please confirm your password'
+    errors.confirmPassword = t('Please confirm your password')
     valid = false
   } else if (form.password !== form.confirmPassword) {
-    errors.confirmPassword = 'Passwords do not match'
+    errors.confirmPassword = t('Passwords do not match')
     valid = false
   }
 
@@ -196,13 +198,13 @@ async function handleResetPassword() {
     // Every session was revoked, including this browser's.
     auth.clearAuth()
   } catch (error) {
-    const apiError = toApiError(error, 'Failed to reset password')
+    const apiError = toApiError(error, t('Failed to reset password'))
 
     if (apiError.fieldErrors.password) errors.password = apiError.fieldErrors.password
     if (apiError.fieldErrors.confirmPassword) errors.confirmPassword = apiError.fieldErrors.confirmPassword
 
     if (apiError.status === 429) {
-      pageError.value = 'Too many attempts. Please wait a moment and try again.'
+      pageError.value = t('Too many attempts. Please wait a moment and try again.')
     } else if (!Object.keys(apiError.fieldErrors).length) {
       pageError.value = apiError.message
       linkExpired.value = apiError.status === 400
@@ -213,9 +215,9 @@ async function handleResetPassword() {
 }
 
 useHead({
-  title: 'Reset Password',
+  title: t('Reset Password'),
   meta: [
-    { name: 'description', content: 'Reset your CourseAuraHub Academy password' }
+    { name: 'description', content: t('Reset your CourseAuraHub Academy password') }
   ]
 })
 

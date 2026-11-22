@@ -13,7 +13,7 @@
         {{ strengthLabel }}
       </span>
     </div>
-    <ul class="mt-2 flex flex-wrap gap-x-3.5 gap-y-1 text-[12px]" aria-label="Password requirements">
+    <ul class="mt-2 flex flex-wrap gap-x-3.5 gap-y-1 text-[12px]" :aria-label="t('Password requirements')">
       <li
         v-for="rule in rules"
         :key="rule.label"
@@ -25,7 +25,7 @@
         <CircleCheck v-if="rule.met" :size="13" class="shrink-0" aria-hidden="true" />
         <CircleX v-else-if="flagUnmet" :size="13" class="shrink-0" aria-hidden="true" />
         <Circle v-else :size="13" class="shrink-0" aria-hidden="true" />
-        <span>{{ rule.label }}<span class="sr-only">{{ rule.met ? ' (met)' : ' (not met yet)' }}</span></span>
+        <span>{{ rule.label }}<span class="sr-only">{{ rule.met ? t(' (met)') : t(' (not met yet)') }}</span></span>
       </li>
     </ul>
   </div>
@@ -34,6 +34,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Circle, CircleCheck, CircleX } from 'lucide-vue-next'
+
+const { t } = useT()
 
 interface Props {
   password: string
@@ -52,7 +54,7 @@ const rules = computed(() => {
   const pwd = props.password
   return [
     { label: '8+ characters', met: pwd.length >= 8 },
-    { label: 'Upper & lowercase', met: /[A-Z]/.test(pwd) && /[a-z]/.test(pwd) },
+    { label: t('Upper & lowercase'), met: /[A-Z]/.test(pwd) && /[a-z]/.test(pwd) },
     { label: 'A number', met: /[0-9]/.test(pwd) },
     { label: 'A symbol', met: /[^A-Za-z0-9]/.test(pwd) },
   ]

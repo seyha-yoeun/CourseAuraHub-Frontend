@@ -4,13 +4,12 @@
     <div class="flex flex-wrap items-center justify-between gap-4 rounded-[20px] border border-brand-500/20 bg-brand-600/8 p-5 backdrop-blur-md sm:p-6 lg:px-7 light:border-brand-200 light:from-brand-50 light:to-white">
       <div>
         <h1 class="text-xl font-extrabold tracking-tight text-slate-50 sm:text-2xl light:text-slate-900">
-          Welcome back,
-          <span class="bg-linear-to-r from-brand-400 via-blue-400 to-emerald-400 bg-clip-text text-transparent light:from-brand-600 light:via-blue-600 light:to-emerald-600">{{ auth.userName || 'Account' }}</span>
+          {{ t('Welcome back,') }}
+          <span class="bg-linear-to-r from-brand-400 via-blue-400 to-emerald-400 bg-clip-text text-transparent light:from-brand-600 light:via-blue-600 light:to-emerald-600">{{ auth.userName || t('Account') }}</span>
           👋
         </h1>
         <p class="mt-1 text-[13px] text-white/50 light:text-slate-600">
-          Here is your online academy sales summary and student activity for
-          this month.
+          {{ t('Here is your online academy sales summary and student activity for this month.') }}
         </p>
       </div>
 
@@ -30,7 +29,7 @@
           class="flex items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500 px-4.5 py-2.25 text-[13px] font-semibold text-white no-underline transition-all hover:bg-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
         >
           <Plus :size="16" />
-          <span>New Course</span>
+          <span>{{ t('New Course') }}</span>
         </NuxtLink>
       </div>
     </div>
@@ -38,35 +37,35 @@
     <!-- KPI Grid -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <KpiCard
-        label="Total Revenue"
+        :label="t('Total Revenue')"
         :value="kpis.totalRevenue"
         format="currency"
-        sub="All-time platform revenue"
+        :sub="t('All-time platform revenue')"
         :icon="DollarSign"
         accent-color="#8b5cf6"
         :trend="kpis.revenueGrowth"
       />
       <KpiCard
-        label="Total Enrolled Students"
+        :label="t('Total Enrolled Students')"
         :value="kpis.totalStudents"
         format="number"
-        sub="Active learning accounts"
+        :sub="t('Active learning accounts')"
         :icon="Users"
         accent-color="#3b82f6"
         :trend="kpis.studentGrowth"
       />
       <KpiCard
-        label="Active Courses"
+        :label="t('Active Courses')"
         :value="`${kpis.publishedCourses} / ${kpis.totalCourses}`"
-        sub="Published vs Total created"
+        :sub="t('Published vs Total created')"
         :icon="BookOpen"
         accent-color="#10b981"
       />
       <KpiCard
-        label="Student Satisfaction"
+        :label="t('Student Satisfaction')"
         :value="kpis.avgRating"
         format="rating"
-        sub="Average verified course rating"
+        :sub="t('Average verified course rating')"
         :icon="Star"
         accent-color="#f59e0b"
       />
@@ -77,7 +76,7 @@
       <!-- Main Sales Chart -->
       <div class="min-w-0 lg:col-span-2">
         <SalesChart
-          title="Revenue & Enrollment Performance"
+          :title="t('Revenue & Enrollment Performance')"
           subtitle="Monthly breakdown over the last 12 active billing periods"
           :months="charts.months"
           :monthly-revenue="charts.monthlyRevenue"
@@ -89,8 +88,8 @@
       <div class="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
         <div class="mb-5 flex items-start justify-between">
           <div>
-            <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Revenue by Category</h3>
-            <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Category distribution</p>
+            <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Revenue by Category') }}</h3>
+            <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">{{ t('Category distribution') }}</p>
           </div>
           <Tag :size="18" class="text-brand-400" />
         </div>
@@ -142,7 +141,7 @@
           aria-controls="more-categories"
           @click="showAllCategories = !showAllCategories"
         >
-          {{ showAllCategories ? 'Show top 5' : `Show all ${allCategories.length} categories` }}
+          {{ showAllCategories ? t('Show top 5') : `Show all ${allCategories.length} categories` }}
           <ChevronDown :size="15" aria-hidden="true" class="transition-transform duration-200" :class="showAllCategories && 'rotate-180'" />
         </button>
       </div>
@@ -154,11 +153,11 @@
       <div class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 lg:col-span-2 light:border-slate-200 light:bg-white">
         <div class="mb-5 flex items-start justify-between">
           <div>
-            <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Top Performing Courses</h3>
-            <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Highest revenue generating programs</p>
+            <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Top Performing Courses') }}</h3>
+            <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">{{ t('Highest revenue generating programs') }}</p>
           </div>
           <NuxtLink to="/courses" class="flex items-center gap-1 text-xs font-semibold text-brand-300 no-underline transition-colors hover:text-brand-200 light:text-brand-700 light:hover:text-brand-800">
-            <span>View All</span>
+            <span>{{ t('View All') }}</span>
             <ArrowRight :size="14" />
           </NuxtLink>
         </div>
@@ -181,7 +180,7 @@
               <div class="mt-0.5 flex items-center gap-2.5">
                 <span class="flex items-center gap-1 text-[11px] text-white/45 light:text-slate-500">
                   <Users :size="12" />
-                  {{ course.totalStudents.toLocaleString() }} students
+                  {{ t('{totalStudents} students', { totalStudents: course.totalStudents.toLocaleString() }) }}
                 </span>
                 <span class="flex items-center gap-1 text-[11px] text-white/45 light:text-slate-500">
                   <Star :size="12" class="fill-amber-400 text-amber-400" />
@@ -191,7 +190,7 @@
             </div>
             <div class="flex flex-col items-end">
               <span class="text-sm font-bold text-emerald-400 light:text-emerald-700">${{ (course.revenue / 1000).toFixed(1) }}K</span>
-              <span class="text-[10px] text-white/40 light:text-slate-500">Revenue</span>
+              <span class="text-[10px] text-white/40 light:text-slate-500">{{ t('Revenue') }}</span>
             </div>
           </NuxtLink>
         </div>
@@ -221,6 +220,8 @@ import KpiCard from "~/components/dashboard/KpiCard.vue";
 import SalesChart from "~/components/dashboard/SalesChart.vue";
 import RecentEnrollmentsTable from "~/components/dashboard/RecentEnrollmentsTable.vue";
 import { useDashboardStats } from "~/composables/useDashboardStats";
+
+const { t } = useT()
 
 definePageMeta({ requiresAdmin: true })
 

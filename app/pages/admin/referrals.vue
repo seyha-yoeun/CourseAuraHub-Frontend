@@ -2,14 +2,14 @@
   <div class="flex flex-col gap-6">
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 :class="pageTitle">Referrals</h1>
-        <p :class="pageSubtitle">Who invited whom. A referral qualifies with the friend's first paid order and is rewarded after the hold.</p>
+        <h1 :class="pageTitle">{{ t('Referrals') }}</h1>
+        <p :class="pageSubtitle">{{ t('Who invited whom. A referral qualifies with the friend\'s first paid order and is rewarded after the hold.') }}</p>
       </div>
       <div class="w-full sm:w-52">
         <AppDropdown
           :model-value="status"
           :options="statusOptions"
-          aria-label="Filter referrals by status"
+          :aria-label="t('Filter referrals by status')"
           @update:model-value="value => status = value as ReferralStatus | 'all'"
         />
       </div>
@@ -18,20 +18,20 @@
     <div v-if="pending && !data" class="flex flex-col gap-3">
       <div v-for="i in 3" :key="i" class="h-16 animate-pulse rounded-[14px] bg-white/5 light:bg-slate-100" />
     </div>
-    <p v-else-if="error" :class="emptyBox">{{ getErrorMessage(error, 'Unable to load referrals') }}</p>
-    <p v-else-if="!items.length" :class="emptyBox">No referrals here.</p>
+    <p v-else-if="error" :class="emptyBox">{{ getErrorMessage(error, t('Unable to load referrals')) }}</p>
+    <p v-else-if="!items.length" :class="emptyBox">{{ t('No referrals here.') }}</p>
 
     <template v-else>
-      <DataTableFrame label="Referrals" :scroll-key="`${page}:${pageSize}`" :class="pending && 'opacity-60 transition-opacity'">
+      <DataTableFrame :label="t('Referrals')" :scroll-key="`${page}:${pageSize}`" :class="pending && 'opacity-60 transition-opacity'">
         <table class="w-full min-w-220 border-collapse text-left text-[13px]">
           <thead>
             <tr :class="headRow">
-              <th class="px-4 py-3 font-semibold">Referrer</th>
-              <th class="px-4 py-3 font-semibold">Friend</th>
-              <th class="px-4 py-3 font-semibold">Status</th>
-              <th class="px-4 py-3 font-semibold">Order</th>
-              <th class="px-4 py-3 text-right font-semibold">Reward</th>
-              <th class="px-4 py-3 font-semibold">Signed up</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Referrer') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Friend') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Status') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Order') }}</th>
+              <th class="px-4 py-3 text-right font-semibold">{{ t('Reward') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Signed up') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-white/6 light:divide-slate-200">
@@ -73,8 +73,10 @@ import { getErrorMessage } from '~/utils/apiError'
 import { formatDate } from '~/utils/dateTime'
 import { emptyBox, headRow, pageSubtitle, pageTitle } from '~/utils/ui'
 
+const { t } = useT()
+
 definePageMeta({ requiresAdmin: true })
-useHead({ title: 'Referrals' })
+useHead({ title: t('Referrals') })
 
 const { fetchForAdmin } = useReferral()
 
@@ -82,10 +84,10 @@ const status = ref<ReferralStatus | 'all'>('all')
 const page = ref(0)
 const pageSize = ref(DEFAULT_PAGE_SIZE)
 const statusOptions = [
-  { value: 'all', label: 'All Referrals' },
-  { value: 'signed_up', label: 'Signed up' },
-  { value: 'qualified', label: 'Bought a course' },
-  { value: 'rewarded', label: 'Reward paid' },
+  { value: 'all', label: t('All Referrals') },
+  { value: 'signed_up', label: t('Signed up') },
+  { value: 'qualified', label: t('Bought a course') },
+  { value: 'rewarded', label: t('Reward paid') },
 ]
 
 const { data, pending, error } = await useAsyncData(

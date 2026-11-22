@@ -7,7 +7,7 @@
         type="button"
         :class="[authSecondaryButton, 'px-2']"
         :disabled="loading"
-        :aria-label="`${actionLabel} with ${provider.name}`"
+        :aria-label="t('{action} with {provider}', { action: actionLabel, provider: provider.name })"
         @click="handleClick(provider.id)"
       >
         <!-- Google's multi-colour mark (lucide has no Google icon) -->
@@ -24,7 +24,7 @@
 
     <div class="my-6 flex items-center gap-3 text-[12.5px] short:my-4 text-white/40 light:text-slate-400" role="separator">
       <span class="h-px flex-1 bg-white/10 light:bg-slate-200" />
-      <span>or with email</span>
+      <span>{{ t('or with email') }}</span>
       <span class="h-px flex-1 bg-white/10 light:bg-slate-200" />
     </div>
   </div>
@@ -33,6 +33,8 @@
 <script setup lang="ts">
 import { Facebook, Github } from 'lucide-vue-next'
 import { authSecondaryButton } from '~/utils/authUi'
+
+const { t } = useT()
 
 type Provider = 'google' | 'facebook' | 'github'
 

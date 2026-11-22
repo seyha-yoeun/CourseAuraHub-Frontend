@@ -268,7 +268,24 @@ html.light body {
   }
 }
 
-/* Khmer text reads poorly with letter spacing and needs its own font */
+/* ---------------------------------------------------------------------------
+ * Khmer (html[lang='km'])
+ * - Font: Latin glyphs keep Plus Jakarta Sans, Khmer glyphs use Noto Sans Khmer. Redefining
+ *   --font-sans also covers elements that set font-sans themselves.
+ * - Letter spacing splits Khmer consonant clusters and subscripts, so it is switched off.
+ * - Khmer has tall stacked vowels and subscripts; tight line heights clip them.
+ * ------------------------------------------------------------------------- */
+html[lang='km'] {
+  --font-sans: 'Plus Jakarta Sans', 'Noto Sans Khmer', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --leading-none: 1.35;
+  --leading-tight: 1.5;
+  --leading-snug: 1.6;
+}
+
 html[lang='km'] body {
-  font-family: 'Noto Sans Khmer', 'Inter', sans-serif;
+  font-family: var(--font-sans);
+}
+
+html[lang='km'] body * {
+  letter-spacing: normal !important;
 }

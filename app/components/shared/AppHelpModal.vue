@@ -103,7 +103,7 @@ onMounted(() => {
 const mod = computed(() => (isApple.value ? '⌘' : 'Ctrl'))
 
 const shortcuts = computed(() => [
-  { label: 'Search', keys: [mod.value, 'K'], alternative: '/' },
+  { label: t('Search'), keys: [mod.value, 'K'], alternative: '/' },
   { label: 'Open this help', keys: [mod.value, 'H'], alternative: '?' },
   { label: 'Collapse or expand the sidebar', keys: [mod.value, 'B'] },
   { label: 'Switch light and dark theme', keys: [mod.value, 'Shift', 'L'] },

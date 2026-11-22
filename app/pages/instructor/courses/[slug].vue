@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col gap-5">
-    <NuxtLink to="/instructor" class="text-[13px] font-semibold text-brand-300 no-underline light:text-brand-700">Back to My Courses</NuxtLink>
+    <NuxtLink to="/instructor" class="text-[13px] font-semibold text-brand-300 no-underline light:text-brand-700">{{ t('Back to My Courses') }}</NuxtLink>
 
     <div v-if="pending" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
-    <p v-else-if="error || !data" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">{{ getErrorMessage(error, 'Unable to load this course') }}</p>
+    <p v-else-if="error || !data" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">{{ getErrorMessage(error, t('Unable to load this course')) }}</p>
 
     <template v-else>
       <div class="flex flex-wrap items-start justify-between gap-3">
@@ -12,18 +12,18 @@
           <div class="mt-2"><CourseStatusBadge :status="data.course.status" /></div>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-        <NuxtLink :to="`/instructor/analytics/${data.course.slug}`" class="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-semibold text-slate-200 no-underline transition-colors hover:bg-white/10 light:border-slate-200 light:bg-slate-100 light:text-slate-700">Analytics</NuxtLink>
+        <NuxtLink :to="`/instructor/analytics/${data.course.slug}`" class="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-semibold text-slate-200 no-underline transition-colors hover:bg-white/10 light:border-slate-200 light:bg-slate-100 light:text-slate-700">{{ t('Analytics') }}</NuxtLink>
         <CourseExportButtons :slug="data.course.slug" />
-        <button v-if="data.course.status === 'draft'" type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600" :disabled="submitting" @click="submit">Send for Review</button>
+        <button v-if="data.course.status === 'draft'" type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600" :disabled="submitting" @click="submit">{{ t('Send for Review') }}</button>
         </div>
       </div>
 
       <p v-if="data.reviewNote" class="rounded-xl border border-amber-400/30 bg-amber-400/10 px-3.5 py-2.5 text-xs text-amber-300 light:border-amber-200 light:bg-amber-50 light:text-amber-800">
-        An admin asked for changes: {{ data.reviewNote }}
+        {{ t('An admin asked for changes: {reviewNote}', { reviewNote: data.reviewNote }) }}
       </p>
       <RevisionPanel :slug="data.course.slug" :pending="data.pendingRevision" @changed="refresh" />
 
-      <p v-if="data.course.status === 'pending_review'" class="text-xs text-white/45 light:text-slate-500">This course is being reviewed. You can edit it again if it's sent back.</p>
+      <p v-if="data.course.status === 'pending_review'" class="text-xs text-white/45 light:text-slate-500">{{ t('This course is being reviewed. You can edit it again if it\'s sent back.') }}</p>
 
       <CurriculumEditor v-else :slug="data.course.slug" @changed="refresh" />
 
@@ -34,13 +34,13 @@
       <LiveSessionManager :slug="data.course.slug" />
 
       <section class="rounded-[18px] border border-white/10 bg-white/5 p-5 light:border-slate-200 light:bg-white">
-        <h2 class="text-base font-bold text-slate-100 light:text-slate-900">Learners</h2>
-        <p v-if="!students?.length" class="mt-2 text-xs text-white/45 light:text-slate-500">Nobody has joined yet.</p>
+        <h2 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Learners') }}</h2>
+        <p v-if="!students?.length" class="mt-2 text-xs text-white/45 light:text-slate-500">{{ t('Nobody has joined yet.') }}</p>
         <ul v-else class="m-0 mt-3 flex list-none flex-col gap-2 p-0">
           <li v-for="student in students" :key="student.id" class="flex items-center gap-2.5">
             <img :src="student.avatar" :alt="student.name" class="size-8 rounded-full bg-white/5">
             <span class="min-w-0 flex-1 truncate text-[13px] text-slate-100 light:text-slate-900">{{ student.name }}</span>
-            <span class="text-xs text-white/45 light:text-slate-500">{{ student.completed ? 'Completed' : 'In progress' }}</span>
+            <span class="text-xs text-white/45 light:text-slate-500">{{ student.completed ? t('Completed') : t('In progress') }}</span>
           </li>
         </ul>
       </section>
@@ -69,6 +69,8 @@ import { useAppToast } from '~/composables/useAppToast'
 import { useInstructor } from '~/composables/useInstructor'
 import { getErrorMessage } from '~/utils/apiError'
 
+const { t } = useT()
+
 definePageMeta({ requiresStaff: true })
 
 const route = useRoute()
@@ -87,9 +89,9 @@ async function submit() {
   submitting.value = true
   try {
     data.value = await submitForReview(slug.value)
-    toast.success('Sent for Review', 'You\'ll be notified when an admin has reviewed it.')
+    toast.success(t('Sent for Review'), t('You\'ll be notified when an admin has reviewed it.'))
   } catch (err) {
-    toast.error('Not Sent', getErrorMessage(err, 'Unable to send this course for review'))
+    toast.error(t('Not Sent'), getErrorMessage(err, t('Unable to send this course for review')))
   } finally {
     submitting.value = false
   }

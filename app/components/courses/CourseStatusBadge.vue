@@ -6,15 +6,17 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useT()
+
 const props = defineProps<{
   status: 'published' | 'draft' | 'archived' | string
 }>()
 
 const label = computed(() => {
-  if (props.status === 'published') return 'Published'
-  if (props.status === 'draft') return 'Draft'
-  if (props.status === 'archived') return 'Archived'
-  if (props.status === 'pending_review') return 'In Review'
+  if (props.status === 'published') return t('Published')
+  if (props.status === 'draft') return t('Draft')
+  if (props.status === 'archived') return t('Archived')
+  if (props.status === 'pending_review') return t('In Review')
   return props.status
 })
 

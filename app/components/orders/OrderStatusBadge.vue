@@ -10,7 +10,10 @@ import type { OrderStatus } from '~/types'
 
 const props = defineProps<{ status: OrderStatus }>()
 
-const label = computed(() => props.status.charAt(0) + props.status.slice(1).toLowerCase())
+const { t } = useT()
+
+// PAID -> 'Paid', then translated
+const label = computed(() => t(props.status.charAt(0) + props.status.slice(1).toLowerCase()))
 
 const badgeClass = computed(() => {
   if (props.status === 'PAID') return 'border-emerald-400/30 bg-emerald-400/12 text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700'

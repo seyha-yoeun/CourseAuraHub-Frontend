@@ -8,52 +8,52 @@
               <h2 id="card-modal-title" class="truncate text-lg font-bold text-slate-50 light:text-slate-900">{{ card.holderName }}</h2>
               <p class="mt-0.5 truncate text-xs text-white/45 light:text-slate-500">{{ card.cardNumber }} · {{ card.studentEmail }}</p>
             </div>
-            <button type="button" aria-label="Close" class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900" @click="$emit('close')">
+            <button type="button" :aria-label="t('Close')" class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900" @click="$emit('close')">
               <X :size="18" />
             </button>
           </div>
 
           <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p class="text-[11px] text-white/40 light:text-slate-500">Balance</p>
+              <p class="text-[11px] text-white/40 light:text-slate-500">{{ t('Balance') }}</p>
               <p class="text-2xl font-extrabold text-slate-50 light:text-slate-900">{{ formatMoney(card.balance, card.currency) }}</p>
             </div>
             <button type="button" :class="secondaryButton" :disabled="working" @click="toggleStatus">
-              {{ card.status === 'ACTIVE' ? 'Suspend Card' : 'Reactivate Card' }}
+              {{ card.status === 'ACTIVE' ? t('Suspend Card') : t('Reactivate Card') }}
             </button>
           </div>
 
           <form class="mt-4 flex items-end gap-2" @submit.prevent="saveName">
             <div class="flex min-w-0 flex-1 flex-col gap-1.5">
-              <label :class="labelClass" for="card-holder">Holder Name</label>
+              <label :class="labelClass" for="card-holder">{{ t('Holder Name') }}</label>
               <input id="card-holder" v-model="holderName" type="text" required maxlength="150" :class="inputClass">
             </div>
-            <button type="submit" :class="secondaryButton" class="py-2.75" :disabled="working || !nameChanged">Save</button>
+            <button type="submit" :class="secondaryButton" class="py-2.75" :disabled="working || !nameChanged">{{ t('Save') }}</button>
           </form>
 
           <form class="mt-4 flex flex-col gap-3 rounded-xl border border-white/8 bg-white/3 p-3.5 light:border-slate-200 light:bg-slate-50" @submit.prevent="submit">
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div class="flex min-w-0 flex-col gap-1.5">
-                <label :class="labelClass" for="adjust-type">Type</label>
+                <label :class="labelClass" for="adjust-type">{{ t('Type') }}</label>
                 <AppDropdown id="adjust-type" v-model="form.type" :options="typeOptions" />
               </div>
               <div class="flex min-w-0 flex-col gap-1.5">
-                <label :class="labelClass" for="adjust-amount">Amount</label>
+                <label :class="labelClass" for="adjust-amount">{{ t('Amount') }}</label>
                 <input id="adjust-amount" v-model.number="form.amount" type="number" min="0.01" step="0.01" required :class="inputClass">
               </div>
             </div>
             <div class="flex flex-col gap-1.5">
-              <label :class="labelClass" for="adjust-note">Reason</label>
-              <input id="adjust-note" v-model="form.note" type="text" required maxlength="500" placeholder="e.g. Cash received at the front desk" :class="inputClass">
+              <label :class="labelClass" for="adjust-note">{{ t('Reason') }}</label>
+              <input id="adjust-note" v-model="form.note" type="text" required maxlength="500" :placeholder="t('e.g. Cash received at the front desk')" :class="inputClass">
             </div>
             <button type="submit" class="inline-flex cursor-pointer items-center justify-center gap-2 self-end rounded-[10px] border border-brand-500/40 bg-brand-500 px-5 py-2 text-[13px] font-semibold text-white transition-all hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50" :disabled="working || !canSubmit">
               <Loader2 v-if="working" :size="16" class="animate-spin" />
-              {{ form.type === 'TOP_UP' ? 'Add Money' : 'Deduct' }}
+              {{ form.type === 'TOP_UP' ? t('Add Money') : t('Deduct') }}
             </button>
           </form>
 
           <section class="mt-4">
-            <h3 class="text-sm font-bold text-slate-100 light:text-slate-900">History</h3>
+            <h3 class="text-sm font-bold text-slate-100 light:text-slate-900">{{ t('History') }}</h3>
             <p v-if="historyError" class="mt-2 text-[13px] text-rose-400">{{ historyError }}</p>
             <MemberCardHistory v-else :transactions="transactions" :currency="card.currency" />
           </section>
@@ -63,7 +63,7 @@
               {{ canDelete ? 'This card hasn\'t been used, so it can be deleted.' : 'A card with transactions can\'t be deleted. Suspend it instead.' }}
             </p>
             <button type="button" class="shrink-0 cursor-pointer rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-1.75 text-xs font-semibold text-rose-400 transition-colors hover:bg-rose-500/20 disabled:cursor-not-allowed disabled:opacity-50 light:border-rose-200 light:bg-rose-50 light:text-rose-600" :disabled="working || !canDelete" @click="$emit('delete')">
-              Delete Card
+              {{ t('Delete Card') }}
             </button>
           </div>
         </div>
@@ -82,6 +82,8 @@ import { useAppToast } from '~/composables/useAppToast'
 import { useMemberCard } from '~/composables/useMemberCard'
 import { useModalA11y } from '~/composables/useModalA11y'
 import { getErrorMessage } from '~/utils/apiError'
+
+const { t } = useT()
 
 const props = defineProps<{
   card: MemberCard | null
@@ -114,8 +116,8 @@ const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3
 const secondaryButton = 'cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3 py-1.75 text-xs font-semibold text-white/75 transition-colors hover:bg-white/9 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 light:border-slate-200 light:bg-slate-100 light:text-slate-700'
 
 const typeOptions = [
-  { value: 'TOP_UP', label: 'Add money' },
-  { value: 'DEDUCTION', label: 'Deduction' }
+  { value: 'TOP_UP', label: t('Add money') },
+  { value: 'DEDUCTION', label: t('Deduction') }
 ]
 
 const form = reactive<{ type: MemberCardAdjustment['type'], amount: number | null, note: string }>({
@@ -150,7 +152,7 @@ async function loadHistory(id: number) {
     transactions.value = (await fetchCardTransactions(id, 0, 50)).items
     historyLoaded.value = true
   } catch (err) {
-    historyError.value = getErrorMessage(err, 'Unable to load this card\'s history')
+    historyError.value = getErrorMessage(err, t('Unable to load this card\'s history'))
   }
 }
 
@@ -168,10 +170,10 @@ async function saveName() {
   working.value = true
   try {
     await updateCard(props.card.id, holderName.value.trim())
-    toast.success('Card Updated')
+    toast.success(t('Card Updated'))
     emit('changed')
   } catch (err) {
-    toast.error('Card Not Updated', getErrorMessage(err, 'Unable to update this card'))
+    toast.error(t('Card Not Updated'), getErrorMessage(err, t('Unable to update this card')))
   } finally {
     working.value = false
   }
@@ -187,12 +189,12 @@ async function submit() {
       note: form.note.trim(),
       idempotencyKey: idempotencyKey.value
     })
-    toast.success(form.type === 'TOP_UP' ? 'Money Added' : 'Balance Deducted')
+    toast.success(form.type === 'TOP_UP' ? t('Money Added') : t('Balance Deducted'))
     resetForm()
     emit('changed')
     await loadHistory(props.card.id)
   } catch (err) {
-    toast.error('Balance Not Changed', getErrorMessage(err, 'Unable to change this balance'))
+    toast.error(t('Balance Not Changed'), getErrorMessage(err, t('Unable to change this balance')))
   } finally {
     working.value = false
   }
@@ -203,10 +205,10 @@ async function toggleStatus() {
   working.value = true
   try {
     await setCardStatus(props.card.id, props.card.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE')
-    toast.success('Card Updated')
+    toast.success(t('Card Updated'))
     emit('changed')
   } catch (err) {
-    toast.error('Card Not Updated', getErrorMessage(err, 'Unable to update this card'))
+    toast.error(t('Card Not Updated'), getErrorMessage(err, t('Unable to update this card')))
   } finally {
     working.value = false
   }

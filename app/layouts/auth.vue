@@ -6,12 +6,15 @@
         <NuxtLink
           to="/courses"
           class="group flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/40"
-          aria-label="CourseAuraHub - browse courses"
+          :aria-label="t('CourseAuraHub - browse courses')"
         >
           <AuthLogo class="size-8 transition-transform duration-200 group-hover:-rotate-6" />
           <span class="text-[15px] font-bold tracking-[-0.01em] text-slate-50 light:text-slate-900">CourseAuraHub</span>
         </NuxtLink>
-        <ThemeToggle />
+        <div class="flex items-center gap-2">
+          <LanguageToggle />
+          <ThemeToggle />
+        </div>
       </header>
 
       <main id="main" class="flex flex-1 items-center justify-center py-8 sm:py-10 short:py-5">
@@ -34,20 +37,20 @@
       <footer class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-[12.5px] text-white/40 light:text-slate-500">
         <span class="inline-flex items-center gap-1.5">
           <Lock :size="13" aria-hidden="true" />
-          Secure, encrypted sign-in
+          {{ t('Secure, encrypted sign-in') }}
         </span>
-        <nav aria-label="Legal and help" class="flex items-center gap-1">
-          <NuxtLink to="/terms" :class="footerLink">Terms</NuxtLink>
+        <nav :aria-label="t('Legal and help')" class="flex items-center gap-1">
+          <NuxtLink to="/terms" :class="footerLink">{{ t('Terms') }}</NuxtLink>
           <span aria-hidden="true">·</span>
-          <NuxtLink to="/privacy" :class="footerLink">Privacy</NuxtLink>
+          <NuxtLink to="/privacy" :class="footerLink">{{ t('Privacy') }}</NuxtLink>
           <span aria-hidden="true">·</span>
-          <NuxtLink to="/support" :class="footerLink">Help</NuxtLink>
+          <NuxtLink to="/support" :class="footerLink">{{ t('Help') }}</NuxtLink>
         </nav>
       </footer>
     </div>
 
     <!-- Showcase panel (desktop only), pinned while the form column scrolls -->
-    <aside class="sticky top-0 hidden h-dvh p-3 lg:block" aria-label="About CourseAuraHub">
+    <aside class="sticky top-0 hidden h-dvh p-3 lg:block" :aria-label="t('About CourseAuraHub')">
       <AuthHeroPanel />
     </aside>
   </div>
@@ -60,6 +63,9 @@ import AuthHeroPanel from '~/components/auth/AuthHeroPanel.vue'
 import AuthLogo from '~/components/auth/AuthLogo.vue'
 import AuthTabs from '~/components/auth/AuthTabs.vue'
 import ThemeToggle from '~/components/layout/ThemeToggle.vue'
+import LanguageToggle from '~/components/layout/LanguageToggle.vue'
+
+const { t } = useT()
 
 const route = useRoute()
 
@@ -97,10 +103,10 @@ const footerLink = 'rounded-sm px-1 transition-colors hover:text-slate-200 focus
 
 useHead({
   titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} - CourseAuraHub Academy` : 'CourseAuraHub Academy'
+    return titleChunk ? `${titleChunk} - CourseAuraHub Academy` : t('CourseAuraHub Academy')
   },
   meta: [
-    { name: 'description', content: 'Sign in to CourseAuraHub Academy - Master modern web development' },
+    { name: 'description', content: t('Sign in to CourseAuraHub Academy - Master modern web development') },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     { name: 'theme-color', content: '#0d2a21' }
   ],

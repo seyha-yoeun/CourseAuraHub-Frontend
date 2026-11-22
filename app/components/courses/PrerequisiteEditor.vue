@@ -2,11 +2,11 @@
   <section class="rounded-[18px] border border-white/10 bg-white/5 p-5 light:border-slate-200 light:bg-white">
     <div class="flex flex-wrap items-start justify-between gap-3">
       <div>
-        <h2 class="text-base font-bold text-slate-100 light:text-slate-900">Prerequisites</h2>
-        <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">Courses learners should finish first. Required ones block enrolling until they are completed. Up to 10.</p>
+        <h2 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Prerequisites') }}</h2>
+        <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">{{ t('Courses learners should finish first. Required ones block enrolling until they are completed. Up to 10.') }}</p>
       </div>
       <button type="button" :class="primaryAction" :disabled="saving || !dirty" @click="save">
-        {{ saving ? 'Saving...' : 'Save' }}
+        {{ saving ? t('Saving...') : t('Save') }}
       </button>
     </div>
 
@@ -15,18 +15,18 @@
         <span class="min-w-0 flex-1 truncate text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ titleOf(item.courseSlug) }}</span>
         <label class="inline-flex items-center gap-2 text-xs text-white/70 light:text-slate-600">
           <input v-model="item.hard" type="checkbox" class="size-4 accent-brand-600" @change="dirty = true">
-          Required
+          {{ t('Required') }}
         </label>
-        <button type="button" :class="dangerAction" @click="removeAt(index)">Remove</button>
+        <button type="button" :class="dangerAction" @click="removeAt(index)">{{ t('Remove') }}</button>
       </li>
     </ul>
-    <p v-else class="mt-3 text-xs text-white/45 light:text-slate-500">No prerequisites.</p>
+    <p v-else class="mt-3 text-xs text-white/45 light:text-slate-500">{{ t('No prerequisites.') }}</p>
 
     <form v-if="items.length < 10" class="mt-3 flex flex-wrap items-center gap-2" @submit.prevent="add">
       <div class="w-full sm:w-72">
-        <AppDropdown v-model="adding" :options="availableOptions" placeholder="Add a course" size="sm" aria-label="Course to add" />
+        <AppDropdown v-model="adding" :options="availableOptions" :placeholder="t('Add a course')" size="sm" :aria-label="t('Course to add')" />
       </div>
-      <button type="submit" :class="neutralAction" :disabled="!adding">Add</button>
+      <button type="submit" :class="neutralAction" :disabled="!adding">{{ t('Add') }}</button>
     </form>
   </section>
 </template>
@@ -38,6 +38,8 @@ import { useAppToast } from '~/composables/useAppToast'
 import { useCourseOptions } from '~/composables/useCourseOptions'
 import { usePrerequisites } from '~/composables/usePrerequisites'
 import { getErrorMessage } from '~/utils/apiError'
+
+const { t } = useT()
 
 /** Edits a course's prerequisites as one list, saved together. */
 const props = defineProps<{ slug: string }>()
@@ -89,9 +91,9 @@ async function save() {
     items.value = saved.map(item => ({ courseSlug: item.courseSlug, hard: item.hard }))
     titles.value = Object.fromEntries(saved.map(item => [item.courseSlug, item.courseTitle]))
     dirty.value = false
-    toast.success('Prerequisites Saved')
+    toast.success(t('Prerequisites Saved'))
   } catch (err) {
-    toast.error('Prerequisites Not Saved', getErrorMessage(err, 'Unable to save prerequisites'))
+    toast.error(t('Prerequisites Not Saved'), getErrorMessage(err, t('Unable to save prerequisites')))
   } finally {
     saving.value = false
   }

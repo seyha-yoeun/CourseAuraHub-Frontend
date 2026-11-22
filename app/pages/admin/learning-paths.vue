@@ -2,15 +2,15 @@
   <div class="flex flex-col gap-6">
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Learning Paths</h1>
-        <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Group courses into a recommended order. Learners who finish them all earn a path certificate.</p>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ t('Learning Paths') }}</h1>
+        <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">{{ t('Group courses into a recommended order. Learners who finish them all earn a path certificate.') }}</p>
       </div>
       <button
         type="button"
         class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white hover:bg-brand-600"
         @click="openForm(null)"
       >
-        <Plus :size="16" /> New Path
+        <Plus :size="16" /> {{ t('New Path') }}
       </button>
     </div>
 
@@ -19,22 +19,22 @@
     </div>
     <div v-else-if="error" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-5 py-15 text-center light:border-slate-200 light:bg-white">
       <AlertCircle :size="40" class="text-rose-400" />
-      <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">{{ getErrorMessage(error, 'Unable to load learning paths') }}</p>
+      <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">{{ getErrorMessage(error, t('Unable to load learning paths')) }}</p>
     </div>
     <div v-else-if="!items.length" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center light:border-slate-200 light:bg-white">
       <Route :size="32" class="text-brand-400" />
-      <h3 class="mt-3 text-lg font-bold text-slate-100 light:text-slate-900">No learning paths yet</h3>
+      <h3 class="mt-3 text-lg font-bold text-slate-100 light:text-slate-900">{{ t('No learning paths yet') }}</h3>
     </div>
 
-    <DataTableFrame v-else label="Learning paths" :scroll-key="tableScrollKey">
+    <DataTableFrame v-else :label="t('Learning paths')" :scroll-key="tableScrollKey">
       <table class="w-full min-w-180 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
-            <th class="px-4 py-3 font-semibold">Path</th>
-            <th class="px-4 py-3 font-semibold">Status</th>
-            <th class="px-4 py-3 font-semibold">Courses</th>
-            <th class="px-4 py-3 font-semibold">Price</th>
-            <th class="px-4 py-3 text-right font-semibold">Actions</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Path') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Status') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Courses') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Price') }}</th>
+            <th class="px-4 py-3 text-right font-semibold">{{ t('Actions') }}</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
@@ -49,14 +49,14 @@
                 class="rounded-md px-2 py-0.5 text-[11px] font-semibold"
                 :class="item.status === 'published' ? 'bg-emerald-400/15 text-emerald-400 light:bg-emerald-50 light:text-emerald-700' : 'bg-amber-400/15 text-amber-400 light:bg-amber-50 light:text-amber-700'"
               >
-                {{ item.status === 'published' ? 'Published' : 'Draft' }}
+                {{ item.status === 'published' ? t('Published') : t('Draft') }}
               </span>
             </td>
             <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ item.courseCount }}</td>
-            <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ Number(item.price) > 0 ? formatMoney(item.price) : 'Free' }}</td>
+            <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ Number(item.price) > 0 ? formatMoney(item.price) : t('Free') }}</td>
             <td class="px-4 py-3 text-right whitespace-nowrap">
-              <button type="button" class="mr-2 cursor-pointer rounded-lg border border-brand-500/35 bg-brand-500/15 px-2.5 py-1.5 text-xs font-semibold text-brand-300 light:border-brand-300 light:bg-brand-50 light:text-brand-700" @click="openForm(item)">Edit</button>
-              <button type="button" class="cursor-pointer rounded-lg border border-rose-500/30 bg-rose-500/10 px-2.5 py-1.5 text-xs font-semibold text-rose-400 light:border-rose-200 light:bg-rose-50 light:text-rose-600" @click="pendingDelete = item">Delete</button>
+              <button type="button" class="mr-2 cursor-pointer rounded-lg border border-brand-500/35 bg-brand-500/15 px-2.5 py-1.5 text-xs font-semibold text-brand-300 light:border-brand-300 light:bg-brand-50 light:text-brand-700" @click="openForm(item)">{{ t('Edit') }}</button>
+              <button type="button" class="cursor-pointer rounded-lg border border-rose-500/30 bg-rose-500/10 px-2.5 py-1.5 text-xs font-semibold text-rose-400 light:border-rose-200 light:bg-rose-50 light:text-rose-600" @click="pendingDelete = item">{{ t('Delete') }}</button>
             </td>
           </tr>
         </tbody>
@@ -77,8 +77,8 @@
 
     <ConfirmDeleteModal
       :is-open="Boolean(pendingDelete)"
-      title="Delete Learning Path"
-      description="Path certificates already issued stay valid."
+      :title="t('Delete Learning Path')"
+      :description="t('Path certificates already issued stay valid.')"
       :item-name="pendingDelete?.title"
       :loading="deleting"
       @close="pendingDelete = null"
@@ -102,8 +102,10 @@ import { useLearningPaths } from '~/composables/useLearningPaths'
 import { getErrorMessage } from '~/utils/apiError'
 import { formatDateTime } from '~/utils/dateTime'
 
+const { t } = useT()
+
 definePageMeta({ requiresAdmin: true })
-useHead({ title: 'Learning Paths' })
+useHead({ title: t('Learning Paths') })
 
 const toast = useAppToast()
 const { fetchAllForAdmin, createPath, updatePath, deletePath } = useLearningPaths()
@@ -129,15 +131,15 @@ async function save(form: LearningPathForm) {
   try {
     if (editing.value) {
       await updatePath(editing.value.slug, form)
-      toast.success('Path Updated', form.title)
+      toast.success(t('Path Updated'), form.title)
     } else {
       await createPath(form)
-      toast.success('Path Created', form.title)
+      toast.success(t('Path Created'), form.title)
     }
     formOpen.value = false
     await refresh()
   } catch (err) {
-    toast.error('Not Saved', getErrorMessage(err, 'Unable to save the learning path'))
+    toast.error(t('Not Saved'), getErrorMessage(err, t('Unable to save the learning path')))
   } finally {
     saving.value = false
   }
@@ -149,11 +151,11 @@ async function remove() {
   deleting.value = true
   try {
     await deletePath(target.slug)
-    toast.success('Path Deleted', target.title)
+    toast.success(t('Path Deleted'), target.title)
     pendingDelete.value = null
     await refresh()
   } catch (err) {
-    toast.error('Not Deleted', getErrorMessage(err, 'Unable to delete the learning path'))
+    toast.error(t('Not Deleted'), getErrorMessage(err, t('Unable to delete the learning path')))
   } finally {
     deleting.value = false
   }

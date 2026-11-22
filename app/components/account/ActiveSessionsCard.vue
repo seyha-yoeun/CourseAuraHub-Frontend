@@ -3,13 +3,13 @@
     <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
       <MonitorSmartphone :size="20" class="text-blue-400" />
       <div class="min-w-0 flex-1">
-        <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Where You're Signed In</h3>
-        <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Sign out any device you don't recognise</p>
+        <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Where You\'re Signed In') }}</h3>
+        <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">{{ t('Sign out any device you don\'t recognise') }}</p>
       </div>
       <button
         type="button"
         class="shrink-0 cursor-pointer rounded-lg p-1.5 text-white/40 transition-colors hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 light:text-slate-400 light:hover:bg-slate-100 light:hover:text-slate-700"
-        aria-label="Refresh sessions"
+        :aria-label="t('Refresh sessions')"
         :disabled="pending"
         @click="loadSessions"
       >
@@ -45,16 +45,16 @@
             <span
               v-if="session.current"
               class="rounded-full border border-emerald-400/25 bg-emerald-400/12 px-1.5 py-px text-[10px] font-bold text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700"
-            >This device</span>
+            >{{ t('This device') }}</span>
             <span
               v-if="session.rememberMe"
               class="rounded-full border border-white/10 bg-white/5 px-1.5 py-px text-[10px] font-semibold text-white/50 light:border-slate-200 light:bg-white light:text-slate-500"
-            >Remembered</span>
+            >{{ t('Remembered') }}</span>
           </div>
           <p class="mt-0.5 truncate text-[11px] text-white/40 light:text-slate-500">
             <span v-if="session.ipAddress">{{ session.ipAddress }} · </span>
-            <span>Active {{ formatRelative(session.lastUsedAt || session.createdAt) }}</span>
-            <span> · Signed in {{ formatDate(session.createdAt) }}</span>
+            <span>{{ t('Active {time}', { time: formatRelative(session.lastUsedAt || session.createdAt) }) }}</span>
+            <span> · {{ t('Signed in {date}', { date: formatDate(session.createdAt) }) }}</span>
           </p>
         </div>
 
@@ -67,20 +67,20 @@
         >
           <Loader2 v-if="revoking === session.sessionId" :size="13" class="animate-spin" />
           <LogOut v-else :size="13" />
-          <span>Sign out</span>
+          <span>{{ t('Sign out') }}</span>
         </button>
       </li>
 
       <li v-if="!pending && !sessions.length" class="py-4 text-center text-[13px] text-white/40 light:text-slate-500">
-        No active sessions found.
+        {{ t('No active sessions found.') }}
       </li>
     </ul>
 
     <!-- Sign out everywhere -->
     <div class="mt-5 flex flex-col gap-3 border-t border-white/6 pt-4 sm:flex-row sm:items-center sm:justify-between light:border-slate-200">
       <p class="text-[12px] text-white/45 light:text-slate-500">
-        <template v-if="confirmingLogoutAll">This signs out every device, including this one.</template>
-        <template v-else>Lost a device or shared a password? Sign out everywhere at once.</template>
+        <template v-if="confirmingLogoutAll">{{ t('This signs out every device, including this one.') }}</template>
+        <template v-else>{{ t('Lost a device or shared a password? Sign out everywhere at once.') }}</template>
       </p>
       <div class="flex shrink-0 gap-2.5">
         <button
@@ -90,7 +90,7 @@
           :disabled="auth.loading"
           @click="confirmingLogoutAll = false"
         >
-          Cancel
+          {{ t('Cancel') }}
         </button>
         <button
           type="button"
@@ -100,7 +100,7 @@
         >
           <Loader2 v-if="auth.loading" :size="15" class="animate-spin" />
           <LogOut v-else :size="15" />
-          <span>{{ confirmingLogoutAll ? 'Yes, Sign Out All' : 'Sign Out All Devices' }}</span>
+          <span>{{ confirmingLogoutAll ? t('Yes, Sign Out All') : t('Sign Out All Devices') }}</span>
         </button>
       </div>
     </div>
@@ -119,6 +119,8 @@ import {
 import { useAppToast } from '~/composables/useAppToast'
 import { useAuth } from '~/composables/useAuth'
 import { toApiError } from '~/utils/apiError'
+
+const { t } = useT()
 
 interface AuthSession {
   sessionId: string
@@ -181,7 +183,7 @@ function describe(session: AuthSession) {
           : /Linux/.test(agent) ? 'Linux'
             : ''
 
-  const label = browser && os ? `${browser} on ${os}` : browser || os || 'Unknown device'
+  const label = browser && os ? `${browser} on ${os}` : browser || os || t('Unknown device')
 
   return {
     label,
@@ -196,7 +198,7 @@ async function loadSessions() {
   try {
     sessions.value = await $fetch<AuthSession[]>('/api/auth/sessions', { credentials: 'include' })
   } catch (loadError) {
-    error.value = toApiError(loadError, 'Unable to load your sessions').message
+    error.value = toApiError(loadError, t('Unable to load your sessions')).message
   } finally {
     pending.value = false
   }
@@ -212,9 +214,9 @@ async function revokeSession(session: AuthSession) {
       credentials: 'include',
     })
     sessions.value = sessions.value.filter(item => item.sessionId !== session.sessionId)
-    success('Device Signed Out', `${describe(session).label} can no longer access your account.`)
+    success(t('Device Signed Out'), t('{device} can no longer access your account.', { device: describe(session).label }))
   } catch (revokeError) {
-    error.value = toApiError(revokeError, 'Unable to sign out that device').message
+    error.value = toApiError(revokeError, t('Unable to sign out that device')).message
   } finally {
     revoking.value = ''
   }
@@ -231,7 +233,7 @@ async function handleLogoutAll() {
   try {
     await auth.logoutAll()
   } catch (logoutError) {
-    error.value = toApiError(logoutError, 'Unable to sign out of all devices').message
+    error.value = toApiError(logoutError, t('Unable to sign out of all devices')).message
     confirmingLogoutAll.value = false
   }
 }

@@ -1,18 +1,18 @@
 <template>
   <div>
     <NuxtLink :to="loginLink" :class="authBackLink">
-      <ArrowLeft :size="15" aria-hidden="true" /> Back to log in
+      <ArrowLeft :size="15" aria-hidden="true" /> {{ t('Back to log in') }}
     </NuxtLink>
 
     <div :class="authIconBadge">
       <MailCheck :size="22" aria-hidden="true" />
     </div>
-    <h1 :class="authTitle">Check your email</h1>
+    <h1 :class="authTitle">{{ t('Check your email') }}</h1>
     <p v-if="emailLocked" :class="authSubtitle">
-      Enter the {{ codeLength }}-digit code we sent to
+      {{ t('Enter the {count}-digit code we sent to', { count: codeLength }) }}
       <strong class="font-semibold break-all text-slate-100 light:text-slate-900">{{ form.email }}</strong>
     </p>
-    <p v-else :class="authSubtitle">Enter your email and the code from your verification email.</p>
+    <p v-else :class="authSubtitle">{{ t('Enter your email and the code from your verification email.') }}</p>
 
     <form :class="[authBodyGap, authForm]" novalidate @submit.prevent="handleVerify">
       <div v-if="pageError" :class="authAlertError" role="alert">
@@ -26,7 +26,7 @@
       </div>
 
       <div v-if="!emailLocked" :class="authField">
-        <label for="email" :class="authLabel">Email</label>
+        <label for="email" :class="authLabel">{{ t('Email') }}</label>
         <input
           id="email"
           v-model="form.email"
@@ -44,7 +44,7 @@
       </div>
 
       <div :class="authField">
-        <span :class="authLabel">Verification code</span>
+        <span :class="authLabel">{{ t('Verification code') }}</span>
         <OtpCodeInput
           ref="codeInput"
           v-model="form.code"
@@ -55,13 +55,13 @@
           @complete="handleVerify"
         />
         <p v-if="errors.code" :class="authFieldError" role="alert">{{ errors.code }}</p>
-        <p v-else :class="authHint">The code expires {{ codeTtlMinutes }} minutes after it was sent.</p>
+        <p v-else :class="authHint">{{ t('The code expires {minutes} minutes after it was sent.', { minutes: codeTtlMinutes }) }}</p>
       </div>
 
       <button type="submit" :class="[authPrimaryButton, 'mt-1.5']" :disabled="loading" :aria-busy="loading">
         <Loader2 v-if="loading" :size="18" class="animate-spin" aria-hidden="true" />
         <template v-else>
-          <span>Verify &amp; continue</span>
+          <span>{{ t('Verify & continue') }}</span>
           <ArrowRight :size="16" aria-hidden="true" />
         </template>
       </button>
@@ -69,21 +69,21 @@
 
     <div class="mt-6 flex flex-col gap-2 border-t border-white/8 pt-5 short:mt-4 short:pt-4 light:border-slate-200">
       <p :class="[authHint, 'text-[13.5px]']">
-        Didn't get it? Check your spam folder or
+        {{ t('Didn\'t get it? Check your spam folder or') }}
         <button
           type="button"
           :class="[authLink, 'cursor-pointer disabled:cursor-not-allowed disabled:text-white/35 disabled:no-underline light:disabled:text-slate-400']"
           :disabled="resending || cooldown > 0 || loading"
           @click="handleResend"
         >
-          <template v-if="resending">sending…</template>
-          <template v-else-if="cooldown > 0">resend in {{ cooldown }}s</template>
-          <template v-else>send a new code</template>
+          <template v-if="resending">{{ t('sending…') }}</template>
+          <template v-else-if="cooldown > 0">{{ t('resend in {seconds}s', { seconds: cooldown }) }}</template>
+          <template v-else>{{ t('send a new code') }}</template>
         </button>
       </p>
       <p :class="[authHint, 'text-[13.5px]']">
-        Wrong email?
-        <NuxtLink :to="registerLink" :class="authStrongLink" @click="clearPendingVerification()">Start over</NuxtLink>
+        {{ t('Wrong email?') }}
+        <NuxtLink :to="registerLink" :class="authStrongLink" @click="clearPendingVerification()">{{ t('Start over') }}</NuxtLink>
       </p>
     </div>
   </div>
@@ -127,6 +127,8 @@ import {
 } from '~/utils/authUi'
 import OtpCodeInput from '~/components/auth/OtpCodeInput.vue'
 
+const { t } = useT()
+
 const route = useRoute()
 const auth = useAuth()
 const { verifyEmail, resendVerification } = auth
@@ -169,12 +171,12 @@ function validateEmail() {
   errors.email = ''
 
   if (!form.email.trim()) {
-    errors.email = 'Email is required'
+    errors.email = t('Email is required')
     return false
   }
 
   if (!EMAIL_PATTERN.test(form.email.trim())) {
-    errors.email = 'Please enter a valid email address'
+    errors.email = t('Please enter a valid email address')
     return false
   }
 
@@ -198,7 +200,7 @@ async function handleVerify() {
   try {
     await verifyEmail(form.email.trim(), form.code)
   } catch (error) {
-    const apiError = toApiError(error, 'Email verification failed')
+    const apiError = toApiError(error, t('Email verification failed'))
 
     if (apiError.fieldErrors.email) errors.email = apiError.fieldErrors.email
 
@@ -207,7 +209,7 @@ async function handleVerify() {
       form.code = ''
       codeInput.value?.focus()
     } else if (apiError.status === 429) {
-      pageError.value = 'Too many attempts. Please wait a moment and try again.'
+      pageError.value = t('Too many attempts. Please wait a moment and try again.')
     } else if (!Object.keys(apiError.fieldErrors).length) {
       pageError.value = apiError.message
     }
@@ -230,13 +232,13 @@ async function handleResend() {
     resendAvailableAt.value = Date.now() + (Number(response?.resendCooldownSeconds) || 60) * 1000
     emailLocked.value = true
     form.code = ''
-    notice.value = 'If this account is awaiting verification, a new code is on its way. Earlier codes no longer work.'
+    notice.value = t('If this account is awaiting verification, a new code is on its way. Earlier codes no longer work.')
     codeInput.value?.focus()
   } catch (error) {
-    const apiError = toApiError(error, 'Unable to send a new verification code')
+    const apiError = toApiError(error, t('Unable to send a new verification code'))
 
     pageError.value = apiError.status === 429
-      ? 'Too many requests. Please wait a moment before asking for another code.'
+      ? t('Too many requests. Please wait a moment before asking for another code.')
       : apiError.message
   } finally {
     resending.value = false
@@ -264,9 +266,9 @@ onUnmounted(() => {
 })
 
 useHead({
-  title: 'Verify Email',
+  title: t('Verify Email'),
   meta: [
-    { name: 'description', content: 'Confirm your email address to finish creating your CourseAuraHub Academy account' }
+    { name: 'description', content: t('Confirm your email address to finish creating your CourseAuraHub Academy account') }
   ]
 })
 

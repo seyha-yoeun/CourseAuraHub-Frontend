@@ -4,32 +4,32 @@
     <section :class="cardClass">
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 :class="sectionTitle">Enrollment Funnel</h2>
-          <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">Visitors who viewed a course, carted it and started checkout, then learners who enrolled and how far they got.</p>
+          <h2 :class="sectionTitle">{{ t('Enrollment Funnel') }}</h2>
+          <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">{{ t('Visitors who viewed a course, carted it and started checkout, then learners who enrolled and how far they got.') }}</p>
         </div>
       </div>
 
       <!-- Filters sit in one row above the chart -->
       <div class="mt-3 flex flex-wrap items-end gap-2">
         <div>
-          <label :class="labelClass" :for="`${uid}-from`">From</label>
+          <label :class="labelClass" :for="`${uid}-from`">{{ t('From') }}</label>
           <input :id="`${uid}-from`" v-model="from" type="date" :max="to || undefined" class="w-38" :class="inputClass">
         </div>
         <div>
-          <label :class="labelClass" :for="`${uid}-to`">To</label>
+          <label :class="labelClass" :for="`${uid}-to`">{{ t('To') }}</label>
           <input :id="`${uid}-to`" v-model="to" type="date" :min="from || undefined" class="w-38" :class="inputClass">
         </div>
         <div class="min-w-48 flex-1">
-          <span :class="labelClass">Course</span>
-          <AppDropdown :model-value="course" :options="courseOptions" size="sm" aria-label="Funnel for a course" @update:model-value="value => course = String(value)" />
+          <span :class="labelClass">{{ t('Course') }}</span>
+          <AppDropdown :model-value="course" :options="courseOptions" size="sm" :aria-label="t('Funnel for a course')" @update:model-value="value => course = String(value)" />
         </div>
       </div>
 
       <div v-if="funnelPending" class="mt-4 flex flex-col gap-2.5">
         <div v-for="i in 5" :key="i" class="h-8 animate-pulse rounded-md bg-white/5 light:bg-slate-100" />
       </div>
-      <p v-else-if="funnelError" class="mt-4 text-xs text-rose-400">{{ getErrorMessage(funnelError, 'Unable to load the enrollment funnel') }}</p>
-      <p v-else-if="!steps.length || !steps[0]?.count" class="mt-4 text-xs text-white/45 light:text-slate-500">No activity in this range yet.</p>
+      <p v-else-if="funnelError" class="mt-4 text-xs text-rose-400">{{ getErrorMessage(funnelError, t('Unable to load the enrollment funnel')) }}</p>
+      <p v-else-if="!steps.length || !steps[0]?.count" class="mt-4 text-xs text-white/45 light:text-slate-500">{{ t('No activity in this range yet.') }}</p>
       <ol v-else class="m-0 mt-4 flex list-none flex-col gap-3 p-0" :aria-label="`Enrollment funnel, ${funnel?.from} to ${funnel?.to}`">
         <li v-for="step in steps" :key="step.key" class="group">
           <div class="flex items-baseline justify-between gap-3 text-xs">
@@ -51,24 +51,24 @@
     <section :class="cardClass">
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 :class="sectionTitle">Learner Retention</h2>
-          <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">Learners by the month they joined, and the share who completed a lesson in each month since.</p>
+          <h2 :class="sectionTitle">{{ t('Learner Retention') }}</h2>
+          <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">{{ t('Learners by the month they joined, and the share who completed a lesson in each month since.') }}</p>
         </div>
         <div class="w-36">
-          <AppDropdown :model-value="months" :options="monthOptions" size="sm" aria-label="Number of cohorts" @update:model-value="value => months = Number(value)" />
+          <AppDropdown :model-value="months" :options="monthOptions" size="sm" :aria-label="t('Number of cohorts')" @update:model-value="value => months = Number(value)" />
         </div>
       </div>
 
       <div v-if="retentionPending" class="mt-4 h-48 animate-pulse rounded-[14px] bg-white/5 light:bg-slate-100" />
-      <p v-else-if="retentionError" class="mt-4 text-xs text-rose-400">{{ getErrorMessage(retentionError, 'Unable to load retention') }}</p>
-      <p v-else-if="!cohorts.length" class="mt-4 text-xs text-white/45 light:text-slate-500">No learners have joined in this period.</p>
+      <p v-else-if="retentionError" class="mt-4 text-xs text-rose-400">{{ getErrorMessage(retentionError, t('Unable to load retention')) }}</p>
+      <p v-else-if="!cohorts.length" class="mt-4 text-xs text-white/45 light:text-slate-500">{{ t('No learners have joined in this period.') }}</p>
       <div v-else class="mt-4 overflow-x-auto">
         <table class="w-full border-separate border-spacing-0.5 text-center text-[11px]">
-          <caption class="sr-only">Share of each monthly cohort active in the months after joining</caption>
+          <caption class="sr-only">{{ t('Share of each monthly cohort active in the months after joining') }}</caption>
           <thead>
             <tr class="text-white/45 light:text-slate-500">
-              <th scope="col" class="px-2 py-1.5 text-left font-semibold">Joined</th>
-              <th scope="col" class="px-2 py-1.5 text-right font-semibold">Learners</th>
+              <th scope="col" class="px-2 py-1.5 text-left font-semibold">{{ t('Joined') }}</th>
+              <th scope="col" class="px-2 py-1.5 text-right font-semibold">{{ t('Learners') }}</th>
               <th v-for="offset in maxOffset + 1" :key="offset" scope="col" class="min-w-11 px-1 py-1.5 font-semibold">M{{ offset - 1 }}</th>
             </tr>
           </thead>
@@ -107,6 +107,8 @@ import { useFunnelAnalytics } from '~/composables/useFunnelAnalytics'
 import { getErrorMessage } from '~/utils/apiError'
 import { cardClass, inputClass, labelClass, sectionTitle } from '~/utils/ui'
 
+const { t } = useT()
+
 /** Admin-only: the catalog-to-completion funnel and monthly retention cohorts. Aggregates only. */
 const uid = `funnel-${useId()}`
 const { fetchFunnel, fetchRetention } = useFunnelAnalytics()
@@ -119,7 +121,7 @@ const course = ref(ALL)
 
 const { data: courses } = await useAsyncData('funnel-courses', () => $fetch<Course[]>('/api/courses').catch(() => [] as Course[]), { server: false })
 const courseOptions = computed(() => [
-  { value: ALL, label: 'All courses' },
+  { value: ALL, label: t('All courses') },
   ...(courses.value ?? []).map(item => ({ value: item.slug, label: item.title })),
 ])
 

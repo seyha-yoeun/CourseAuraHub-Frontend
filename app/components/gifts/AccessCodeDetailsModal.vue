@@ -22,7 +22,7 @@
           <!-- Header -->
           <div class="flex items-start justify-between gap-4 px-6 pt-5">
             <div class="flex flex-wrap items-center gap-2">
-              <h2 id="access-code-title" class="text-lg font-semibold text-slate-50 light:text-slate-900">Access code</h2>
+              <h2 id="access-code-title" class="text-lg font-semibold text-slate-50 light:text-slate-900">{{ t('Access code') }}</h2>
               <span class="rounded-full px-2 py-0.5 text-[12px] font-medium" :class="statusBadge(code.status)">
                 {{ ACCESS_CODE_STATUS_LABELS[code.status] ?? code.status }}
               </span>
@@ -30,7 +30,7 @@
             <button
               type="button"
               class="-mt-1 -mr-2 flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-white/45 hover:bg-white/6 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50 light:text-slate-400 light:hover:bg-slate-100 light:hover:text-slate-700"
-              aria-label="Close"
+              :aria-label="t('Close')"
               @click="emit('close')"
             >
               <X :size="18" aria-hidden="true" />
@@ -42,11 +42,11 @@
             <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 light:border-slate-200 light:bg-slate-50">
               <p class="font-mono text-[17px] tracking-wider text-slate-50 light:text-slate-900" aria-live="polite">
                 <template v-if="revealed">
-                  <span class="sr-only">Full code: </span>{{ revealed }}
+                  <span class="sr-only">{{ t('Full code:') }} </span>{{ revealed }}
                 </template>
                 <template v-else>
                   <span class="text-white/30 light:text-slate-300" aria-hidden="true">••••-••••-••••-</span>
-                  <span class="sr-only">Code ending in </span>{{ code.hint }}
+                  <span class="sr-only">{{ t('Code ending in') }} </span>{{ code.hint }}
                 </template>
               </p>
               <div class="flex items-center gap-1">
@@ -59,71 +59,71 @@
                 >
                   <Loader2 v-if="revealing" :size="13" class="animate-spin" aria-hidden="true" />
                   <Eye v-else :size="13" aria-hidden="true" />
-                  Show full code
+                  {{ t('Show full code') }}
                 </button>
                 <button v-if="revealed" type="button" :class="inlineAction" @click="revealed = null">
-                  <EyeOff :size="13" aria-hidden="true" /> Hide
+                  <EyeOff :size="13" aria-hidden="true" /> {{ t('Hide') }}
                 </button>
                 <button type="button" :class="inlineAction" @click="copy">
-                  <Copy :size="13" aria-hidden="true" /> {{ revealed ? 'Copy code' : 'Copy ending' }}
+                  <Copy :size="13" aria-hidden="true" /> {{ revealed ? t('Copy code') : t('Copy ending') }}
                 </button>
               </div>
             </div>
             <p v-if="revealError" class="mt-2 text-[12.5px] text-rose-300 light:text-negative" role="alert">{{ revealError }}</p>
             <p class="mt-2 flex items-start gap-1.5 text-[12.5px] leading-snug text-white/50 light:text-slate-500">
               <Info :size="14" class="mt-px shrink-0" aria-hidden="true" />
-              <span v-if="code.revealable">Showing the full code is recorded in the audit log.</span>
-              <span v-else>This code was issued before full codes were kept, so only its ending is available. If it's lost, revoke it and issue a new one.</span>
+              <span v-if="code.revealable">{{ t('Showing the full code is recorded in the audit log.') }}</span>
+              <span v-else>{{ t('This code was issued before full codes were kept, so only its ending is available. If it\'s lost, revoke it and issue a new one.') }}</span>
             </p>
 
             <!-- Details -->
             <dl class="m-0 mt-5 grid grid-cols-[7rem_minmax(0,1fr)] gap-x-4 gap-y-3 text-[13.5px]">
-              <dt :class="term">Course</dt>
+              <dt :class="term">{{ t('Course') }}</dt>
               <dd :class="value">
                 <NuxtLink :to="`/courses/${code.courseSlug}`" class="font-medium text-slate-100 hover:text-brand-300 light:text-slate-900 light:hover:text-brand-600">{{ code.courseTitle }}</NuxtLink>
               </dd>
 
-              <dt :class="term">Batch</dt>
+              <dt :class="term">{{ t('Batch') }}</dt>
               <dd :class="value">
                 <button
                   v-if="code.batch"
                   type="button"
                   class="cursor-pointer font-mono text-[13px] text-slate-100 underline decoration-white/25 underline-offset-2 hover:text-brand-300 light:text-slate-800 light:decoration-slate-300 light:hover:text-brand-600"
-                  title="Show only this batch"
+                  :title="t('Show only this batch')"
                   @click="emit('filter-batch', code.batch)"
                 >
                   {{ code.batch }}
                 </button>
-                <span v-else class="text-white/40 light:text-slate-400">None</span>
+                <span v-else class="text-white/40 light:text-slate-400">{{ t('None') }}</span>
               </dd>
 
-              <dt :class="term">Issued</dt>
+              <dt :class="term">{{ t('Issued') }}</dt>
               <dd :class="value">{{ formatDateTime(code.createdAt) }}</dd>
 
-              <dt :class="term">Expires</dt>
+              <dt :class="term">{{ t('Expires') }}</dt>
               <dd :class="value">
                 <template v-if="code.expiresAt">
                   {{ formatDateTime(code.expiresAt) }}
                   <span class="block text-[12.5px]" :class="isExpired ? 'text-rose-300 light:text-negative' : 'text-white/45 light:text-slate-500'">{{ expiryHint }}</span>
                 </template>
-                <span v-else>Never</span>
+                <span v-else>{{ t('Never') }}</span>
               </dd>
 
-              <dt :class="term">Uses</dt>
+              <dt :class="term">{{ t('Uses') }}</dt>
               <dd :class="value">
-                <span class="tabular-nums">{{ code.uses }} of {{ code.maxUses }} used</span>
-                <span class="text-white/45 light:text-slate-500"> · {{ usesLeft }} left</span>
+                <span class="tabular-nums">{{ t('{uses} of {maxUses} used', { uses: code.uses, maxUses: code.maxUses }) }}</span>
+                <span class="text-white/45 light:text-slate-500"> {{ t('· {usesLeft} left', { usesLeft }) }}</span>
                 <div class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/8 light:bg-slate-100" aria-hidden="true">
                   <div class="h-full rounded-full bg-brand-400 light:bg-brand-500" :style="{ width: `${usedPercent}%` }" />
                 </div>
               </dd>
 
-              <dt :class="term">Status</dt>
+              <dt :class="term">{{ t('Status') }}</dt>
               <dd :class="value">{{ STATUS_HELP[code.status] ?? '' }}</dd>
             </dl>
 
             <p class="mt-4 text-[12px] text-white/40 light:text-slate-500">
-              Who redeemed this code isn't available here yet.
+              {{ t('Who redeemed this code isn\'t available here yet.') }}
             </p>
           </div>
 
@@ -131,19 +131,19 @@
           <div class="flex flex-wrap items-center justify-between gap-2 border-t border-white/8 px-6 py-3.5 light:border-slate-200">
             <template v-if="code.status === 'active'">
               <div v-if="confirmingRevoke" class="flex flex-wrap items-center gap-2" role="alert">
-                <span class="text-[13px] text-white/70 light:text-slate-700">Revoke? It stops working right away.</span>
+                <span class="text-[13px] text-white/70 light:text-slate-700">{{ t('Revoke? It stops working right away.') }}</span>
                 <button type="button" :class="dangerButton" :disabled="revoking" @click="emit('revoke', code)">
                   <Loader2 v-if="revoking" :size="14" class="animate-spin" aria-hidden="true" />
-                  Revoke
+                  {{ t('Revoke') }}
                 </button>
-                <button type="button" :class="ghostButton" :disabled="revoking" @click="confirmingRevoke = false">Keep</button>
+                <button type="button" :class="ghostButton" :disabled="revoking" @click="confirmingRevoke = false">{{ t('Keep') }}</button>
               </div>
               <button v-else type="button" :class="[ghostButton, 'text-rose-300 hover:text-rose-200 light:text-negative light:hover:text-negative']" @click="confirmingRevoke = true">
-                Revoke code
+                {{ t('Revoke code') }}
               </button>
             </template>
             <span v-else />
-            <button type="button" :class="closeButton" @click="emit('close')">Close</button>
+            <button type="button" :class="closeButton" @click="emit('close')">{{ t('Close') }}</button>
           </div>
         </div>
       </div>
@@ -159,6 +159,8 @@ import { ACCESS_CODE_STATUS_LABELS, useGifts } from '~/composables/useGifts'
 import { getErrorMessage } from '~/utils/apiError'
 import { useModalA11y } from '~/composables/useModalA11y'
 import { formatDateTime } from '~/utils/dateTime'
+
+const { t } = useT()
 
 const props = defineProps<{
   code: AccessCode | null
@@ -197,7 +199,7 @@ async function reveal() {
   try {
     revealed.value = (await revealAccessCode(props.code.id)).code
   } catch (err) {
-    revealError.value = getErrorMessage(err, 'Unable to show the full code')
+    revealError.value = getErrorMessage(err, t('Unable to show the full code'))
   } finally {
     revealing.value = false
   }
@@ -211,12 +213,12 @@ const dangerButton = 'inline-flex h-9 cursor-pointer items-center gap-1.5 rounde
 const closeButton = 'inline-flex h-9 cursor-pointer items-center rounded-[10px] border border-white/10 bg-white/5 px-4 text-[13px] font-semibold text-white/85 hover:bg-white/9 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50 light:border-slate-200 light:bg-white light:text-slate-700 light:hover:bg-slate-50'
 
 const STATUS_HELP: Record<string, string> = {
-  active: 'Can be redeemed now.',
+  active: t('Can be redeemed now.'),
   awaiting_payment: 'A gift code. It starts working once the buyer\'s payment goes through.',
-  redeemed: 'Redeemed. It can\'t be used again.',
-  used_up: 'Every use has been redeemed.',
-  revoked: 'Turned off by an admin. Enrollments it already made are kept.',
-  expired: 'Past its expiry date. It can no longer be redeemed.',
+  redeemed: t('Redeemed. It can\'t be used again.'),
+  used_up: t('Every use has been redeemed.'),
+  revoked: t('Turned off by an admin. Enrollments it already made are kept.'),
+  expired: t('Past its expiry date. It can no longer be redeemed.'),
 }
 
 const usesLeft = computed(() => Math.max(0, (props.code?.maxUses ?? 0) - (props.code?.uses ?? 0)))
@@ -230,7 +232,7 @@ const expiryHint = computed(() => {
   if (!props.code?.expiresAt) return ''
   const days = Math.round((new Date(props.code.expiresAt).getTime() - Date.now()) / 86_400_000)
   if (days < 0) return `Expired ${Math.abs(days)} ${Math.abs(days) === 1 ? 'day' : 'days'} ago`
-  if (days === 0) return 'Expires today'
+  if (days === 0) return t('Expires today')
   return `In ${days} ${days === 1 ? 'day' : 'days'}`
 })
 
@@ -245,9 +247,9 @@ async function copy() {
   if (!props.code) return
   try {
     await navigator.clipboard.writeText(revealed.value ?? props.code.hint)
-    toast.success(revealed.value ? 'Code copied' : 'Code ending copied')
+    toast.success(revealed.value ? t('Code copied') : t('Code ending copied'))
   } catch {
-    toast.error('Could not copy', 'Select the text and copy it manually.')
+    toast.error(t('Could not copy'), t('Select the text and copy it manually.'))
   }
 }
 </script>

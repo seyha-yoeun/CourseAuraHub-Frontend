@@ -3,8 +3,8 @@
     <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
       <KeyRound :size="20" class="text-brand-400" />
       <div>
-        <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Password</h3>
-        <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Changing it signs out every other device</p>
+        <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Password') }}</h3>
+        <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">{{ t('Changing it signs out every other device') }}</p>
       </div>
     </div>
 
@@ -12,17 +12,16 @@
       v-if="!hasPassword"
       class="rounded-xl border border-white/5 bg-white/2 p-3.5 text-[13px] leading-relaxed text-white/55 light:border-slate-200 light:bg-slate-50 light:text-slate-600"
     >
-      You sign in with {{ providerLabel }}, so this account has no password to change.
-      To add one, sign out and use
-      <NuxtLink to="/auth/forgot-password" class="font-semibold text-brand-400 no-underline hover:underline light:text-brand-600">Forgot password</NuxtLink>
-      with your account email.
+      {{ t('You sign in with {provider}, so this account has no password to change. To add one, sign out and use', { provider: providerLabel }) }}
+      <NuxtLink to="/auth/forgot-password" class="font-semibold text-brand-400 no-underline hover:underline light:text-brand-600">{{ t('Forgot password') }}</NuxtLink>
+      {{ t('with your account email.') }}
     </div>
 
     <form v-else class="flex flex-col gap-3.5" @submit.prevent="handleSubmit">
       <Transition v-bind="alertAnim">
         <div v-if="saved" class="flex items-center gap-2.5 rounded-xl border border-emerald-400/30 bg-emerald-400/12 px-4 py-2.5 text-[13px] font-medium text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700">
           <CheckCircle2 :size="16" />
-          <span>Password updated. Other devices have been signed out.</span>
+          <span>{{ t('Password updated. Other devices have been signed out.') }}</span>
         </div>
       </Transition>
 
@@ -35,7 +34,7 @@
       </div>
 
       <div class="flex flex-col gap-1.5">
-        <label for="current-password" class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Current Password</label>
+        <label for="current-password" class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Current Password') }}</label>
         <input
           id="current-password"
           v-model="form.currentPassword"
@@ -49,7 +48,7 @@
 
       <div class="flex flex-col gap-3 sm:flex-row">
         <div class="flex flex-1 flex-col gap-1.5">
-          <label for="new-password" class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">New Password</label>
+          <label for="new-password" class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('New Password') }}</label>
           <input
             id="new-password"
             v-model="form.newPassword"
@@ -61,7 +60,7 @@
           <p v-if="errors.newPassword" class="text-xs text-red-500">{{ errors.newPassword }}</p>
         </div>
         <div class="flex flex-1 flex-col gap-1.5">
-          <label for="confirm-password" class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Confirm New Password</label>
+          <label for="confirm-password" class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Confirm New Password') }}</label>
           <input
             id="confirm-password"
             v-model="form.confirmPassword"
@@ -84,7 +83,7 @@
         >
           <Loader2 v-if="saving" :size="16" class="animate-spin" />
           <Save v-else :size="16" />
-          <span>{{ saving ? 'Updating...' : 'Update Password' }}</span>
+          <span>{{ saving ? t('Updating...') : t('Update Password') }}</span>
         </button>
       </div>
     </form>
@@ -96,6 +95,8 @@ import { CheckCircle2, KeyRound, Loader2, Save } from 'lucide-vue-next'
 import PasswordStrengthMeter from '~/components/auth/PasswordStrengthMeter.vue'
 import { useAuth } from '~/composables/useAuth'
 import { toApiError } from '~/utils/apiError'
+
+const { t } = useT()
 
 const emit = defineEmits<{ changed: [] }>()
 
@@ -145,20 +146,20 @@ function validate() {
   let valid = true
 
   if (!form.currentPassword) {
-    errors.currentPassword = 'Current password is required'
+    errors.currentPassword = t('Current password is required')
     valid = false
   }
 
   if (!PASSWORD_PATTERN.test(form.newPassword)) {
-    errors.newPassword = 'Use at least 8 characters with uppercase, lowercase, a number, and a special character'
+    errors.newPassword = t('Use at least 8 characters with uppercase, lowercase, a number, and a special character')
     valid = false
   } else if (form.newPassword === form.currentPassword) {
-    errors.newPassword = 'Choose a password you have not used for this account'
+    errors.newPassword = t('Choose a password you have not used for this account')
     valid = false
   }
 
   if (form.newPassword !== form.confirmPassword) {
-    errors.confirmPassword = 'Passwords do not match'
+    errors.confirmPassword = t('Passwords do not match')
     valid = false
   }
 
@@ -183,7 +184,7 @@ async function handleSubmit() {
     if (savedTimer) clearTimeout(savedTimer)
     savedTimer = setTimeout(() => { saved.value = false }, 5000)
   } catch (error) {
-    const apiError = toApiError(error, 'Unable to change your password')
+    const apiError = toApiError(error, t('Unable to change your password'))
 
     if (apiError.fieldErrors.currentPassword) errors.currentPassword = apiError.fieldErrors.currentPassword
     if (apiError.fieldErrors.newPassword) errors.newPassword = apiError.fieldErrors.newPassword

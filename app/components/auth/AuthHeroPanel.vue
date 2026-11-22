@@ -10,11 +10,11 @@
 
     <!-- Pitch -->
     <div v-motion="enter(0)" class="relative max-w-[520px]">
-      <p class="text-[11.5px] font-semibold tracking-[0.14em] text-brand-300/80 uppercase">Courses built by working engineers</p>
+      <p class="text-[11.5px] font-semibold tracking-[0.14em] text-brand-300/80 uppercase">{{ t('Courses built by working engineers') }}</p>
       <h2 class="mt-3.5 text-[clamp(26px,1.6vw+12px,38px)] leading-[1.12] font-bold tracking-[-0.025em] text-white">
-        Learn the skills teams
-        <em class="font-['Instrument_Serif',ui-serif,Georgia,serif] text-[1.08em] font-normal tracking-normal text-brand-300">actually</em>
-        hire for — one real project at a time.
+        {{ t('Learn the skills teams') }}
+        <em class="font-['Instrument_Serif',ui-serif,Georgia,serif] text-[1.08em] font-normal tracking-normal text-brand-300">{{ t('actually') }}</em>
+        {{ t('hire for — one real project at a time.') }}
       </h2>
     </div>
 
@@ -26,37 +26,37 @@
           <div class="relative bg-[#0a110f] px-4 pt-4 pb-11 font-mono text-[11.5px] leading-[1.75] text-white/80 shorter:pb-10 tiny:hidden">
             <div><span class="text-sky-300">resource</span> <span class="text-amber-200">"aws_lambda_function"</span> <span class="text-amber-200">"api"</span> {</div>
             <div class="pl-4">function_name = <span class="text-amber-200">"orders-api"</span></div>
-            <div class="pl-4">runtime&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="text-amber-200">"nodejs20.x"</span></div>
-            <div class="pl-4 shorter:hidden">handler&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="text-amber-200">"index.handler"</span></div>
-            <div class="pl-4 opacity-50 shorter:hidden">memory_size&nbsp;&nbsp;= <span class="text-brand-300">512</span></div>
-            <span class="absolute bottom-3 left-4 rounded-full border border-brand-300/30 bg-brand-300/15 px-2.5 py-0.5 font-sans text-[10.5px] font-semibold text-brand-200">Bestseller</span>
+            <div class="pl-4">runtime      = <span class="text-amber-200">"nodejs20.x"</span></div>
+            <div class="pl-4 shorter:hidden">handler      = <span class="text-amber-200">"index.handler"</span></div>
+            <div class="pl-4 opacity-50 shorter:hidden">memory_size  = <span class="text-brand-300">512</span></div>
+            <span class="absolute bottom-3 left-4 rounded-full border border-brand-300/30 bg-brand-300/15 px-2.5 py-0.5 font-sans text-[10.5px] font-semibold text-brand-200">{{ t('Bestseller') }}</span>
             <span class="absolute right-4 bottom-2.5 flex size-8 items-center justify-center rounded-full bg-white text-[#0a110f] shadow-md">
               <Play :size="13" class="ml-0.5 fill-current" />
             </span>
           </div>
           <div class="p-4">
             <p class="flex flex-wrap items-center gap-x-1.5 text-[11px] text-white/45 light:text-slate-500">
-              <span class="font-semibold text-brand-400 light:text-brand-700">Cloud</span>
-              <span>·</span><span>Intermediate</span><span>·</span><span>42 lessons</span><span>·</span><span>18h</span>
+              <span class="font-semibold text-brand-400 light:text-brand-700">{{ t('Cloud') }}</span>
+              <span>·</span><span>{{ t('Intermediate') }}</span><span>·</span><span>{{ t('42 lessons') }}</span><span>·</span><span>18h</span>
             </p>
-            <p class="mt-1.5 text-[15px] leading-snug font-bold text-white light:text-slate-900">Cloud Architecture on AWS: Ship a Production-Ready API</p>
+            <p class="mt-1.5 text-[15px] leading-snug font-bold text-white light:text-slate-900">{{ t('Cloud Architecture on AWS: Ship a Production-Ready API') }}</p>
             <div class="mt-3 flex items-center gap-2.5">
               <span class="flex size-7 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white">PR</span>
               <div class="min-w-0 leading-tight">
                 <p class="text-[12px] font-semibold text-white/90 light:text-slate-800">Priya Raman</p>
-                <p class="truncate text-[10.5px] text-white/45 light:text-slate-500">Staff Engineer · 11 yrs in cloud infra</p>
+                <p class="truncate text-[10.5px] text-white/45 light:text-slate-500">{{ t('Staff Engineer · 11 yrs in cloud infra') }}</p>
               </div>
             </div>
             <div class="mt-3.5 border-t border-white/8 pt-3 light:border-slate-200">
               <div class="flex items-center justify-between text-[11px] text-white/55 light:text-slate-500">
-                <span class="inline-flex items-center gap-1"><Star :size="12" class="fill-amber-400 text-amber-400" /><span class="font-semibold text-white/90 light:text-slate-800">4.9</span> (2,184 reviews)</span>
-                <span>6,320 enrolled</span>
+                <span class="inline-flex items-center gap-1"><Star :size="12" class="fill-amber-400 text-amber-400" /><span class="font-semibold text-white/90 light:text-slate-800">4.9</span> {{ t('(2,184 reviews)') }}</span>
+                <span>{{ t('6,320 enrolled') }}</span>
               </div>
               <div class="mt-2.5 h-1.5 overflow-hidden rounded-full bg-white/10 light:bg-slate-200">
                 <div class="h-full w-[34%] rounded-full bg-brand-500 light:bg-brand-700" />
               </div>
               <div class="mt-1.5 flex justify-between text-[10.5px] text-white/45 light:text-slate-500">
-                <span>Your progress · Lesson 14 of 42</span><span>34%</span>
+                <span>{{ t('Your progress · Lesson 14 of 42') }}</span><span>34%</span>
               </div>
             </div>
           </div>
@@ -65,17 +65,17 @@
         <!-- Testimonial -->
         <figure v-motion="enter(0.16)" class="mt-[18%] hidden w-[220px] shrink-0 rounded-[16px] border border-white/12 bg-white/6 p-4.5 backdrop-blur-md xl:block">
           <blockquote class="font-['Instrument_Serif',ui-serif,Georgia,serif] text-[17px] leading-[1.35] text-white/90">
-            “The capstone project became the centerpiece of my portfolio. Three interviews later, I got the offer.”
+            {{ t('“The capstone project became the centerpiece of my portfolio. Three interviews later, I got the offer.”') }}
           </blockquote>
           <figcaption class="mt-4 flex items-center gap-2.5">
             <span class="flex size-7 items-center justify-center rounded-full bg-orange-500 text-[10px] font-bold text-white">DO</span>
             <span class="leading-tight">
               <span class="block text-[12px] font-semibold text-white/90">Daniel Okafor</span>
-              <span class="block text-[10.5px] text-white/50">Backend Engineer</span>
+              <span class="block text-[10.5px] text-white/50">{{ t('Backend Engineer') }}</span>
             </span>
           </figcaption>
           <span class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-brand-300/25 bg-brand-300/10 px-2.5 py-1 text-[10.5px] font-medium text-brand-200">
-            <Check :size="11" /> Verified learner · 4 courses
+            <Check :size="11" /> {{ t('Verified learner · 4 courses') }}
           </span>
         </figure>
       </div>
@@ -104,11 +104,13 @@
 <script setup lang="ts">
 import { Check, Play, Star } from 'lucide-vue-next'
 
+const { t } = useT()
+
 // Showcase copy. Replace with real catalog figures when a public stats endpoint exists.
 const stats = [
-  { value: '12,400+', label: 'Active learners' },
-  { value: '4.8/5', label: 'Avg. course rating' },
-  { value: '140', label: 'Hands-on courses' },
+  { value: '12,400+', label: t('Active learners') },
+  { value: '4.8/5', label: t('Avg. course rating') },
+  { value: '140', label: t('Hands-on courses') },
 ]
 
 const avatars = [

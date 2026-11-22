@@ -19,7 +19,21 @@
 
           <template v-if="showInput">
             <label v-if="label" :for="inputId" class="mt-4 mb-1.5 block text-xs font-semibold text-white/60 light:text-slate-600">{{ label }}</label>
+            <input
+              v-if="inputType === 'text'"
+              :id="inputId"
+              ref="inputRef"
+              v-model="value"
+              type="text"
+              :required="required"
+              :maxlength="maxlength"
+              :placeholder="placeholder"
+              :aria-label="label || title"
+              class="h-10.5 w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400"
+              :class="label ? '' : 'mt-4'"
+            >
             <textarea
+              v-else
               :id="inputId"
               v-model="value"
               :rows="rows"
@@ -47,7 +61,7 @@
               :class="tone === 'danger'
                 ? 'border-rose-500/40 bg-linear-to-br from-rose-600 to-rose-700 enabled:hover:from-rose-500 enabled:hover:to-rose-600'
                 : 'border-brand-500/40 bg-brand-500 enabled:hover:bg-brand-600'"
-              :disabled="loading || disabled || (showInput && required && !value.trim())"
+              :disabled="loading || disabled || (showInput && required && !value.trim()) || (requireChange && value.trim() === initialValue.trim())"
             >
               <Loader2 v-if="loading" :size="16" class="animate-spin" />
               <span>{{ confirmLabel || t('Confirm') }}</span>
@@ -82,6 +96,10 @@ const props = withDefaults(defineProps<{
   loading?: boolean
   disabled?: boolean
   showInput?: boolean
+  // 'text' is a single line where Enter submits (names, titles); 'textarea' for notes and reasons
+  inputType?: 'text' | 'textarea'
+  // Keep the confirm button disabled until the value differs from initialValue (renames)
+  requireChange?: boolean
 }>(), {
   tone: 'primary',
   required: false,
@@ -89,6 +107,8 @@ const props = withDefaults(defineProps<{
   rows: 3,
   initialValue: '',
   showInput: true,
+  inputType: 'textarea',
+  requireChange: false,
 })
 
 const emit = defineEmits<{
@@ -98,6 +118,7 @@ const emit = defineEmits<{
 
 const { t } = useT()
 const dialogRef = ref<HTMLElement | null>(null)
+const inputRef = ref<HTMLInputElement | null>(null)
 const value = ref(props.initialValue)
 const id = useId()
 const titleId = `prompt-title-${id}`
@@ -112,6 +133,15 @@ useModalA11y({
   dialogRef,
   onClose: () => emit('close'),
 })
+
+// Single-line prompts start in the field with the current text selected, ready to type over.
+// Registered after useModalA11y with the same 'post' flush, so it runs after the dialog takes focus.
+watch(() => props.isOpen, async (open) => {
+  if (!open || props.inputType !== 'text') return
+  await nextTick()
+  inputRef.value?.focus({ preventScroll: true })
+  inputRef.value?.select()
+}, { flush: 'post' })
 
 function submit() {
   emit('confirm', value.value.trim())

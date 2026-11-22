@@ -2,8 +2,8 @@
   <div class="flex flex-col gap-6">
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Member Cards</h1>
-        <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Review applications, create cards and manage balances.</p>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ t('Member Cards') }}</h1>
+        <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">{{ t('Review applications, create cards and manage balances.') }}</p>
       </div>
       <div class="flex gap-1 rounded-xl border border-white/10 bg-white/5 p-1 light:border-slate-200 light:bg-slate-100" role="tablist">
         <button v-for="item in tabs" :key="item.value" type="button" role="tab" :aria-selected="tab === item.value" class="cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-colors" :class="tab === item.value ? 'bg-brand-500 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'" @click="tab = item.value">
@@ -15,29 +15,29 @@
     <!-- Applications -->
     <template v-if="tab === 'applications'">
       <div class="w-full sm:w-52">
-        <AppDropdown v-model="statusFilter" :options="statusOptions" aria-label="Filter applications by status" />
+        <AppDropdown v-model="statusFilter" :options="statusOptions" :aria-label="t('Filter applications by status')" />
       </div>
 
       <div v-if="applicationsPending && !applicationData" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
-      <p v-else-if="applicationsError" :class="messageClass">{{ getErrorMessage(applicationsError, 'Unable to load applications') }}</p>
-      <p v-else-if="!applications.length" :class="messageClass">No applications found.</p>
+      <p v-else-if="applicationsError" :class="messageClass">{{ getErrorMessage(applicationsError, t('Unable to load applications')) }}</p>
+      <p v-else-if="!applications.length" :class="messageClass">{{ t('No applications found.') }}</p>
 
-      <DataTableFrame v-else label="Member card applications" :scroll-key="`${applicationPage}:${applicationPageSize}`" :class="applicationsPending && 'opacity-60 transition-opacity'">
+      <DataTableFrame v-else :label="t('Member card applications')" :scroll-key="`${applicationPage}:${applicationPageSize}`" :class="applicationsPending && 'opacity-60 transition-opacity'">
         <table class="w-full min-w-200 border-collapse text-left text-[13px]">
           <thead>
             <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
-              <th class="px-4 py-3 font-semibold">Applicant</th>
-              <th class="px-4 py-3 font-semibold">Contact</th>
-              <th class="px-4 py-3 font-semibold">Applied</th>
-              <th class="px-4 py-3 font-semibold">Status</th>
-              <th class="px-4 py-3 text-right font-semibold">Actions</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Applicant') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Contact') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Applied') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Status') }}</th>
+              <th class="px-4 py-3 text-right font-semibold">{{ t('Actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-white/6 light:divide-slate-200">
             <tr v-for="item in applications" :key="item.id">
               <td class="px-4 py-3">
                 <span class="block font-semibold text-slate-100 light:text-slate-900">{{ item.fullName }}</span>
-                <span class="text-xs text-white/40 light:text-slate-500">Born {{ item.dateOfBirth }}</span>
+                <span class="text-xs text-white/40 light:text-slate-500">{{ t('Born {dateOfBirth}', { dateOfBirth: item.dateOfBirth }) }}</span>
               </td>
               <td class="max-w-72 px-4 py-3 text-white/70 light:text-slate-600">
                 <span class="block">{{ item.studentEmail }} · {{ item.phone }}</span>
@@ -50,8 +50,8 @@
               </td>
               <td class="px-4 py-3 text-right whitespace-nowrap">
                 <template v-if="item.status === 'PENDING'">
-                  <button type="button" :class="approveButton" :disabled="busyId === item.id" @click="approve(item)">Approve</button>
-                  <button type="button" :class="rejectButton" class="ml-2" :disabled="busyId === item.id" @click="rejecting = item">Reject</button>
+                  <button type="button" :class="approveButton" :disabled="busyId === item.id" @click="approve(item)">{{ t('Approve') }}</button>
+                  <button type="button" :class="rejectButton" class="ml-2" :disabled="busyId === item.id" @click="rejecting = item">{{ t('Reject') }}</button>
                 </template>
               </td>
             </tr>
@@ -69,23 +69,23 @@
     <!-- Cards -->
     <template v-else>
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <input v-model="searchInput" type="search" aria-label="Search member cards" placeholder="Search by name, card number or email" :class="inputClass" class="sm:max-w-80">
-        <button type="button" :class="primaryButton" @click="openCreate">New Card</button>
+        <input v-model="searchInput" type="search" :aria-label="t('Search member cards')" :placeholder="t('Search by name, card number or email')" :class="inputClass" class="sm:max-w-80">
+        <button type="button" :class="primaryButton" @click="openCreate">{{ t('New Card') }}</button>
       </div>
 
       <div v-if="cardsPending && !cardData" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
-      <p v-else-if="cardsError" :class="messageClass">{{ getErrorMessage(cardsError, 'Unable to load member cards') }}</p>
-      <p v-else-if="!cards.length" :class="messageClass">{{ cardSearch ? 'No cards match your search.' : 'No member cards yet.' }}</p>
+      <p v-else-if="cardsError" :class="messageClass">{{ getErrorMessage(cardsError, t('Unable to load member cards')) }}</p>
+      <p v-else-if="!cards.length" :class="messageClass">{{ cardSearch ? t('No cards match your search.') : t('No member cards yet.') }}</p>
 
-      <DataTableFrame v-else label="Member cards" :scroll-key="`${cardPage}:${cardPageSize}`" :class="cardsPending && 'opacity-60 transition-opacity'">
+      <DataTableFrame v-else :label="t('Member cards')" :scroll-key="`${cardPage}:${cardPageSize}`" :class="cardsPending && 'opacity-60 transition-opacity'">
         <table class="w-full min-w-180 border-collapse text-left text-[13px]">
           <thead>
             <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
-              <th class="px-4 py-3 font-semibold">Holder</th>
-              <th class="px-4 py-3 font-semibold">Card</th>
-              <th class="px-4 py-3 font-semibold">Balance</th>
-              <th class="px-4 py-3 font-semibold">Status</th>
-              <th class="px-4 py-3 text-right font-semibold">Actions</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Holder') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Card') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Balance') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Status') }}</th>
+              <th class="px-4 py-3 text-right font-semibold">{{ t('Actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-white/6 light:divide-slate-200">
@@ -98,8 +98,8 @@
               <td class="px-4 py-3 font-semibold text-emerald-400 light:text-emerald-700">{{ formatMoney(item.balance, item.currency) }}</td>
               <td class="px-4 py-3 text-xs font-semibold capitalize text-white/70 light:text-slate-600">{{ item.status.toLowerCase() }}</td>
               <td class="px-4 py-3 text-right">
-                <button type="button" :class="approveButton" @click="selectedId = item.id">Add Money</button>
-                <button type="button" :class="approveButton" class="ml-2" @click="selectedId = item.id">Manage</button>
+                <button type="button" :class="approveButton" @click="selectedId = item.id">{{ t('Add Money') }}</button>
+                <button type="button" :class="approveButton" class="ml-2" @click="selectedId = item.id">{{ t('Manage') }}</button>
               </td>
             </tr>
           </tbody>
@@ -114,8 +114,8 @@
 
     <ConfirmDeleteModal
       :is-open="deleting !== null"
-      title="Delete Member Card"
-      description="The learner loses this card and can apply again. This can't be undone."
+      :title="t('Delete Member Card')"
+      :description="t('The learner loses this card and can apply again. This can\'t be undone.')"
       :item-name="deleting ? `${deleting.holderName} — ${deleting.cardNumber}` : ''"
       :loading="deleteBusy"
       @close="deleting = null"
@@ -126,25 +126,25 @@
     <Teleport to="body">
       <div v-if="creating" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl" @click.self="creating = false">
         <form class="w-full max-w-110 rounded-[20px] border border-brand-500/25 bg-[#101814] p-5 light:border-brand-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="create-title" @submit.prevent="create">
-          <h2 id="create-title" class="text-lg font-bold text-slate-50 light:text-slate-900">New Member Card</h2>
-          <p class="mt-1 text-xs text-white/45 light:text-slate-500">Issues a card straight away. A pending application from this learner is approved with it.</p>
+          <h2 id="create-title" class="text-lg font-bold text-slate-50 light:text-slate-900">{{ t('New Member Card') }}</h2>
+          <p class="mt-1 text-xs text-white/45 light:text-slate-500">{{ t('Issues a card straight away. A pending application from this learner is approved with it.') }}</p>
           <div class="mt-4 flex flex-col gap-3">
             <div class="flex flex-col gap-1.5">
-              <label :class="labelClass" for="create-student">Learner</label>
-              <AppDropdown id="create-student" v-model="createForm.studentId" :options="studentOptions" placeholder="Choose a learner" />
+              <label :class="labelClass" for="create-student">{{ t('Learner') }}</label>
+              <AppDropdown id="create-student" v-model="createForm.studentId" :options="studentOptions" :placeholder="t('Choose a learner')" />
             </div>
             <div class="flex flex-col gap-1.5">
-              <label :class="labelClass" for="create-holder">Holder Name</label>
+              <label :class="labelClass" for="create-holder">{{ t('Holder Name') }}</label>
               <input id="create-holder" v-model="createForm.holderName" type="text" required maxlength="150" :class="inputClass">
             </div>
             <div class="flex flex-col gap-1.5">
-              <label :class="labelClass" for="create-balance">Opening Balance (optional)</label>
+              <label :class="labelClass" for="create-balance">{{ t('Opening Balance (optional)') }}</label>
               <input id="create-balance" v-model.number="createForm.openingBalance" type="number" min="0" step="0.01" :class="inputClass">
             </div>
           </div>
           <div class="mt-4 flex justify-end gap-2">
-            <button type="button" :class="approveButton" @click="creating = false">Cancel</button>
-            <button type="submit" :class="primaryButton" :disabled="createBusy || !canCreate">Create Card</button>
+            <button type="button" :class="approveButton" @click="creating = false">{{ t('Cancel') }}</button>
+            <button type="submit" :class="primaryButton" :disabled="createBusy || !canCreate">{{ t('Create Card') }}</button>
           </div>
         </form>
       </div>
@@ -154,12 +154,12 @@
     <Teleport to="body">
       <div v-if="rejecting" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl" @click.self="rejecting = null">
         <form class="w-full max-w-110 rounded-[20px] border border-rose-500/25 bg-[#101814] p-5 light:border-rose-200 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="reject-title" @submit.prevent="reject">
-          <h2 id="reject-title" class="text-lg font-bold text-slate-50 light:text-slate-900">Reject {{ rejecting.fullName }}</h2>
-          <p class="mt-1 text-xs text-white/45 light:text-slate-500">The learner sees this reason and can apply again.</p>
-          <textarea v-model="rejectNote" rows="3" required maxlength="500" aria-label="Reason" class="mt-3 w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none focus:border-brand-500/50 light:border-slate-300 light:bg-white light:text-slate-900" />
+          <h2 id="reject-title" class="text-lg font-bold text-slate-50 light:text-slate-900">{{ t('Reject {fullName}', { fullName: rejecting.fullName }) }}</h2>
+          <p class="mt-1 text-xs text-white/45 light:text-slate-500">{{ t('The learner sees this reason and can apply again.') }}</p>
+          <textarea v-model="rejectNote" rows="3" required maxlength="500" :aria-label="t('Reason')" class="mt-3 w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none focus:border-brand-500/50 light:border-slate-300 light:bg-white light:text-slate-900" />
           <div class="mt-3 flex justify-end gap-2">
-            <button type="button" :class="approveButton" @click="rejecting = null">Cancel</button>
-            <button type="submit" :class="rejectButton" :disabled="busyId === rejecting.id || !rejectNote.trim()">Reject</button>
+            <button type="button" :class="approveButton" @click="rejecting = null">{{ t('Cancel') }}</button>
+            <button type="submit" :class="rejectButton" :disabled="busyId === rejecting.id || !rejectNote.trim()">{{ t('Reject') }}</button>
           </div>
         </form>
       </div>
@@ -184,8 +184,10 @@ import { useMemberCard } from '~/composables/useMemberCard'
 import { getErrorMessage } from '~/utils/apiError'
 import { formatDateTime } from '~/utils/dateTime'
 
+const { t } = useT()
+
 definePageMeta({ requiresAdmin: true })
-useHead({ title: 'Member Cards' })
+useHead({ title: t('Member Cards') })
 
 const toast = useAppToast()
 const { fetchApplications, approveApplication, rejectApplication, fetchCards, fetchCard, createCard, deleteCard } = useMemberCard()
@@ -200,16 +202,16 @@ const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3
 const messageClass = 'rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500'
 
 const tabs = [
-  { value: 'applications', label: 'Applications' },
-  { value: 'cards', label: 'Cards' },
+  { value: 'applications', label: t('Applications') },
+  { value: 'cards', label: t('Cards') },
   { value: 'top-ups', label: 'Top-Ups' },
-  { value: 'report', label: 'Report' }
+  { value: 'report', label: t('Report') }
 ]
 const statusOptions = [
-  { value: '', label: 'All Statuses' },
-  { value: 'PENDING', label: 'Pending' },
-  { value: 'APPROVED', label: 'Approved' },
-  { value: 'REJECTED', label: 'Rejected' }
+  { value: '', label: t('All Statuses') },
+  { value: 'PENDING', label: t('Pending') },
+  { value: 'APPROVED', label: t('Approved') },
+  { value: 'REJECTED', label: t('Rejected') }
 ]
 
 const tab = ref('applications')
@@ -258,7 +260,7 @@ async function loadSelectedCard() {
     const card = await fetchCard(id)
     if (selectedId.value === id) loadedCard.value = card
   } catch (err) {
-    toast.error('Card Unavailable', getErrorMessage(err, 'Unable to load this member card'))
+    toast.error(t('Card Unavailable'), getErrorMessage(err, t('Unable to load this member card')))
     selectedId.value = null
   }
 }
@@ -309,7 +311,7 @@ async function openCreate() {
   try {
     students.value = await $fetch<Student[]>('/api/students')
   } catch (err) {
-    toast.error('Learners Not Loaded', getErrorMessage(err, 'Unable to load learners'))
+    toast.error(t('Learners Not Loaded'), getErrorMessage(err, t('Unable to load learners')))
   }
 }
 
@@ -321,11 +323,11 @@ async function create() {
       holderName: createForm.holderName.trim(),
       openingBalance: Number(createForm.openingBalance) || undefined
     })
-    toast.success('Card Created', `${card.holderName} now has a member card.`)
+    toast.success(t('Card Created'), `${card.holderName} now has a member card.`)
     creating.value = false
     await Promise.all([refreshCards(), refreshApplications()])
   } catch (err) {
-    toast.error('Card Not Created', getErrorMessage(err, 'Unable to create this card'))
+    toast.error(t('Card Not Created'), getErrorMessage(err, t('Unable to create this card')))
   } finally {
     createBusy.value = false
   }
@@ -346,11 +348,11 @@ async function confirmDelete() {
   deleteBusy.value = true
   try {
     await deleteCard(card.id)
-    toast.success('Card Deleted', card.holderName)
+    toast.success(t('Card Deleted'), card.holderName)
     deleting.value = null
     await refreshCards()
   } catch (err) {
-    toast.error('Card Not Deleted', getErrorMessage(err, 'Unable to delete this card'))
+    toast.error(t('Card Not Deleted'), getErrorMessage(err, t('Unable to delete this card')))
   } finally {
     deleteBusy.value = false
   }
@@ -360,10 +362,10 @@ async function approve(application: MemberCardApplication) {
   busyId.value = application.id
   try {
     await approveApplication(application.id)
-    toast.success('Application Approved', `${application.fullName} now has a member card.`)
+    toast.success(t('Application Approved'), `${application.fullName} now has a member card.`)
     await Promise.all([refreshApplications(), refreshCards()])
   } catch (err) {
-    toast.error('Application Not Approved', getErrorMessage(err, 'Unable to approve this application'))
+    toast.error(t('Application Not Approved'), getErrorMessage(err, t('Unable to approve this application')))
   } finally {
     busyId.value = null
   }
@@ -376,12 +378,12 @@ async function reject() {
   busyId.value = application.id
   try {
     await rejectApplication(application.id, rejectNote.value.trim())
-    toast.info('Application Rejected', application.fullName)
+    toast.info(t('Application Rejected'), application.fullName)
     rejecting.value = null
     rejectNote.value = ''
     await refreshApplications()
   } catch (err) {
-    toast.error('Application Not Rejected', getErrorMessage(err, 'Unable to reject this application'))
+    toast.error(t('Application Not Rejected'), getErrorMessage(err, t('Unable to reject this application')))
   } finally {
     busyId.value = null
   }

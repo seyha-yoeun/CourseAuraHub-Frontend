@@ -209,7 +209,7 @@
     <ConfirmDeleteModal
       :is-open="Boolean(moderating)"
       :title="t('Delete Review')"
-      description="This review will be removed and the course rating recalculated."
+      :description="t('This review will be removed and the course rating recalculated.')"
       :item-name="moderating ? `${moderating.reviewerName} · ${moderating.rating}★` : undefined"
       :loading="saving"
       @close="moderating = null"
@@ -358,7 +358,7 @@ async function handleSave() {
   saving.value = true
   try {
     myReview.value = await saveMyReview(props.slug, draftRating.value, draftComment.value.trim())
-    toast.success(t('Review Saved'), 'Thanks for sharing your feedback.')
+    toast.success(t('Review Saved'), t('Thanks for sharing your feedback.'))
     await loadPage()
     emit('changed')
   } catch (err) {

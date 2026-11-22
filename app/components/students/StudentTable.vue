@@ -1,38 +1,38 @@
 <template>
-  <DataTableFrame label="Students" :scroll-key="scrollKey">
+  <DataTableFrame :label="t('Students')" :scroll-key="scrollKey">
     <template #toolbar>
       <div class="relative min-w-60 flex-1">
         <Search :size="16" class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-white/40 light:text-slate-400" aria-hidden="true" />
         <input
           v-model="searchQuery"
           type="search"
-          aria-label="Search students"
-          placeholder="Search by name, email or country"
+          :aria-label="t('Search students')"
+          :placeholder="t('Search by name, email or country')"
           class="h-9.5 w-full rounded-[10px] border border-white/10 bg-white/4 pr-3.5 pl-9.5 text-[13px] text-slate-100 outline-none transition-colors placeholder:text-white/35 focus:border-brand-400/60 focus:ring-2 focus:ring-brand-400/15 light:border-slate-200 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-500"
         >
       </div>
       <div class="w-full sm:w-48">
-        <AppDropdown v-model="statusFilter" :options="statusOptions" placeholder="All statuses" size="sm" aria-label="Filter by status" />
+        <AppDropdown v-model="statusFilter" :options="statusOptions" :placeholder="t('All statuses')" size="sm" :aria-label="t('Filter by status')" />
       </div>
     </template>
 
     <table class="min-w-200 border-collapse text-left text-[13px]">
       <thead>
         <tr>
-          <th class="px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500">Student</th>
-          <th class="hidden px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500 md:table-cell">Country</th>
-          <th class="hidden px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500 sm:table-cell">Enrolled</th>
-          <th class="hidden px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500 lg:table-cell">Completed</th>
-          <th class="px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500 text-right">Total spent</th>
-          <th class="px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500">Status</th>
-          <th class="hidden px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500 xl:table-cell">Joined</th>
-          <th class="hidden px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500 lg:table-cell">Last active</th>
+          <th class="px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500">{{ t('Student') }}</th>
+          <th class="hidden px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500 md:table-cell">{{ t('Country') }}</th>
+          <th class="hidden px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500 sm:table-cell">{{ t('Enrolled') }}</th>
+          <th class="hidden px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500 lg:table-cell">{{ t('Completed') }}</th>
+          <th class="px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500 text-right">{{ t('Total spent') }}</th>
+          <th class="px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500">{{ t('Status') }}</th>
+          <th class="hidden px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500 xl:table-cell">{{ t('Joined') }}</th>
+          <th class="hidden px-4 py-2.5 text-[12px] font-medium whitespace-nowrap text-white/45 light:text-slate-500 lg:table-cell">{{ t('Last active') }}</th>
         </tr>
       </thead>
       <tbody>
         <tr v-if="!filteredStudents.length">
           <td colspan="8" class="px-4 py-14 text-center text-[13px] text-white/45 light:text-slate-500">
-            No students match your search.
+            {{ t('No students match your search.') }}
           </td>
         </tr>
         <tr
@@ -85,6 +85,8 @@ import DataTableFrame from '~/components/shared/DataTableFrame.vue'
 import TablePagination from '~/components/shared/TablePagination.vue'
 import { useClientPagination } from '~/composables/useClientPagination'
 
+const { t } = useT()
+
 const props = defineProps<{
   students: Student[]
 }>()
@@ -97,9 +99,9 @@ const searchQuery = ref('')
 const statusFilter = ref('all')
 
 const statusOptions = [
-  { value: 'all', label: 'All statuses' },
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' }
+  { value: 'all', label: t('All statuses') },
+  { value: 'active', label: t('Active') },
+  { value: 'inactive', label: t('Inactive') }
 ]
 
 const filteredStudents = computed(() => {

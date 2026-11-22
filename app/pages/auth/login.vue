@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h1 :class="authTitle">Welcome back</h1>
-    <p :class="authSubtitle">Log in to continue your courses and track your progress.</p>
+    <h1 :class="authTitle">{{ t('Welcome back') }}</h1>
+    <p :class="authSubtitle">{{ t('Log in to continue your courses and track your progress.') }}</p>
 
     <div :class="authBodyGap">
-      <SocialLoginButtons :loading="loading" action-label="Log in" @click="handleSocialLogin" />
+      <SocialLoginButtons :loading="loading" :action-label="t('Log in')" @click="handleSocialLogin" />
     </div>
 
     <form :class="authForm" novalidate @submit.prevent="handleLogin">
@@ -14,7 +14,7 @@
       </div>
 
       <div v-if="needsVerification" :class="[authAlertWarning, 'flex-col gap-3']" role="alert">
-        <span>Please verify your email address before logging in. We'll send a fresh code to <strong class="break-all">{{ form.email }}</strong>.</span>
+        <span>{{ t('Please verify your email address before logging in. We\'ll send a fresh code to') }} <strong class="break-all">{{ form.email }}</strong>.</span>
         <button
           type="button"
           class="inline-flex cursor-pointer items-center gap-2 self-start rounded-lg bg-amber-300 px-3 py-1.5 text-[13px] font-semibold text-amber-950 transition-colors hover:bg-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/50 disabled:cursor-not-allowed disabled:opacity-60 light:bg-amber-600 light:text-white light:hover:bg-amber-700"
@@ -23,12 +23,12 @@
         >
           <Loader2 v-if="sendingVerification" :size="14" class="animate-spin" aria-hidden="true" />
           <MailCheck v-else :size="14" aria-hidden="true" />
-          <span>Send code &amp; verify</span>
+          <span>{{ t('Send code & verify') }}</span>
         </button>
       </div>
 
       <div :class="authField">
-        <label for="email" :class="authLabel">Email</label>
+        <label for="email" :class="authLabel">{{ t('Email') }}</label>
         <input
           id="email"
           v-model="form.email"
@@ -47,13 +47,13 @@
 
       <div :class="authField">
         <div class="flex items-center justify-between gap-3">
-          <label for="password" :class="authLabel">Password</label>
-          <NuxtLink to="/auth/forgot-password" :class="[authLink, 'text-[13px]']">Forgot password?</NuxtLink>
+          <label for="password" :class="authLabel">{{ t('Password') }}</label>
+          <NuxtLink to="/auth/forgot-password" :class="[authLink, 'text-[13px]']">{{ t('Forgot password?') }}</NuxtLink>
         </div>
         <PasswordInput
           id="password"
           v-model="form.password"
-          placeholder="Enter your password"
+          :placeholder="t('Enter your password')"
           autocomplete="current-password"
           :disabled="loading"
           :invalid="Boolean(errors.password)"
@@ -64,24 +64,24 @@
 
       <label class="flex w-fit cursor-pointer items-center gap-2.5 text-[13.5px] text-white/70 select-none light:text-slate-600">
         <input v-model="form.rememberMe" type="checkbox" :class="authCheckbox" :disabled="loading">
-        Keep me logged in for 30 days
+        {{ t('Keep me logged in for 30 days') }}
       </label>
 
       <button type="submit" :class="authPrimaryButton" :aria-disabled="loading || undefined" :aria-busy="loading">
         <template v-if="loading">
           <Loader2 :size="18" class="animate-spin" aria-hidden="true" />
-          <span>Logging in…</span>
+          <span>{{ t('Logging in…') }}</span>
         </template>
         <template v-else>
-          <span>Log in</span>
+          <span>{{ t('Log in') }}</span>
           <ArrowRight :size="16" aria-hidden="true" />
         </template>
       </button>
     </form>
 
     <p :class="[authFooterText, 'mt-6 short:mt-4']">
-      New to CourseAuraHub?
-      <NuxtLink :to="registerLink" :class="authStrongLink">Create a free account</NuxtLink>
+      {{ t('New to CourseAuraHub?') }}
+      <NuxtLink :to="registerLink" :class="authStrongLink">{{ t('Create a free account') }}</NuxtLink>
     </p>
   </div>
 </template>
@@ -112,6 +112,8 @@ import {
   authSubtitle,
   authTitle,
 } from '~/utils/authUi'
+
+const { t } = useT()
 
 const route = useRoute()
 const auth = useAuth()
@@ -144,7 +146,7 @@ const registerLink = computed(() => {
 const oauthError = getOAuthErrorMessage(route.query.error)
 
 if (route.query.session === 'expired') {
-  pageError.value = 'Your session has expired. Please log in again.'
+  pageError.value = t('Your session has expired. Please log in again.')
 } else if (oauthError) {
   pageError.value = oauthError
 }
@@ -163,15 +165,15 @@ function validateForm() {
   needsVerification.value = false
 
   if (!form.email) {
-    errors.email = 'Email is required'
+    errors.email = t('Email is required')
     valid = false
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.email = 'Please enter a valid email address'
+    errors.email = t('Please enter a valid email address')
     valid = false
   }
 
   if (!form.password) {
-    errors.password = 'Password is required'
+    errors.password = t('Password is required')
     valid = false
   }
 
@@ -186,7 +188,7 @@ async function handleLogin() {
   try {
     await login(form.email, form.password, form.rememberMe)
   } catch (error) {
-    const apiError = toApiError(error, 'Login failed')
+    const apiError = toApiError(error, t('Login failed'))
 
     if (apiError.fieldErrors.email) errors.email = apiError.fieldErrors.email
     if (apiError.fieldErrors.password) errors.password = apiError.fieldErrors.password
@@ -195,11 +197,11 @@ async function handleLogin() {
       needsVerification.value = true
     } else if (apiError.status === 401) {
       // Generic for wrong credentials; explains temporary lockouts.
-      pageError.value = apiError.message || 'Invalid email or password. Please try again.'
+      pageError.value = apiError.message || t('Invalid email or password. Please try again.')
     } else if (apiError.status === 403) {
       pageError.value = apiError.message
     } else if (apiError.status === 429) {
-      pageError.value = 'Too many sign-in attempts. Please wait a moment and try again.'
+      pageError.value = t('Too many sign-in attempts. Please wait a moment and try again.')
     } else if (!Object.keys(apiError.fieldErrors).length) {
       pageError.value = apiError.message
     }
@@ -214,10 +216,10 @@ async function goToVerification() {
     const redirect = getSafeRedirect(route.query.redirect)
     await router.push({ path: '/auth/verify-email', query: redirect ? { redirect } : undefined })
   } catch (error) {
-    const apiError = toApiError(error, 'Unable to send a verification code')
+    const apiError = toApiError(error, t('Unable to send a verification code'))
     needsVerification.value = false
     pageError.value = apiError.status === 429
-      ? 'Too many requests. Please wait a moment before asking for another code.'
+      ? t('Too many requests. Please wait a moment before asking for another code.')
       : apiError.message
   } finally {
     sendingVerification.value = false
@@ -229,9 +231,9 @@ function handleSocialLogin(provider: 'google' | 'facebook' | 'github') {
 }
 
 useHead({
-  title: 'Log In',
+  title: t('Log In'),
   meta: [
-    { name: 'description', content: 'Sign in to CourseAuraHub Academy - Access your courses and dashboard' }
+    { name: 'description', content: t('Sign in to CourseAuraHub Academy - Access your courses and dashboard') }
   ]
 })
 

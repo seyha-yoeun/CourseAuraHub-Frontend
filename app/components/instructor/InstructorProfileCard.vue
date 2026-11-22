@@ -2,10 +2,10 @@
   <section class="rounded-[18px] border border-white/10 bg-white/5 p-5 light:border-slate-200 light:bg-white">
     <div class="flex flex-wrap items-start justify-between gap-3">
       <div>
-        <h2 class="text-base font-bold text-slate-100 light:text-slate-900">Public profile</h2>
+        <h2 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Public profile') }}</h2>
         <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">
-          Learners see this page from your courses. Your name, photo, bio, website and Twitter come from
-          <NuxtLink to="/account" class="font-semibold text-brand-300 light:text-brand-700">your account</NuxtLink>.
+          {{ t('Learners see this page from your courses. Your name, photo, bio, website and Twitter come from') }}
+          <NuxtLink to="/account" class="font-semibold text-brand-300 light:text-brand-700">{{ t('your account') }}</NuxtLink>.
         </p>
       </div>
       <NuxtLink
@@ -13,7 +13,7 @@
         :to="profile.publicPath"
         class="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-semibold text-slate-200 no-underline hover:bg-white/10 light:border-slate-200 light:bg-slate-100 light:text-slate-700"
       >
-        <ExternalLink :size="13" /> View public page
+        <ExternalLink :size="13" /> {{ t('View public page') }}
       </NuxtLink>
     </div>
 
@@ -22,26 +22,26 @@
 
     <form v-else class="mt-4 grid gap-3 sm:grid-cols-2" @submit.prevent="save">
       <label class="flex flex-col gap-1.5">
-        <span :class="labelClass">Handle</span>
+        <span :class="labelClass">{{ t('Handle') }}</span>
         <div class="flex items-center gap-1.5">
           <span class="text-xs text-white/40 light:text-slate-500">/instructors/</span>
           <input v-model="form.handle" type="text" required minlength="3" maxlength="40" pattern="[a-z0-9][a-z0-9\-]{1,38}[a-z0-9]" :class="inputClass">
         </div>
       </label>
       <label class="flex flex-col gap-1.5">
-        <span :class="labelClass">Headline</span>
-        <input v-model="form.headline" type="text" maxlength="160" placeholder="e.g. Backend engineer and Spring trainer" :class="inputClass">
+        <span :class="labelClass">{{ t('Headline') }}</span>
+        <input v-model="form.headline" type="text" maxlength="160" :placeholder="t('e.g. Backend engineer and Spring trainer')" :class="inputClass">
       </label>
       <label class="flex flex-col gap-1.5">
-        <span :class="labelClass">LinkedIn</span>
+        <span :class="labelClass">{{ t('LinkedIn') }}</span>
         <input v-model="form.linkedinUrl" type="url" maxlength="300" placeholder="https://www.linkedin.com/in/…" :class="inputClass">
       </label>
       <label class="flex flex-col gap-1.5">
-        <span :class="labelClass">GitHub</span>
+        <span :class="labelClass">{{ t('GitHub') }}</span>
         <input v-model="form.githubUrl" type="url" maxlength="300" placeholder="https://github.com/…" :class="inputClass">
       </label>
       <label class="flex flex-col gap-1.5">
-        <span :class="labelClass">YouTube</span>
+        <span :class="labelClass">{{ t('YouTube') }}</span>
         <input v-model="form.youtubeUrl" type="url" maxlength="300" placeholder="https://www.youtube.com/@…" :class="inputClass">
       </label>
       <div class="flex items-end justify-end">
@@ -51,7 +51,7 @@
           :disabled="saving"
         >
           <Loader2 v-if="saving" :size="14" class="animate-spin" />
-          Save profile
+          {{ t('Save profile') }}
         </button>
       </div>
     </form>
@@ -64,6 +64,8 @@ import type { InstructorProfile } from '~/types/instructorProfile'
 import { useAppToast } from '~/composables/useAppToast'
 import { useInstructorProfile } from '~/composables/useInstructorProfile'
 import { getErrorMessage } from '~/utils/apiError'
+
+const { t } = useT()
 
 /** Edits the signed-in instructor's handle, headline and social links. Created on first visit. */
 const toast = useAppToast()
@@ -98,9 +100,9 @@ async function save() {
       githubUrl: form.githubUrl.trim(),
       youtubeUrl: form.youtubeUrl.trim()
     }))
-    toast.success('Profile saved', 'Your public page is up to date.')
+    toast.success(t('Profile saved'), t('Your public page is up to date.'))
   } catch (err) {
-    toast.error('Not saved', getErrorMessage(err, 'Unable to save your instructor profile'))
+    toast.error(t('Not saved'), getErrorMessage(err, t('Unable to save your instructor profile')))
   } finally {
     saving.value = false
   }
@@ -110,7 +112,7 @@ onMounted(async () => {
   try {
     fill(await fetchMine())
   } catch (err) {
-    loadError.value = getErrorMessage(err, 'Unable to load your instructor profile')
+    loadError.value = getErrorMessage(err, t('Unable to load your instructor profile'))
   } finally {
     pending.value = false
   }

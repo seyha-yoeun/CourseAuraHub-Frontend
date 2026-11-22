@@ -5,10 +5,10 @@
         <div ref="dialogRef" class="max-h-[90dvh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-[20px] border border-brand-500/25 bg-[#101814] p-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] sm:p-6 light:border-slate-200 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="quiz-modal-title">
           <div class="flex items-start justify-between gap-4 border-b border-white/8 pb-4.5 light:border-slate-200">
             <div>
-              <h2 id="quiz-modal-title" class="text-lg font-bold text-slate-50 light:text-slate-900">Quiz Questions</h2>
+              <h2 id="quiz-modal-title" class="text-lg font-bold text-slate-50 light:text-slate-900">{{ t('Quiz Questions') }}</h2>
               <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">{{ lessonTitle }}</p>
             </div>
-            <button type="button" aria-label="Close" class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-500" @click="$emit('close')">
+            <button type="button" :aria-label="t('Close')" class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-500" @click="$emit('close')">
               <X :size="18" />
             </button>
           </div>
@@ -19,47 +19,47 @@
             <p v-if="error" class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-[13px] font-medium text-red-300 light:border-red-200 light:bg-red-50 light:text-red-700" role="alert">{{ error }}</p>
 
             <div class="flex max-w-40 flex-col gap-1.5">
-              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="quiz-pass-percent">Pass Mark (%)</label>
+              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="quiz-pass-percent">{{ t('Pass Mark (%)') }}</label>
               <input id="quiz-pass-percent" v-model.number="passPercent" type="number" min="1" max="100" required :class="inputClass">
             </div>
 
             <fieldset class="m-0 grid grid-cols-2 gap-3 rounded-xl border border-white/8 bg-white/3 p-4 sm:grid-cols-4 light:border-slate-200 light:bg-slate-50">
-              <legend class="px-1 text-xs font-bold text-white/60 light:text-slate-600">Rules <span class="font-normal text-white/40 light:text-slate-500">· leave blank for no limit</span></legend>
+              <legend class="px-1 text-xs font-bold text-white/60 light:text-slate-600">{{ t('Rules') }} <span class="font-normal text-white/40 light:text-slate-500">{{ t('· leave blank for no limit') }}</span></legend>
               <label class="flex flex-col gap-1.5">
-                <span class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Attempts</span>
-                <input v-model="rules.maxAttempts" type="number" min="1" max="100" placeholder="Unlimited" :class="inputClass">
+                <span class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Attempts') }}</span>
+                <input v-model="rules.maxAttempts" type="number" min="1" max="100" :placeholder="t('Unlimited')" :class="inputClass">
               </label>
               <label class="flex flex-col gap-1.5">
-                <span class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Retry wait (min)</span>
-                <input v-model="rules.retryCooldownMinutes" type="number" min="1" max="10080" placeholder="None" :class="inputClass">
+                <span class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Retry wait (min)') }}</span>
+                <input v-model="rules.retryCooldownMinutes" type="number" min="1" max="10080" :placeholder="t('None')" :class="inputClass">
               </label>
               <label class="flex flex-col gap-1.5">
-                <span class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Time limit (min)</span>
-                <input v-model="rules.timeLimitMinutes" type="number" min="1" max="600" placeholder="None" :class="inputClass">
+                <span class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Time limit (min)') }}</span>
+                <input v-model="rules.timeLimitMinutes" type="number" min="1" max="600" :placeholder="t('None')" :class="inputClass">
               </label>
               <label class="flex flex-col gap-1.5">
-                <span class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Questions per try</span>
-                <input v-model="rules.questionsPerAttempt" type="number" min="1" :max="questions.length || 1" placeholder="All" :class="inputClass">
+                <span class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Questions per try') }}</span>
+                <input v-model="rules.questionsPerAttempt" type="number" min="1" :max="questions.length || 1" :placeholder="t('All')" :class="inputClass">
               </label>
               <label class="col-span-2 flex cursor-pointer items-center gap-2 text-[13px] text-slate-200 sm:col-span-4 light:text-slate-700">
                 <input v-model="rules.shuffle" type="checkbox" class="size-4 accent-brand-600">
-                Shuffle question and answer order for each attempt
+                {{ t('Shuffle question and answer order for each attempt') }}
               </label>
               <p class="col-span-2 m-0 text-[11px] text-white/40 sm:col-span-4 light:text-slate-500">
-                Timed, pooled and shuffled quizzes are started by the learner, and an attempt left to run out counts as failed.
+                {{ t('Timed, pooled and shuffled quizzes are started by the learner, and an attempt left to run out counts as failed.') }}
               </p>
             </fieldset>
 
             <div v-for="(question, questionIndex) in questions" :key="question.key" class="flex flex-col gap-3 rounded-xl border border-white/8 bg-white/3 p-4 light:border-slate-200 light:bg-slate-50">
               <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-bold text-white/60 light:text-slate-600">Question {{ questionIndex + 1 }}</span>
+                <span class="text-xs font-bold text-white/60 light:text-slate-600">{{ t('Question {questionIndex}', { questionIndex: questionIndex + 1 }) }}</span>
                 <button type="button" :aria-label="`Delete question ${questionIndex + 1}`" class="flex size-7 cursor-pointer items-center justify-center rounded-lg text-rose-400 hover:bg-rose-500/10" @click="questions.splice(questionIndex, 1)">
                   <Trash2 :size="14" />
                 </button>
               </div>
-              <textarea v-model="question.prompt" required maxlength="1000" rows="2" placeholder="Question" :aria-label="`Question ${questionIndex + 1}`" :class="inputClass" />
+              <textarea v-model="question.prompt" required maxlength="1000" rows="2" :placeholder="t('Question')" :aria-label="`Question ${questionIndex + 1}`" :class="inputClass" />
 
-              <p class="text-[11px] text-white/45 light:text-slate-500">Select the correct answer.</p>
+              <p class="text-[11px] text-white/45 light:text-slate-500">{{ t('Select the correct answer.') }}</p>
               <div v-for="(option, optionIndex) in question.options" :key="option.key" class="flex items-center gap-2">
                 <input
                   type="radio"
@@ -75,32 +75,32 @@
                 </button>
               </div>
               <button type="button" class="w-fit cursor-pointer text-xs font-semibold text-brand-300 disabled:cursor-not-allowed disabled:opacity-40 light:text-brand-700" :disabled="question.options.length >= 8" @click="question.options.push(newOption())">
-                Add option
+                {{ t('Add option') }}
               </button>
-              <textarea v-model="question.explanation" maxlength="2000" rows="2" placeholder="Explanation shown after passing (optional)" :aria-label="`Explanation for question ${questionIndex + 1}`" :class="inputClass" />
+              <textarea v-model="question.explanation" maxlength="2000" rows="2" :placeholder="t('Explanation shown after passing (optional)')" :aria-label="`Explanation for question ${questionIndex + 1}`" :class="inputClass" />
             </div>
 
             <div class="flex flex-wrap items-center gap-3">
               <button type="button" class="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg px-1 text-xs font-semibold text-brand-300 light:text-brand-700" @click="questions.push(newQuestion())">
-                <Plus :size="14" /> Add question
+                <Plus :size="14" /> {{ t('Add question') }}
               </button>
               <button
                 type="button"
                 class="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg px-1 text-xs font-semibold text-brand-300 disabled:cursor-wait disabled:opacity-60 light:text-brand-700"
-                title="Drafted from the lesson's study text. Review them before saving."
+                :title="t('Drafted from the lesson\'s study text. Review them before saving.')"
                 :disabled="drafting"
                 @click="draftWithAi"
               >
                 <Loader2 v-if="drafting" :size="14" class="animate-spin" />
                 <Sparkles v-else :size="14" />
-                Draft 5 with AI
+                {{ t('Draft 5 with AI') }}
               </button>
             </div>
 
             <div class="flex justify-end gap-2.5 border-t border-white/8 pt-4 light:border-slate-200">
-              <button type="button" class="cursor-pointer rounded-[10px] border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-semibold text-white/70 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700" @click="$emit('close')">Cancel</button>
+              <button type="button" class="cursor-pointer rounded-[10px] border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-semibold text-white/70 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700" @click="$emit('close')">{{ t('Cancel') }}</button>
               <button type="submit" class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500 px-4 py-2 text-[13px] font-semibold text-white disabled:cursor-wait disabled:opacity-60" :disabled="saving || !questions.length">
-                <Loader2 v-if="saving" :size="14" class="animate-spin" /> Save Quiz
+                <Loader2 v-if="saving" :size="14" class="animate-spin" /> {{ t('Save Quiz') }}
               </button>
             </div>
           </form>
@@ -118,6 +118,8 @@ import { useAssistant } from '~/composables/useAssistant'
 import { useModalA11y } from '~/composables/useModalA11y'
 import { useQuiz } from '~/composables/useQuiz'
 import { getErrorMessage } from '~/utils/apiError'
+
+const { t } = useT()
 
 interface OptionDraft {
   key: number
@@ -204,9 +206,9 @@ async function draftWithAi() {
     // An untouched blank question is replaced rather than left at the top
     const blank = questions.value.length === 1 && !questions.value[0]?.prompt.trim()
     questions.value = blank ? added : [...questions.value, ...added]
-    toast.success('Questions Drafted', `${added.length} added. Review them, then save the quiz.`)
+    toast.success(t('Questions Drafted'), `${added.length} added. Review them, then save the quiz.`)
   } catch (err) {
-    toast.error('No Questions Drafted', getErrorMessage(err, 'Unable to draft quiz questions'))
+    toast.error(t('No Questions Drafted'), getErrorMessage(err, t('Unable to draft quiz questions')))
   } finally {
     drafting.value = false
   }
@@ -241,7 +243,7 @@ watch(() => props.isOpen, async (open) => {
     })
     if (!questions.value.length) questions.value = [newQuestion()]
   } catch (err) {
-    error.value = getErrorMessage(err, 'Unable to load this quiz')
+    error.value = getErrorMessage(err, t('Unable to load this quiz'))
   } finally {
     pending.value = false
   }
@@ -271,10 +273,10 @@ async function save() {
       questionsPerAttempt: optionalNumber(rules.questionsPerAttempt),
       shuffle: rules.shuffle
     })
-    toast.success('Quiz Saved', 'Learners must now pass it to complete this lesson.')
+    toast.success(t('Quiz Saved'), t('Learners must now pass it to complete this lesson.'))
     emit('close')
   } catch (err) {
-    error.value = getErrorMessage(err, 'Unable to save this quiz')
+    error.value = getErrorMessage(err, t('Unable to save this quiz'))
   } finally {
     saving.value = false
   }

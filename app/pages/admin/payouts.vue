@@ -2,14 +2,14 @@
   <div class="flex flex-col gap-6">
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 :class="pageTitle">Payouts</h1>
-        <p :class="pageSubtitle">Approve instructor payout requests, then record the transfer once the money is sent.</p>
+        <h1 :class="pageTitle">{{ t('Payouts') }}</h1>
+        <p :class="pageSubtitle">{{ t('Approve instructor payout requests, then record the transfer once the money is sent.') }}</p>
       </div>
       <div class="w-full sm:w-52">
         <AppDropdown
           :model-value="status"
           :options="statusOptions"
-          aria-label="Filter payouts by status"
+          :aria-label="t('Filter payouts by status')"
           @update:model-value="value => status = value as PayoutStatus | 'all'"
         />
       </div>
@@ -18,20 +18,20 @@
     <div v-if="pending && !data" class="flex flex-col gap-3">
       <div v-for="i in 3" :key="i" class="h-16 animate-pulse rounded-[14px] bg-white/5 light:bg-slate-100" />
     </div>
-    <p v-else-if="error" :class="emptyBox">{{ getErrorMessage(error, 'Unable to load payout requests') }}</p>
-    <p v-else-if="!items.length" :class="emptyBox">No payout requests here.</p>
+    <p v-else-if="error" :class="emptyBox">{{ getErrorMessage(error, t('Unable to load payout requests')) }}</p>
+    <p v-else-if="!items.length" :class="emptyBox">{{ t('No payout requests here.') }}</p>
 
     <template v-else>
-      <DataTableFrame label="Payout requests" :scroll-key="`${page}:${pageSize}`" :class="pending && 'opacity-60 transition-opacity'">
+      <DataTableFrame :label="t('Payout requests')" :scroll-key="`${page}:${pageSize}`" :class="pending && 'opacity-60 transition-opacity'">
         <table class="w-full min-w-220 border-collapse text-left text-[13px]">
           <thead>
             <tr :class="headRow">
-              <th class="px-4 py-3 font-semibold">Instructor</th>
-              <th class="px-4 py-3 text-right font-semibold">Amount</th>
-              <th class="px-4 py-3 font-semibold">Pay to</th>
-              <th class="px-4 py-3 font-semibold">Requested</th>
-              <th class="px-4 py-3 font-semibold">Status</th>
-              <th class="px-4 py-3 text-right font-semibold">Actions</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Instructor') }}</th>
+              <th class="px-4 py-3 text-right font-semibold">{{ t('Amount') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Pay to') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Requested') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Status') }}</th>
+              <th class="px-4 py-3 text-right font-semibold">{{ t('Actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-white/6 light:divide-slate-200">
@@ -58,10 +58,10 @@
               <td class="px-4 py-3">
                 <div class="flex items-center justify-end gap-1.5">
                   <template v-if="item.payout.status === 'requested'">
-                    <button type="button" :class="primaryAction" :disabled="busyId === item.payout.id" @click="open('approve', item)">Approve</button>
-                    <button type="button" :class="dangerAction" :disabled="busyId === item.payout.id" @click="open('reject', item)">Decline</button>
+                    <button type="button" :class="primaryAction" :disabled="busyId === item.payout.id" @click="open('approve', item)">{{ t('Approve') }}</button>
+                    <button type="button" :class="dangerAction" :disabled="busyId === item.payout.id" @click="open('reject', item)">{{ t('Decline') }}</button>
                   </template>
-                  <button v-else-if="item.payout.status === 'approved'" type="button" :class="primaryAction" :disabled="busyId === item.payout.id" @click="open('paid', item)">Mark Paid</button>
+                  <button v-else-if="item.payout.status === 'approved'" type="button" :class="primaryAction" :disabled="busyId === item.payout.id" @click="open('paid', item)">{{ t('Mark Paid') }}</button>
                   <span v-else class="text-xs text-white/35 light:text-slate-400">—</span>
                 </div>
               </td>
@@ -76,38 +76,38 @@
 
     <PromptModal
       :is-open="action === 'approve'"
-      title="Approve Payout"
+      :title="t('Approve Payout')"
       :description="selected ? `${formatMoney(selected.payout.amount, selected.payout.currency)} to ${selected.instructorName}. You can't approve your own.` : ''"
-      label="Note to the instructor (optional)"
-      confirm-label="Approve"
+      :label="t('Note to the instructor (optional)')"
+      :confirm-label="t('Approve')"
       :loading="busyId === selected?.payout.id"
       @close="close"
       @confirm="approve"
     />
     <PromptModal
       :is-open="action === 'reject'"
-      title="Decline Payout"
-      description="The instructor sees this note, and the earnings can be requested again."
-      label="Reason"
+      :title="t('Decline Payout')"
+      :description="t('The instructor sees this note, and the earnings can be requested again.')"
+      :label="t('Reason')"
       required
       tone="danger"
-      confirm-label="Decline"
+      :confirm-label="t('Decline')"
       :loading="busyId === selected?.payout.id"
       @close="close"
       @confirm="reject"
     />
     <PromptModal
       :is-open="action === 'paid'"
-      title="Mark Payout Paid"
+      :title="t('Mark Payout Paid')"
       :description="selected ? `Record the transfer of ${formatMoney(selected.payout.amount, selected.payout.currency)} to ${selected.instructorName}.` : ''"
-      label="Note (optional)"
-      confirm-label="Mark Paid"
+      :label="t('Note (optional)')"
+      :confirm-label="t('Mark Paid')"
       :loading="busyId === selected?.payout.id"
       @close="close"
       @confirm="markPaid"
     >
-      <label :class="labelClass" class="mt-4" for="payout-reference">Transfer reference (optional)</label>
-      <input id="payout-reference" v-model="reference" type="text" maxlength="200" placeholder="Bank or wallet transaction ID" :class="inputClass">
+      <label :class="labelClass" class="mt-4" for="payout-reference">{{ t('Transfer reference (optional)') }}</label>
+      <input id="payout-reference" v-model="reference" type="text" maxlength="200" :placeholder="t('Bank or wallet transaction ID')" :class="inputClass">
     </PromptModal>
   </div>
 </template>
@@ -126,8 +126,10 @@ import { getErrorMessage } from '~/utils/apiError'
 import { formatDateTime } from '~/utils/dateTime'
 import { dangerAction, emptyBox, headRow, inputClass, labelClass, pageSubtitle, pageTitle, primaryAction } from '~/utils/ui'
 
+const { t } = useT()
+
 definePageMeta({ requiresAdmin: true })
-useHead({ title: 'Payouts' })
+useHead({ title: t('Payouts') })
 
 const toast = useAppToast()
 const { fetchPayoutRequests, approvePayout, rejectPayout, markPayoutPaid } = usePayouts()
@@ -137,11 +139,11 @@ const status = ref<PayoutStatus | 'all'>('requested')
 const page = ref(0)
 const pageSize = ref(DEFAULT_PAGE_SIZE)
 const statusOptions = [
-  { value: 'requested', label: 'Requested' },
-  { value: 'approved', label: 'Approved, to pay' },
-  { value: 'paid', label: 'Paid' },
-  { value: 'rejected', label: 'Declined' },
-  { value: 'all', label: 'All Payouts' },
+  { value: 'requested', label: t('Requested') },
+  { value: 'approved', label: t('Approved, to pay') },
+  { value: 'paid', label: t('Paid') },
+  { value: 'rejected', label: t('Declined') },
+  { value: 'all', label: t('All Payouts') },
 ]
 
 const { data, pending, error, refresh } = await useAsyncData(
@@ -181,21 +183,21 @@ async function run(label: string, fn: (item: AdminPayout) => Promise<unknown>, f
     action.value = null
     await refresh()
   } catch (err) {
-    toast.error('Payout Not Updated', getErrorMessage(err, fallback))
+    toast.error(t('Payout Not Updated'), getErrorMessage(err, fallback))
   } finally {
     busyId.value = null
   }
 }
 
 function approve(note: string) {
-  return run('Payout Approved', item => approvePayout(item.payout.id, note), 'Unable to approve the payout')
+  return run(t('Payout Approved'), item => approvePayout(item.payout.id, note), t('Unable to approve the payout'))
 }
 
 function reject(note: string) {
-  return run('Payout Declined', item => rejectPayout(item.payout.id, note), 'Unable to decline the payout')
+  return run(t('Payout Declined'), item => rejectPayout(item.payout.id, note), t('Unable to decline the payout'))
 }
 
 function markPaid(note: string) {
-  return run('Payout Paid', item => markPayoutPaid(item.payout.id, reference.value.trim(), note), 'Unable to mark the payout paid')
+  return run(t('Payout Paid'), item => markPayoutPaid(item.payout.id, reference.value.trim(), note), t('Unable to mark the payout paid'))
 }
 </script>

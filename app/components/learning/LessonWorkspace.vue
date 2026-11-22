@@ -37,7 +37,7 @@
       <form v-if="!assignment.submission?.passed" class="flex flex-col gap-2.5" @submit.prevent="submitWork">
         <textarea v-model="workComment" rows="3" maxlength="4000" :placeholder="t('Add a comment')" :aria-label="t('Add a comment')" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400" />
         <div class="flex flex-wrap items-center gap-2">
-          <FileUploadButton v-model:busy="uploading" purpose="ASSIGNMENT_SUBMISSION" accept="application/pdf,image/jpeg,image/png" label="Attach a file" @uploaded="workFile = $event" />
+          <FileUploadButton v-model:busy="uploading" purpose="ASSIGNMENT_SUBMISSION" accept="application/pdf,image/jpeg,image/png" :label="t('Attach a file')" @uploaded="workFile = $event" />
           <span v-if="workFile" class="text-xs text-white/45 light:text-slate-500">{{ workFile.fileName }}</span>
           <button type="submit" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600 ml-auto" :disabled="working || uploading || (!workFile && !workComment.trim())">{{ assignment.submission ? t('Resubmit') : t('Submit') }}</button>
         </div>
@@ -148,10 +148,10 @@ const workComment = ref('')
 const workFile = ref<StoredFile | null>(null)
 
 const tabs = computed(() => [
-  { value: 'questions' as const, label: 'Questions' },
-  ...(props.enrolled ? [{ value: 'notes' as const, label: 'Notes' }] : []),
+  { value: 'questions' as const, label: t('Questions') },
+  ...(props.enrolled ? [{ value: 'notes' as const, label: t('Notes') }] : []),
   ...(props.enrolled ? [{ value: 'assistant' as const, label: 'AI assistant' }] : []),
-  ...(assignment.value ? [{ value: 'assignment' as const, label: 'Assignment' }] : [])
+  ...(assignment.value ? [{ value: 'assignment' as const, label: t('Assignment') }] : [])
 ])
 
 // The parent keys this component by lesson, so this runs once per lesson
@@ -185,54 +185,54 @@ function ask() {
   return act(async () => {
     questions.value.unshift(await api.askQuestion(props.lessonId, newQuestion.value.trim()))
     newQuestion.value = ''
-  }, 'Question not posted')
+  }, t('Question not posted'))
 }
 
 function reply(question: LessonQuestion) {
   return act(async () => {
     question.answers.push(await api.answerQuestion(question.id, (replies[question.id] ?? '').trim()))
     replies[question.id] = ''
-  }, 'Reply not posted')
+  }, t('Reply not posted'))
 }
 
 function toggleResolved(question: LessonQuestion) {
   return act(async () => {
     question.resolved = (await api.setResolved(question.id, !question.resolved)).resolved
-  }, 'Question not updated')
+  }, t('Question not updated'))
 }
 
 function removeQuestion(question: LessonQuestion) {
   return act(async () => {
     await api.deleteQuestion(question.id)
     questions.value = questions.value.filter(item => item.id !== question.id)
-  }, 'Question not deleted')
+  }, t('Question not deleted'))
 }
 
 function removeAnswer(question: LessonQuestion, answerId: number) {
   return act(async () => {
     await api.deleteAnswer(answerId)
     question.answers = question.answers.filter(item => item.id !== answerId)
-  }, 'Reply not deleted')
+  }, t('Reply not deleted'))
 }
 
 function saveNote() {
   return act(async () => {
     notes.value.unshift(await api.addNote(props.lessonId, { body: newNote.value.trim(), positionSeconds: props.positionSeconds ?? undefined }))
     newNote.value = ''
-  }, 'Note not saved')
+  }, t('Note not saved'))
 }
 
 function bookmark() {
   return act(async () => {
     notes.value.unshift(await api.addNote(props.lessonId, { positionSeconds: props.positionSeconds ?? undefined }))
-  }, 'Bookmark not saved')
+  }, t('Bookmark not saved'))
 }
 
 function removeNote(id: number) {
   return act(async () => {
     await api.deleteNote(id)
     notes.value = notes.value.filter(note => note.id !== id)
-  }, 'Note not deleted')
+  }, t('Note not deleted'))
 }
 
 function submitWork() {
@@ -245,6 +245,6 @@ function submitWork() {
     workFile.value = null
     workComment.value = ''
     toast.success(t('Work submitted'), t('You\'ll be notified when it\'s graded.'))
-  }, 'Work not submitted')
+  }, t('Work not submitted'))
 }
 </script>

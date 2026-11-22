@@ -74,7 +74,7 @@
           <div class="flex items-center gap-2.5">
             <img
               :src="`https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(course.instructor || 'Instructor')}&backgroundColor=b6e3f4`"
-              alt="Instructor"
+              :alt="t('Instructor')"
               class="size-9 rounded-full border-2 border-brand-500/40"
             >
             <div>
@@ -99,33 +99,33 @@
     <!-- Stat Cards -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
-        label="Total Course Revenue"
+        :label="t('Total Course Revenue')"
         :value="course.revenue"
         format="currency"
-        sub="Gross earnings generated"
+        :sub="t('Gross earnings generated')"
         :icon="DollarSign"
         accent-color="#8b5cf6"
       />
       <StatCard
-        label="Enrolled Students"
+        :label="t('Enrolled Students')"
         :value="course.totalStudents"
         format="number"
-        sub="Active learning registrations"
+        :sub="t('Active learning registrations')"
         :icon="Users"
         accent-color="#3b82f6"
       />
       <StatCard
-        label="Curriculum Volume"
+        :label="t('Curriculum Volume')"
         :value="`${course.totalHours} hrs`"
         :sub="`${course.totalLessons} structured lessons`"
         :icon="Clock"
         accent-color="#10b981"
       />
       <StatCard
-        label="Completion Rate"
+        :label="t('Completion Rate')"
         :value="course.completionRate"
         format="percent"
-        sub="Average student graduation"
+        :sub="t('Average student graduation')"
         :icon="GraduationCap"
         accent-color="#f59e0b"
       />
@@ -135,7 +135,7 @@
     <SalesChart
       :title="`${course.title} - Performance`"
       subtitle="Monthly sales and enrollment progression for this specific course"
-      :months="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']"
+      :months="[t('Jan'), t('Feb'), t('Mar'), t('Apr'), t('May'), t('Jun'), t('Jul'), t('Aug'), t('Sep'), t('Oct'), t('Nov'), t('Dec')]"
       :monthly-revenue="course.monthlyRevenue || []"
       :monthly-enrollments="course.monthlyEnrollments || []"
     />
@@ -145,7 +145,7 @@
     <!-- Two-Column: Enrolled Students List & Course Metadata -->
     <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
       <!-- Enrolled Students Table -->
-      <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 lg:col-span-2 light:border-slate-200 light:bg-white">
+      <div ref="studentsCardRef" class="scroll-mt-20 rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 lg:col-span-2 light:border-slate-200 light:bg-white">
         <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
           <div>
             <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Enrolled Students') }}</h3>
@@ -172,7 +172,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="s in enrolledStudents" :key="s.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
+              <tr v-for="s in visibleStudents" :key="s.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
                 <td class="border-b border-white/4 px-3 py-3 light:border-slate-100">
                   <div class="flex items-center gap-2.5">
                     <img :src="s.avatar" :alt="s.name" class="size-8 shrink-0 rounded-full bg-brand-500/20" >
@@ -197,6 +197,18 @@
             </tbody>
           </table>
         </div>
+
+        <!-- First 10 by default; the rest on request -->
+        <button
+          v-if="enrolledStudents.length > STUDENT_PREVIEW_COUNT"
+          type="button"
+          class="mt-3 inline-flex cursor-pointer items-center gap-1 rounded-md text-[13px] font-semibold text-brand-300 hover:text-brand-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50 light:text-brand-600 light:hover:text-brand-700"
+          :aria-expanded="showAllStudents"
+          @click="toggleStudents"
+        >
+          {{ showAllStudents ? t('Show less') : t('Show all {count} students', { count: enrolledStudents.length }) }}
+          <ChevronDown :size="15" aria-hidden="true" class="transition-transform duration-200" :class="showAllStudents && 'rotate-180'" />
+        </button>
       </div>
 
       <!-- Course Tags & Details Sidebar -->
@@ -231,7 +243,7 @@
         </div>
 
         <div class="mt-5">
-          <span class="mb-2 block text-[13px] text-white/45 light:text-slate-500">Technologies &amp; Tags:</span>
+          <span class="mb-2 block text-[13px] text-white/45 light:text-slate-500">{{ t('Technologies & Tags:') }}</span>
           <div class="flex flex-wrap gap-1.5">
             <span v-for="tag in course.tags" :key="tag" class="rounded-md border border-brand-500/25 bg-brand-500/12 px-2.25 py-0.75 text-[11px] font-medium text-brand-300 light:border-brand-200 light:bg-brand-50 light:text-brand-700">
               #{{ tag }}
@@ -283,7 +295,8 @@ import {
   Clock,
   GraduationCap,
   AlertCircle,
-  BarChart3
+  BarChart3,
+  ChevronDown
 } from 'lucide-vue-next'
 import type { Course, CourseFormData, Student } from '~/types'
 import CourseStatusBadge from '~/components/courses/CourseStatusBadge.vue'
@@ -317,7 +330,7 @@ const { data: course, pending, error, refresh } = await useAsyncData<Course>(
 
 useHead({
   title: computed(() => {
-    if (!course.value?.title) return 'Course Details'
+    if (!course.value?.title) return t('Course Details')
     return auth.isAdmin ? `${course.value.title} - Analytics` : course.value.title
   })
 })
@@ -325,6 +338,22 @@ useHead({
 const enrolledStudents = computed<Student[]>(() => {
   return (course.value?.enrolledStudentList || []) as Student[]
 })
+
+const STUDENT_PREVIEW_COUNT = 10
+const showAllStudents = ref(false)
+const studentsCardRef = ref<HTMLElement | null>(null)
+const visibleStudents = computed(() => showAllStudents.value
+  ? enrolledStudents.value
+  : enrolledStudents.value.slice(0, STUDENT_PREVIEW_COUNT))
+
+function toggleStudents() {
+  showAllStudents.value = !showAllStudents.value
+  // Collapsing a long list can leave you far below the card; bring its top back into view
+  if (!showAllStudents.value) {
+    const card = studentsCardRef.value
+    if (card && card.getBoundingClientRect().top < 0) card.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
 
 // Modal states
 const isEditModalOpen = ref(false)
@@ -345,7 +374,7 @@ async function handleUpdateCourse(formData: CourseFormData) {
     isEditModalOpen.value = false
     await refresh()
   } catch (err: unknown) {
-    alert((err as Error).message || 'Failed to update course')
+    alert((err as Error).message || t('Failed to update course'))
   } finally {
     saving.value = false
   }
@@ -358,7 +387,7 @@ async function handleDeleteCourse() {
     isDeleteModalOpen.value = false
     router.push('/courses')
   } catch (err: unknown) {
-    alert((err as Error).message || 'Failed to delete course')
+    alert((err as Error).message || t('Failed to delete course'))
   } finally {
     deleting.value = false
   }
