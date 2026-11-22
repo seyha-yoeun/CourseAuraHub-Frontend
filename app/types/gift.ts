@@ -16,6 +16,13 @@ export interface AccessCode {
   revoked: boolean
   status: AccessCodeStatus
   createdAt: string
+  // An admin can fetch the full code (codes issued before full codes were kept can't be)
+  revealable: boolean
+}
+
+export interface RevealedAccessCode {
+  id: number
+  code: string
 }
 
 export interface AccessCodeIssue {

@@ -4,112 +4,140 @@
     <Transition v-bind="fadeBackdrop">
       <div
         v-if="mobileOpen"
-        class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm md:hidden"
+        class="fixed inset-0 z-50 bg-black/60 backdrop-blur-[2px] md:hidden light:bg-slate-900/30"
         @click="$emit('close-mobile')"
       />
     </Transition>
 
+    <!--
+      Expand/collapse animates only the width. Every icon keeps the same left offset in both states
+      (centred in the 72px rail), so nothing re-centres or jumps; labels fade and the aside clips them.
+    -->
     <aside
-      class="fixed inset-y-0 left-0 z-50 flex w-65 flex-col overflow-hidden border-r border-white/6 bg-zinc-950/95 backdrop-blur-xl transition-[width,transform] duration-300 ease-out max-md:shadow-2xl max-md:shadow-black/70 light:border-slate-200 light:bg-white/98"
+      class="fixed inset-y-0 left-0 z-50 flex w-65 flex-col overflow-hidden border-r border-white/8 bg-zinc-950 transition-[width,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none max-md:shadow-2xl max-md:shadow-black/40 light:border-slate-200 light:bg-white"
       :class="[
         mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
         collapsed ? 'md:w-18' : 'md:w-65'
       ]"
     >
-      <!-- Logo -->
-      <div class="flex min-h-18 items-center gap-3 border-b border-white/6 px-4.5 py-5 light:border-slate-200">
-        <div class="flex size-9 shrink-0 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/15">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <path d="M14 2L26 9V19L14 26L2 19V9L14 2Z" fill="url(#logoGrad)" />
-            <path d="M14 8L20 11.5V18.5L14 22L8 18.5V11.5L14 8Z" fill="rgba(255,255,255,0.15)" />
-            <defs>
-              <linearGradient id="logoGrad" x1="2" y1="2" x2="26" y2="26" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#7c3aed" />
-                <stop offset="1" stop-color="#2563eb" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <Transition v-bind="fadeText">
-          <div v-if="!collapsed" class="leading-none">
-            <span class="block text-sm font-bold tracking-tight text-slate-200 light:text-slate-900">{{ t('CourseAuraHub') }}</span>
-            <span class="mt-0.5 block text-[10px] font-medium tracking-widest text-violet-400 uppercase light:text-violet-700">{{ t('Academy') }}</span>
-          </div>
-        </Transition>
+      <!-- Logo: 28px mark centred in the rail (21.5px + 14px = rail centre) -->
+      <div class="flex h-16 shrink-0 items-center gap-2.5 pl-[21.5px]">
+        <AuthLogo class="size-7 shrink-0" />
+        <span
+          class="text-[14.5px] font-bold tracking-[-0.01em] whitespace-nowrap text-slate-50 transition-opacity light:text-slate-900"
+          :class="labelFade"
+        >{{ t('CourseAuraHub') }}</span>
       </div>
 
-      <nav class="flex flex-1 flex-col gap-1 overflow-y-auto px-2.5 py-4">
-        <div v-for="section in navSections" :key="section.label" class="mb-2">
-          <Transition v-bind="fadeText">
-            <p v-if="!collapsed" class="px-2.5 pt-2 pb-1 text-[10px] font-semibold tracking-widest text-white/30 uppercase light:text-slate-400">
-              {{ t(section.label) }}
-            </p>
-          </Transition>
-          <NuxtLink
-            v-for="item in section.items"
-            :key="item.to"
-            :to="item.to"
-            :aria-label="item.label"
-            :aria-current="isActive(item.to) ? 'page' : undefined"
-            :title="collapsed ? t(item.label) : undefined"
-            class="group relative flex items-center gap-2.5 overflow-hidden rounded-[10px] border px-3 py-2.5 text-sm font-medium whitespace-nowrap no-underline transition-all duration-200 ease-out hover:translate-x-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
-            :class="isActive(item.to)
-              ? 'border-violet-500/40 bg-linear-to-br from-violet-600/25 to-blue-600/15 text-violet-300 hover:border-violet-500/55 hover:from-violet-600/35 hover:to-blue-600/25 hover:text-violet-200 light:border-violet-500/30 light:bg-violet-500/10 light:text-violet-700 light:hover:bg-violet-500/15 light:hover:text-violet-700'
-              : 'border-transparent text-white/55 hover:border-white/8 hover:bg-white/8 hover:text-white hover:shadow-[0_4px_12px_rgba(0,0,0,0.18)] light:text-slate-600 light:hover:border-slate-200 light:hover:bg-slate-100 light:hover:text-slate-900'"
-            @click="$emit('close-mobile')"
+      <nav class="flex flex-1 flex-col overflow-x-hidden overflow-y-auto px-3 pt-1 pb-4" :aria-label="t('Main navigation')">
+        <div
+          v-for="(section, sectionIndex) in navSections"
+          :key="section.label"
+          class="border-t transition-[border-color,margin,padding] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+          :class="rail && sectionIndex > 0
+            ? 'mt-2 border-white/8 pt-2 light:border-slate-200'
+            : 'mt-1 border-transparent pt-0 first:mt-0'"
+        >
+          <!-- Group header collapses to zero height on the rail; the section's top border stands in for it -->
+          <div
+            class="grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            :class="rail ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr] opacity-100'"
+            :inert="rail || undefined"
           >
-            <span
-              aria-hidden="true"
-              class="absolute top-1/2 left-0 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-violet-400 shadow-[0_0_8px_rgba(167,139,250,0.7)] transition-opacity duration-200"
-              :class="isActive(item.to) ? 'opacity-100' : 'opacity-0 group-hover:opacity-70'"
-            />
-            <component
-              :is="item.icon"
-              :size="20"
-              class="shrink-0 transition-transform duration-200 ease-out group-hover:scale-110"
-              :class="!isActive(item.to) ? 'group-hover:text-violet-300 light:group-hover:text-violet-700' : ''"
-              :stroke-width="1.5"
-            />
-            <Transition v-bind="fadeText">
-              <span v-if="!collapsed" class="text-sm font-medium">{{ t(item.label) }}</span>
-            </Transition>
-            <Transition v-bind="fadeText">
-              <span
-                v-if="!collapsed && item.badge"
-                class="ml-auto rounded-full border border-violet-500/30 bg-violet-500/20 px-1.75 py-px text-[10px] font-semibold text-violet-300 light:border-violet-300 light:bg-violet-100 light:text-violet-700"
+            <div class="min-h-0 overflow-hidden">
+              <button
+                v-if="section.items.length > 1"
+                type="button"
+                class="group/header flex w-full cursor-pointer items-center justify-between rounded-md px-2.5 pt-3 pb-1.5 text-[11px] font-semibold tracking-[0.08em] whitespace-nowrap text-white/40 uppercase transition-colors hover:text-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50 light:text-slate-400 light:hover:text-slate-600"
+                :aria-expanded="isGroupOpen(section.label)"
+                :aria-controls="groupId(section.label)"
+                @click="toggleGroup(section.label)"
               >
-                {{ item.badge }}
-              </span>
-            </Transition>
-          </NuxtLink>
+                <span class="truncate">{{ t(section.label) }}</span>
+                <ChevronDown
+                  :size="14"
+                  aria-hidden="true"
+                  class="shrink-0 opacity-70 transition-transform duration-200 group-hover/header:opacity-100"
+                  :class="isGroupOpen(section.label) ? 'rotate-0' : '-rotate-90'"
+                />
+              </button>
+              <p v-else class="px-2.5 pt-3 pb-1.5 text-[11px] font-semibold tracking-[0.08em] whitespace-nowrap text-white/40 uppercase light:text-slate-400">
+                {{ t(section.label) }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Items: grid-rows trick animates the height; `inert` keeps closed links out of the tab order -->
+          <div
+            :id="groupId(section.label)"
+            class="grid transition-[grid-template-rows] duration-200 ease-out motion-reduce:transition-none"
+            :class="showItems(section) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+            :inert="!showItems(section) || undefined"
+          >
+            <div class="flex min-h-0 flex-col gap-0.5 overflow-hidden">
+              <NuxtLink
+                v-for="item in section.items"
+                :key="item.to"
+                :to="item.to"
+                :aria-current="isActive(item.to) ? 'page' : undefined"
+                :title="rail ? t(item.label) : undefined"
+                :class="[
+                  rowClass,
+                  isActive(item.to)
+                    ? 'bg-white/7 text-brand-300 light:bg-brand-50 light:text-brand-600'
+                    : 'text-white/65 hover:bg-white/5 hover:text-white light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900'
+                ]"
+                @click="$emit('close-mobile')"
+              >
+                <component
+                  :is="item.icon"
+                  :size="17"
+                  :stroke-width="1.75"
+                  aria-hidden="true"
+                  class="shrink-0"
+                  :class="isActive(item.to) ? '' : 'text-white/45 group-hover:text-white/80 light:text-slate-500 light:group-hover:text-slate-700'"
+                />
+                <span class="truncate transition-opacity" :class="labelFade">{{ t(item.label) }}</span>
+                <span
+                  v-if="item.badge"
+                  class="ml-auto rounded-full px-1.75 py-px text-[11px] font-semibold tabular-nums transition-opacity"
+                  :class="[
+                    labelFade,
+                    isActive(item.to)
+                      ? 'bg-brand-500/25 text-brand-200 light:bg-brand-100 light:text-brand-700'
+                      : 'bg-white/8 text-white/55 light:bg-slate-100 light:text-slate-500'
+                  ]"
+                >
+                  {{ item.badge }}
+                </span>
+              </NuxtLink>
+            </div>
+          </div>
         </div>
       </nav>
 
-      <!-- Bottom profile -->
-      <button
-        type="button"
-        class="group flex min-h-18 w-full cursor-pointer items-center gap-2.5 border-t border-white/6 px-4.5 py-4 text-left transition-all duration-200 ease-out hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-violet-500/60 light:border-slate-200 light:hover:bg-slate-50"
-        :title="t('Open profile settings')"
-        @click="handleProfileClick"
-      >
-        <img
-          :src="auth.userAvatar"
-          :alt="`${auth.userName} profile`"
-          class="size-9 shrink-0 rounded-full border-2 border-violet-500/40 bg-[#1a1a2e] transition-all duration-200 group-hover:scale-105 group-hover:border-violet-500/70 group-hover:shadow-[0_0_12px_rgba(124,58,237,0.3)] light:border-violet-300 light:bg-violet-50"
+      <!-- Sidebar toggle (desktop: collapse to the icon rail; mobile drawer: close). Ctrl/⌘+B does the same. -->
+      <div class="shrink-0 border-t border-white/8 p-3 light:border-slate-200">
+        <button
+          type="button"
+          :class="[rowClass, 'w-full cursor-pointer text-white/55 hover:bg-white/5 hover:text-white light:text-slate-500 light:hover:bg-slate-100 light:hover:text-slate-900']"
+          :aria-label="toggleLabel"
+          :aria-expanded="mobileOpen || !collapsed"
+          :title="toggleLabel"
+          @click="$emit('toggle')"
         >
-        <Transition v-bind="fadeText">
-          <div v-if="!collapsed" class="min-w-0">
-            <p class="truncate text-[13px] font-semibold text-slate-200 light:text-slate-900">{{ auth.userName }}</p>
-            <p class="mt-px truncate text-[11px] text-white/40 light:text-slate-500">{{ auth.roleLabel }}</p>
-          </div>
-        </Transition>
-      </button>
+          <PanelLeft :size="17" :stroke-width="1.75" class="shrink-0" aria-hidden="true" />
+          <span class="truncate transition-opacity" :class="labelFade">{{ toggleLabel }}</span>
+        </button>
+      </div>
     </aside>
   </div>
 </template>
 
 <script setup lang="ts">
 import {
+  ChevronDown,
+  PanelLeft,
   LayoutDashboard,
   BookOpen,
   Settings,
@@ -134,7 +162,6 @@ import {
   ScrollText,
   ShieldAlert,
   ShieldCheck,
-  ShoppingCart,
   Tag,
   TicketPercent,
   Trophy,
@@ -145,10 +172,12 @@ import {
 } from 'lucide-vue-next'
 
 import type { Component } from 'vue'
+import { useMediaQuery } from '@vueuse/core'
+import AuthLogo from '~/components/auth/AuthLogo.vue'
 
 const { t } = useT()
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     collapsed: boolean
     mobileOpen?: boolean
@@ -161,7 +190,6 @@ withDefaults(
 defineEmits(['toggle', 'close-mobile'])
 
 const route = useRoute()
-const router = useRouter()
 const auth = useAuth()
 
 interface NavItem {
@@ -171,17 +199,18 @@ interface NavItem {
   badge?: string
 }
 
+// Grouped by what people come to do, most-used first. Every group has 2-6 items.
+// Admins: monitor -> act on queues -> manage catalog/people/money -> configure.
+// Everyone else: learn -> discover -> pay -> account (instructors get Teaching first).
 const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
+  const discover: NavItem[] = [
+    { to: '/courses', label: 'Browse Courses', icon: BookOpen },
+    { to: '/learning-paths', label: 'Learning Paths', icon: Route },
+    { to: '/instructors', label: 'Instructors', icon: Users },
+  ]
+
   if (!auth.isAuthenticated) {
-    return [
-      {
-        label: 'Learning',
-        items: [
-          { to: '/courses', label: 'Browse Courses', icon: BookOpen },
-          { to: '/instructors', label: 'Instructors', icon: Users },
-        ],
-      },
-    ]
+    return [{ label: 'Discover', items: discover }]
   }
 
   if (!auth.isAdmin) {
@@ -191,42 +220,41 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
             label: 'Teaching',
             items: [
               { to: '/instructor', label: 'My Courses', icon: Presentation },
-              { to: '/instructor/earnings', label: 'Earnings', icon: Wallet },
               { to: '/instructor/submissions', label: 'Submissions', icon: ClipboardCheck },
               { to: '/questions', label: 'Questions', icon: HelpCircle },
+              { to: '/instructor/earnings', label: 'Earnings', icon: Wallet },
             ],
           }]
         : []),
       {
-        label: 'Learning',
+        label: 'Learn',
         items: [
           { to: '/my-learning', label: 'My Learning', icon: GraduationCap },
-          { to: '/courses', label: 'Browse Courses', icon: BookOpen },
-          { to: '/instructors', label: 'Instructors', icon: Users },
-          { to: '/wishlist', label: 'Wishlist', icon: Heart },
-          { to: '/achievements', label: 'Achievements', icon: Trophy },
           { to: '/live-sessions', label: 'Live Sessions', icon: Video },
-          { to: '/learning-paths', label: 'Learning Paths', icon: Route },
+          { to: '/achievements', label: 'Achievements', icon: Trophy },
           { to: '/leaderboard', label: 'Leaderboard', icon: BarChart3 },
         ],
       },
       {
-        label: 'Purchases',
+        label: 'Discover',
+        items: [...discover, { to: '/wishlist', label: 'Wishlist', icon: Heart }],
+      },
+      {
+        label: 'Billing',
         items: [
-          { to: '/cart', label: 'Cart', icon: ShoppingCart },
           { to: '/orders', label: 'My Orders', icon: Receipt },
-          { to: '/member-card', label: 'Member Card', icon: CreditCard },
           { to: '/subscription', label: 'Subscription', icon: Repeat },
+          { to: '/member-card', label: 'Member Card', icon: CreditCard },
         ],
       },
       {
         label: 'Account',
         items: [
           { to: '/account', label: 'Profile', icon: UserCog },
-          { to: '/referrals', label: 'Invite Friends', icon: Gift },
           { to: '/account/notifications', label: 'Notifications', icon: Bell },
           { to: '/account/security', label: 'Security', icon: ShieldCheck },
           { to: '/organizations', label: 'Organizations', icon: Building2 },
+          { to: '/referrals', label: 'Invite Friends', icon: Gift },
         ],
       },
     ]
@@ -241,37 +269,43 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
       ],
     },
     {
-      label: 'Learning',
+      // Everything waiting on an admin decision, in one place
+      label: 'Needs review',
       items: [
-        { to: '/courses', label: 'Courses', icon: BookOpen },
-        { to: '/students', label: 'Students', icon: GraduationCap },
-        { to: '/admin/enrollments', label: 'Enrollments', icon: UserPlus },
-        { to: '/admin/categories', label: 'Categories', icon: FolderTree },
-        { to: '/admin/learning-paths', label: 'Learning Paths', icon: Route },
-        { to: '/admin/organizations', label: 'Organizations', icon: Building2 },
+        { to: '/admin/course-reviews', label: 'Course Reviews', icon: ShieldCheck },
+        { to: '/admin/refund-requests', label: 'Refund Requests', icon: RotateCcw },
+        { to: '/admin/payouts', label: 'Payouts', icon: Wallet },
+        { to: '/admin/reports', label: 'Reported Content', icon: Flag },
+        { to: '/instructor/submissions', label: 'Submissions', icon: ClipboardCheck },
+        { to: '/questions', label: 'Questions', icon: HelpCircle },
       ],
     },
     {
-      label: 'Teaching',
+      label: 'Catalog',
       items: [
-        { to: '/admin/course-reviews', label: 'Course Reviews', icon: ShieldCheck },
-        { to: '/instructor/submissions', label: 'Submissions', icon: ClipboardCheck },
-        { to: '/questions', label: 'Questions', icon: HelpCircle },
-        { to: '/admin/reports', label: 'Reported Content', icon: Flag },
+        { to: '/courses', label: 'Courses', icon: BookOpen },
+        { to: '/admin/categories', label: 'Categories', icon: FolderTree },
+        { to: '/admin/learning-paths', label: 'Learning Paths', icon: Route },
+      ],
+    },
+    {
+      label: 'People',
+      items: [
+        { to: '/students', label: 'Students', icon: GraduationCap },
+        { to: '/admin/enrollments', label: 'Enrollments', icon: UserPlus },
+        { to: '/admin/organizations', label: 'Organizations', icon: Building2 },
       ],
     },
     {
       label: 'Sales',
       items: [
         { to: '/admin/orders', label: 'Orders', icon: Receipt },
-        { to: '/admin/member-cards', label: 'Member Cards', icon: CreditCard },
         { to: '/admin/subscriptions', label: 'Subscriptions', icon: Repeat },
-        { to: '/admin/refund-requests', label: 'Refund Requests', icon: RotateCcw },
-        { to: '/admin/payouts', label: 'Payouts', icon: Wallet },
+        { to: '/admin/member-cards', label: 'Member Cards', icon: CreditCard },
       ],
     },
     {
-      label: 'Promotions',
+      label: 'Marketing',
       items: [
         { to: '/admin/discounts', label: 'Discounts', icon: Tag },
         { to: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
@@ -280,10 +314,10 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
       ],
     },
     {
-      label: 'Platform',
+      label: 'System',
       items: [
-        { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/settings', label: 'Settings', icon: Settings },
+        { to: '/admin', label: 'Admin Console', icon: ShieldAlert },
         { to: '/admin/audit-log', label: 'Audit Log', icon: ScrollText },
         { to: '/admin/exports', label: 'CSV Exports', icon: FileDown },
       ],
@@ -298,18 +332,80 @@ const navSections = computed<{ label: string, items: NavItem[] }[]>(() => {
   ]
 })
 
-const fadeText = {
-  enterActiveClass: 'transition-opacity duration-200 ease-out',
-  leaveActiveClass: 'transition-opacity duration-200 ease-out',
-  enterFromClass: 'opacity-0',
-  leaveToClass: 'opacity-0'
-}
-
 const fadeBackdrop = {
   enterActiveClass: 'transition-opacity duration-250 ease-out',
   leaveActiveClass: 'transition-opacity duration-250 ease-out',
   enterFromClass: 'opacity-0',
   leaveToClass: 'opacity-0'
+}
+
+// The icon rail only exists on desktop; on phones the drawer always shows full labels,
+// even if the desktop sidebar was left collapsed.
+const isDesktop = useMediaQuery('(min-width: 768px)')
+const rail = computed(() => props.collapsed && isDesktop.value)
+
+// Shared row geometry: 36px tall, icon at a fixed 15px inset so it sits centred in the 72px rail
+// (12px nav padding + 15px + 8.5px half-icon = 35.5px, the rail's centre) in both states.
+const rowClass = 'group relative flex h-9 shrink-0 items-center gap-2.5 rounded-lg px-[15px] text-[13.5px] font-medium whitespace-nowrap no-underline transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50'
+
+// Labels fade out quickly as the rail closes, and fade in slightly after it starts opening.
+const labelFade = computed(() => (rail.value ? 'opacity-0 duration-100' : 'opacity-100 duration-200 delay-100'))
+
+// On the mobile drawer the button closes it; on desktop it collapses/expands the rail.
+const toggleLabel = computed(() => {
+  if (props.mobileOpen) return t('Close sidebar')
+  return props.collapsed ? t('Expand sidebar') : t('Collapse sidebar')
+})
+
+// Groups start open. Closing one is remembered per browser; a group re-opens on its own
+// when the current page lives inside it, so the active link is never hidden.
+const CLOSED_GROUPS_KEY = 'cah:sidebar-closed-groups'
+const closedGroups = ref<Set<string>>(new Set())
+
+onMounted(() => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CLOSED_GROUPS_KEY) || '[]')
+    if (Array.isArray(saved)) closedGroups.value = new Set(saved.filter(item => typeof item === 'string'))
+  } catch {
+    // Storage blocked or corrupt: fall back to everything open.
+  }
+  openActiveGroup()
+})
+
+function persistClosedGroups() {
+  try {
+    localStorage.setItem(CLOSED_GROUPS_KEY, JSON.stringify([...closedGroups.value]))
+  } catch {
+    // Not critical; the choice just won't survive a reload.
+  }
+}
+
+function isGroupOpen(label: string) {
+  return !closedGroups.value.has(label)
+}
+
+function toggleGroup(label: string) {
+  const next = new Set(closedGroups.value)
+  if (next.has(label)) next.delete(label)
+  else next.add(label)
+  closedGroups.value = next
+  persistClosedGroups()
+}
+
+function openActiveGroup() {
+  const active = navSections.value.find(section => section.items.some(item => isActive(item.to)))
+  if (active && closedGroups.value.has(active.label)) toggleGroup(active.label)
+}
+
+watch(() => route.path, openActiveGroup)
+
+// The icon-only rail always lists every item; single-item groups have no toggle.
+function showItems(section: { label: string, items: NavItem[] }) {
+  return rail.value || section.items.length <= 1 || isGroupOpen(section.label)
+}
+
+function groupId(label: string) {
+  return `nav-group-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
 }
 
 function isActive(to: string) {
@@ -324,7 +420,4 @@ function isActive(to: string) {
   return route.path.startsWith(to)
 }
 
-function handleProfileClick() {
-  router.push(auth.isAdmin ? '/settings' : '/account')
-}
 </script>

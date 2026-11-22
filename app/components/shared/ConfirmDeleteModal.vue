@@ -2,7 +2,7 @@
   <Teleport to="body">
     <Transition v-bind="modalFade">
       <div v-if="isOpen" class="fixed inset-0 z-100 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md sm:p-6" @click.self="$emit('close')">
-        <div ref="dialogRef" class="w-full max-w-120 rounded-[20px] border border-rose-500/25 bg-[#0f1019] p-5 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6),0_0_35px_rgba(244,63,94,0.15)] focus:outline-none sm:p-6 light:border-rose-200 light:bg-white light:shadow-xl" role="dialog" aria-modal="true" aria-labelledby="confirm-delete-title" tabindex="-1">
+        <div ref="dialogRef" class="w-full max-w-120 rounded-[20px] border border-rose-500/25 bg-[#101814] p-5 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6),0_0_35px_rgba(244,63,94,0.15)] focus:outline-none sm:p-6 light:border-rose-200 light:bg-white light:shadow-xl" role="dialog" aria-modal="true" aria-labelledby="confirm-delete-title" tabindex="-1">
           <div class="mb-4 flex gap-4">
             <div class="flex size-11 shrink-0 items-center justify-center rounded-xl border border-rose-500/30 bg-rose-500/12 light:border-rose-200 light:bg-rose-50">
               <AlertTriangle :size="24" class="text-rose-400" />
@@ -21,7 +21,7 @@
           <div class="mt-6 flex flex-col-reverse gap-2.5 sm:flex-row sm:justify-end">
             <button
               type="button"
-              class="w-full cursor-pointer rounded-[10px] border border-white/10 bg-white/5 px-4.5 py-2.25 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 sm:w-auto light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
+              class="w-full cursor-pointer rounded-[10px] border border-white/10 bg-white/5 px-4.5 py-2.25 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 sm:w-auto light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
               :disabled="loading"
               @click="$emit('close')"
             >

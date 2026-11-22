@@ -1,5 +1,6 @@
 <template>
-  <UApp :toaster="{ position: 'bottom-right' }">
+  <!-- Toasts stack compactly (hover to fan out), max 3 at once; per-kind timing lives in useAppToast -->
+  <UApp :toaster="{ position: 'bottom-right', expand: false, max: 3 }">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
@@ -20,7 +21,7 @@ useHead({
   meta: [
     { name: 'description', content: 'Production-ready CourseAuraHub Academy course sales dashboard built with Nuxt 3, Nuxt UI, and Vue 3' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-    { name: 'theme-color', content: '#0a0a0f' }
+    { name: 'theme-color', content: '#0a100d' }
   ],
   link: [
     { rel: 'icon', type: 'image/svg+xml', href: '/favicon.ico' },

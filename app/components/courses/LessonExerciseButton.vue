@@ -8,7 +8,7 @@
       <div v-if="isOpen" class="fixed inset-0 z-100 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md sm:p-6" @click.self="isOpen = false">
         <form
           ref="dialogRef"
-          class="flex max-h-[calc(100dvh-2rem)] w-full max-w-3xl flex-col overflow-hidden rounded-[20px] border border-violet-500/25 bg-[#0f1019] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)] focus:outline-none light:border-violet-500/30 light:bg-white light:shadow-xl"
+          class="flex max-h-[calc(100dvh-2rem)] w-full max-w-3xl flex-col overflow-hidden rounded-[20px] border border-brand-500/25 bg-[#101814] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)] focus:outline-none light:border-brand-500/30 light:bg-white light:shadow-xl"
           role="dialog"
           aria-modal="true"
           :aria-labelledby="`${uid}-title`"
@@ -94,7 +94,7 @@ const toast = useAppToast()
 const uid = `exercise-${useId()}`
 const { fetchForStaff, saveExercise } = useCoding()
 
-const iconButtonClass = 'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-white/45 transition-colors hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900'
+const iconButtonClass = 'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-white/45 transition-colors hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900'
 const modalFade = {
   enterActiveClass: 'transition-opacity duration-250 ease-out',
   leaveActiveClass: 'transition-opacity duration-250 ease-out',

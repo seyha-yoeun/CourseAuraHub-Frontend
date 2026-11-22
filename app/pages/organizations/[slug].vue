@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-5">
-    <NuxtLink to="/organizations" class="text-[13px] font-semibold text-violet-300 no-underline light:text-violet-700">{{ t('All organizations') }}</NuxtLink>
+    <NuxtLink to="/organizations" class="text-[13px] font-semibold text-brand-300 no-underline light:text-brand-700">{{ t('All organizations') }}</NuxtLink>
 
     <div v-if="pending" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
     <p v-else-if="error || !organization" :class="emptyBox">{{ getErrorMessage(error, t('Unable to load the organization')) }}</p>
@@ -18,7 +18,7 @@
         <ul v-else class="m-0 mt-3 flex list-none flex-col gap-3 p-0">
           <li v-for="seat in organization.seats" :key="seat.courseSlug" class="flex flex-wrap items-center gap-3">
             <div class="min-w-0 flex-1">
-              <NuxtLink :to="`/courses/${seat.courseSlug}`" class="font-semibold text-slate-100 no-underline hover:text-violet-300 light:text-slate-900 light:hover:text-violet-700">{{ seat.courseTitle }}</NuxtLink>
+              <NuxtLink :to="`/courses/${seat.courseSlug}`" class="font-semibold text-slate-100 no-underline hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700">{{ seat.courseTitle }}</NuxtLink>
               <div class="mt-1.5 flex items-center gap-2">
                 <div class="w-40"><ProgressBar :value="seat.total ? Math.round(seat.used / seat.total * 100) : 0" /></div>
                 <span class="text-xs text-white/50 light:text-slate-500">{{ t('{used} of {total} used', { used: seat.used, total: seat.total }) }}</span>

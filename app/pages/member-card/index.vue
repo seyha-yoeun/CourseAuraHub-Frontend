@@ -13,7 +13,7 @@
 
     <!-- Card and history -->
     <div v-else-if="card" class="grid items-start gap-5 lg:grid-cols-[380px_1fr]">
-      <div class="flex min-h-52 flex-col justify-between gap-4 rounded-[20px] border border-violet-500/40 bg-linear-to-br from-violet-700 to-indigo-800 p-5 text-white shadow-[0_0_40px_rgba(124,58,237,0.25)]">
+      <div class="flex min-h-52 flex-col justify-between gap-4 rounded-[20px] border border-brand-500/40 bg-brand-700 p-5 text-white">
         <div class="flex items-start justify-between gap-3">
           <div class="flex items-center gap-2 text-sm font-bold"><CreditCard :size="18" /> CourseAuraHub</div>
           <span class="rounded-full border border-white/25 bg-white/10 px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase">
@@ -52,7 +52,7 @@
           <div class="flex flex-wrap items-center gap-2 sm:col-span-2">
             <FileUploadButton v-model:busy="uploadingReceipt" purpose="TOP_UP_RECEIPT" accept="application/pdf,image/jpeg,image/png,image/webp" label="Attach a receipt" @uploaded="receipt = $event" />
             <span v-if="receipt" class="text-xs text-white/45 light:text-slate-500">{{ receipt.fileName }}</span>
-            <button type="submit" class="ml-auto cursor-pointer rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50" :disabled="sendingTopUp || uploadingReceipt || !(Number(topUpForm.amount) > 0)">{{ t('Send request') }}</button>
+            <button type="submit" class="ml-auto cursor-pointer rounded-[10px] border border-brand-500/40 bg-brand-500 px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50" :disabled="sendingTopUp || uploadingReceipt || !(Number(topUpForm.amount) > 0)">{{ t('Send request') }}</button>
           </div>
         </form>
         <p v-else-if="hasPendingTopUp" class="mt-3 text-xs text-amber-400 light:text-amber-700">{{ t('Your request is waiting for review.') }}</p>
@@ -68,7 +68,7 @@
 
     <!-- Waiting for review -->
     <div v-else-if="application?.status === 'PENDING'" class="rounded-[18px] border border-white/10 bg-white/5 px-6 py-12 text-center light:border-slate-200 light:bg-white">
-      <Clock :size="36" class="mx-auto text-violet-300 light:text-violet-700" />
+      <Clock :size="36" class="mx-auto text-brand-300 light:text-brand-700" />
       <h2 class="mt-3 text-lg font-bold text-slate-100 light:text-slate-900">{{ t('Your application is being reviewed') }}</h2>
       <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">{{ t('We\'ll notify you as soon as an admin has reviewed it.') }}</p>
     </div>
@@ -102,7 +102,7 @@
           <p v-if="fieldErrors.address" class="text-[11px] text-rose-400">{{ fieldErrors.address }}</p>
         </div>
       </div>
-      <button type="submit" class="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.25 text-[13px] font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-50" :disabled="submitting">
+      <button type="submit" class="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-brand-500/40 bg-brand-500 px-5 py-2.25 text-[13px] font-semibold text-white transition-all hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50" :disabled="submitting">
         <Loader2 v-if="submitting" :size="15" class="animate-spin" />
         {{ t('Submit application') }}
       </button>
@@ -127,7 +127,7 @@ const toast = useAppToast()
 const { fetchMine, fetchMyTransactions, fetchMyTopUps, requestTopUp, apply } = useMemberCard()
 
 const labelClass = 'text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600'
-const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
+const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
 
 const { data, pending, error, refresh } = await useAsyncData('my-member-card', fetchMine, { server: false })
 const card = computed(() => data.value?.card ?? null)

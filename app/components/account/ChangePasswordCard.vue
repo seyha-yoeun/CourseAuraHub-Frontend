@@ -1,7 +1,7 @@
 <template>
   <div class="rounded-[18px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
     <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
-      <KeyRound :size="20" class="text-violet-400" />
+      <KeyRound :size="20" class="text-brand-400" />
       <div>
         <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Password</h3>
         <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Changing it signs out every other device</p>
@@ -14,7 +14,7 @@
     >
       You sign in with {{ providerLabel }}, so this account has no password to change.
       To add one, sign out and use
-      <NuxtLink to="/auth/forgot-password" class="font-semibold text-violet-400 no-underline hover:underline light:text-violet-600">Forgot password</NuxtLink>
+      <NuxtLink to="/auth/forgot-password" class="font-semibold text-brand-400 no-underline hover:underline light:text-brand-600">Forgot password</NuxtLink>
       with your account email.
     </div>
 
@@ -79,7 +79,7 @@
       <div class="flex justify-end">
         <button
           type="submit"
-          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5.5 py-2.5 text-[13px] font-semibold text-white transition-all enabled:hover:from-violet-500 enabled:hover:to-indigo-500 enabled:hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5.5 py-2.5 text-[13px] font-semibold text-white transition-all enabled:hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
           :disabled="saving"
         >
           <Loader2 v-if="saving" :size="16" class="animate-spin" />
@@ -126,7 +126,7 @@ const providerLabel = computed(() => {
   return provider ? provider.charAt(0).toUpperCase() + provider.slice(1) : 'a social provider'
 })
 
-const inputClass = 'w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 disabled:opacity-60 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600'
+const inputClass = 'w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 disabled:opacity-60 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600'
 const inputErrorClass = 'w-full rounded-[10px] border border-red-500 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none ring-2 ring-red-500/15 transition-all duration-200 focus:border-red-500 disabled:opacity-60 light:bg-white light:text-slate-900'
 
 const alertAnim = {

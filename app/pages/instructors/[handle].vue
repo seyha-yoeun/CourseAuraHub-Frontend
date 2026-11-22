@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-5">
-    <NuxtLink to="/instructors" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-violet-300 no-underline hover:text-violet-200 light:text-violet-700">
+    <NuxtLink to="/instructors" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand-300 no-underline hover:text-brand-200 light:text-brand-700">
       <ArrowLeft :size="15" /> {{ t('All instructors') }}
     </NuxtLink>
 
@@ -16,11 +16,11 @@
         <img
           :src="instructor.avatarUrl || fallbackAvatar(instructor.name)"
           :alt="instructor.name"
-          class="size-24 shrink-0 rounded-full border-2 border-violet-500/40 bg-white/5 object-cover"
+          class="size-24 shrink-0 rounded-full border-2 border-brand-500/40 bg-white/5 object-cover"
         >
         <div class="min-w-0 flex-1">
           <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 light:text-slate-900">{{ instructor.name }}</h1>
-          <p v-if="instructor.headline" class="mt-1 text-[13px] font-medium text-violet-300 light:text-violet-700">{{ instructor.headline }}</p>
+          <p v-if="instructor.headline" class="mt-1 text-[13px] font-medium text-brand-300 light:text-brand-700">{{ instructor.headline }}</p>
           <p v-if="instructor.bio" class="mt-3 text-[13px] leading-relaxed whitespace-pre-line text-white/65 light:text-slate-600">{{ instructor.bio }}</p>
 
           <div v-if="links.length" class="mt-4 flex flex-wrap gap-2">

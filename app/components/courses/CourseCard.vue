@@ -1,5 +1,5 @@
 <template>
-  <div class="group flex h-full flex-col overflow-hidden rounded-[18px] border border-white/8 bg-zinc-950/65 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/30 hover:bg-zinc-950/80 hover:shadow-xl hover:shadow-violet-500/10 light:border-slate-200 light:bg-white light:hover:border-violet-300 light:hover:bg-white light:hover:shadow-violet-500/10">
+  <div class="group flex h-full flex-col overflow-hidden rounded-[18px] border border-white/8 bg-zinc-950/65 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/30 hover:bg-zinc-950/80 hover:shadow-xl hover:shadow-brand-500/10 light:border-slate-200 light:bg-white light:hover:border-brand-300 light:hover:bg-white light:hover:shadow-brand-500/10">
     <!-- Thumbnail & Badges -->
     <div class="relative aspect-video w-full overflow-hidden">
       <img
@@ -18,7 +18,7 @@
       </div>
 
       <div class="absolute bottom-3 right-3 left-3 z-2 flex items-center justify-between">
-        <span class="rounded-md border border-violet-500/50 bg-violet-600/35 px-2 py-0.5 text-[11px] font-semibold text-violet-200 backdrop-blur-md light:border-violet-300 light:bg-violet-100 light:text-violet-700">{{ course.category }}</span>
+        <span class="rounded-md border border-brand-500/50 bg-brand-600/35 px-2 py-0.5 text-[11px] font-semibold text-brand-200 backdrop-blur-md light:border-brand-300 light:bg-brand-100 light:text-brand-700">{{ course.category }}</span>
         <span v-if="course.rating > 0" class="inline-flex items-center gap-1 rounded-md border border-amber-400/30 bg-black/65 px-1.75 py-0.5 text-[11px] font-bold text-amber-400 light:border-amber-200 light:bg-white/90 light:text-amber-600">
           <Star :size="12" class="fill-amber-400 text-amber-400" />
           {{ course.rating.toFixed(1) }}
@@ -37,7 +37,7 @@
       </div>
 
       <NuxtLink :to="`/courses/${course.slug}`" class="no-underline">
-        <h3 class="line-clamp-2 text-base leading-snug font-bold text-slate-100 transition-colors hover:text-violet-300 light:text-slate-900 light:hover:text-violet-700">{{ course.title }}</h3>
+        <h3 class="line-clamp-2 text-base leading-snug font-bold text-slate-100 transition-colors hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700">{{ course.title }}</h3>
       </NuxtLink>
 
       <p class="mt-2 line-clamp-2 text-xs leading-relaxed text-white/50 light:text-slate-600">{{ course.description }}</p>
@@ -57,7 +57,7 @@
         <div class="flex flex-col gap-0.5">
           <span class="text-[10px] tracking-wider text-white/40 uppercase light:text-slate-500">{{ t('Students') }}</span>
           <span class="flex items-center gap-1 text-[13px] font-bold text-slate-100 light:text-slate-900">
-            <Users :size="13" class="text-violet-400" />
+            <Users :size="13" class="text-brand-400" />
             {{ course.totalStudents.toLocaleString() }}
           </span>
         </div>
@@ -93,7 +93,7 @@
           <template v-if="canManage">
             <button
               type="button"
-              class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
+              class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
               :title="t('Edit Course')"
               @click.stop="$emit('edit', course)"
             >
@@ -110,7 +110,7 @@
           </template>
           <NuxtLink
             :to="`/courses/${course.slug}`"
-            class="flex items-center gap-1 rounded-lg border border-violet-500/35 bg-violet-500/15 px-3 py-1.5 text-xs font-semibold text-violet-300 no-underline transition-all hover:border-violet-500/60 hover:bg-violet-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-violet-300 light:bg-violet-50 light:text-violet-700 light:hover:bg-violet-100 light:hover:text-violet-900"
+            class="flex items-center gap-1 rounded-lg border border-brand-500/35 bg-brand-500/15 px-3 py-1.5 text-xs font-semibold text-brand-300 no-underline transition-all hover:border-brand-500/60 hover:bg-brand-500/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-brand-300 light:bg-brand-50 light:text-brand-700 light:hover:bg-brand-100 light:hover:text-brand-900"
             :title="canManage ? 'View Details & Analytics' : 'View Course'"
           >
             <span>{{ canManage ? t('Details') : t('View') }}</span>

@@ -5,7 +5,7 @@
         <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ title || 'Recent Enrollments' }}</h3>
         <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Real-time student transactions and course acquisitions</p>
       </div>
-      <NuxtLink to="/students" class="flex items-center gap-1 text-xs font-semibold text-violet-300 no-underline transition-colors hover:text-violet-200 light:text-violet-700 light:hover:text-violet-800">
+      <NuxtLink to="/students" class="flex items-center gap-1 text-xs font-semibold text-brand-300 no-underline transition-colors hover:text-brand-200 light:text-brand-700 light:hover:text-brand-800">
         <span>View Students</span>
         <ArrowUpRight :size="14" />
       </NuxtLink>
@@ -36,7 +36,7 @@
             <!-- Student -->
             <td class="border-b border-white/4 px-3.5 py-3.5 text-white/80 light:border-slate-100 light:text-slate-700">
               <div class="flex items-center gap-2.5">
-                <img :src="item.studentAvatar" :alt="item.studentName" class="size-7.5 shrink-0 rounded-full border border-violet-500/30 bg-violet-500/20" >
+                <img :src="item.studentAvatar" :alt="item.studentName" class="size-7.5 shrink-0 rounded-full border border-brand-500/30 bg-brand-500/20" >
                 <span class="font-semibold text-slate-50 light:text-slate-900">{{ item.studentName }}</span>
               </div>
             </td>

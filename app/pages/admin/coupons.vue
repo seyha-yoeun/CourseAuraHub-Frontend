@@ -8,7 +8,7 @@
 
       <button
         type="button"
-        class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_4px_15px_rgba(124,58,237,0.25)] transition-all hover:-translate-y-px hover:from-violet-500 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+        class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:-translate-y-px hover:bg-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
         @click="openCreate"
       >
         <Plus :size="16" />
@@ -26,14 +26,14 @@
     </div>
 
     <div v-else-if="!coupons.length" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center light:border-slate-200 light:bg-white">
-      <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-violet-500/30 bg-violet-500/12">
-        <TicketPercent :size="30" class="text-violet-300 light:text-violet-700" />
+      <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-brand-500/30 bg-brand-500/12">
+        <TicketPercent :size="30" class="text-brand-300 light:text-brand-700" />
       </div>
       <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">No coupons yet</h3>
       <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">Create a code to share with learners.</p>
     </div>
 
-    <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 backdrop-blur-md light:border-slate-200 light:bg-white">
+    <DataTableFrame v-else label="Coupons" :scroll-key="tableScrollKey">
       <table class="w-full min-w-200 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -47,7 +47,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
-          <tr v-for="coupon in coupons" :key="coupon.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
+          <tr v-for="coupon in tableItems" :key="coupon.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
             <td class="px-4 py-3 font-mono font-semibold text-slate-100 light:text-slate-900">{{ coupon.code }}</td>
             <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ formatDiscount(coupon) }}</td>
             <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ coupon.courseSlug || 'All courses' }}</td>
@@ -75,7 +75,7 @@
                 </button>
                 <button
                   type="button"
-                  class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
+                  class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
                   title="Edit coupon"
                   :aria-label="`Edit coupon ${coupon.code}`"
                   @click="openEdit(coupon)"
@@ -87,7 +87,10 @@
           </tr>
         </tbody>
       </table>
-    </div>
+      <template #footer>
+        <TablePagination v-model:page="tablePage" v-model:page-size="tablePageSize" :total="tableTotal" />
+      </template>
+    </DataTableFrame>
 
     <CouponFormModal
       :is-open="isFormOpen"
@@ -102,6 +105,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { useClientPagination } from '~/composables/useClientPagination'
 import { AlertCircle, Edit3, Plus, TicketPercent } from 'lucide-vue-next'
 import type { Coupon, CouponCreate, CouponUpdate, Course } from '~/types'
 import CouponFormModal from '~/components/orders/CouponFormModal.vue'
@@ -121,6 +127,7 @@ const { data, pending, error, refresh } = await useAsyncData('admin-coupons', fe
 const { data: courseList } = await useAsyncData('coupon-courses', () => $fetch<Course[]>('/api/courses').catch(() => []), { server: false })
 
 const coupons = computed(() => data.value ?? [])
+const { page: tablePage, pageSize: tablePageSize, total: tableTotal, items: tableItems, scrollKey: tableScrollKey } = useClientPagination(coupons)
 const courses = computed(() => courseList.value ?? [])
 
 const isFormOpen = ref(false)

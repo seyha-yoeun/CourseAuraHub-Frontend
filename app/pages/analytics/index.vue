@@ -10,7 +10,7 @@
 
       <button
         type="button"
-        class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-4 py-2.25 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
+        class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/5 px-4 py-2.25 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900"
         :disabled="isRefreshing"
         @click="refresh()"
       >
@@ -73,7 +73,7 @@
           <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Category Revenue Contribution</h3>
           <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Volume and financial breakdown per subject vertical</p>
         </div>
-        <NuxtLink to="/courses" class="flex items-center gap-1 text-xs font-semibold text-violet-300 no-underline transition-colors hover:text-violet-200 light:text-violet-700 light:hover:text-violet-800">
+        <NuxtLink to="/courses" class="flex items-center gap-1 text-xs font-semibold text-brand-300 no-underline transition-colors hover:text-brand-200 light:text-brand-700 light:hover:text-brand-800">
           <span>Manage Courses</span>
           <ArrowRight :size="14" />
         </NuxtLink>
@@ -92,7 +92,7 @@
           <tbody>
             <tr v-for="(amount, cat) in charts.revenueByCategory" :key="cat" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
               <td class="border-b border-white/4 px-3 py-3.5 light:border-slate-100">
-                <span class="font-semibold text-violet-300 light:text-violet-700">{{ cat }}</span>
+                <span class="font-semibold text-brand-300 light:text-brand-700">{{ cat }}</span>
               </td>
               <td class="border-b border-white/4 px-3 py-3.5 light:border-slate-100">
                 <span class="font-bold whitespace-nowrap text-emerald-400 light:text-emerald-700">${{ Number(amount).toLocaleString() }}</span>
@@ -101,7 +101,7 @@
                 <div class="flex items-center gap-3">
                   <div class="h-1.5 max-w-45 flex-1 overflow-hidden rounded-full bg-white/6 light:bg-slate-200">
                     <div
-                      class="h-full rounded-full bg-linear-to-r from-violet-600 to-blue-500 transition-[width] duration-500"
+                      class="h-full rounded-full bg-brand-500 transition-[width] duration-500"
                       :style="{ width: `${kpis.totalRevenue ? Math.round((Number(amount) / kpis.totalRevenue) * 100) : 0}%` }"
                     />
                   </div>

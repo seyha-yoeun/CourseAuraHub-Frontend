@@ -5,7 +5,7 @@
         <h2 :class="sectionTitle">Instructor Revenue Share</h2>
         <p class="mt-1 text-xs text-white/45 light:text-slate-500">The instructor's percentage of each sale. Only future sales use a change.</p>
       </div>
-      <span v-if="share" class="inline-flex rounded-full border px-2.5 py-0.75 text-[11px] font-semibold" :class="share.custom ? 'border-violet-400/30 bg-violet-400/12 text-violet-300 light:border-violet-200 light:bg-violet-50 light:text-violet-700' : 'border-slate-400/30 bg-slate-400/12 text-slate-400 light:border-slate-300 light:bg-slate-100 light:text-slate-600'">
+      <span v-if="share" class="inline-flex rounded-full border px-2.5 py-0.75 text-[11px] font-semibold" :class="share.custom ? 'border-brand-400/30 bg-brand-400/12 text-brand-300 light:border-brand-200 light:bg-brand-50 light:text-brand-700' : 'border-slate-400/30 bg-slate-400/12 text-slate-400 light:border-slate-300 light:bg-slate-100 light:text-slate-600'">
         {{ share.custom ? 'Custom' : 'Platform default' }}
       </span>
     </div>

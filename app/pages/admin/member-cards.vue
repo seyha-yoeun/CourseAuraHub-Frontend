@@ -6,7 +6,7 @@
         <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Review applications, create cards and manage balances.</p>
       </div>
       <div class="flex gap-1 rounded-xl border border-white/10 bg-white/5 p-1 light:border-slate-200 light:bg-slate-100" role="tablist">
-        <button v-for="item in tabs" :key="item.value" type="button" role="tab" :aria-selected="tab === item.value" class="cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-colors" :class="tab === item.value ? 'bg-violet-600 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'" @click="tab = item.value">
+        <button v-for="item in tabs" :key="item.value" type="button" role="tab" :aria-selected="tab === item.value" class="cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-colors" :class="tab === item.value ? 'bg-brand-500 text-white' : 'text-white/60 hover:text-white light:text-slate-600 light:hover:text-slate-900'" @click="tab = item.value">
           {{ item.label }}
         </button>
       </div>
@@ -18,11 +18,11 @@
         <AppDropdown v-model="statusFilter" :options="statusOptions" aria-label="Filter applications by status" />
       </div>
 
-      <div v-if="applicationsPending" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
+      <div v-if="applicationsPending && !applicationData" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
       <p v-else-if="applicationsError" :class="messageClass">{{ getErrorMessage(applicationsError, 'Unable to load applications') }}</p>
       <p v-else-if="!applications.length" :class="messageClass">No applications found.</p>
 
-      <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 light:border-slate-200 light:bg-white">
+      <DataTableFrame v-else label="Member card applications" :scroll-key="`${applicationPage}:${applicationPageSize}`" :class="applicationsPending && 'opacity-60 transition-opacity'">
         <table class="w-full min-w-200 border-collapse text-left text-[13px]">
           <thead>
             <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -57,7 +57,10 @@
             </tr>
           </tbody>
         </table>
-      </div>
+        <template #footer>
+          <TablePagination v-model:page="applicationPage" v-model:page-size="applicationPageSize" :total="applicationData?.totalElements ?? 0" :disabled="applicationsPending" />
+        </template>
+      </DataTableFrame>
     </template>
 
     <MemberCardTopUps v-else-if="tab === 'top-ups'" @changed="refreshCards()" />
@@ -70,11 +73,11 @@
         <button type="button" :class="primaryButton" @click="openCreate">New Card</button>
       </div>
 
-      <div v-if="cardsPending" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
+      <div v-if="cardsPending && !cardData" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
       <p v-else-if="cardsError" :class="messageClass">{{ getErrorMessage(cardsError, 'Unable to load member cards') }}</p>
       <p v-else-if="!cards.length" :class="messageClass">{{ cardSearch ? 'No cards match your search.' : 'No member cards yet.' }}</p>
 
-      <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 light:border-slate-200 light:bg-white">
+      <DataTableFrame v-else label="Member cards" :scroll-key="`${cardPage}:${cardPageSize}`" :class="cardsPending && 'opacity-60 transition-opacity'">
         <table class="w-full min-w-180 border-collapse text-left text-[13px]">
           <thead>
             <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -101,14 +104,11 @@
             </tr>
           </tbody>
         </table>
-      </div>
+        <template #footer>
+          <TablePagination v-model:page="cardPage" v-model:page-size="cardPageSize" :total="cardData?.totalElements ?? 0" :disabled="cardsPending" />
+        </template>
+      </DataTableFrame>
     </template>
-
-    <div v-if="pageCount > 1 && (tab === 'applications' || tab === 'cards')" class="flex items-center justify-end gap-3 text-xs text-white/50 light:text-slate-500">
-      <button type="button" class="cursor-pointer font-semibold disabled:cursor-not-allowed disabled:opacity-40" :disabled="page === 0" @click="page -= 1">Previous</button>
-      <span>Page {{ page + 1 }} of {{ pageCount }}</span>
-      <button type="button" class="cursor-pointer font-semibold disabled:cursor-not-allowed disabled:opacity-40" :disabled="page + 1 >= pageCount" @click="page += 1">Next</button>
-    </div>
 
     <MemberCardManageModal :card="selectedCard" @close="selectedId = null" @changed="onCardChanged" @delete="askDelete" />
 
@@ -124,8 +124,8 @@
 
     <!-- Create a card without an application -->
     <Teleport to="body">
-      <div v-if="creating" class="fixed inset-0 z-100 flex items-center justify-center bg-[#05050c]/82 p-4 backdrop-blur-xl" @click.self="creating = false">
-        <form class="w-full max-w-110 rounded-[20px] border border-violet-500/25 bg-[#0f1019] p-5 light:border-violet-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="create-title" @submit.prevent="create">
+      <div v-if="creating" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl" @click.self="creating = false">
+        <form class="w-full max-w-110 rounded-[20px] border border-brand-500/25 bg-[#101814] p-5 light:border-brand-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="create-title" @submit.prevent="create">
           <h2 id="create-title" class="text-lg font-bold text-slate-50 light:text-slate-900">New Member Card</h2>
           <p class="mt-1 text-xs text-white/45 light:text-slate-500">Issues a card straight away. A pending application from this learner is approved with it.</p>
           <div class="mt-4 flex flex-col gap-3">
@@ -152,11 +152,11 @@
 
     <!-- Reject with a reason -->
     <Teleport to="body">
-      <div v-if="rejecting" class="fixed inset-0 z-100 flex items-center justify-center bg-[#05050c]/82 p-4 backdrop-blur-xl" @click.self="rejecting = null">
-        <form class="w-full max-w-110 rounded-[20px] border border-rose-500/25 bg-[#0f1019] p-5 light:border-rose-200 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="reject-title" @submit.prevent="reject">
+      <div v-if="rejecting" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl" @click.self="rejecting = null">
+        <form class="w-full max-w-110 rounded-[20px] border border-rose-500/25 bg-[#101814] p-5 light:border-rose-200 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="reject-title" @submit.prevent="reject">
           <h2 id="reject-title" class="text-lg font-bold text-slate-50 light:text-slate-900">Reject {{ rejecting.fullName }}</h2>
           <p class="mt-1 text-xs text-white/45 light:text-slate-500">The learner sees this reason and can apply again.</p>
-          <textarea v-model="rejectNote" rows="3" required maxlength="500" aria-label="Reason" class="mt-3 w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none focus:border-violet-500/50 light:border-slate-300 light:bg-white light:text-slate-900" />
+          <textarea v-model="rejectNote" rows="3" required maxlength="500" aria-label="Reason" class="mt-3 w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none focus:border-brand-500/50 light:border-slate-300 light:bg-white light:text-slate-900" />
           <div class="mt-3 flex justify-end gap-2">
             <button type="button" :class="approveButton" @click="rejecting = null">Cancel</button>
             <button type="submit" :class="rejectButton" :disabled="busyId === rejecting.id || !rejectNote.trim()">Reject</button>
@@ -168,6 +168,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { DEFAULT_PAGE_SIZE } from '~/composables/useClientPagination'
 import { refDebounced } from '@vueuse/core'
 import type { MemberCard, MemberCardApplication, Student } from '~/types'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
@@ -189,11 +192,11 @@ const { fetchApplications, approveApplication, rejectApplication, fetchCards, fe
 const route = useRoute()
 
 const baseButton = 'cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50'
-const approveButton = `${baseButton} border-violet-500/35 bg-violet-500/15 text-violet-300 hover:bg-violet-500/25 light:border-violet-200 light:bg-violet-50 light:text-violet-700`
+const approveButton = `${baseButton} border-brand-500/35 bg-brand-500/15 text-brand-300 hover:bg-brand-500/25 light:border-brand-200 light:bg-brand-50 light:text-brand-700`
 const rejectButton = `${baseButton} border-rose-500/30 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 light:border-rose-200 light:bg-rose-50 light:text-rose-600`
-const primaryButton = `${baseButton} border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500`
+const primaryButton = `${baseButton} border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600`
 const labelClass = 'text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600'
-const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
+const inputClass = 'w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
 const messageClass = 'rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500'
 
 const tabs = [
@@ -212,32 +215,26 @@ const statusOptions = [
 const tab = ref('applications')
 const statusFilter = ref('')
 const applicationPage = ref(0)
+const applicationPageSize = ref(DEFAULT_PAGE_SIZE)
 const cardPage = ref(0)
+const cardPageSize = ref(DEFAULT_PAGE_SIZE)
 const searchInput = ref('')
 const cardSearch = refDebounced(searchInput, 300)
 
 const { data: applicationData, pending: applicationsPending, error: applicationsError, refresh: refreshApplications } = await useAsyncData(
   'admin-card-applications',
-  () => fetchApplications(statusFilter.value, applicationPage.value),
-  { server: false, watch: [statusFilter, applicationPage] }
+  () => fetchApplications(statusFilter.value, applicationPage.value, applicationPageSize.value),
+  { server: false, watch: [statusFilter, applicationPage, applicationPageSize] }
 )
 const { data: cardData, pending: cardsPending, error: cardsError, refresh: refreshCards } = await useAsyncData(
   'admin-member-cards',
-  () => fetchCards(cardSearch.value.trim(), cardPage.value),
-  { server: false, watch: [cardPage, cardSearch] }
+  () => fetchCards(cardSearch.value.trim(), cardPage.value, cardPageSize.value),
+  { server: false, watch: [cardPage, cardPageSize, cardSearch] }
 )
 
 const applications = computed(() => applicationData.value?.items ?? [])
 const cards = computed(() => cardData.value?.items ?? [])
 
-const page = computed({
-  get: () => tab.value === 'applications' ? applicationPage.value : cardPage.value,
-  set: (value) => {
-    if (tab.value === 'applications') applicationPage.value = value
-    else cardPage.value = value
-  }
-})
-const pageCount = computed(() => (tab.value === 'applications' ? applicationData.value : cardData.value)?.totalPages ?? 0)
 
 watch(statusFilter, () => {
   applicationPage.value = 0

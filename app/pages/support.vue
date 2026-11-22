@@ -11,9 +11,9 @@
           v-for="channel in channels"
           :key="channel.label"
           :to="channel.href"
-          class="group flex flex-col gap-2 rounded-2xl border border-white/8 bg-white/3 p-4.5 no-underline transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-violet-500/35 hover:bg-violet-500/8 hover:shadow-[0_12px_28px_-14px_rgba(124,58,237,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-white light:hover:border-violet-300"
+          class="group flex flex-col gap-2 rounded-2xl border border-white/8 bg-white/3 p-4.5 no-underline transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-brand-500/35 hover:bg-brand-500/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-white light:hover:border-brand-300"
         >
-          <component :is="channel.icon" :size="18" class="text-violet-300 transition-transform duration-300 group-hover:scale-110 light:text-violet-600" />
+          <component :is="channel.icon" :size="18" class="text-brand-300 transition-transform duration-300 group-hover:scale-110 light:text-brand-600" />
           <span class="text-sm font-bold text-slate-100 light:text-slate-900">{{ channel.label }}</span>
           <span class="text-xs text-white/50 light:text-slate-500">{{ channel.desc }}</span>
         </NuxtLink>

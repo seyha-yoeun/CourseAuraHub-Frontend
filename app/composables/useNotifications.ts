@@ -19,6 +19,9 @@ export function useNotifications() {
   const nextPage = useState('notifications-next-page', () => 0)
   // The feed can show every notification or only the unread ones
   const unreadOnly = useState('notifications-unread-only', () => false)
+  // First page has arrived (so an empty list really means "nothing here"), or why it couldn't load
+  const loaded = useState('notifications-loaded', () => false)
+  const loadError = useState<string | null>('notifications-load-error', () => null)
   const toast = useAppToast()
 
   async function loadPage(page: number) {
@@ -30,6 +33,24 @@ export function useNotifications() {
     items.value = page === 0 ? [...fresh, ...items.value] : [...items.value, ...fresh]
     nextPage.value = page + 1
     hasMore.value = page + 1 < result.totalPages
+    if (page === 0) {
+      loaded.value = true
+      loadError.value = null
+    }
+  }
+
+  /** Reloads the first page from REST, e.g. after a failed load. */
+  async function reload() {
+    loaded.value = false
+    loadError.value = null
+    items.value = []
+    hasMore.value = false
+    try {
+      await Promise.all([loadPage(0), loadUnreadCount()])
+    } catch {
+      loadError.value = 'Unable to load notifications'
+      throw new Error(loadError.value)
+    }
   }
 
   async function loadMore() {
@@ -42,7 +63,13 @@ export function useNotifications() {
     unreadOnly.value = value
     items.value = []
     hasMore.value = false
-    await loadPage(0)
+    loaded.value = false
+    try {
+      await loadPage(0)
+    } catch (error) {
+      loadError.value = 'Unable to load notifications'
+      throw error
+    }
   }
 
   // Keeps the badge right when the stream is slow to open or can't connect
@@ -95,8 +122,12 @@ export function useNotifications() {
   async function connect() {
     if (source) return
     items.value = []
+    loaded.value = false
+    loadError.value = null
     openStream()
-    await Promise.all([loadPage(0), loadUnreadCount()]).catch(() => {})
+    await Promise.all([loadPage(0), loadUnreadCount()]).catch(() => {
+      loadError.value = 'Unable to load notifications'
+    })
   }
 
   function disconnect() {
@@ -107,6 +138,8 @@ export function useNotifications() {
     unreadCount.value = 0
     hasMore.value = false
     unreadOnly.value = false
+    loaded.value = false
+    loadError.value = null
   }
 
   async function markRead(notification: AppNotification) {
@@ -141,6 +174,9 @@ export function useNotifications() {
     unreadCount,
     hasMore,
     unreadOnly,
+    loaded,
+    loadError,
+    reload,
     setUnreadOnly,
     connect,
     disconnect,

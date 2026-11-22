@@ -7,7 +7,7 @@
       </div>
       <button
         type="button"
-        class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white hover:from-violet-500 hover:to-indigo-500"
+        class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white hover:bg-brand-600"
         @click="openForm(null)"
       >
         <Plus :size="16" /> New Path
@@ -22,11 +22,11 @@
       <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">{{ getErrorMessage(error, 'Unable to load learning paths') }}</p>
     </div>
     <div v-else-if="!items.length" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center light:border-slate-200 light:bg-white">
-      <Route :size="32" class="text-violet-400" />
+      <Route :size="32" class="text-brand-400" />
       <h3 class="mt-3 text-lg font-bold text-slate-100 light:text-slate-900">No learning paths yet</h3>
     </div>
 
-    <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 light:border-slate-200 light:bg-white">
+    <DataTableFrame v-else label="Learning paths" :scroll-key="tableScrollKey">
       <table class="w-full min-w-180 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -38,9 +38,9 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
-          <tr v-for="item in items" :key="item.slug" class="hover:bg-white/3 light:hover:bg-slate-50">
+          <tr v-for="item in tableItems" :key="item.slug" class="hover:bg-white/3 light:hover:bg-slate-50">
             <td class="px-4 py-3">
-              <NuxtLink v-if="item.status === 'published'" :to="`/learning-paths/${item.slug}`" class="font-semibold text-slate-100 no-underline hover:text-violet-300 light:text-slate-900 light:hover:text-violet-700">{{ item.title }}</NuxtLink>
+              <NuxtLink v-if="item.status === 'published'" :to="`/learning-paths/${item.slug}`" class="font-semibold text-slate-100 no-underline hover:text-brand-300 light:text-slate-900 light:hover:text-brand-700">{{ item.title }}</NuxtLink>
               <span v-else class="font-semibold text-slate-100 light:text-slate-900">{{ item.title }}</span>
               <span class="block text-xs text-white/40 light:text-slate-500">{{ formatDateTime(item.updatedAt) }}</span>
             </td>
@@ -55,13 +55,16 @@
             <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ item.courseCount }}</td>
             <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ Number(item.price) > 0 ? formatMoney(item.price) : 'Free' }}</td>
             <td class="px-4 py-3 text-right whitespace-nowrap">
-              <button type="button" class="mr-2 cursor-pointer rounded-lg border border-violet-500/35 bg-violet-500/15 px-2.5 py-1.5 text-xs font-semibold text-violet-300 light:border-violet-300 light:bg-violet-50 light:text-violet-700" @click="openForm(item)">Edit</button>
+              <button type="button" class="mr-2 cursor-pointer rounded-lg border border-brand-500/35 bg-brand-500/15 px-2.5 py-1.5 text-xs font-semibold text-brand-300 light:border-brand-300 light:bg-brand-50 light:text-brand-700" @click="openForm(item)">Edit</button>
               <button type="button" class="cursor-pointer rounded-lg border border-rose-500/30 bg-rose-500/10 px-2.5 py-1.5 text-xs font-semibold text-rose-400 light:border-rose-200 light:bg-rose-50 light:text-rose-600" @click="pendingDelete = item">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
+      <template #footer>
+        <TablePagination v-model:page="tablePage" v-model:page-size="tablePageSize" :total="tableTotal" />
+      </template>
+    </DataTableFrame>
 
     <LearningPathFormModal
       :is-open="formOpen"
@@ -85,6 +88,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { useClientPagination } from '~/composables/useClientPagination'
 import { AlertCircle, Plus, Route } from 'lucide-vue-next'
 import type { LearningPath, LearningPathForm } from '~/types/learningPath'
 import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
@@ -105,6 +111,7 @@ const { courses: allCourses, fetchCourses } = useCourses()
 
 const { data, pending, error, refresh } = await useAsyncData('admin-learning-paths', fetchAllForAdmin, { server: false })
 const items = computed(() => data.value ?? [])
+const { page: tablePage, pageSize: tablePageSize, total: tableTotal, items: tableItems, scrollKey: tableScrollKey } = useClientPagination(items)
 
 const formOpen = ref(false)
 const editing = ref<LearningPath | null>(null)

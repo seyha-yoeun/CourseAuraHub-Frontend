@@ -1,10 +1,12 @@
 <template>
   <header class="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-white/8 bg-zinc-950/85 px-3.5 backdrop-blur-xl transition-colors duration-300 sm:px-6 light:border-slate-200 light:bg-white/90">
     <div class="flex min-w-0 items-center gap-4">
+      <!-- Phones only: opens the sidebar drawer. On desktop the toggle lives at the bottom of the sidebar. -->
       <button
-        class="group flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-violet-500/40 hover:bg-white/8 hover:text-white hover:shadow-[0_4px_14px_rgba(124,58,237,0.14)] active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-violet-300 light:hover:bg-slate-200 light:hover:text-slate-900"
-        aria-label="Toggle sidebar"
-        title="Toggle Sidebar (Ctrl+B)"
+        type="button"
+        class="group flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border md:hidden border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-brand-500/40 hover:bg-white/8 hover:text-white active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-brand-300 light:hover:bg-slate-200 light:hover:text-slate-900"
+        aria-label="Open sidebar"
+        title="Open sidebar (Ctrl+B)"
         @click="emit('toggle-sidebar')"
       >
         <Menu :size="20" :stroke-width="1.5" class="transition-transform duration-200 ease-out group-hover:scale-110" />
@@ -27,11 +29,11 @@
             <NuxtLink
               v-if="item.to && index < breadcrumbItems.length - 1"
               :to="item.to"
-              class="text-[13px] font-medium text-white/65 no-underline transition-colors hover:text-violet-300 light:text-slate-600 light:hover:text-violet-700"
+              class="text-[13px] font-medium text-white/65 no-underline transition-colors hover:text-brand-300 light:text-slate-600 light:hover:text-brand-700"
             >
               <span v-if="index === 0" class="inline-flex items-center gap-1.5">
                 <span class="font-bold tracking-tight text-slate-100 light:text-slate-900">CourseAuraHub</span>
-                <span class="rounded-full border border-violet-500/25 bg-violet-500/12 px-1.5 py-px text-[10px] font-bold tracking-wider text-violet-300 uppercase light:border-violet-300 light:bg-violet-50 light:text-violet-700">Academy</span>
+                <span class="rounded-full border border-brand-500/25 bg-brand-500/12 px-1.5 py-px text-[10px] font-bold tracking-wider text-brand-300 uppercase light:border-brand-300 light:bg-brand-50 light:text-brand-700">Academy</span>
               </span>
               <span v-else>{{ item.label }}</span>
             </NuxtLink>
@@ -53,7 +55,7 @@
             v-model="searchQuery"
             type="text"
             placeholder="Search platform... (Ctrl+K)"
-            class="h-9 w-55 rounded-lg border border-white/8 bg-white/4 py-1.75 pr-7 pl-8 text-[13px] text-white/85 outline-none transition-all duration-200 placeholder:text-white/30 focus:w-65 focus:border-violet-500/60 focus:bg-white/8 focus:ring-2 focus:ring-violet-500/20 light:border-slate-200 light:bg-slate-50 light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-violet-600 light:focus:bg-white"
+            class="h-9 w-55 rounded-lg border border-white/8 bg-white/4 py-1.75 pr-7 pl-8 text-[13px] text-white/85 outline-none transition-all duration-200 placeholder:text-white/30 focus:w-65 focus:border-brand-500/60 focus:bg-white/8 focus:ring-2 focus:ring-brand-500/20 light:border-slate-200 light:bg-slate-50 light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600 light:focus:bg-white"
             @focus="isSearchFocused = true"
             @keydown.esc="closeSearch"
           >
@@ -72,20 +74,20 @@
         <Transition v-bind="dropdownAnim">
           <div
             v-if="isSearchFocused && searchQuery.trim().length > 0"
-            class="absolute top-full left-0 z-[60] mt-2 w-[min(380px,calc(100vw-2rem))] origin-top-left overflow-hidden rounded-2xl border border-violet-500/30 bg-zinc-950 shadow-2xl shadow-black/80 ring-1 ring-violet-500/10 light:border-violet-500/25 light:bg-white light:shadow-xl light:ring-violet-500/10"
+            class="absolute top-full left-0 z-[60] mt-2 w-[min(380px,calc(100vw-2rem))] origin-top-left overflow-hidden rounded-2xl border border-brand-500/30 bg-zinc-950 shadow-2xl shadow-black/80 ring-1 ring-brand-500/10 light:border-brand-500/25 light:bg-white light:shadow-xl light:ring-brand-500/10"
           >
             <div class="menu-stagger flex max-h-100 flex-col gap-2.5 overflow-y-auto p-2">
               <!-- Courses Group -->
               <div v-if="filteredCourses.length > 0" class="flex flex-col gap-1">
                 <div class="flex items-center gap-1.5 px-2 py-1 text-[11px] font-bold tracking-wider text-white/45 uppercase light:text-slate-500">
-                  <BookOpen :size="13" class="text-violet-400" />
+                  <BookOpen :size="13" class="text-brand-400" />
                   <span>Courses ({{ filteredCourses.length }})</span>
                 </div>
                 <button
                   v-for="course in filteredCourses"
                   :key="course.id"
                   type="button"
-                  class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg border border-transparent px-2.5 py-2 text-left text-slate-100 transition-all hover:border-violet-500/30 hover:bg-violet-500/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-900 light:hover:bg-violet-50"
+                  class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg border border-transparent px-2.5 py-2 text-left text-slate-100 transition-all hover:border-brand-500/30 hover:bg-brand-500/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-900 light:hover:bg-brand-50"
                   @click="goToCourse(course.slug)"
                 >
                   <img :src="course.thumbnail" :alt="course.title" class="h-6 w-9 shrink-0 rounded object-cover" >
@@ -107,10 +109,10 @@
                   v-for="student in filteredStudents"
                   :key="student.id"
                   type="button"
-                  class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg border border-transparent px-2.5 py-2 text-left text-slate-100 transition-all hover:border-violet-500/30 hover:bg-violet-500/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-900 light:hover:bg-violet-50"
+                  class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg border border-transparent px-2.5 py-2 text-left text-slate-100 transition-all hover:border-brand-500/30 hover:bg-brand-500/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-900 light:hover:bg-brand-50"
                   @click="goToStudents"
                 >
-                  <img :src="student.avatar" :alt="student.name" class="size-7 shrink-0 rounded-full border border-violet-500/30 object-cover" >
+                  <img :src="student.avatar" :alt="student.name" class="size-7 shrink-0 rounded-full border border-brand-500/30 object-cover" >
                   <div class="min-w-0 flex-1">
                     <span class="block truncate text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ student.name }}</span>
                     <span class="mt-px block truncate text-[11px] text-white/45 light:text-slate-500">{{ student.email }} • {{ student.country }}</span>
@@ -129,10 +131,10 @@
                   v-for="page in filteredPages"
                   :key="page.to"
                   type="button"
-                  class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg border border-transparent px-2.5 py-2 text-left text-slate-100 transition-all hover:border-violet-500/30 hover:bg-violet-500/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-900 light:hover:bg-violet-50"
+                  class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg border border-transparent px-2.5 py-2 text-left text-slate-100 transition-all hover:border-brand-500/30 hover:bg-brand-500/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-900 light:hover:bg-brand-50"
                   @click="goToPage(page)"
                 >
-                  <component :is="page.icon" :size="15" class="text-violet-400" />
+                  <component :is="page.icon" :size="15" class="text-brand-400" />
                   <div class="min-w-0 flex-1">
                     <span class="block truncate text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ page.name }}</span>
                     <span class="mt-px block truncate text-[11px] text-white/45 light:text-slate-500">{{ page.desc }}</span>
@@ -167,15 +169,15 @@
         :title="t('Your cart')"
       >
         <ShoppingCart :size="17" />
-        <span v-if="cart.count.value > 0" class="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-violet-600 px-1 text-[10px] font-bold text-white">{{ cart.count.value }}</span>
+        <span v-if="cart.count.value > 0" class="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-500 px-1 text-[10px] font-bold text-white">{{ cart.count.value }}</span>
       </NuxtLink>
 
       <!-- Notifications with Dropdown -->
       <div v-if="auth.isAuthenticated" ref="notifContainerRef" class="relative">
         <button
           type="button"
-          class="group relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-violet-500/40 hover:bg-white/8 hover:text-white hover:shadow-[0_4px_14px_rgba(124,58,237,0.14)] active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-violet-300 light:hover:bg-slate-200 light:hover:text-slate-900"
-          :class="{ 'border-violet-500/40 bg-white/8 text-white light:bg-slate-200 light:text-slate-900': isNotifOpen }"
+          class="group relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-brand-500/40 hover:bg-white/8 hover:text-white active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-brand-300 light:hover:bg-slate-200 light:hover:text-slate-900"
+          :class="{ 'border-brand-500/40 bg-white/8 text-white light:bg-slate-200 light:text-slate-900': isNotifOpen }"
           aria-label="Notifications"
           :aria-expanded="isNotifOpen"
           aria-haspopup="dialog"
@@ -186,11 +188,11 @@
             :size="18"
             :stroke-width="1.5"
             class="transition-transform duration-300 ease-out group-hover:scale-110"
-            :class="{ '-rotate-12 scale-110 text-violet-300 light:text-violet-700': isNotifOpen }"
+            :class="{ '-rotate-12 scale-110 text-brand-300 light:text-brand-700': isNotifOpen }"
           />
           <span v-if="unreadNotifsCount > 0" class="pointer-events-none absolute top-1.5 right-1.5 flex size-2">
-            <span class="absolute inline-flex size-full animate-ping rounded-full bg-violet-500/70" />
-            <span class="relative inline-flex size-2 rounded-full border-[1.5px] border-zinc-950 bg-violet-500 light:border-white" />
+            <span class="absolute inline-flex size-full animate-ping rounded-full bg-brand-500/70" />
+            <span class="relative inline-flex size-2 rounded-full border-[1.5px] border-zinc-950 bg-brand-500 light:border-white" />
           </span>
         </button>
 
@@ -239,8 +241,8 @@
       <!-- Help with Modal Trigger -->
       <button
         type="button"
-        class="group relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-violet-500/40 hover:bg-white/8 hover:text-white hover:shadow-[0_4px_14px_rgba(124,58,237,0.14)] active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-violet-300 light:hover:bg-slate-200 light:hover:text-slate-900"
-        :class="{ 'border-violet-500/40 bg-white/8 text-white light:bg-slate-200 light:text-slate-900': isHelpOpen }"
+        class="group relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-brand-500/40 hover:bg-white/8 hover:text-white active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-brand-300 light:hover:bg-slate-200 light:hover:text-slate-900"
+        :class="{ 'border-brand-500/40 bg-white/8 text-white light:bg-slate-200 light:text-slate-900': isHelpOpen }"
         aria-label="Help & About Platform"
         :aria-expanded="isHelpOpen"
         aria-haspopup="dialog"
@@ -253,7 +255,7 @@
       <NuxtLink
         v-if="!auth.isAuthenticated"
         :to="{ path: '/auth/login', query: { redirect: route.fullPath } }"
-        class="inline-flex shrink-0 items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-3.5 py-2 text-xs font-semibold text-white no-underline transition-all hover:from-violet-500 hover:to-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+        class="inline-flex shrink-0 items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500 px-3.5 py-2 text-xs font-semibold text-white no-underline transition-all hover:bg-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
       >
         Sign in
       </NuxtLink>
@@ -262,8 +264,8 @@
       <div v-else ref="avatarContainerRef" class="relative">
         <button
           type="button"
-          class="relative block size-9 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-violet-500/50 p-0 transition-all duration-200 ease-out hover:scale-105 hover:border-violet-500 hover:shadow-[0_0_14px_rgba(124,58,237,0.5)] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 light:border-violet-300 light:focus-visible:ring-offset-white"
-          :class="{ 'scale-105 border-violet-500 shadow-[0_0_14px_rgba(124,58,237,0.5)] light:border-violet-600': isAvatarOpen }"
+          class="relative block size-9 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-brand-500/50 p-0 transition-all duration-200 ease-out hover:scale-105 hover:border-brand-500 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 light:border-brand-300 light:focus-visible:ring-offset-white"
+          :class="{ 'scale-105 border-brand-500 light:border-brand-600': isAvatarOpen }"
           :title="`${auth.userName} (${auth.roleLabel})`"
           aria-label="Open account menu"
           aria-haspopup="true"
@@ -277,7 +279,7 @@
         <Transition v-bind="dropdownAnim">
           <div
             v-if="isAvatarOpen"
-            class="menu-stagger absolute top-full right-0 z-[60] mt-2.5 w-[270px] max-w-[calc(100vw-2rem)] origin-top-right overflow-hidden rounded-2xl border border-violet-500/30 bg-zinc-950/95 p-2 backdrop-blur-xl shadow-2xl shadow-black/80 light:border-violet-500/25 light:bg-white"
+            class="menu-stagger absolute top-full right-0 z-[60] mt-2.5 w-[270px] max-w-[calc(100vw-2rem)] origin-top-right overflow-hidden rounded-2xl border border-brand-500/30 bg-zinc-950/95 p-2 backdrop-blur-xl shadow-2xl shadow-black/80 light:border-brand-500/25 light:bg-white"
           >
             <!-- User Summary Header -->
             <div class="flex items-center gap-3 px-2.5 pt-2.5 pb-3">
@@ -285,14 +287,14 @@
                 <img
                   :src="auth.userAvatar"
                   :alt="auth.userName"
-                  class="size-11 rounded-full border-2 border-violet-500/40"
+                  class="size-11 rounded-full border-2 border-brand-500/40"
                 >
                 <span class="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-zinc-950 bg-emerald-500 light:border-white" />
               </div>
               <div class="min-w-0 flex-1">
                 <span class="block text-sm font-bold text-slate-100 light:text-slate-900">{{ auth.userName }}</span>
                 <span class="block truncate text-[11px] text-white/45 light:text-slate-500">{{ auth.userEmail }}</span>
-                <span class="mt-0.75 inline-block rounded-full border border-violet-500/30 bg-violet-500/18 px-1.5 py-px text-[9px] font-bold tracking-wider text-violet-300 uppercase light:border-violet-200 light:bg-violet-50 light:text-violet-700">{{ auth.roleLabel }}</span>
+                <span class="mt-0.75 inline-block rounded-full border border-brand-500/30 bg-brand-500/18 px-1.5 py-px text-[9px] font-bold tracking-wider text-brand-300 uppercase light:border-brand-200 light:bg-brand-50 light:text-brand-700">{{ auth.roleLabel }}</span>
               </div>
             </div>
 
@@ -303,17 +305,17 @@
               <NuxtLink
                 v-if="auth.isAdmin"
                 to="/admin"
-                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
+                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-brand-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-700 light:hover:bg-brand-50 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
               >
-                <ShieldAlert :size="15" class="text-violet-400" />
+                <ShieldAlert :size="15" class="text-brand-400" />
                 <span>Admin Console</span>
                 <span class="ml-auto rounded-full border border-emerald-400/25 bg-emerald-400/12 px-1.5 py-px text-[10px] font-bold text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700">Live</span>
               </NuxtLink>
 
               <NuxtLink
                 to="/courses"
-                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
+                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-brand-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-700 light:hover:bg-brand-50 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
               >
                 <BookOpen :size="15" class="text-blue-400" />
@@ -323,16 +325,16 @@
               <template v-if="!auth.isAdmin">
                 <NuxtLink
                   to="/my-learning"
-                  class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
+                  class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-brand-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-700 light:hover:bg-brand-50 light:hover:text-slate-900"
                   @click="isAvatarOpen = false"
                 >
-                  <GraduationCap :size="15" class="text-violet-400" />
+                  <GraduationCap :size="15" class="text-brand-400" />
                   <span>My Learning</span>
                 </NuxtLink>
 
                 <NuxtLink
                   to="/wishlist"
-                  class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
+                  class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-brand-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-700 light:hover:bg-brand-50 light:hover:text-slate-900"
                   @click="isAvatarOpen = false"
                 >
                   <Heart :size="15" class="text-rose-400" />
@@ -341,10 +343,10 @@
 
                 <NuxtLink
                   to="/account"
-                  class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
+                  class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-brand-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-700 light:hover:bg-brand-50 light:hover:text-slate-900"
                   @click="isAvatarOpen = false"
                 >
-                  <UserCog :size="15" class="text-purple-400" />
+                  <UserCog :size="15" class="text-brand-400" />
                   <span>Profile & Security</span>
                 </NuxtLink>
               </template>
@@ -352,7 +354,7 @@
               <NuxtLink
                 v-if="auth.isAdmin"
                 to="/students"
-                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
+                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-brand-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-700 light:hover:bg-brand-50 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
               >
                 <Users :size="15" class="text-emerald-400" />
@@ -362,7 +364,7 @@
               <NuxtLink
                 v-if="auth.isAdmin"
                 to="/analytics"
-                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
+                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-brand-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-700 light:hover:bg-brand-50 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
               >
                 <BarChart3 :size="15" class="text-amber-400" />
@@ -372,16 +374,16 @@
               <NuxtLink
                 v-if="auth.isAdmin"
                 to="/settings"
-                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
+                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-brand-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-700 light:hover:bg-brand-50 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
               >
-                <Settings :size="15" class="text-purple-400" />
+                <Settings :size="15" class="text-brand-400" />
                 <span>Platform Settings</span>
               </NuxtLink>
 
               <NuxtLink
                 to="/account/security"
-                class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
+                class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-700 light:hover:bg-slate-100 light:hover:text-slate-900"
                 @click="isAvatarOpen = false"
               >
                 <ShieldCheck :size="15" class="text-emerald-400" />
@@ -390,7 +392,7 @@
 
               <button
                 type="button"
-                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-violet-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-700 light:hover:bg-violet-50 light:hover:text-slate-900"
+                class="group/item flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] font-medium text-white/75 no-underline transition-all duration-200 ease-out hover:translate-x-0.5 hover:bg-brand-500/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-700 light:hover:bg-brand-50 light:hover:text-slate-900"
                 @click="handleOpenHelp"
               >
                 <HelpCircle :size="15" class="text-teal-400" />
@@ -435,24 +437,16 @@
 
 <script setup lang="ts">
 import {
-  AlertTriangle,
-  Award,
   BarChart3,
   Bell,
-  BellRing,
   BookOpen,
   ChevronRight,
-  ClipboardCheck,
   Compass,
-  CreditCard,
   GraduationCap,
   Heart,
   HelpCircle,
   LogOut,
-  Megaphone,
   Menu,
-  MessageSquareText,
-  PlayCircle,
   Receipt,
   Repeat,
   Search,
@@ -480,9 +474,10 @@ import { useAppToast } from '~/composables/useAppToast'
 import { useAuth } from '~/composables/useAuth'
 import { useNotifications } from '~/composables/useNotifications'
 import { formatTimeAgo } from '~/utils/dateTime'
+import { notificationStyles } from '~/utils/notificationStyles'
 import { useBodyScrollLock } from '~/composables/useBodyScrollLock'
 import { useCart } from '~/composables/useCart'
-import type { AppNotification, Course, Student } from '~/types'
+import type { Course, Student } from '~/types'
 import type { Component } from 'vue'
 
 defineProps<{ sidebarCollapsed: boolean }>()
@@ -642,29 +637,6 @@ interface HeaderNotification {
   read: boolean
 }
 
-const notificationStyles: Record<AppNotification['type'], Pick<HeaderNotification, 'icon' | 'iconClass' | 'bgClass'>> = {
-  enrolled: { icon: GraduationCap, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
-  subscription: { icon: Repeat, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
-  payment_failed: { icon: AlertTriangle, iconClass: 'text-rose-400', bgClass: 'bg-rose-400/15 light:bg-rose-50' },
-  order_refunded: { icon: Receipt, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' },
-  refund_request: { icon: Receipt, iconClass: 'text-amber-400', bgClass: 'bg-amber-400/15 light:bg-amber-50' },
-  certificate_issued: { icon: Award, iconClass: 'text-amber-400', bgClass: 'bg-amber-400/15 light:bg-amber-50' },
-  new_lesson: { icon: PlayCircle, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
-  live_session: { icon: Video, iconClass: 'text-rose-400', bgClass: 'bg-rose-400/15 light:bg-rose-50' },
-  course_updated: { icon: BookOpen, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
-  new_enrollment: { icon: Users, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
-  course_completed: { icon: Award, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
-  member_card: { icon: CreditCard, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
-  payout: { icon: Wallet, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
-  lesson_question: { icon: HelpCircle, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' },
-  assignment: { icon: ClipboardCheck, iconClass: 'text-emerald-400', bgClass: 'bg-emerald-400/15 light:bg-emerald-50' },
-  course_review: { icon: ShieldCheck, iconClass: 'text-amber-400', bgClass: 'bg-amber-400/15 light:bg-amber-50' },
-  course_survey: { icon: MessageSquareText, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' },
-  course_reminder: { icon: BellRing, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
-  announcement: { icon: Megaphone, iconClass: 'text-violet-400', bgClass: 'bg-violet-400/15 light:bg-violet-50' },
-  weekly_report: { icon: BarChart3, iconClass: 'text-blue-400', bgClass: 'bg-blue-400/15 light:bg-blue-50' }
-}
-
 const notificationCenter = useNotifications()
 const cart = useCart()
 const { t } = useT()
@@ -682,8 +654,8 @@ const unreadNotifsCount = computed(() => notificationCenter.unreadCount.value)
 
 // Responsive panel shell: anchored dropdown on desktop, centered dialog on mobile
 const notifPanelClass = computed(() => isMobileNotif.value
-  ? 'fixed top-1/2 left-1/2 z-[100] w-[calc(100vw-2rem)] max-w-[22rem] -translate-x-1/2 -translate-y-1/2 origin-center overflow-hidden rounded-2xl border border-violet-500/35 bg-zinc-950 shadow-[0_28px_70px_-16px_rgba(0,0,0,0.95),0_0_45px_rgba(124,58,237,0.22)] ring-1 ring-violet-500/15 light:border-violet-500/25 light:bg-white light:shadow-[0_28px_70px_-16px_rgba(15,23,42,0.35),0_0_40px_rgba(124,58,237,0.12)] light:ring-violet-500/10'
-  : 'absolute top-[calc(100%+0.625rem)] right-0 z-[60] w-85 max-w-[calc(100vw-2rem)] origin-top-right overflow-hidden rounded-2xl border border-violet-500/30 bg-zinc-950 shadow-2xl shadow-black/80 ring-1 ring-violet-500/10 light:border-violet-500/25 light:bg-white light:shadow-xl light:ring-violet-500/10')
+  ? 'fixed top-1/2 left-1/2 z-[100] w-[calc(100vw-2rem)] max-w-[22rem] -translate-x-1/2 -translate-y-1/2 origin-center overflow-hidden rounded-2xl border border-brand-500/35 bg-zinc-950 shadow-[0_28px_70px_-16px_rgba(0,0,0,0.95)] ring-1 ring-brand-500/15 light:border-brand-500/25 light:bg-white light:shadow-[0_28px_70px_-16px_rgba(15,23,42,0.35)] light:ring-brand-500/10'
+  : 'absolute top-[calc(100%+0.625rem)] right-0 z-[60] w-85 max-w-[calc(100vw-2rem)] origin-top-right overflow-hidden rounded-2xl border border-brand-500/30 bg-zinc-950 shadow-2xl shadow-black/80 ring-1 ring-brand-500/10 light:border-brand-500/25 light:bg-white light:shadow-xl light:ring-brand-500/10')
 
 const notifBackdropAnim = {
   enterActiveClass: 'transition-opacity duration-300 ease-out',

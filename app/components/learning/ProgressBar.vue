@@ -10,7 +10,7 @@
     >
       <div
         class="h-full rounded-full transition-[width] duration-500 ease-out"
-        :class="clamped >= 100 ? 'bg-emerald-400' : 'bg-linear-to-r from-violet-500 to-blue-500'"
+        :class="clamped >= 100 ? 'bg-emerald-400' : 'bg-brand-500'"
         :style="{ width: `${clamped}%` }"
       />
     </div>

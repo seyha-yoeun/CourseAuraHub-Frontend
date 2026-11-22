@@ -1,8 +1,8 @@
 <template>
   <Teleport to="body">
     <Transition v-bind="modalFade">
-      <div v-if="isOpen" class="fixed inset-0 z-100 flex items-center justify-center bg-[#05050c]/82 p-4 backdrop-blur-xl sm:p-6" @click.self="$emit('close')">
-        <div ref="dialogRef" class="max-h-[90dvh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-[20px] border border-violet-500/25 bg-[#0f1019] p-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] sm:p-6 light:border-slate-200 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="quiz-modal-title">
+      <div v-if="isOpen" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl sm:p-6" @click.self="$emit('close')">
+        <div ref="dialogRef" class="max-h-[90dvh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-[20px] border border-brand-500/25 bg-[#101814] p-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] sm:p-6 light:border-slate-200 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="quiz-modal-title">
           <div class="flex items-start justify-between gap-4 border-b border-white/8 pb-4.5 light:border-slate-200">
             <div>
               <h2 id="quiz-modal-title" class="text-lg font-bold text-slate-50 light:text-slate-900">Quiz Questions</h2>
@@ -42,7 +42,7 @@
                 <input v-model="rules.questionsPerAttempt" type="number" min="1" :max="questions.length || 1" placeholder="All" :class="inputClass">
               </label>
               <label class="col-span-2 flex cursor-pointer items-center gap-2 text-[13px] text-slate-200 sm:col-span-4 light:text-slate-700">
-                <input v-model="rules.shuffle" type="checkbox" class="size-4 accent-violet-600">
+                <input v-model="rules.shuffle" type="checkbox" class="size-4 accent-brand-600">
                 Shuffle question and answer order for each attempt
               </label>
               <p class="col-span-2 m-0 text-[11px] text-white/40 sm:col-span-4 light:text-slate-500">
@@ -63,7 +63,7 @@
               <div v-for="(option, optionIndex) in question.options" :key="option.key" class="flex items-center gap-2">
                 <input
                   type="radio"
-                  class="size-4 shrink-0 accent-violet-500"
+                  class="size-4 shrink-0 accent-brand-500"
                   :name="`correct-${question.key}`"
                   :aria-label="`Option ${optionIndex + 1} is correct`"
                   :checked="question.correctKey === option.key"
@@ -74,19 +74,19 @@
                   <X :size="14" />
                 </button>
               </div>
-              <button type="button" class="w-fit cursor-pointer text-xs font-semibold text-violet-300 disabled:cursor-not-allowed disabled:opacity-40 light:text-violet-700" :disabled="question.options.length >= 8" @click="question.options.push(newOption())">
+              <button type="button" class="w-fit cursor-pointer text-xs font-semibold text-brand-300 disabled:cursor-not-allowed disabled:opacity-40 light:text-brand-700" :disabled="question.options.length >= 8" @click="question.options.push(newOption())">
                 Add option
               </button>
               <textarea v-model="question.explanation" maxlength="2000" rows="2" placeholder="Explanation shown after passing (optional)" :aria-label="`Explanation for question ${questionIndex + 1}`" :class="inputClass" />
             </div>
 
             <div class="flex flex-wrap items-center gap-3">
-              <button type="button" class="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg px-1 text-xs font-semibold text-violet-300 light:text-violet-700" @click="questions.push(newQuestion())">
+              <button type="button" class="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg px-1 text-xs font-semibold text-brand-300 light:text-brand-700" @click="questions.push(newQuestion())">
                 <Plus :size="14" /> Add question
               </button>
               <button
                 type="button"
-                class="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg px-1 text-xs font-semibold text-violet-300 disabled:cursor-wait disabled:opacity-60 light:text-violet-700"
+                class="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg px-1 text-xs font-semibold text-brand-300 disabled:cursor-wait disabled:opacity-60 light:text-brand-700"
                 title="Drafted from the lesson's study text. Review them before saving."
                 :disabled="drafting"
                 @click="draftWithAi"
@@ -99,7 +99,7 @@
 
             <div class="flex justify-end gap-2.5 border-t border-white/8 pt-4 light:border-slate-200">
               <button type="button" class="cursor-pointer rounded-[10px] border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-semibold text-white/70 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700" @click="$emit('close')">Cancel</button>
-              <button type="submit" class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-[13px] font-semibold text-white disabled:cursor-wait disabled:opacity-60" :disabled="saving || !questions.length">
+              <button type="submit" class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500 px-4 py-2 text-[13px] font-semibold text-white disabled:cursor-wait disabled:opacity-60" :disabled="saving || !questions.length">
                 <Loader2 v-if="saving" :size="14" class="animate-spin" /> Save Quiz
               </button>
             </div>
@@ -135,7 +135,7 @@ interface QuestionDraft {
 const props = defineProps<{ isOpen: boolean, lesson: Lesson | null }>()
 const emit = defineEmits<{ close: [] }>()
 
-const inputClass = 'w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none placeholder:text-white/35 focus:border-violet-500/65 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
+const inputClass = 'w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none placeholder:text-white/35 focus:border-brand-500/65 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400'
 
 const modalFade = {
   enterActiveClass: 'transition-opacity duration-250 ease-out',

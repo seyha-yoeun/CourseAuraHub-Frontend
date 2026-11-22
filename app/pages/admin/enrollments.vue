@@ -16,9 +16,9 @@
       </div>
       <div class="flex min-w-0 flex-col gap-1.5">
         <label :class="labelClass" for="enrollment-amount">Amount ($)</label>
-        <input id="enrollment-amount" v-model.number="form.amount" type="number" min="0" step="0.01" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900">
+        <input id="enrollment-amount" v-model.number="form.amount" type="number" min="0" step="0.01" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900">
       </div>
-      <button type="submit" class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-50" :disabled="!canCreate">
+      <button type="submit" class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-[10px] border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50" :disabled="!canCreate">
         <Loader2 v-if="creating" :size="16" class="animate-spin" />
         Enroll
       </button>
@@ -35,7 +35,7 @@
 
     <p v-else-if="!enrollments.length" class="rounded-[20px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">No enrollments yet.</p>
 
-    <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 backdrop-blur-md light:border-slate-200 light:bg-white">
+    <DataTableFrame v-else label="Enrollments" :scroll-key="tableScrollKey">
       <table class="w-full min-w-160 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -47,10 +47,10 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
-          <tr v-for="item in enrollments" :key="item.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
+          <tr v-for="item in tableItems" :key="item.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
             <td class="px-4 py-3 font-semibold text-slate-100 light:text-slate-900">{{ item.studentName }}</td>
             <td class="px-4 py-3">
-              <NuxtLink :to="`/courses/${item.courseSlug}`" class="text-white/70 no-underline hover:text-violet-300 light:text-slate-600 light:hover:text-violet-700">{{ item.courseTitle }}</NuxtLink>
+              <NuxtLink :to="`/courses/${item.courseSlug}`" class="text-white/70 no-underline hover:text-brand-300 light:text-slate-600 light:hover:text-brand-700">{{ item.courseTitle }}</NuxtLink>
             </td>
             <td class="px-4 py-3 whitespace-nowrap text-white/50 light:text-slate-500">{{ item.enrolledAt }}</td>
             <td class="px-4 py-3 font-semibold text-emerald-400 light:text-emerald-700">${{ Number(item.amount).toFixed(2) }}</td>
@@ -62,7 +62,10 @@
           </tr>
         </tbody>
       </table>
-    </div>
+      <template #footer>
+        <TablePagination v-model:page="tablePage" v-model:page-size="tablePageSize" :total="tableTotal" />
+      </template>
+    </DataTableFrame>
 
     <ConfirmDeleteModal
       :is-open="pendingDelete !== null"
@@ -77,6 +80,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { useClientPagination } from '~/composables/useClientPagination'
 import { AlertCircle, Loader2 } from 'lucide-vue-next'
 import type { Course, Enrollment, Student } from '~/types'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
@@ -98,6 +104,7 @@ const { data: students } = await useAsyncData<Student[]>('enrollment-students', 
 const { data: courses } = await useAsyncData<Course[]>('enrollment-courses', () => $fetch<Course[]>('/api/courses'), { server: false })
 
 const enrollments = computed(() => data.value ?? [])
+const { page: tablePage, pageSize: tablePageSize, total: tableTotal, items: tableItems, scrollKey: tableScrollKey } = useClientPagination(enrollments)
 const studentOptions = computed(() => (students.value ?? []).map(s => ({ value: s.id, label: `${s.name} (${s.email})` })))
 const courseOptions = computed(() => (courses.value ?? []).map(c => ({ value: c.id, label: c.title })))
 

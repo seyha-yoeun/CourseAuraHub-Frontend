@@ -6,13 +6,13 @@
     </div>
 
     <!-- Summary -->
-    <div class="rounded-xl border border-violet-500/20 bg-violet-500/6 p-3 light:border-violet-200 light:bg-violet-50/60">
-      <button v-if="!summary && !summarizing" type="button" class="inline-flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-violet-300 light:text-violet-700" @click="summarize">
+    <div class="rounded-xl border border-brand-500/20 bg-brand-500/6 p-3 light:border-brand-200 light:bg-brand-50/60">
+      <button v-if="!summary && !summarizing" type="button" class="inline-flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-brand-300 light:text-brand-700" @click="summarize">
         <Sparkles :size="14" /> {{ t('Summarize this lesson') }}
       </button>
       <p v-else-if="summarizing" class="flex items-center gap-2 text-xs text-white/55 light:text-slate-500"><Loader2 :size="14" class="animate-spin" /> {{ t('Summarizing...') }}</p>
       <div v-else>
-        <p class="flex items-center gap-1.5 text-xs font-semibold text-violet-300 light:text-violet-700"><Sparkles :size="14" /> {{ t('Summary') }}</p>
+        <p class="flex items-center gap-1.5 text-xs font-semibold text-brand-300 light:text-brand-700"><Sparkles :size="14" /> {{ t('Summary') }}</p>
         <p class="mt-1.5 text-[13px] leading-relaxed whitespace-pre-line text-slate-100 light:text-slate-800">{{ summary }}</p>
       </div>
     </div>
@@ -24,7 +24,7 @@
         :key="index"
         class="max-w-[90%] rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed whitespace-pre-line"
         :class="item.role === 'user'
-          ? 'self-end bg-violet-600 text-white'
+          ? 'self-end bg-brand-500 text-white'
           : 'self-start border border-white/8 bg-white/4 text-slate-100 light:border-slate-200 light:bg-slate-50 light:text-slate-800'"
       >
         <template v-if="item.content">{{ item.content }}</template>
@@ -40,13 +40,13 @@
         maxlength="4000"
         :placeholder="t('Ask a question about this lesson')"
         :aria-label="t('Ask a question about this lesson')"
-        class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400"
+        class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400"
         @keydown.enter.exact.prevent="send"
       />
       <div class="flex flex-wrap items-center justify-end gap-2">
         <button v-if="conversationId && !streaming" type="button" class="cursor-pointer text-xs font-semibold text-white/55 hover:text-white light:text-slate-500 light:hover:text-slate-900" @click="startOver">{{ t('New conversation') }}</button>
         <button v-if="streaming" type="button" class="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-semibold text-white/75 light:border-slate-200 light:bg-slate-100 light:text-slate-700" @click="stop">{{ t('Stop') }}</button>
-        <button v-else type="submit" class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-3 py-1.5 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50" :disabled="!draft.trim()">
+        <button v-else type="submit" class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-brand-500/40 bg-brand-500 px-3 py-1.5 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50" :disabled="!draft.trim()">
           <Send :size="13" /> {{ t('Ask') }}
         </button>
       </div>

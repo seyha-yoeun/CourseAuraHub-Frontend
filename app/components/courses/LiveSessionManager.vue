@@ -33,7 +33,7 @@
           <button v-else type="button" :class="neutralAction" @click="openForm(session)">Link recording</button>
         </li>
       </ul>
-      <button v-if="past.length && !showPast" type="button" class="mt-2 cursor-pointer text-xs font-semibold text-violet-300 hover:text-violet-200 light:text-violet-700" @click="showPast = true">
+      <button v-if="past.length && !showPast" type="button" class="mt-2 cursor-pointer text-xs font-semibold text-brand-300 hover:text-brand-200 light:text-brand-700" @click="showPast = true">
         Show {{ past.length }} past {{ past.length === 1 ? 'session' : 'sessions' }}
       </button>
     </template>

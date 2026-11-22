@@ -14,7 +14,7 @@
             role="tab"
             :aria-selected="scope === item.value"
             class="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors"
-            :class="scope === item.value ? 'bg-violet-600 text-white' : 'text-white/60 hover:text-white light:text-slate-600'"
+            :class="scope === item.value ? 'bg-brand-500 text-white' : 'text-white/60 hover:text-white light:text-slate-600'"
             @click="scope = item.value"
           >
             {{ t(item.label) }}
@@ -91,7 +91,7 @@ const entries = computed(() => data.value?.entries ?? [])
 
 function rowClass(entry: LeaderboardEntry) {
   return entry.you
-    ? 'rounded-[14px] border border-violet-500/45 bg-violet-500/12 px-4 py-3 light:border-violet-300 light:bg-violet-50'
+    ? 'rounded-[14px] border border-brand-500/45 bg-brand-500/12 px-4 py-3 light:border-brand-300 light:bg-brand-50'
     : 'rounded-[14px] border border-white/8 bg-white/4 px-4 py-3 light:border-slate-200 light:bg-white'
 }
 </script>

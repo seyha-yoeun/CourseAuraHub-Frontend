@@ -4,11 +4,11 @@
       <AppDropdown v-model="status" :options="statusOptions" aria-label="Filter top-up requests by status" />
     </div>
 
-    <div v-if="pending" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
+    <div v-if="pending && !data" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
     <p v-else-if="error" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">{{ getErrorMessage(error, 'Unable to load top-up requests') }}</p>
     <p v-else-if="!items.length" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">No top-up requests found.</p>
 
-    <div v-else class="overflow-x-auto rounded-[18px] border border-white/10 bg-white/5 light:border-slate-200 light:bg-white">
+    <DataTableFrame v-else label="Member card top-ups" :scroll-key="`${page}:${pageSize}`" :class="pending && 'opacity-60 transition-opacity'">
       <table class="w-full min-w-200 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
@@ -28,7 +28,7 @@
             <td class="px-4 py-3 font-semibold text-emerald-400 light:text-emerald-700">{{ formatMoney(item.amount, item.currency) }}</td>
             <td class="max-w-64 px-4 py-3 text-white/70 light:text-slate-600">
               <span class="block truncate">{{ item.note || '—' }}</span>
-              <a v-if="item.receiptUrl" :href="item.receiptUrl" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-violet-300 light:text-violet-700">{{ item.receiptName || 'Receipt' }}</a>
+              <a v-if="item.receiptUrl" :href="item.receiptUrl" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-brand-300 light:text-brand-700">{{ item.receiptName || 'Receipt' }}</a>
             </td>
             <td class="px-4 py-3">
               <span class="text-xs font-semibold capitalize text-white/70 light:text-slate-600">{{ item.status.toLowerCase() }}</span>
@@ -36,27 +36,24 @@
             </td>
             <td class="px-4 py-3 text-right whitespace-nowrap">
               <template v-if="item.status === 'PENDING'">
-                <button type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-violet-500/35 bg-violet-500/15 text-violet-300 hover:bg-violet-500/25 light:border-violet-200 light:bg-violet-50 light:text-violet-700" :disabled="busyId === item.id" @click="approve(item)">Approve</button>
+                <button type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-brand-500/35 bg-brand-500/15 text-brand-300 hover:bg-brand-500/25 light:border-brand-200 light:bg-brand-50 light:text-brand-700" :disabled="busyId === item.id" @click="approve(item)">Approve</button>
                 <button type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-rose-500/30 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 light:border-rose-200 light:bg-rose-50 light:text-rose-600 ml-2" :disabled="busyId === item.id" @click="rejecting = item">Reject</button>
               </template>
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
-
-    <div v-if="totalPages > 1" class="flex items-center justify-end gap-3 text-xs text-white/45 light:text-slate-500">
-      <button type="button" class="cursor-pointer font-semibold disabled:cursor-not-allowed disabled:opacity-40" :disabled="page === 0" @click="page -= 1">Previous</button>
-      <span>Page {{ page + 1 }} of {{ totalPages }}</span>
-      <button type="button" class="cursor-pointer font-semibold disabled:cursor-not-allowed disabled:opacity-40" :disabled="page + 1 >= totalPages" @click="page += 1">Next</button>
-    </div>
+      <template #footer>
+        <TablePagination v-model:page="page" v-model:page-size="pageSize" :total="total" :disabled="pending" />
+      </template>
+    </DataTableFrame>
 
     <Teleport to="body">
-      <div v-if="rejecting" class="fixed inset-0 z-100 flex items-center justify-center bg-[#05050c]/82 p-4 backdrop-blur-xl" @click.self="rejecting = null">
-        <form class="w-full max-w-120 rounded-[20px] border border-violet-500/25 bg-[#0f1019] p-5 light:border-violet-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="reject-top-up-title" @submit.prevent="reject">
+      <div v-if="rejecting" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl" @click.self="rejecting = null">
+        <form class="w-full max-w-120 rounded-[20px] border border-brand-500/25 bg-[#101814] p-5 light:border-brand-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="reject-top-up-title" @submit.prevent="reject">
           <h2 id="reject-top-up-title" class="text-lg font-bold text-slate-50 light:text-slate-900">Reject {{ formatMoney(rejecting.amount, rejecting.currency) }}</h2>
           <p class="mt-1 text-xs text-white/45 light:text-slate-500">The learner sees this reason.</p>
-          <textarea v-model="rejectNote" rows="3" required maxlength="500" aria-label="Reason" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 mt-3" />
+          <textarea v-model="rejectNote" rows="3" required maxlength="500" aria-label="Reason" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 mt-3" />
           <div class="mt-3 flex justify-end gap-2">
             <button type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-white/10 bg-white/5 text-white/75 hover:bg-white/9 hover:text-white light:border-slate-200 light:bg-slate-100 light:text-slate-700" @click="rejecting = null">Cancel</button>
             <button type="submit" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-rose-500/30 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 light:border-rose-200 light:bg-rose-50 light:text-rose-600" :disabled="busyId === rejecting.id || !rejectNote.trim()">Reject</button>
@@ -68,6 +65,9 @@
 </template>
 
 <script setup lang="ts">
+import DataTableFrame from '~/components/shared/DataTableFrame.vue'
+import TablePagination from '~/components/shared/TablePagination.vue'
+import { DEFAULT_PAGE_SIZE } from '~/composables/useClientPagination'
 import type { MemberCardTopUp } from '~/types'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
 import { useAppToast } from '~/composables/useAppToast'
@@ -89,17 +89,18 @@ const statusOptions = [
 ]
 const status = ref('')
 const page = ref(0)
+const pageSize = ref(DEFAULT_PAGE_SIZE)
 const busyId = ref<number | null>(null)
 const rejecting = ref<MemberCardTopUp | null>(null)
 const rejectNote = ref('')
 
 const { data, pending, error, refresh } = await useAsyncData(
   'admin-top-ups',
-  () => fetchTopUps(status.value, page.value),
-  { server: false, watch: [status, page] }
+  () => fetchTopUps(status.value, page.value, pageSize.value),
+  { server: false, watch: [status, page, pageSize] }
 )
 const items = computed(() => data.value?.items ?? [])
-const totalPages = computed(() => data.value?.totalPages ?? 0)
+const total = computed(() => data.value?.totalElements ?? 0)
 
 watch(status, () => {
   page.value = 0

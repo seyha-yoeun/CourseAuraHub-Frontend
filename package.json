@@ -27,5 +27,13 @@
     "vue": "^3.5.43",
     "vue-chartjs": "^5.3.4",
     "vue-router": "^5.3.1"
+  },
+  "overrides": {
+    "fontless": {
+      "esbuild": "^0.28.2"
+    },
+    "readdir-glob": {
+      "minimatch": "^11.0.9"
+    }
   }
 }

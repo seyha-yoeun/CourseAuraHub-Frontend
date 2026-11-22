@@ -93,7 +93,7 @@
                 <code class="min-w-0 flex-1 font-mono text-[12px] break-all text-slate-100 light:text-slate-900">{{ formattedSecret }}</code>
                 <button
                   type="button"
-                  class="shrink-0 cursor-pointer text-white/50 transition-colors hover:text-violet-400 light:text-slate-500"
+                  class="shrink-0 cursor-pointer text-white/50 transition-colors hover:text-brand-400 light:text-slate-500"
                   :aria-label="copied === 'secret' ? 'Copied' : 'Copy setup key'"
                   @click="copySecret"
                 >
@@ -283,10 +283,10 @@ const qrImage = computed(() => setup.value
 
 const formattedSecret = computed(() => setup.value?.secret.replace(/(.{4})/g, '$1 ').trim() || '')
 
-const inputClass = 'w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-violet-500/50 focus:bg-white/6 focus:ring-2 focus:ring-violet-500/15 disabled:opacity-60 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-violet-600'
+const inputClass = 'w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 disabled:opacity-60 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600'
 const inputErrorClass = 'w-full rounded-[10px] border border-red-500 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none ring-2 ring-red-500/15 transition-all duration-200 focus:border-red-500 disabled:opacity-60 light:bg-white light:text-slate-900'
-const primaryButtonClass = 'inline-flex cursor-pointer items-center gap-2 rounded-xl border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-5 py-2.5 text-[13px] font-semibold text-white transition-all enabled:hover:from-violet-500 enabled:hover:to-indigo-500 enabled:hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60'
-const secondaryButtonClass = 'inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4.5 py-2.5 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900'
+const primaryButtonClass = 'inline-flex cursor-pointer items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white transition-all enabled:hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60'
+const secondaryButtonClass = 'inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4.5 py-2.5 text-[13px] font-medium text-white/70 transition-all enabled:hover:bg-white/9 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-700 light:enabled:hover:bg-slate-200 light:enabled:hover:text-slate-900'
 const dangerButtonClass = 'inline-flex cursor-pointer items-center gap-2 rounded-xl border border-rose-500/40 bg-linear-to-br from-rose-600 to-rose-700 px-5 py-2.5 text-[13px] font-semibold text-white transition-all enabled:hover:from-rose-500 enabled:hover:to-rose-600 enabled:hover:shadow-[0_0_20px_rgba(244,63,94,0.4)] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60'
 const dangerOutlineButtonClass = 'inline-flex cursor-pointer items-center gap-2 rounded-xl border border-rose-500/30 bg-rose-500/8 px-4.5 py-2.5 text-[13px] font-medium text-rose-300 transition-all hover:bg-rose-500/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:border-rose-200 light:bg-rose-50 light:text-rose-700 light:hover:bg-rose-100'
 

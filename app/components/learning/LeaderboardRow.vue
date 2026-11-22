@@ -5,7 +5,7 @@
     <span v-else class="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/8 text-xs font-bold text-white/60 light:bg-slate-100 light:text-slate-500">{{ entry.displayName.charAt(0) }}</span>
     <div class="min-w-0 flex-1">
       <p class="truncate text-[13px] font-semibold text-slate-100 light:text-slate-900">
-        {{ entry.displayName }} <span v-if="entry.you" class="text-xs font-normal text-violet-300 light:text-violet-700">({{ t('you') }})</span>
+        {{ entry.displayName }} <span v-if="entry.you" class="text-xs font-normal text-brand-300 light:text-brand-700">({{ t('you') }})</span>
       </p>
       <p class="text-[11px] text-white/45 light:text-slate-500">{{ t('{count} lessons', { count: entry.lessonsCompleted }) }}</p>
     </div>

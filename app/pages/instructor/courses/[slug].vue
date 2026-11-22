@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-5">
-    <NuxtLink to="/instructor" class="text-[13px] font-semibold text-violet-300 no-underline light:text-violet-700">Back to My Courses</NuxtLink>
+    <NuxtLink to="/instructor" class="text-[13px] font-semibold text-brand-300 no-underline light:text-brand-700">Back to My Courses</NuxtLink>
 
     <div v-if="pending" class="h-40 animate-pulse rounded-[18px] bg-white/5 light:bg-slate-100" />
     <p v-else-if="error || !data" class="rounded-[18px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">{{ getErrorMessage(error, 'Unable to load this course') }}</p>
@@ -14,7 +14,7 @@
         <div class="flex flex-wrap items-center gap-2">
         <NuxtLink :to="`/instructor/analytics/${data.course.slug}`" class="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-semibold text-slate-200 no-underline transition-colors hover:bg-white/10 light:border-slate-200 light:bg-slate-100 light:text-slate-700">Analytics</NuxtLink>
         <CourseExportButtons :slug="data.course.slug" />
-        <button v-if="data.course.status === 'draft'" type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500" :disabled="submitting" @click="submit">Send for Review</button>
+        <button v-if="data.course.status === 'draft'" type="button" class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 border-brand-500/40 bg-brand-500 text-white hover:bg-brand-600" :disabled="submitting" @click="submit">Send for Review</button>
         </div>
       </div>
 

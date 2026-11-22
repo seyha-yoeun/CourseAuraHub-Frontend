@@ -31,7 +31,7 @@
     <!-- My review (enrolled learners only) -->
     <form
       v-if="canReview"
-      class="mb-5 rounded-xl border border-violet-500/25 bg-violet-500/8 p-4 light:border-violet-200 light:bg-violet-50/60"
+      class="mb-5 rounded-xl border border-brand-500/25 bg-brand-500/8 p-4 light:border-brand-200 light:bg-brand-50/60"
       @submit.prevent="handleSave"
     >
       <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2">
@@ -65,7 +65,7 @@
         maxlength="2000"
         :placeholder="t('What did you think of this course? (optional)')"
         :aria-label="t('Review comment')"
-        class="w-full resize-y rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.5 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/35 focus:border-violet-500/65 focus:ring-2 focus:ring-violet-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400"
+        class="w-full resize-y rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.5 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/35 focus:border-brand-500/65 focus:ring-2 focus:ring-brand-500/20 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400"
       />
 
       <div class="mt-3 flex flex-wrap items-center justify-end gap-2">
@@ -80,7 +80,7 @@
         </button>
         <button
           type="submit"
-          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500 px-4 py-2 text-xs font-semibold text-white transition-all hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
           :disabled="saving || !draftRating"
         >
           <Loader2 v-if="saving" :size="14" class="animate-spin" />
@@ -107,7 +107,7 @@
         <img
           :src="review.reviewerAvatar || avatarFor(review.reviewerName)"
           :alt="review.reviewerName"
-          class="size-9 shrink-0 rounded-full bg-violet-500/20"
+          class="size-9 shrink-0 rounded-full bg-brand-500/20"
         >
         <div class="min-w-0 flex-1">
           <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
@@ -155,7 +155,7 @@
             <button
               v-if="canReplyToReviews && !review.reply && replyingId !== review.id"
               type="button"
-              class="cursor-pointer rounded-lg px-1.5 py-1 text-[11px] font-semibold text-violet-300 hover:bg-violet-500/10 light:text-violet-700"
+              class="cursor-pointer rounded-lg px-1.5 py-1 text-[11px] font-semibold text-brand-300 hover:bg-brand-500/10 light:text-brand-700"
               @click="startReply(review)"
             >
               {{ t('Reply') }}
@@ -163,9 +163,9 @@
             <ReportButton v-if="auth.isAuthenticated && !canModerate" target-type="review" :target-id="review.id" />
           </div>
 
-          <div v-if="review.reply && replyingId !== review.id" class="mt-2.5 rounded-lg border-l-2 border-violet-500/50 bg-violet-500/6 px-3 py-2 light:bg-violet-50">
+          <div v-if="review.reply && replyingId !== review.id" class="mt-2.5 rounded-lg border-l-2 border-brand-500/50 bg-brand-500/6 px-3 py-2 light:bg-brand-50">
             <div class="flex flex-wrap items-center gap-2 text-[11px]">
-              <span class="font-semibold text-violet-300 light:text-violet-700">{{ t('Response from {name}', { name: review.reply.authorName }) }}</span>
+              <span class="font-semibold text-brand-300 light:text-brand-700">{{ t('Response from {name}', { name: review.reply.authorName }) }}</span>
               <span class="text-white/35 light:text-slate-400">{{ formatDate(review.reply.repliedAt) }}</span>
               <span v-if="canReplyToReviews" class="ml-auto flex gap-2">
                 <button type="button" class="cursor-pointer font-semibold text-white/55 hover:text-white light:text-slate-500" @click="startReply(review)">{{ t('Edit') }}</button>
@@ -183,11 +183,11 @@
               required
               :placeholder="t('Reply publicly to this review')"
               :aria-label="t('Reply publicly to this review')"
-              class="w-full resize-y rounded-[10px] border border-white/9 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none placeholder:text-white/35 focus:border-violet-500/65 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400"
+              class="w-full resize-y rounded-[10px] border border-white/9 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none placeholder:text-white/35 focus:border-brand-500/65 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400"
             />
             <div class="flex justify-end gap-2">
               <button type="button" class="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-semibold text-white/75 light:border-slate-200 light:bg-slate-100 light:text-slate-700" @click="replyingId = null">{{ t('Cancel') }}</button>
-              <button type="submit" class="cursor-pointer rounded-lg border border-violet-500/35 bg-violet-500/15 px-2.5 py-1.5 text-xs font-semibold text-violet-300 disabled:opacity-50 light:border-violet-200 light:bg-violet-50 light:text-violet-700" :disabled="replySaving || !replyDraft.trim()">{{ t('Post reply') }}</button>
+              <button type="submit" class="cursor-pointer rounded-lg border border-brand-500/35 bg-brand-500/15 px-2.5 py-1.5 text-xs font-semibold text-brand-300 disabled:opacity-50 light:border-brand-200 light:bg-brand-50 light:text-brand-700" :disabled="replySaving || !replyDraft.trim()">{{ t('Post reply') }}</button>
             </div>
           </form>
         </div>

@@ -7,7 +7,7 @@
       @click="toggle"
     >
       <span class="flex items-center gap-2 text-[13px] font-bold text-slate-100 light:text-slate-900">
-        <ScrollText :size="15" class="text-violet-400" /> {{ t('Transcript') }}
+        <ScrollText :size="15" class="text-brand-400" /> {{ t('Transcript') }}
       </span>
       <ChevronDown :size="16" class="text-white/45 transition-transform light:text-slate-500" :class="open ? 'rotate-180' : ''" />
     </button>

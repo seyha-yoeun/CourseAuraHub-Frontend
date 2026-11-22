@@ -13,7 +13,7 @@
   <NuxtLink
     v-else-if="loaded"
     to="/subscription"
-    class="inline-flex items-center gap-1.5 text-xs font-semibold text-violet-300 no-underline hover:text-violet-200 light:text-violet-700 light:hover:text-violet-800"
+    class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-300 no-underline hover:text-brand-200 light:text-brand-700 light:hover:text-brand-800"
   >
     <Repeat :size="13" />
     {{ t('Or get every course with a subscription') }}

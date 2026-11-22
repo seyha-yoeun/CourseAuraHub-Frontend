@@ -15,8 +15,8 @@
       <section v-if="current" :class="cardClass" class="flex flex-col gap-4">
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div class="flex items-center gap-3">
-            <div class="flex size-11 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/12">
-              <Repeat :size="20" class="text-violet-300 light:text-violet-700" />
+            <div class="flex size-11 items-center justify-center rounded-xl border border-brand-500/30 bg-brand-500/12">
+              <Repeat :size="20" class="text-brand-300 light:text-brand-700" />
             </div>
             <div>
               <h2 :class="sectionTitle">{{ current.plan.name }}</h2>
@@ -125,7 +125,7 @@
       <fieldset class="mt-4 flex flex-col gap-2">
         <legend :class="labelClass">{{ t('Payment method') }}</legend>
         <label v-for="option in methodOptions" :key="option.value" class="flex cursor-pointer items-start gap-2.5 rounded-xl border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 light:border-slate-200 light:bg-slate-50 light:text-slate-900">
-          <input v-model="method" type="radio" name="subscription-method" :value="option.value" class="mt-0.5 accent-violet-500">
+          <input v-model="method" type="radio" name="subscription-method" :value="option.value" class="mt-0.5 accent-brand-500">
           <span>
             <span class="font-semibold">{{ t(option.label) }}</span>
             <span class="block text-xs text-white/50 light:text-slate-500">{{ t(option.hint) }}</span>

@@ -12,9 +12,9 @@
     <p v-else-if="error" :class="emptyBox">{{ getErrorMessage(error, t('Unable to load your referral code')) }}</p>
 
     <template v-else-if="data">
-      <section class="flex flex-col gap-4 rounded-[20px] border border-violet-500/35 bg-linear-to-br from-violet-700/40 to-indigo-800/40 p-5 light:border-violet-200 light:from-violet-50 light:to-indigo-50">
+      <section class="flex flex-col gap-4 rounded-[20px] border border-brand-500/35 bg-brand-700/40 p-5 light:border-brand-200 light:from-brand-50 light:to-brand-100">
         <div>
-          <p class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-violet-700">{{ t('Your referral code') }}</p>
+          <p class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-brand-700">{{ t('Your referral code') }}</p>
           <p class="mt-1 font-mono text-3xl font-extrabold tracking-widest text-white light:text-slate-900">{{ data.code }}</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">

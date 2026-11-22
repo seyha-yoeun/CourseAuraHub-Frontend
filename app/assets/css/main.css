@@ -10,66 +10,140 @@
 @custom-variant tiny (@media (max-height: 640px));
 
 /* ---------------------------------------------------------------------------
- * Theme extensions: ambient hero/globe animations used by the auth pages
+ * Colour system (from the auth pages)
+ *
+ *   forest-900  #0D2A21  logo, tooltips, dark panels
+ *   brand-600   #0A6A4C  hover, link text, active nav text
+ *   brand-500   #0E7C5A  primary buttons, chart highlight, progress bars
+ *   brand-100   #D5EDE2  regular chart bars, count pills on the active item
+ *   brand-50    #ECF6F1  active nav background, "up" badge background
+ *   mint-300    #9FE3C6  accents on dark backgrounds only (= brand-300)
+ *   ink-900/700/500/400  headings / body / secondary / placeholders
+ *   line        #E5EAE7  borders, dividers
+ *   surface     #F5F7F6 / #FAFBFA  input and page backgrounds
+ *   negative    #B42318 on #FEF1F0   drops, errors, refunds
+ *   warning     #B7791F  pending, "needs review"
+ *
+ * `slate` is re-tinted to the ink neutrals so the existing slate-* classes
+ * follow the system; new code can use ink-* / line / surface directly.
+ * Accent classes use `brand-*` (dark mode reads the light end: brand-300/400).
  * ------------------------------------------------------------------------- */
 @theme {
-  --animate-globe-spin: spin-360 14s linear infinite;
-  --animate-globe-texture: spin-360 9s linear infinite;
-  --animate-orbit-1: spin-360 20s linear infinite;
-  --animate-orbit-2: spin-360 30s linear infinite reverse;
-  --animate-orbit-3: spin-360 44s linear infinite;
-  --animate-blob-1: blob-drift 18s ease-in-out infinite;
-  --animate-blob-2: blob-drift 18s ease-in-out -6s infinite;
-  --animate-blob-3: blob-drift 18s ease-in-out -12s infinite;
-  --animate-float-1: float-globe 12s ease-in-out infinite;
-  --animate-float-2: float-globe 12s ease-in-out -4s infinite;
-  --animate-float-3: float-globe 12s ease-in-out -8s infinite;
-  --animate-sheen: sheen-pulse 6s ease-in-out infinite;
-  --animate-pulse-ring: pulse-ring 2s ease-out infinite;
+  --color-brand-50: #ecf6f1;
+  --color-brand-100: #d5ede2;
+  --color-brand-200: #bde6d3;
+  --color-brand-300: #9fe3c6;
+  --color-brand-400: #4dbb8f;
+  --color-brand-500: #0e7c5a;
+  --color-brand-600: #0a6a4c;
+  --color-brand-700: #08583f;
+  --color-brand-800: #094533;
+  --color-brand-900: #0d2a21;
+  --color-brand-950: #071811;
 
-  @keyframes spin-360 {
-    to { transform: rotate(360deg); }
+  --color-forest-900: #0d2a21;
+  --color-mint-300: #9fe3c6;
+
+  --color-slate-50: #fafbfa;
+  --color-slate-100: #f5f7f6;
+  --color-slate-200: #e5eae7;
+  --color-slate-300: #cbd4cf;
+  --color-slate-400: #97a39d;
+  --color-slate-500: #6b7a73;
+  --color-slate-600: #53635b;
+  --color-slate-700: #3d4f47;
+  --color-slate-800: #22332b;
+  --color-slate-900: #0b1f17;
+  --color-slate-950: #06120d;
+
+  --color-ink-900: #0b1f17;
+  --color-ink-700: #3d4f47;
+  --color-ink-500: #6b7a73;
+  --color-ink-400: #97a39d;
+  --color-line: #e5eae7;
+  --color-surface: #f5f7f6;
+  --color-surface-subtle: #fafbfa;
+
+  /* Dark-mode surfaces (zinc is only used for app backgrounds) */
+  --color-zinc-900: #111915;
+  --color-zinc-950: #0a100d;
+
+  --color-negative: #b42318;
+  --color-negative-bg: #fef1f0;
+  --color-rose-50: #fef1f0;
+  --color-rose-700: #b42318;
+  --color-warning: #b7791f;
+}
+
+/* ---------------------------------------------------------------------------
+ * Auth pages
+ * - auth-slide / auth-slide-back: Log in <-> Sign up page switch and the
+ *   register steps; direction follows the tab order.
+ * - auth-fade: every other auth-to-auth navigation.
+ * The leaving view is taken out of flow so the frame in layouts/auth.vue can
+ * ease its height straight to the incoming view.
+ * ------------------------------------------------------------------------- */
+.auth-slide-enter-active,
+.auth-slide-leave-active,
+.auth-slide-back-enter-active,
+.auth-slide-back-leave-active {
+  transition:
+    opacity 220ms ease,
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-fade-enter-active,
+.auth-fade-leave-active {
+  transition: opacity 200ms ease;
+}
+
+.auth-slide-leave-active,
+.auth-slide-back-leave-active,
+.auth-fade-leave-active {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+.auth-slide-enter-from,
+.auth-slide-back-leave-to {
+  opacity: 0;
+  transform: translateX(28px);
+}
+
+.auth-slide-leave-to,
+.auth-slide-back-enter-from {
+  opacity: 0;
+  transform: translateX(-28px);
+}
+
+.auth-fade-enter-from,
+.auth-fade-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-slide-enter-active,
+  .auth-slide-leave-active,
+  .auth-slide-back-enter-active,
+  .auth-slide-back-leave-active {
+    transition: opacity 150ms ease;
   }
 
-  @keyframes blob-drift {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(26px, -20px) scale(1.08); }
-    66% { transform: translate(-20px, 24px) scale(0.94); }
-  }
-
-  @keyframes float-globe {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-16px); }
-  }
-
-  @keyframes sheen-pulse {
-    0%, 100% { opacity: 0.75; }
-    50% { opacity: 1; }
-  }
-
-  @keyframes pulse-ring {
-    0% { transform: scale(0.9); opacity: 0.8; }
-    100% { transform: scale(1.2); opacity: 0; }
+  .auth-slide-enter-from,
+  .auth-slide-leave-to,
+  .auth-slide-back-enter-from,
+  .auth-slide-back-leave-to {
+    transform: none;
   }
 }
 
-/* Thin emerald scrollbar for the auth form column */
-@utility scrollbar-emerald {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(16, 185, 129, 0.35) transparent;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(16, 185, 129, 0.35);
-    border-radius: 99px;
-  }
+/* Indeterminate progress bar on the OAuth callback screen
+   (`animate-[auth-progress_1.2s_ease-in-out_infinite]` + `motion-reduce:animate-none`) */
+@keyframes auth-progress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
 }
 
 /* ===========================================================================
@@ -82,7 +156,7 @@
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(139, 92, 246, 0.4) transparent;
+  scrollbar-color: rgba(14,124,90, 0.4) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -91,29 +165,29 @@
 }
 *::-webkit-scrollbar-track { background: transparent; }
 *::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.4);
+  background: rgba(14,124,90, 0.4);
   border-radius: 99px;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(139, 92, 246, 0.7);
+  background: rgba(14,124,90, 0.7);
 }
 
 body {
   font-family: var(--font-sans);
-  background: #0a0a0f;
-  color: #e2e8f0;
+  background: #0a100d;
+  color: #e5eae7;
   -webkit-font-smoothing: antialiased;
 }
 
 html.light body {
-  background: #f8fafc;
-  color: #0f172a;
+  background: #fafbfa;
+  color: #0b1f17;
 }
 
 /* Override Nuxt UI dark theme */
 .dark {
-  --ui-background: #0a0a0f;
-  --ui-foreground: #e2e8f0;
+  --ui-background: #0a100d;
+  --ui-foreground: #e5eae7;
 }
 
 /* ---------------------------------------------------------------------------

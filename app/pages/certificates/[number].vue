@@ -39,7 +39,7 @@
             <button
               v-if="isOwner"
               type="button"
-              class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-violet-500/40 bg-linear-to-br from-violet-600 to-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:from-violet-500 hover:to-indigo-500 disabled:cursor-wait disabled:opacity-60"
+              class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-brand-500/40 bg-brand-500 px-3 py-2 text-xs font-semibold text-white hover:bg-brand-600 disabled:cursor-wait disabled:opacity-60"
               :disabled="downloading"
               @click="download(certificate.certificateNumber)"
             >
@@ -58,7 +58,7 @@
         <AlertCircle :size="28" class="mx-auto text-amber-400 light:text-amber-600" />
         <p class="mt-2 text-sm font-bold text-slate-100 light:text-slate-900">{{ t('We couldn\'t check this certificate right now') }}</p>
         <p class="mt-1 text-[13px] text-white/50 light:text-slate-500">{{ t('This doesn\'t mean it\'s invalid. Please try again in a moment.') }}</p>
-        <button type="button" class="mt-3 cursor-pointer text-xs font-semibold text-violet-300 underline light:text-violet-700" @click="refresh()">{{ t('Try again') }}</button>
+        <button type="button" class="mt-3 cursor-pointer text-xs font-semibold text-brand-300 underline light:text-brand-700" @click="refresh()">{{ t('Try again') }}</button>
       </div>
 
       <div

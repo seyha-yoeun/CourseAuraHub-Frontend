@@ -33,7 +33,7 @@ const props = defineProps<{ lesson: Lesson }>()
 const toast = useAppToast()
 const { saveSource } = useAssistant()
 
-const iconButtonClass = 'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-white/45 transition-colors hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900'
+const iconButtonClass = 'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-white/45 transition-colors hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900'
 
 const isOpen = ref(false)
 const saving = ref(false)

@@ -12,9 +12,9 @@
       {{ getErrorMessage(error, t('Unable to load learning paths')) }}
     </p>
     <div v-else-if="!paths?.length" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center light:border-slate-200 light:bg-white">
-      <Route :size="32" class="text-violet-400" />
+      <Route :size="32" class="text-brand-400" />
       <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">{{ t('No learning paths yet.') }}</p>
-      <NuxtLink to="/courses" class="mt-3 text-[13px] font-semibold text-violet-300 light:text-violet-700">{{ t('Browse courses') }}</NuxtLink>
+      <NuxtLink to="/courses" class="mt-3 text-[13px] font-semibold text-brand-300 light:text-brand-700">{{ t('Browse courses') }}</NuxtLink>
     </div>
     <div v-else class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
       <LearningPathCard v-for="path in paths" :key="path.slug" :path="path" />
