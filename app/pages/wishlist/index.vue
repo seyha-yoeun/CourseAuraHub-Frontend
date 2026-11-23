@@ -14,7 +14,7 @@
         <Heart :size="30" class="text-rose-400" />
       </div>
       <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">{{ t('Your wishlist is empty') }}</h3>
-      <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">Tap "Save" on any course page to keep it here.</p>
+      <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">{{ t('Tap "Save" on any course page to keep it here.') }}</p>
       <NuxtLink to="/courses" class="mt-4 inline-flex items-center gap-2 rounded-xl border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white no-underline">
         <BookOpen :size="16" /> {{ t('Browse courses') }}
       </NuxtLink>

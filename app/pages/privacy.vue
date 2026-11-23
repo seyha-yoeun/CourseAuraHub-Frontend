@@ -13,7 +13,8 @@ import { ShieldCheck } from 'lucide-vue-next'
 import InfoPageShell from '~/components/shared/InfoPageShell.vue'
 
 definePageMeta({ layout: false })
-useHead({ title: 'Privacy Policy' })
+const { t } = useT()
+useHead({ title: () => t('Privacy Policy') })
 
 const sections = [
   { heading: 'Information we collect', body: 'We collect the details you provide when creating an account — such as your name, email address, and profile image — along with course enrollment and purchase records needed to deliver the platform.' },

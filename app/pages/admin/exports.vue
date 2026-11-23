@@ -1,20 +1,20 @@
 <template>
   <div class="flex flex-col gap-6">
     <div>
-      <h1 :class="pageTitle">CSV Exports</h1>
-      <p :class="pageSubtitle">Download platform data for accounting and reporting. Files open in Excel with Khmer names intact.</p>
+      <h1 :class="pageTitle">{{ t('CSV Exports') }}</h1>
+      <p :class="pageSubtitle">{{ t('Download platform data for accounting and reporting. Files open in Excel with Khmer names intact.') }}</p>
     </div>
 
     <div :class="cardClass" class="grid gap-3 sm:grid-cols-3">
       <div>
-        <label for="export-from" :class="labelClass">From</label>
+        <label for="export-from" :class="labelClass">{{ t('From') }}</label>
         <input id="export-from" v-model="from" type="date" :max="to || undefined" :class="inputClass">
       </div>
       <div>
-        <label for="export-to" :class="labelClass">To</label>
+        <label for="export-to" :class="labelClass">{{ t('To') }}</label>
         <input id="export-to" v-model="to" type="date" :min="from || undefined" :class="inputClass">
       </div>
-      <p class="self-end text-xs text-white/45 light:text-slate-500">Leave the dates empty to export everything. The learner list ignores dates.</p>
+      <p class="self-end text-xs text-white/45 light:text-slate-500">{{ t('Leave the dates empty to export everything. The learner list ignores dates.') }}</p>
     </div>
 
     <ul class="m-0 grid list-none gap-3 p-0 sm:grid-cols-2">
@@ -30,12 +30,12 @@
         </div>
         <div class="mt-auto flex flex-wrap items-center gap-2">
           <div v-if="item.name === 'orders'" class="w-44">
-            <AppDropdown v-model="orderStatus" :options="orderStatusOptions" size="sm" aria-label="Order status" />
+            <AppDropdown v-model="orderStatus" :options="orderStatusOptions" size="sm" :aria-label="t('Order status')" />
           </div>
           <button type="button" :class="primaryButton" class="ml-auto" :disabled="busy === item.name" @click="download(item.name)">
             <Loader2 v-if="busy === item.name" :size="15" class="animate-spin" />
             <Download v-else :size="15" />
-            Download CSV
+            {{ t('Download CSV') }}
           </button>
         </div>
       </li>
@@ -52,6 +52,8 @@ import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage } from '~/utils/apiError'
 import { cardClass, inputClass, labelClass, pageSubtitle, pageTitle, primaryButton, sectionTitle } from '~/utils/ui'
 
+const { t } = useT()
+
 definePageMeta({ requiresAdmin: true })
 useHead({ title: 'CSV Exports' })
 
@@ -64,20 +66,20 @@ const orderStatus = ref('all')
 const busy = ref<AdminExport | null>(null)
 
 const orderStatusOptions = [
-  { value: 'all', label: 'All statuses' },
-  { value: 'PAID', label: 'Paid' },
-  { value: 'REFUNDED', label: 'Refunded' },
-  { value: 'PENDING', label: 'Pending' },
-  { value: 'FAILED', label: 'Failed' },
-  { value: 'CANCELLED', label: 'Cancelled' },
+  { value: 'all', label: t('All statuses') },
+  { value: 'PAID', label: t('Paid') },
+  { value: 'REFUNDED', label: t('Refunded') },
+  { value: 'PENDING', label: t('Pending') },
+  { value: 'FAILED', label: t('Failed') },
+  { value: 'CANCELLED', label: t('Cancelled') },
 ]
 
 const exportsList: { name: AdminExport, title: string, description: string, icon: Component }[] = [
-  { name: 'orders', title: 'Orders', description: 'Every order with amounts, coupon, provider and status.', icon: Receipt },
-  { name: 'enrollments', title: 'Enrollments', description: 'Who enrolled in which course, and when.', icon: UserPlus },
-  { name: 'learners', title: 'Learners', description: 'All learners with their spend and course counts.', icon: GraduationCap },
-  { name: 'member-card-ledger', title: 'Member card ledger', description: 'Every top-up, purchase, refund and adjustment.', icon: CreditCard },
-  { name: 'audit-log', title: 'Audit log', description: 'Admin and instructor changes for compliance.', icon: ScrollText },
+  { name: 'orders', title: t('Orders'), description: t('Every order with amounts, coupon, provider and status.'), icon: Receipt },
+  { name: 'enrollments', title: t('Enrollments'), description: t('Who enrolled in which course, and when.'), icon: UserPlus },
+  { name: 'learners', title: t('Learners'), description: t('All learners with their spend and course counts.'), icon: GraduationCap },
+  { name: 'member-card-ledger', title: t('Member card ledger'), description: t('Every top-up, purchase, refund and adjustment.'), icon: CreditCard },
+  { name: 'audit-log', title: t('Audit log'), description: t('Admin and instructor changes for compliance.'), icon: ScrollText },
 ]
 
 async function download(name: AdminExport) {
@@ -89,7 +91,7 @@ async function download(name: AdminExport) {
       status: name === 'orders' && orderStatus.value !== 'all' ? orderStatus.value : undefined,
     })
   } catch (err) {
-    toast.error('Export Failed', getErrorMessage(err, 'Unable to download the export'))
+    toast.error(t('Export Failed'), getErrorMessage(err, t('Unable to download the export')))
   } finally {
     busy.value = null
   }

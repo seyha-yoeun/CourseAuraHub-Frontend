@@ -3,9 +3,9 @@
     <!-- Header -->
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Student Management</h1>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ t('Student Management') }}</h1>
         <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">
-          Monitor learner progress, lifetime value, and global enrollment distribution.
+          {{ t('Monitor learner progress, lifetime value, and global enrollment distribution.') }}
         </p>
       </div>
 
@@ -16,40 +16,40 @@
         @click="handleRefresh"
       >
         <RefreshCw :size="15" :class="{ 'animate-spin': isRefreshing }" />
-        <span>{{ isRefreshing ? 'Refreshing...' : 'Refresh Data' }}</span>
+        <span>{{ isRefreshing ? t('Refreshing...') : t('Refresh Data') }}</span>
       </button>
     </div>
 
     <!-- Student Stats -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
-        label="Total Learners"
+        :label="t('Total Learners')"
         :value="students.length"
         format="number"
-        sub="Registered academy accounts"
+        :sub="t('Registered academy accounts')"
         :icon="Users"
         accent-color="#3b82f6"
       />
       <StatCard
-        label="Active Students"
+        :label="t('Active Students')"
         :value="activeStudentsCount"
         format="number"
-        sub="Active in last 30 days"
+        :sub="t('Active in last 30 days')"
         :icon="UserCheck"
         accent-color="#10b981"
       />
       <StatCard
-        label="Total Lifetime Spend"
+        :label="t('Total Lifetime Spend')"
         :value="totalSpent"
         format="currency"
-        sub="Cumulative student purchases"
+        :sub="t('Cumulative student purchases')"
         :icon="DollarSign"
         accent-color="#8b5cf6"
       />
       <StatCard
-        label="Average Enrolled"
+        :label="t('Average Enrolled')"
         :value="avgCourses"
-        sub="Courses per registered student"
+        :sub="t('Courses per registered student')"
         :icon="GraduationCap"
         accent-color="#f59e0b"
       />
@@ -71,10 +71,12 @@ import StudentDetailModal from '~/components/students/StudentDetailModal.vue'
 import StudentTable from '~/components/students/StudentTable.vue'
 import { useAppToast } from '~/composables/useAppToast'
 
+const { t } = useT()
+
 definePageMeta({ requiresAdmin: true })
 
 useHead({
-  title: 'Student Management'
+  title: t('Student Management')
 })
 
 const { info, error } = useAppToast()
@@ -90,9 +92,9 @@ async function handleRefresh() {
   isRefreshing.value = true
   try {
     await refresh()
-    info('Students Synced', `${students.value.length} learner records synced from server.`)
+    info(t('Students Synced'), `${students.value.length} learner records synced from server.`)
   } catch (err: unknown) {
-    error('Refresh Failed', (err as Error).message || 'Could not refresh student data')
+    error(t('Refresh Failed'), (err as Error).message || t('Could not refresh student data'))
   } finally {
     setTimeout(() => {
       isRefreshing.value = false

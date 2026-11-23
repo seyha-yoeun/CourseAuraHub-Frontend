@@ -3,9 +3,9 @@
     <!-- Header -->
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Platform Settings</h1>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ t('Platform Settings') }}</h1>
         <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">
-          Manage academy branding, admin profile, and notification preferences.
+          {{ t('Manage academy branding, admin profile, and notification preferences.') }}
         </p>
       </div>
 
@@ -18,7 +18,7 @@
         <Loader2 v-if="saving" :size="16" class="animate-spin" />
         <Check v-else-if="saveSuccess" :size="16" class="text-emerald-400" />
         <Save v-else :size="16" />
-        <span>{{ saving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save Changes' }}</span>
+        <span>{{ saving ? t('Saving...') : saveSuccess ? t('Saved!') : t('Save Changes') }}</span>
       </button>
     </div>
 
@@ -26,7 +26,7 @@
     <Transition v-bind="alertAnim">
       <div v-if="saveSuccess" class="flex items-center gap-2.5 rounded-xl border border-emerald-400/30 bg-emerald-400/12 px-4.5 py-3 text-[13px] font-medium text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700">
         <CheckCircle2 :size="18" class="text-emerald-400" />
-        <span>Platform settings and profile have been updated successfully!</span>
+        <span>{{ t('Platform settings and profile have been updated successfully!') }}</span>
       </div>
     </Transition>
 
@@ -44,7 +44,7 @@
       v-else-if="loadErrorMessage"
       class="flex flex-col items-start gap-3 rounded-[18px] border border-white/10 bg-white/5 p-6 light:border-slate-200 light:bg-white"
     >
-      <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Unable to load settings</h3>
+      <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Unable to load settings') }}</h3>
       <p class="text-xs text-white/40 light:text-slate-500">{{ loadErrorMessage }}</p>
       <button
         type="button"
@@ -52,7 +52,7 @@
         @click="refresh()"
       >
         <RefreshCw :size="16" />
-        <span>Try Again</span>
+        <span>{{ t('Try Again') }}</span>
       </button>
     </div>
 
@@ -62,52 +62,52 @@
         <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
           <User :size="20" class="text-brand-400" />
           <div>
-            <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Admin Profile</h3>
-            <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Personal details displayed across the platform</p>
+            <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Admin Profile') }}</h3>
+            <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">{{ t('Personal details displayed across the platform') }}</p>
           </div>
         </div>
 
         <div class="mb-5 flex items-center gap-4">
           <img
             :src="form.profile.avatar || auth.userAvatar"
-            alt="Avatar"
+            :alt="t('Avatar')"
             class="size-13 rounded-full border-2 border-brand-500/40 bg-brand-500/15"
           >
           <div class="flex flex-col">
-            <span class="text-[13px] font-semibold text-slate-100 light:text-slate-900">Profile Avatar</span>
-            <span class="mt-0.5 text-[11px] text-white/40 light:text-slate-500">Managed through your account profile</span>
+            <span class="text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ t('Profile Avatar') }}</span>
+            <span class="mt-0.5 text-[11px] text-white/40 light:text-slate-500">{{ t('Managed through your account profile') }}</span>
           </div>
         </div>
 
         <div class="flex flex-col gap-3.5">
           <div class="flex flex-col gap-3 sm:flex-row">
             <div class="flex flex-1 flex-col gap-1.5">
-              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Full Name</label>
+              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Full Name') }}</label>
               <input v-model="form.profile.name" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600" >
             </div>
             <div class="flex flex-1 flex-col gap-1.5">
-              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Email Address</label>
+              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Email Address') }}</label>
               <input v-model="form.profile.email" type="email" readonly class="w-full cursor-not-allowed rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 opacity-65 outline-none transition-all duration-200 light:border-slate-300 light:bg-white light:text-slate-900" >
             </div>
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Platform Role</label>
+            <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Platform Role') }}</label>
             <input v-model="form.profile.role" type="text" readonly class="w-full cursor-not-allowed rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 opacity-65 outline-none transition-all duration-200 light:border-slate-300 light:bg-white light:text-slate-900" >
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Bio</label>
+            <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Bio') }}</label>
             <textarea v-model="form.profile.bio" rows="3" class="w-full resize-y rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600" />
           </div>
 
           <div class="flex flex-col gap-3 sm:flex-row">
             <div class="flex flex-1 flex-col gap-1.5">
-              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Website</label>
+              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Website') }}</label>
               <input v-model="form.profile.website" type="url" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600" >
             </div>
             <div class="flex flex-1 flex-col gap-1.5">
-              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Twitter / X Handle</label>
+              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Twitter / X Handle') }}</label>
               <input v-model="form.profile.twitter" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600" >
             </div>
           </div>
@@ -121,30 +121,30 @@
           <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
             <Building2 :size="20" class="text-blue-400" />
             <div>
-              <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Academy Branding</h3>
-              <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">General storefront details and configuration</p>
+              <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Academy Branding') }}</h3>
+              <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">{{ t('General storefront details and configuration') }}</p>
             </div>
           </div>
 
           <div class="flex flex-col gap-3.5">
             <div class="flex flex-col gap-1.5">
-              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Platform Name</label>
+              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Platform Name') }}</label>
               <input v-model="form.platformName" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600" >
             </div>
 
             <div class="flex flex-col gap-1.5">
-              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Platform Tagline</label>
+              <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Platform Tagline') }}</label>
               <input v-model="form.platformTagline" type="text" class="w-full rounded-[10px] border border-white/9 bg-white/4 px-3 py-2.25 text-[13px] text-slate-100 outline-none transition-all duration-200 focus:border-brand-500/50 focus:bg-white/6 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:focus:border-brand-600" >
             </div>
 
             <div class="flex flex-col gap-3 sm:flex-row">
               <div class="flex flex-1 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500" for="settings-currency">Default Currency</label>
+                <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500" for="settings-currency">{{ t('Default Currency') }}</label>
                 <AppDropdown id="settings-currency" v-model="form.currency" :options="currencyOptions" size="sm" />
               </div>
 
               <div class="flex flex-1 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500" for="settings-language">Language</label>
+                <label class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500" for="settings-language">{{ t('Language') }}</label>
                 <AppDropdown id="settings-language" v-model="form.defaultLanguage" :options="languageOptions" size="sm" />
               </div>
             </div>
@@ -156,16 +156,16 @@
           <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
             <Bell :size="20" class="text-emerald-400" />
             <div>
-              <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Notification Alerts</h3>
-              <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Customize which events trigger admin alerts</p>
+              <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Notification Alerts') }}</h3>
+              <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">{{ t('Customize which events trigger admin alerts') }}</p>
             </div>
           </div>
 
           <div class="flex flex-col gap-3.5">
             <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/2 p-3 transition-colors hover:bg-white/4 light:border-slate-200 light:bg-slate-50 light:hover:bg-slate-100">
               <div>
-                <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">New Course Enrollment</span>
-                <span class="mt-0.5 block text-[11px] text-white/40 light:text-slate-500">Receive instant notice when a student buys a course</span>
+                <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">{{ t('New Course Enrollment') }}</span>
+                <span class="mt-0.5 block text-[11px] text-white/40 light:text-slate-500">{{ t('Receive instant notice when a student buys a course') }}</span>
               </div>
               <input
                 v-model="form.notifications.newEnrollment"
@@ -176,8 +176,8 @@
 
             <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/2 p-3 transition-colors hover:bg-white/4 light:border-slate-200 light:bg-slate-50 light:hover:bg-slate-100">
               <div>
-                <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">Course Completion Alerts</span>
-                <span class="mt-0.5 block text-[11px] text-white/40 light:text-slate-500">Notify when a student finishes all curriculum modules</span>
+                <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">{{ t('Course Completion Alerts') }}</span>
+                <span class="mt-0.5 block text-[11px] text-white/40 light:text-slate-500">{{ t('Notify when a student finishes all curriculum modules') }}</span>
               </div>
               <input
                 v-model="form.notifications.courseCompletion"
@@ -188,8 +188,8 @@
 
             <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/2 p-3 transition-colors hover:bg-white/4 light:border-slate-200 light:bg-slate-50 light:hover:bg-slate-100">
               <div>
-                <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">Weekly Revenue Summary</span>
-                <span class="mt-0.5 block text-[11px] text-white/40 light:text-slate-500">Get an automated weekly analytics report via email</span>
+                <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">{{ t('Weekly Revenue Summary') }}</span>
+                <span class="mt-0.5 block text-[11px] text-white/40 light:text-slate-500">{{ t('Get an automated weekly analytics report via email') }}</span>
               </div>
               <input
                 v-model="form.notifications.weeklyReport"
@@ -221,6 +221,8 @@ import { useAuth } from '~/composables/useAuth'
 import { toApiError } from '~/utils/apiError'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
 
+const { t } = useT()
+
 const currencyOptions = [
   { value: 'USD', label: 'USD ($)' },
   { value: 'EUR', label: 'EUR (€)' },
@@ -228,14 +230,14 @@ const currencyOptions = [
   { value: 'JPY', label: 'JPY (¥)' }
 ]
 const languageOptions = [
-  { value: 'en', label: 'English' },
+  { value: 'en', label: t('English') },
   { value: 'km', label: 'ខ្មែរ (Khmer)' }
 ]
 
 definePageMeta({ requiresAdmin: true })
 
 useHead({
-  title: 'Platform Settings',
+  title: t('Platform Settings'),
 })
 
 const auth = useAuth()
@@ -275,7 +277,7 @@ const form = reactive<PlatformSettings>({
 
 const loadErrorMessage = computed(() => {
   if (!settingsError.value) return ''
-  return toApiError(settingsError.value, 'Unable to load platform settings').message
+  return toApiError(settingsError.value, t('Unable to load platform settings')).message
 })
 
 watch(
@@ -329,16 +331,16 @@ async function saveSettings() {
     Object.assign(form, saved)
     auth.setProfile(saved.profile)
     saveSuccess.value = true
-    success('Settings Saved', 'Platform branding and profile details updated successfully.')
+    success(t('Settings Saved'), t('Platform branding and profile details updated successfully.'))
 
     if (successTimer) clearTimeout(successTimer)
     successTimer = setTimeout(() => {
       saveSuccess.value = false
     }, 4000)
   } catch (error) {
-    const apiError = toApiError(error, 'Failed to save settings')
+    const apiError = toApiError(error, t('Failed to save settings'))
     saveError.value = apiError.status === 403
-      ? 'You do not have permission to update platform settings.'
+      ? t('You do not have permission to update platform settings.')
       : apiError.message
   } finally {
     saving.value = false

@@ -50,7 +50,7 @@
             <input id="top-up-note" v-model="topUpForm.note" type="text" maxlength="500" :class="inputClass">
           </div>
           <div class="flex flex-wrap items-center gap-2 sm:col-span-2">
-            <FileUploadButton v-model:busy="uploadingReceipt" purpose="TOP_UP_RECEIPT" accept="application/pdf,image/jpeg,image/png,image/webp" label="Attach a receipt" @uploaded="receipt = $event" />
+            <FileUploadButton v-model:busy="uploadingReceipt" purpose="TOP_UP_RECEIPT" accept="application/pdf,image/jpeg,image/png,image/webp" :label="t('Attach a receipt')" @uploaded="receipt = $event" />
             <span v-if="receipt" class="text-xs text-white/45 light:text-slate-500">{{ receipt.fileName }}</span>
             <button type="submit" class="ml-auto cursor-pointer rounded-[10px] border border-brand-500/40 bg-brand-500 px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50" :disabled="sendingTopUp || uploadingReceipt || !(Number(topUpForm.amount) > 0)">{{ t('Send request') }}</button>
           </div>
@@ -135,7 +135,7 @@ const application = computed(() => data.value?.application ?? null)
 
 const transactions = ref<MemberCardTransaction[]>([])
 const topUps = ref<MemberCardTopUp[]>([])
-const topUpLabels: Record<MemberCardTopUp['status'], string> = { PENDING: 'Waiting for review', APPROVED: 'Approved', REJECTED: 'Declined' }
+const topUpLabels: Record<MemberCardTopUp['status'], string> = { PENDING: t('Waiting for review'), APPROVED: 'Approved', REJECTED: 'Declined' }
 const hasPendingTopUp = computed(() => topUps.value.some(item => item.status === 'PENDING'))
 const topUpForm = reactive<{ amount: number | null, note: string }>({ amount: null, note: '' })
 const receipt = ref<StoredFile | null>(null)

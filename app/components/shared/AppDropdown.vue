@@ -10,9 +10,9 @@
       :id="id"
       ref="triggerRef"
       type="button"
-      class="group/trigger flex w-full cursor-pointer items-center justify-between gap-2 rounded-[10px] border px-3.5 text-[13px] font-medium transition-all duration-200 ease-out select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+      class="group/trigger flex w-full cursor-pointer items-center justify-between gap-2 rounded-[10px] border text-[13px] font-medium transition-all duration-200 ease-out select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
       :class="[
-        size === 'sm' ? 'h-9.5' : 'h-10.5',
+        size === 'xs' ? 'h-8 rounded-lg px-2.5' : size === 'sm' ? 'h-9.5 px-3.5' : 'h-10.5 px-3.5',
         isOpen
           ? 'border-brand-500/70 bg-white/8 text-slate-100 shadow-[0_0_0_3px_rgba(14,124,90,0.15)] light:border-brand-600 light:bg-white light:text-slate-900 light:shadow-[0_0_0_3px_rgba(14,124,90,0.12)]'
           : 'border-white/9 bg-white/4 text-slate-200 hover:border-brand-500/40 hover:bg-white/7 light:border-slate-300 light:bg-white light:text-slate-900 light:hover:border-brand-500 light:hover:bg-slate-50'
@@ -55,8 +55,8 @@
     <Transition v-bind="dropdownAnim">
       <div
         v-if="isOpen"
-        class="absolute right-0 left-0 z-100 min-w-42.5 overflow-hidden rounded-xl border border-brand-500/35 bg-zinc-950/95 p-1.5 shadow-[0_18px_40px_-5px_rgba(0,0,0,0.8)] backdrop-blur-xl light:border-brand-500/25 light:bg-white/95 light:shadow-[0_18px_40px_-5px_rgba(15,23,42,0.18)]"
-        :class="openUpward ? 'bottom-[calc(100%+6px)] origin-bottom' : 'top-[calc(100%+6px)] origin-top'"
+        class="absolute right-0 left-0 z-100 overflow-hidden rounded-xl border border-brand-500/35 bg-zinc-950/95 p-1.5 shadow-[0_18px_40px_-5px_rgba(0,0,0,0.8)] backdrop-blur-xl light:border-brand-500/25 light:bg-white/95 light:shadow-[0_18px_40px_-5px_rgba(15,23,42,0.18)]"
+        :class="[size === 'xs' ? 'min-w-full' : 'min-w-42.5', openUpward ? 'bottom-[calc(100%+6px)] origin-bottom' : 'top-[calc(100%+6px)] origin-top']"
       >
         <ul
           :id="listId"
@@ -97,7 +97,7 @@
             <span v-else-if="opt.badge" class="shrink-0 rounded-full bg-white/8 px-1.5 py-px text-[10px] text-white/50 light:bg-slate-200 light:text-slate-600">{{ opt.badge }}</span>
           </li>
           <li v-if="options.length === 0" class="px-2.5 py-3 text-center text-xs text-white/40 light:text-slate-500">
-            No options available
+            {{ t('No options available') }}
           </li>
         </ul>
       </div>
@@ -108,6 +108,8 @@
 <script setup lang="ts">
 import { ChevronDown, Check } from 'lucide-vue-next'
 import type { Component } from 'vue'
+
+const { t } = useT()
 
 interface DropdownOption {
   value: string | number
@@ -124,7 +126,8 @@ const props = withDefaults(defineProps<{
   id?: string
   ariaLabel?: string
   disabled?: boolean
-  size?: 'sm' | 'md'
+  // xs: compact controls such as the rows-per-page picker in TablePagination
+  size?: 'xs' | 'sm' | 'md'
 }>(), {
   icon: undefined,
   placeholder: undefined,
@@ -159,7 +162,7 @@ const dropdownAnim = {
 
 const selectedOption = computed(() => props.options.find(o => o.value === props.modelValue))
 const hasSelection = computed(() => !!selectedOption.value)
-const selectedLabel = computed(() => selectedOption.value?.label ?? props.placeholder ?? 'Select...')
+const selectedLabel = computed(() => selectedOption.value?.label ?? props.placeholder ?? t('Select...'))
 const activeIcon = computed(() => props.icon ?? selectedOption.value?.icon)
 
 function setOpen(open: boolean) {

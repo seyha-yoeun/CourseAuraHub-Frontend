@@ -1,5 +1,5 @@
 <template>
-  <button type="button" :class="iconButtonClass" :aria-label="`Coding exercise for ${lesson.title}`" title="Coding exercise" @click="open">
+  <button type="button" :class="iconButtonClass" :aria-label="`Coding exercise for ${lesson.title}`" :title="t('Coding exercise')" @click="open">
     <Code2 :size="13" />
   </button>
 
@@ -17,10 +17,10 @@
         >
           <div class="flex items-start justify-between gap-3 border-b border-white/8 px-5 py-4 sm:px-6 light:border-slate-200">
             <div>
-              <h3 :id="`${uid}-title`" class="text-lg font-bold text-slate-50 light:text-slate-900">Coding Exercise · {{ lesson.title }}</h3>
-              <p class="mt-1 text-xs text-white/50 light:text-slate-500">Learners see the examples. The hidden tests decide whether their code passes, which completes the lesson.</p>
+              <h3 :id="`${uid}-title`" class="text-lg font-bold text-slate-50 light:text-slate-900">{{ t('Coding Exercise · {title}', { title: lesson.title }) }}</h3>
+              <p class="mt-1 text-xs text-white/50 light:text-slate-500">{{ t('Learners see the examples. The hidden tests decide whether their code passes, which completes the lesson.') }}</p>
             </div>
-            <button type="button" class="cursor-pointer text-white/50 hover:text-white light:text-slate-500" aria-label="Close" @click="isOpen = false"><X :size="18" /></button>
+            <button type="button" class="cursor-pointer text-white/50 hover:text-white light:text-slate-500" :aria-label="t('Close')" @click="isOpen = false"><X :size="18" /></button>
           </div>
 
           <div class="flex-1 overflow-y-auto px-5 py-4 sm:px-6">
@@ -28,25 +28,25 @@
             <div v-else class="flex flex-col gap-4">
               <div class="grid gap-3 sm:grid-cols-3">
                 <div>
-                  <span :class="labelClass">Language</span>
-                  <AppDropdown :model-value="form.language" :options="languageOptions" aria-label="Programming language" @update:model-value="value => form.language = String(value)" />
+                  <span :class="labelClass">{{ t('Language') }}</span>
+                  <AppDropdown :model-value="form.language" :options="languageOptions" :aria-label="t('Programming language')" @update:model-value="value => form.language = String(value)" />
                 </div>
                 <div>
-                  <label :class="labelClass" :for="`${uid}-time`">Time limit (seconds)</label>
+                  <label :class="labelClass" :for="`${uid}-time`">{{ t('Time limit (seconds)') }}</label>
                   <input :id="`${uid}-time`" v-model.number="form.timeLimitSeconds" type="number" min="0.5" max="15" step="0.5" :class="inputClass">
                 </div>
                 <div>
-                  <label :class="labelClass" :for="`${uid}-memory`">Memory (MB)</label>
+                  <label :class="labelClass" :for="`${uid}-memory`">{{ t('Memory (MB)') }}</label>
                   <input :id="`${uid}-memory`" v-model.number="form.memoryLimitMb" type="number" min="16" max="512" :class="inputClass">
                 </div>
               </div>
 
               <div>
-                <label :class="labelClass" :for="`${uid}-instructions`">Instructions</label>
-                <textarea :id="`${uid}-instructions`" v-model="form.instructions" rows="4" maxlength="10000" placeholder="What the program should do, and the input and output format" :class="inputClass" />
+                <label :class="labelClass" :for="`${uid}-instructions`">{{ t('Instructions') }}</label>
+                <textarea :id="`${uid}-instructions`" v-model="form.instructions" rows="4" maxlength="10000" :placeholder="t('What the program should do, and the input and output format')" :class="inputClass" />
               </div>
               <div>
-                <label :class="labelClass" :for="`${uid}-starter`">Starter code</label>
+                <label :class="labelClass" :for="`${uid}-starter`">{{ t('Starter code') }}</label>
                 <textarea :id="`${uid}-starter`" v-model="form.starterCode" rows="6" maxlength="20000" spellcheck="false" class="font-mono" :class="inputClass" />
               </div>
 
@@ -54,12 +54,12 @@
                 <div class="flex items-center justify-between gap-2">
                   <p class="text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ group.title }} <span class="text-xs font-normal text-white/45 light:text-slate-500">{{ group.hint }}</span></p>
                   <button type="button" :class="neutralAction" :disabled="form[group.key].length >= group.max" @click="form[group.key].push({ input: '', expectedOutput: '' })">
-                    <span class="inline-flex items-center gap-1"><Plus :size="12" /> Add</span>
+                    <span class="inline-flex items-center gap-1"><Plus :size="12" /> {{ t('Add') }}</span>
                   </button>
                 </div>
                 <div v-for="(item, index) in form[group.key]" :key="index" class="grid gap-2 rounded-xl border border-white/8 bg-white/3 p-2.5 sm:grid-cols-[1fr_1fr_auto] light:border-slate-200 light:bg-slate-50">
-                  <textarea v-model="item.input" rows="2" maxlength="10000" spellcheck="false" placeholder="Input (stdin)" :aria-label="`${group.title} ${index + 1} input`" class="font-mono" :class="inputClass" />
-                  <textarea v-model="item.expectedOutput" rows="2" maxlength="10000" spellcheck="false" placeholder="Expected output" :aria-label="`${group.title} ${index + 1} expected output`" class="font-mono" :class="inputClass" />
+                  <textarea v-model="item.input" rows="2" maxlength="10000" spellcheck="false" :placeholder="t('Input (stdin)')" :aria-label="`${group.title} ${index + 1} input`" class="font-mono" :class="inputClass" />
+                  <textarea v-model="item.expectedOutput" rows="2" maxlength="10000" spellcheck="false" :placeholder="t('Expected output')" :aria-label="`${group.title} ${index + 1} expected output`" class="font-mono" :class="inputClass" />
                   <button type="button" :class="dangerAction" class="self-start" :aria-label="`Remove ${group.title} ${index + 1}`" @click="form[group.key].splice(index, 1)"><Trash2 :size="13" /></button>
                 </div>
               </div>
@@ -67,8 +67,8 @@
           </div>
 
           <div class="flex justify-end gap-2.5 border-t border-white/8 px-5 py-3.5 sm:px-6 light:border-slate-200">
-            <button type="button" :class="neutralAction" @click="isOpen = false">Cancel</button>
-            <button type="submit" :class="primaryAction" :disabled="saving || loading || !form.tests.length">Save Exercise</button>
+            <button type="button" :class="neutralAction" @click="isOpen = false">{{ t('Cancel') }}</button>
+            <button type="submit" :class="primaryAction" :disabled="saving || loading || !form.tests.length">{{ t('Save Exercise') }}</button>
           </div>
         </form>
       </div>
@@ -86,6 +86,8 @@ import { DEFAULT_CODE_LANGUAGES, useCoding } from '~/composables/useCoding'
 import { useModalA11y } from '~/composables/useModalA11y'
 import { getErrorMessage } from '~/utils/apiError'
 import { dangerAction, inputClass, labelClass, neutralAction, primaryAction } from '~/utils/ui'
+
+const { t } = useT()
 
 /** A curriculum row button for code lessons: write the exercise, its visible examples and hidden tests. */
 const props = defineProps<{ lesson: Lesson }>()
@@ -121,8 +123,8 @@ const form = reactive({
 })
 
 const groups = [
-  { key: 'examples', title: 'Examples', hint: 'shown to learners, up to 10', max: 10 },
-  { key: 'tests', title: 'Hidden tests', hint: '1 to 20, never shown', max: 20 },
+  { key: 'examples', title: t('Examples'), hint: 'shown to learners, up to 10', max: 10 },
+  { key: 'tests', title: t('Hidden tests'), hint: '1 to 20, never shown', max: 20 },
 ] as const
 
 async function open() {
@@ -141,7 +143,7 @@ async function open() {
       tests: exercise?.tests.map(item => ({ ...item })) ?? [{ input: '', expectedOutput: '' }],
     })
   } catch (err) {
-    toast.error('Exercise Not Loaded', getErrorMessage(err, 'Unable to load the exercise'))
+    toast.error(t('Exercise Not Loaded'), getErrorMessage(err, t('Unable to load the exercise')))
     isOpen.value = false
   } finally {
     loading.value = false
@@ -165,10 +167,10 @@ async function save() {
       timeLimitSeconds: form.timeLimitSeconds === '' ? null : Number(form.timeLimitSeconds),
       memoryLimitMb: form.memoryLimitMb === '' ? null : Number(form.memoryLimitMb),
     })
-    toast.success('Exercise Saved', props.lesson.title)
+    toast.success(t('Exercise Saved'), props.lesson.title)
     isOpen.value = false
   } catch (err) {
-    toast.error('Exercise Not Saved', getErrorMessage(err, 'Unable to save the exercise'))
+    toast.error(t('Exercise Not Saved'), getErrorMessage(err, t('Unable to save the exercise')))
   } finally {
     saving.value = false
   }

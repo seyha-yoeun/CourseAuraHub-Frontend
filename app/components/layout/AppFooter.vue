@@ -1,7 +1,7 @@
 <template>
   <footer class="flex flex-col items-center justify-between gap-2 border-t border-white/5 bg-zinc-950/60 px-4 py-3.5 transition-colors sm:flex-row sm:px-6 light:border-slate-200 light:bg-white">
     <span class="text-xs text-white/35 light:text-slate-500">© {{ year }} CourseAuraHub Academy. {{ t('All rights reserved.') }}</span>
-    <nav aria-label="Footer" class="flex gap-4">
+    <nav :aria-label="t('Footer')" class="flex gap-4">
       <NuxtLink
         v-for="link in links"
         :key="link.to"
@@ -22,8 +22,8 @@ const { t } = useT()
 const year = new Date().getFullYear()
 
 const links = [
-  { to: '/support', label: 'Help' },
-  { to: '/privacy', label: 'Privacy' },
-  { to: '/terms', label: 'Terms' }
+  { to: '/support', label: t('Help') },
+  { to: '/privacy', label: t('Privacy') },
+  { to: '/terms', label: t('Terms') }
 ]
 </script>

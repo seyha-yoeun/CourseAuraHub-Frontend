@@ -4,8 +4,8 @@
       <div v-if="isOpen" class="fixed inset-0 z-100 flex items-center justify-center bg-[#060b09]/82 p-4 backdrop-blur-xl sm:p-6" @click.self="$emit('close')">
         <div ref="dialogRef" class="max-h-[90dvh] w-full max-w-130 overflow-y-auto overscroll-contain rounded-[20px] border border-brand-500/25 bg-[#101814] p-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] focus:outline-none sm:p-6 light:border-brand-500/30 light:bg-white" role="dialog" aria-modal="true" aria-labelledby="student-modal-title" tabindex="-1">
           <div class="flex items-start justify-between gap-4 border-b border-white/8 pb-4 light:border-slate-200">
-            <h2 id="student-modal-title" class="text-lg font-bold text-slate-50 light:text-slate-900">Student Details</h2>
-            <button type="button" aria-label="Close" class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900" @click="$emit('close')">
+            <h2 id="student-modal-title" class="text-lg font-bold text-slate-50 light:text-slate-900">{{ t('Student Details') }}</h2>
+            <button type="button" :aria-label="t('Close')" class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/5 text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-500 light:hover:bg-slate-200 light:hover:text-slate-900" @click="$emit('close')">
               <X :size="18" />
             </button>
           </div>
@@ -30,37 +30,37 @@
             </dl>
 
             <section class="mt-5 border-t border-white/8 pt-4 light:border-slate-200">
-              <h3 class="text-sm font-bold text-slate-100 light:text-slate-900">Sign-in Account</h3>
+              <h3 class="text-sm font-bold text-slate-100 light:text-slate-900">{{ t('Sign-in Account') }}</h3>
 
-              <p v-if="!student.userId" class="mt-2 text-[13px] text-white/45 light:text-slate-500">This learner has no sign-in account.</p>
-              <p v-else-if="!account" class="mt-2 text-[13px] text-white/45 light:text-slate-500">Account details are unavailable.</p>
+              <p v-if="!student.userId" class="mt-2 text-[13px] text-white/45 light:text-slate-500">{{ t('This learner has no sign-in account.') }}</p>
+              <p v-else-if="!account" class="mt-2 text-[13px] text-white/45 light:text-slate-500">{{ t('Account details are unavailable.') }}</p>
 
               <template v-else>
                 <ul class="m-0 mt-3 flex list-none flex-wrap gap-1.5 p-0">
                   <li v-for="flag in flags" :key="flag.label" class="rounded-full border px-2.25 py-0.75 text-[11px] font-semibold" :class="flag.good ? goodFlag : badFlag">{{ flag.label }}</li>
                 </ul>
                 <p v-if="account.failedLoginAttempts > 0" class="mt-2 text-xs text-white/45 light:text-slate-500">
-                  {{ account.failedLoginAttempts }} failed sign-in attempts
+                  {{ t('{failedLoginAttempts} failed sign-in attempts', { failedLoginAttempts: account.failedLoginAttempts }) }}
                 </p>
 
                 <div v-if="confirming" class="mt-3 rounded-xl border border-rose-500/25 bg-rose-500/8 p-3 light:border-rose-200 light:bg-rose-50">
                   <p class="text-[13px] text-slate-100 light:text-slate-900">{{ confirmMessage }}</p>
                   <div class="mt-2.5 flex gap-2">
-                    <button type="button" :class="actionClass" :disabled="working" @click="confirming = null">Cancel</button>
+                    <button type="button" :class="actionClass" :disabled="working" @click="confirming = null">{{ t('Cancel') }}</button>
                     <button type="button" :class="dangerClass" :disabled="working" @click="confirmAction">
                       <Loader2 v-if="working" :size="14" class="animate-spin" />
-                      Confirm
+                      {{ t('Confirm') }}
                     </button>
                   </div>
                 </div>
 
                 <div v-else class="mt-3 flex flex-wrap gap-2">
-                  <button v-if="account.enabled" type="button" :class="dangerClass" :disabled="working" @click="confirming = 'disable'">Disable Account</button>
-                  <button v-else type="button" :class="actionClass" :disabled="working" @click="enable">Enable Account</button>
-                  <button v-if="isLocked" type="button" :class="actionClass" :disabled="working" @click="unlock">Unlock</button>
-                  <button type="button" :class="actionClass" :disabled="working" @click="confirming = 'sign-out'">Sign Out Everywhere</button>
+                  <button v-if="account.enabled" type="button" :class="dangerClass" :disabled="working" @click="confirming = 'disable'">{{ t('Disable Account') }}</button>
+                  <button v-else type="button" :class="actionClass" :disabled="working" @click="enable">{{ t('Enable Account') }}</button>
+                  <button v-if="isLocked" type="button" :class="actionClass" :disabled="working" @click="unlock">{{ t('Unlock') }}</button>
+                  <button type="button" :class="actionClass" :disabled="working" @click="confirming = 'sign-out'">{{ t('Sign Out Everywhere') }}</button>
                   <button v-if="account.role !== 'ROLE_ADMIN'" type="button" :class="actionClass" :disabled="working" @click="toggleInstructor">
-                    {{ account.role === 'ROLE_INSTRUCTOR' ? 'Remove Instructor Role' : 'Make Instructor' }}
+                    {{ account.role === 'ROLE_INSTRUCTOR' ? t('Remove Instructor Role') : t('Make Instructor') }}
                   </button>
                 </div>
               </template>
@@ -79,6 +79,8 @@ import { useAppToast } from '~/composables/useAppToast'
 import { useModalA11y } from '~/composables/useModalA11y'
 import { useStudentAdmin } from '~/composables/useStudentAdmin'
 import { getErrorMessage } from '~/utils/apiError'
+
+const { t } = useT()
 
 const props = defineProps<{
   studentId: number | null
@@ -129,10 +131,10 @@ const facts = computed(() => {
   const current = student.value
   if (!current) return []
   return [
-    { label: 'Enrolled', value: current.enrolledCourses?.length ?? 0 },
-    { label: 'Completed', value: current.completedCourses?.length ?? 0 },
-    { label: 'Total Spent', value: `$${Number(current.totalSpent).toFixed(2)}` },
-    { label: 'Country', value: current.country || '—' }
+    { label: t('Enrolled'), value: current.enrolledCourses?.length ?? 0 },
+    { label: t('Completed'), value: current.completedCourses?.length ?? 0 },
+    { label: t('Total Spent'), value: `$${Number(current.totalSpent).toFixed(2)}` },
+    { label: t('Country'), value: current.country || '—' }
   ]
 })
 
@@ -141,15 +143,15 @@ const flags = computed(() => {
   if (!current) return []
   return [
     { label: current.enabled ? 'Enabled' : 'Disabled', good: current.enabled },
-    { label: current.emailVerified ? 'Email Verified' : 'Email Not Verified', good: current.emailVerified },
+    { label: current.emailVerified ? t('Email Verified') : t('Email Not Verified'), good: current.emailVerified },
     { label: current.mfaEnabled ? '2FA On' : '2FA Off', good: current.mfaEnabled },
-    ...(isLocked.value ? [{ label: 'Locked', good: false }] : [])
+    ...(isLocked.value ? [{ label: t('Locked'), good: false }] : [])
   ]
 })
 
 const confirmMessage = computed(() => confirming.value === 'disable'
-  ? 'Disable this account? The learner is signed out and can\'t sign in until it is enabled again.'
-  : 'Sign this learner out on every device?')
+  ? t('Disable this account? The learner is signed out and can\'t sign in until it is enabled again.')
+  : t('Sign this learner out on every device?'))
 
 watch(() => props.studentId, async (id) => {
   student.value = null
@@ -165,7 +167,7 @@ watch(() => props.studentId, async (id) => {
       account.value = await fetchAccount(student.value.userId).catch(() => null)
     }
   } catch (err) {
-    loadError.value = getErrorMessage(err, 'Unable to load this student')
+    loadError.value = getErrorMessage(err, t('Unable to load this student'))
   } finally {
     loading.value = false
   }
@@ -181,7 +183,7 @@ async function run(action: (userId: string) => Promise<AccountSecurity | undefin
     if (updated) account.value = updated
     toast.success(success)
   } catch (err) {
-    toast.error('Action Failed', getErrorMessage(err, 'Unable to update this account'))
+    toast.error(t('Action Failed'), getErrorMessage(err, t('Unable to update this account')))
   } finally {
     working.value = false
     confirming.value = null
@@ -189,24 +191,24 @@ async function run(action: (userId: string) => Promise<AccountSecurity | undefin
 }
 
 function enable() {
-  return run(userId => setAccountEnabled(userId, true), 'Account Enabled')
+  return run(userId => setAccountEnabled(userId, true), t('Account Enabled'))
 }
 
 function toggleInstructor() {
   const instructor = account.value?.role === 'ROLE_INSTRUCTOR'
-  return run(userId => setAccountRole(userId, instructor ? 'USER' : 'INSTRUCTOR'), instructor ? 'Instructor Role Removed' : 'Instructor Role Added')
+  return run(userId => setAccountRole(userId, instructor ? 'USER' : 'INSTRUCTOR'), instructor ? t('Instructor Role Removed') : t('Instructor Role Added'))
 }
 
 function unlock() {
-  return run(unlockAccount, 'Account Unlocked')
+  return run(unlockAccount, t('Account Unlocked'))
 }
 
 function confirmAction() {
   return confirming.value === 'disable'
-    ? run(userId => setAccountEnabled(userId, false), 'Account Disabled')
+    ? run(userId => setAccountEnabled(userId, false), t('Account Disabled'))
     : run(async (userId) => {
       await revokeSessions(userId)
       return undefined
-    }, 'Signed Out Everywhere')
+    }, t('Signed Out Everywhere'))
 }
 </script>

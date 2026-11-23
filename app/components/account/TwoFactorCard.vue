@@ -3,8 +3,8 @@
     <div class="mb-5 flex items-center gap-3 border-b border-white/6 pb-4 light:border-slate-200">
       <ShieldCheck :size="20" class="text-emerald-400" />
       <div class="min-w-0 flex-1">
-        <h3 class="text-base font-bold text-slate-100 light:text-slate-900">Two-Factor Authentication</h3>
-        <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Require a code from your authenticator app at sign-in</p>
+        <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Two-Factor Authentication') }}</h3>
+        <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">{{ t('Require a code from your authenticator app at sign-in') }}</p>
       </div>
       <span
         v-if="status"
@@ -15,7 +15,7 @@
             : 'border-white/10 bg-white/5 text-white/50 light:border-slate-200 light:bg-slate-100 light:text-slate-500',
         ]"
       >
-        {{ status.enabled ? 'On' : 'Off' }}
+        {{ status.enabled ? t('On') : t('Off') }}
       </span>
     </div>
 
@@ -28,7 +28,7 @@
       <span>{{ loadError }}</span>
       <button type="button" class="inline-flex cursor-pointer items-center gap-1.5 font-semibold underline" @click="loadStatus">
         <RefreshCw :size="14" />
-        Try again
+        {{ t('Try again') }}
       </button>
     </div>
 
@@ -45,7 +45,7 @@
       <div v-if="recoveryCodes.length" class="flex flex-col gap-3.5">
         <div class="flex gap-2.5 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-[13px] leading-relaxed text-amber-200 light:border-amber-200 light:bg-amber-50 light:text-amber-800">
           <AlertTriangle :size="18" class="mt-0.5 shrink-0" />
-          <span>Save these recovery codes somewhere safe. Each one works once if you lose your device, and they won't be shown again.</span>
+          <span>{{ t('Save these recovery codes somewhere safe. Each one works once if you lose your device, and they won\'t be shown again.') }}</span>
         </div>
 
         <ul class="grid grid-cols-2 gap-2 rounded-xl border border-white/6 bg-white/3 p-3.5 font-mono text-[13px] text-slate-100 light:border-slate-200 light:bg-slate-50 light:text-slate-800">
@@ -56,15 +56,15 @@
           <button type="button" :class="secondaryButtonClass" @click="copyRecoveryCodes">
             <Check v-if="copied === 'codes'" :size="15" class="text-emerald-400" />
             <Copy v-else :size="15" />
-            <span>{{ copied === 'codes' ? 'Copied' : 'Copy' }}</span>
+            <span>{{ copied === 'codes' ? t('Copied') : t('Copy') }}</span>
           </button>
           <button type="button" :class="secondaryButtonClass" @click="downloadRecoveryCodes">
             <Download :size="15" />
-            <span>Download</span>
+            <span>{{ t('Download') }}</span>
           </button>
           <button type="button" :class="primaryButtonClass" @click="recoveryCodes = []">
             <Check :size="16" />
-            <span>I've saved them</span>
+            <span>{{ t('I\'ve saved them') }}</span>
           </button>
         </div>
       </div>
@@ -74,7 +74,7 @@
         v-else-if="!status.available && !status.enabled"
         class="rounded-xl border border-white/5 bg-white/2 p-3.5 text-[13px] leading-relaxed text-white/55 light:border-slate-200 light:bg-slate-50 light:text-slate-600"
       >
-        Two-factor authentication isn't available on this server yet. Ask an administrator to configure it.
+        {{ t('Two-factor authentication isn\'t available on this server yet. Ask an administrator to configure it.') }}
       </div>
 
       <!-- Enrollment -->
@@ -83,18 +83,18 @@
           <li class="flex flex-col gap-3 sm:flex-row sm:items-start">
             <img
               :src="qrImage"
-              alt="QR code for your authenticator app"
+              :alt="t('QR code for your authenticator app')"
               class="mx-auto size-40 shrink-0 rounded-xl bg-white p-2 sm:mx-0"
             >
             <div class="flex min-w-0 flex-col gap-2">
-              <p><span class="font-semibold text-slate-100 light:text-slate-900">1. Scan the QR code</span> with Google Authenticator, Microsoft Authenticator, 1Password or a similar app.</p>
-              <p>Can't scan it? Enter this key manually:</p>
+              <p><span class="font-semibold text-slate-100 light:text-slate-900">{{ t('1. Scan the QR code') }}</span> {{ t('with Google Authenticator, Microsoft Authenticator, 1Password or a similar app.') }}</p>
+              <p>{{ t('Can\'t scan it? Enter this key manually:') }}</p>
               <div class="flex items-center gap-2 rounded-[10px] border border-white/9 bg-white/4 px-3 py-2 light:border-slate-300 light:bg-slate-50">
                 <code class="min-w-0 flex-1 font-mono text-[12px] break-all text-slate-100 light:text-slate-900">{{ formattedSecret }}</code>
                 <button
                   type="button"
                   class="shrink-0 cursor-pointer text-white/50 transition-colors hover:text-brand-400 light:text-slate-500"
-                  :aria-label="copied === 'secret' ? 'Copied' : 'Copy setup key'"
+                  :aria-label="copied === 'secret' ? t('Copied') : t('Copy setup key')"
                   @click="copySecret"
                 >
                   <Check v-if="copied === 'secret'" :size="15" class="text-emerald-400" />
@@ -104,10 +104,10 @@
             </div>
           </li>
           <li class="flex flex-col gap-2.5">
-            <p><span class="font-semibold text-slate-100 light:text-slate-900">2. Enter the 6-digit code</span> the app shows to finish.</p>
+            <p><span class="font-semibold text-slate-100 light:text-slate-900">{{ t('2. Enter the 6-digit code') }}</span> {{ t('the app shows to finish.') }}</p>
             <OtpCodeInput
               v-model="code"
-              label="Authenticator code"
+              :label="t('Authenticator code')"
               :disabled="busy"
               :invalid="Boolean(codeError)"
               @complete="confirmSetup"
@@ -117,11 +117,11 @@
         </ol>
 
         <div class="flex flex-wrap justify-end gap-2.5">
-          <button type="button" :class="secondaryButtonClass" :disabled="busy" @click="cancelAction">Cancel</button>
+          <button type="button" :class="secondaryButtonClass" :disabled="busy" @click="cancelAction">{{ t('Cancel') }}</button>
           <button type="button" :class="primaryButtonClass" :disabled="busy || code.length !== 6" @click="confirmSetup">
             <Loader2 v-if="busy" :size="16" class="animate-spin" />
             <ShieldCheck v-else :size="16" />
-            <span>{{ busy ? 'Verifying...' : 'Turn On' }}</span>
+            <span>{{ busy ? t('Verifying...') : t('Turn On') }}</span>
           </button>
         </div>
       </div>
@@ -129,14 +129,14 @@
       <!-- Disabled -->
       <div v-else-if="!status.enabled" class="flex flex-col gap-4">
         <p class="text-[13px] leading-relaxed text-white/55 light:text-slate-600">
-          Add a second step to sign-in. Even if someone learns your password, they can't get in without your phone.
-          <template v-if="status.enrollmentPending"> You started setting this up earlier but didn't finish.</template>
+          {{ t('Add a second step to sign-in. Even if someone learns your password, they can\'t get in without your phone.') }}
+          <template v-if="status.enrollmentPending"> {{ t('You started setting this up earlier but didn\'t finish.') }}</template>
         </p>
         <div class="flex justify-end">
           <button type="button" :class="primaryButtonClass" :disabled="busy" @click="startSetup">
             <Loader2 v-if="busy" :size="16" class="animate-spin" />
             <Smartphone v-else :size="16" />
-            <span>{{ status.enrollmentPending ? 'Restart Setup' : 'Set Up Authenticator' }}</span>
+            <span>{{ status.enrollmentPending ? t('Restart Setup') : t('Set Up Authenticator') }}</span>
           </button>
         </div>
       </div>
@@ -145,15 +145,15 @@
       <div v-else class="flex flex-col gap-4">
         <div class="flex items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/2 p-3 light:border-slate-200 light:bg-slate-50">
           <div>
-            <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">Recovery codes</span>
+            <span class="block text-[13px] font-semibold text-slate-200 light:text-slate-800">{{ t('Recovery codes') }}</span>
             <span
               :class="[
                 'mt-0.5 block text-[11px]',
                 status.remainingRecoveryCodes <= 3 ? 'text-amber-400 light:text-amber-700' : 'text-white/40 light:text-slate-500',
               ]"
             >
-              {{ status.remainingRecoveryCodes }} unused {{ status.remainingRecoveryCodes === 1 ? 'code' : 'codes' }} left
-              <template v-if="status.remainingRecoveryCodes <= 3"> — generate new ones soon</template>
+              {{ status.remainingRecoveryCodes === 1 ? t('{count} unused code left', { count: 1 }) : t('{count} unused codes left', { count: status.remainingRecoveryCodes }) }}
+              <template v-if="status.remainingRecoveryCodes <= 3"> {{ t('— generate new ones soon') }}</template>
             </span>
           </div>
           <KeyRound :size="18" class="shrink-0 text-white/30 light:text-slate-400" />
@@ -162,14 +162,14 @@
         <!-- Code (and password) confirmation for sensitive actions -->
         <form v-if="action" class="flex flex-col gap-3" @submit.prevent="submitAction">
           <p class="text-[13px] text-white/60 light:text-slate-600">
-            <template v-if="action === 'disable'">To turn off two-factor authentication, confirm with a code from your app or an unused recovery code.</template>
-            <template v-else>Confirm with a code from your app. Your current recovery codes will stop working.</template>
+            <template v-if="action === 'disable'">{{ t('To turn off two-factor authentication, confirm with a code from your app or an unused recovery code.') }}</template>
+            <template v-else>{{ t('Confirm with a code from your app. Your current recovery codes will stop working.') }}</template>
           </p>
 
           <div class="flex flex-col gap-3 sm:flex-row">
             <div class="flex flex-1 flex-col gap-1.5">
               <label for="mfa-action-code" class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">
-                {{ action === 'disable' ? 'Code or recovery code' : 'Authenticator code' }}
+                {{ action === 'disable' ? t('Code or recovery code') : t('Authenticator code') }}
               </label>
               <input
                 id="mfa-action-code"
@@ -184,7 +184,7 @@
               >
             </div>
             <div v-if="action === 'disable' && hasPassword" class="flex flex-1 flex-col gap-1.5">
-              <label for="mfa-action-password" class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">Current Password</label>
+              <label for="mfa-action-password" class="text-[11px] font-semibold tracking-wider text-white/50 uppercase light:text-slate-500">{{ t('Current Password') }}</label>
               <input
                 id="mfa-action-password"
                 v-model="password"
@@ -198,10 +198,10 @@
           <p v-if="codeError" class="text-xs text-red-500">{{ codeError }}</p>
 
           <div class="flex flex-wrap justify-end gap-2.5">
-            <button type="button" :class="secondaryButtonClass" :disabled="busy" @click="cancelAction">Cancel</button>
+            <button type="button" :class="secondaryButtonClass" :disabled="busy" @click="cancelAction">{{ t('Cancel') }}</button>
             <button type="submit" :class="action === 'disable' ? dangerButtonClass : primaryButtonClass" :disabled="busy || !code.trim()">
               <Loader2 v-if="busy" :size="16" class="animate-spin" />
-              <span>{{ action === 'disable' ? 'Turn Off 2FA' : 'Generate New Codes' }}</span>
+              <span>{{ action === 'disable' ? t('Turn Off 2FA') : t('Generate New Codes') }}</span>
             </button>
           </div>
         </form>
@@ -209,11 +209,11 @@
         <div v-else class="flex flex-wrap justify-end gap-2.5">
           <button type="button" :class="secondaryButtonClass" @click="beginAction('regenerate')">
             <RefreshCw :size="15" />
-            <span>New Recovery Codes</span>
+            <span>{{ t('New Recovery Codes') }}</span>
           </button>
           <button type="button" :class="dangerOutlineButtonClass" @click="beginAction('disable')">
             <ShieldOff :size="15" />
-            <span>Turn Off</span>
+            <span>{{ t('Turn Off') }}</span>
           </button>
         </div>
       </div>
@@ -239,6 +239,8 @@ import OtpCodeInput from '~/components/auth/OtpCodeInput.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { useAuth } from '~/composables/useAuth'
 import { toApiError } from '~/utils/apiError'
+
+const { t } = useT()
 
 interface MfaStatus {
   enabled: boolean
@@ -298,7 +300,7 @@ async function loadStatus() {
     status.value = await $fetch<MfaStatus>('/api/auth/mfa/status', { credentials: 'include' })
     auth.updateUser({ mfaEnabled: status.value.enabled })
   } catch (error) {
-    loadError.value = toApiError(error, 'Unable to load two-factor status').message
+    loadError.value = toApiError(error, t('Unable to load two-factor status')).message
   } finally {
     pending.value = false
   }
@@ -326,7 +328,7 @@ function applyError(error: unknown, fallback: string) {
     codeError.value = apiError.fieldErrors.code || apiError.message
     code.value = ''
   } else if (apiError.status === 503) {
-    actionError.value = 'Two-factor authentication is temporarily unavailable. Please try again later.'
+    actionError.value = t('Two-factor authentication is temporarily unavailable. Please try again later.')
   } else {
     actionError.value = apiError.message
   }
@@ -342,7 +344,7 @@ async function startSetup() {
       credentials: 'include',
     })
   } catch (error) {
-    applyError(error, 'Unable to start two-factor setup')
+    applyError(error, t('Unable to start two-factor setup'))
   } finally {
     busy.value = false
   }
@@ -365,10 +367,10 @@ async function confirmSetup() {
     recoveryCodes.value = response.recoveryCodes
     setup.value = null
     resetForm()
-    success('Two-Factor Enabled', 'You will be asked for a code the next time you sign in.')
+    success(t('Two-Factor Enabled'), t('You will be asked for a code the next time you sign in.'))
     await loadStatus()
   } catch (error) {
-    applyError(error, 'Unable to enable two-factor authentication')
+    applyError(error, t('Unable to enable two-factor authentication'))
   } finally {
     busy.value = false
   }
@@ -395,7 +397,7 @@ async function submitAction() {
         credentials: 'include',
         body: { code: code.value.trim(), password: password.value || undefined },
       })
-      success('Two-Factor Disabled', 'Sign-in now only requires your password.')
+      success(t('Two-Factor Disabled'), t('Sign-in now only requires your password.'))
     } else {
       const response = await $fetch<{ recoveryCodes: string[] }>('/api/auth/mfa/recovery-codes', {
         method: 'POST',
@@ -409,7 +411,7 @@ async function submitAction() {
     resetForm()
     await loadStatus()
   } catch (error) {
-    applyError(error, 'Unable to complete the request')
+    applyError(error, t('Unable to complete the request'))
   } finally {
     busy.value = false
   }
@@ -426,7 +428,7 @@ async function copyText(text: string, target: 'codes' | 'secret') {
     await navigator.clipboard.writeText(text)
     flagCopied(target)
   } catch {
-    actionError.value = 'Copy failed. Select the text and copy it manually.'
+    actionError.value = t('Copy failed. Select the text and copy it manually.')
   }
 }
 
@@ -440,11 +442,11 @@ function copyRecoveryCodes() {
 
 function downloadRecoveryCodes() {
   const content = [
-    'CourseAuraHub Academy recovery codes',
+    t('CourseAuraHub Academy recovery codes'),
     `Account: ${auth.userEmail}`,
     `Generated: ${new Date().toISOString()}`,
     '',
-    'Each code can be used once to sign in without your authenticator app.',
+    t('Each code can be used once to sign in without your authenticator app.'),
     '',
     ...recoveryCodes.value,
     '',

@@ -11,9 +11,9 @@
                 <FileEdit v-else :size="20" class="text-brand-400" />
               </div>
               <div>
-                <h2 id="course-modal-title" class="text-lg font-bold text-slate-50 light:text-slate-900">{{ isEdit ? 'Edit Course' : 'Create New Course' }}</h2>
+                <h2 id="course-modal-title" class="text-lg font-bold text-slate-50 light:text-slate-900">{{ isEdit ? t('Edit Course') : t('Create New Course') }}</h2>
                 <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">
-                  {{ isEdit ? 'Update course curriculum, pricing, and status.' : 'Fill in the details to publish or draft a new course.' }}
+                  {{ isEdit ? t('Update course curriculum, pricing, and status.') : t('Fill in the details to publish or draft a new course.') }}
                 </p>
               </div>
             </div>
@@ -27,18 +27,18 @@
             <!-- Row: Title & Category -->
             <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-3">
               <div class="flex min-w-0 flex-col gap-1.5 sm:col-span-2">
-                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Course Title *</label>
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Course Title *') }}</label>
                 <input
                   v-model="form.title"
                   type="text"
                   required
-                  placeholder="e.g. Master Nuxt 3 Full-Stack Architecture"
+                  :placeholder="t('e.g. Master Nuxt 3 Full-Stack Architecture')"
                   class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600 light:focus:bg-white"
                 >
               </div>
 
               <div class="flex min-w-0 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="course-category">Category</label>
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="course-category">{{ t('Category') }}</label>
                 <AppDropdown id="course-category" v-model="form.category" :options="categoryOptions" />
               </div>
             </div>
@@ -46,22 +46,22 @@
             <!-- Row: Instructor, Level, Status -->
             <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-3">
               <div v-if="!instructorMode" class="flex min-w-0 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Instructor Name</label>
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Instructor Name') }}</label>
                 <input
                   v-model="form.instructor"
                   type="text"
-                  placeholder="e.g. Alex Chen"
+                  :placeholder="t('e.g. Alex Chen')"
                   class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600 light:focus:bg-white"
                 >
               </div>
 
               <div class="flex min-w-0 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="course-level">Difficulty Level</label>
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="course-level">{{ t('Difficulty Level') }}</label>
                 <AppDropdown id="course-level" v-model="form.level" :options="levelOptions" />
               </div>
 
               <div v-if="!instructorMode" class="flex min-w-0 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="course-status">Publishing Status</label>
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600" for="course-status">{{ t('Publishing Status') }}</label>
                 <AppDropdown id="course-status" v-model="form.status" :options="statusOptions" />
               </div>
             </div>
@@ -69,7 +69,7 @@
             <!-- Row: Pricing & Volume -->
             <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
               <div class="flex min-w-0 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Price ($ USD) *</label>
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Price ($ USD) *') }}</label>
                 <input
                   v-model.number="form.price"
                   type="number"
@@ -82,7 +82,7 @@
               </div>
 
               <div class="flex min-w-0 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Original Price ($ USD)</label>
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Original Price ($ USD)') }}</label>
                 <input
                   v-model.number="form.originalPrice"
                   type="number"
@@ -94,7 +94,7 @@
               </div>
 
               <div class="flex min-w-0 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Total Lessons</label>
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Total Lessons') }}</label>
                 <input
                   v-model.number="form.totalLessons"
                   type="number"
@@ -105,7 +105,7 @@
               </div>
 
               <div class="flex min-w-0 flex-col gap-1.5">
-                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Duration (Hours)</label>
+                <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Duration (Hours)') }}</label>
                 <input
                   v-model.number="form.totalHours"
                   type="number"
@@ -119,7 +119,7 @@
 
             <!-- Row: Thumbnail URL with preview -->
             <div class="flex flex-col gap-1.5">
-              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Thumbnail Image</label>
+              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Thumbnail Image') }}</label>
               <div class="flex flex-col gap-2.5 sm:flex-row sm:items-center">
                 <input
                   v-model="form.thumbnail"
@@ -132,33 +132,33 @@
                   class="shrink-0"
                   purpose="COURSE_THUMBNAIL"
                   accept="image/jpeg,image/png,image/webp"
-                  label="Upload image"
+                  :label="t('Upload image')"
                   @uploaded="form.thumbnail = $event.url"
                 />
               </div>
               <div v-if="form.thumbnail" class="mt-2 aspect-video max-w-55 overflow-hidden rounded-[10px] border border-white/10 light:border-slate-200">
-                <img :src="form.thumbnail" alt="Preview" class="size-full object-cover" >
+                <img :src="form.thumbnail" :alt="t('Preview')" class="size-full object-cover" >
               </div>
             </div>
 
             <!-- Row: Description -->
             <div class="flex flex-col gap-1.5">
-              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Course Description</label>
+              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Course Description') }}</label>
               <textarea
                 v-model="form.description"
                 rows="3"
-                placeholder="Comprehensive course overview covering key learning milestones and techniques..."
+                :placeholder="t('Comprehensive course overview covering key learning milestones and techniques...')"
                 class="w-full resize-y rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600 light:focus:bg-white"
               />
             </div>
 
             <!-- Row: Tags -->
             <div class="flex flex-col gap-1.5">
-              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">Tags (comma-separated)</label>
+              <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Tags (comma-separated)') }}</label>
               <input
                 v-model="rawTags"
                 type="text"
-                placeholder="Nuxt 3, Vue, TypeScript, Tailwind"
+                :placeholder="t('Nuxt 3, Vue, TypeScript, Tailwind')"
                 class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600 light:focus:bg-white"
               >
             </div>
@@ -171,7 +171,7 @@
                 :disabled="loading"
                 @click="$emit('close')"
               >
-                Cancel
+                {{ t('Cancel') }}
               </button>
               <button
                 type="submit"
@@ -179,7 +179,7 @@
                 :disabled="loading || uploading"
               >
                 <Loader2 v-if="loading" :size="16" class="animate-spin" />
-                <span>{{ loading ? 'Saving...' : isEdit ? 'Save Changes' : 'Create Course' }}</span>
+                <span>{{ loading ? t('Saving...') : isEdit ? t('Save Changes') : t('Create Course') }}</span>
               </button>
             </div>
           </form>
@@ -197,16 +197,18 @@ import FileUploadButton from '~/components/shared/FileUploadButton.vue'
 import { useInstructor } from '~/composables/useInstructor'
 import type { Course, CourseFormData } from '~/types'
 
+const { t } = useT()
+
 const levelOptions = [
-  { value: 'Beginner', label: 'Beginner' },
-  { value: 'Intermediate', label: 'Intermediate' },
-  { value: 'Advanced', label: 'Advanced' }
+  { value: 'Beginner', label: t('Beginner') },
+  { value: 'Intermediate', label: t('Intermediate') },
+  { value: 'Advanced', label: t('Advanced') }
 ]
 const statusOptions = [
-  { value: 'draft', label: 'Draft' },
-  { value: 'published', label: 'Published' },
-  { value: 'pending_review', label: 'In Review' },
-  { value: 'archived', label: 'Archived' }
+  { value: 'draft', label: t('Draft') },
+  { value: 'published', label: t('Published') },
+  { value: 'pending_review', label: t('In Review') },
+  { value: 'archived', label: t('Archived') }
 ]
 
 const props = defineProps<{

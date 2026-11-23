@@ -110,8 +110,8 @@ const card = 'overflow-hidden rounded-[14px] border border-white/10 bg-white/[0.
 
 type TabId = 'inbox' | 'settings'
 const tabs = [
-  { id: 'inbox' as const, label: 'Inbox', icon: Inbox },
-  { id: 'settings' as const, label: 'Settings', icon: SlidersHorizontal },
+  { id: 'inbox' as const, label: t('Inbox'), icon: Inbox },
+  { id: 'settings' as const, label: t('Settings'), icon: SlidersHorizontal },
 ]
 
 const activeTab = computed<TabId>(() => (route.query.tab === 'settings' ? 'settings' : 'inbox'))

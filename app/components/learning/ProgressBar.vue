@@ -6,7 +6,7 @@
       :aria-valuenow="clamped"
       aria-valuemin="0"
       aria-valuemax="100"
-      :aria-label="label"
+      :aria-label="label ?? t('Course progress')"
     >
       <div
         class="h-full rounded-full transition-[width] duration-500 ease-out"
@@ -19,6 +19,8 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useT()
+
 const props = withDefaults(
   defineProps<{
     value: number
@@ -27,7 +29,7 @@ const props = withDefaults(
   }>(),
   {
     showValue: true,
-    label: 'Course progress'
+    label: undefined
   }
 )
 

@@ -2,11 +2,11 @@
   <div class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 light:border-slate-200 light:bg-white">
     <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
       <div>
-        <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ title || 'Recent Enrollments' }}</h3>
-        <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">Real-time student transactions and course acquisitions</p>
+        <h3 class="text-base font-bold text-slate-100 light:text-slate-900">{{ title || t('Recent Enrollments') }}</h3>
+        <p class="mt-0.5 text-xs text-white/40 light:text-slate-500">{{ t('Real-time student transactions and course acquisitions') }}</p>
       </div>
       <NuxtLink to="/students" class="flex items-center gap-1 text-xs font-semibold text-brand-300 no-underline transition-colors hover:text-brand-200 light:text-brand-700 light:hover:text-brand-800">
-        <span>View Students</span>
+        <span>{{ t('View Students') }}</span>
         <ArrowUpRight :size="14" />
       </NuxtLink>
     </div>
@@ -15,17 +15,17 @@
       <table class="w-full min-w-[640px] border-collapse text-left text-[13px]">
         <thead>
           <tr>
-            <th class="border-b border-white/8 px-3.5 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">Student</th>
-            <th class="border-b border-white/8 px-3.5 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">Course</th>
-            <th class="hidden border-b border-white/8 px-3.5 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase md:table-cell light:border-slate-200 light:text-slate-500">Country</th>
-            <th class="border-b border-white/8 px-3.5 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">Amount</th>
-            <th class="hidden border-b border-white/8 px-3.5 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase lg:table-cell light:border-slate-200 light:text-slate-500">Enrolled Date</th>
+            <th class="border-b border-white/8 px-3.5 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">{{ t('Student') }}</th>
+            <th class="border-b border-white/8 px-3.5 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">{{ t('Course') }}</th>
+            <th class="hidden border-b border-white/8 px-3.5 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase md:table-cell light:border-slate-200 light:text-slate-500">{{ t('Country') }}</th>
+            <th class="border-b border-white/8 px-3.5 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase light:border-slate-200 light:text-slate-500">{{ t('Amount') }}</th>
+            <th class="hidden border-b border-white/8 px-3.5 py-2.5 text-[11px] font-semibold tracking-wider whitespace-nowrap text-white/40 uppercase lg:table-cell light:border-slate-200 light:text-slate-500">{{ t('Enrolled Date') }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="!enrollments || enrollments.length === 0">
             <td colspan="5" class="px-3.5 py-8 text-center text-white/35 light:text-slate-400">
-              No recent enrollments recorded yet.
+              {{ t('No recent enrollments recorded yet.') }}
             </td>
           </tr>
           <tr
@@ -72,6 +72,8 @@
 <script setup lang="ts">
 import { ArrowUpRight } from 'lucide-vue-next'
 import type { RecentEnrollmentItem } from '~/types'
+
+const { t } = useT()
 
 defineProps<{
   title?: string

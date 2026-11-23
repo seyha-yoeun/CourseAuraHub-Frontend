@@ -1,26 +1,26 @@
 <template>
   <div class="flex flex-col gap-6">
     <div>
-      <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Enrollments</h1>
-      <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Give a learner access to a course, or take it away. Showing the latest 100.</p>
+      <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ t('Enrollments') }}</h1>
+      <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">{{ t('Give a learner access to a course, or take it away. Showing the latest 100.') }}</p>
     </div>
 
     <form class="grid grid-cols-1 items-end gap-3.5 rounded-[18px] border border-white/10 bg-white/5 p-5 md:grid-cols-[1fr_1fr_130px_auto] light:border-slate-200 light:bg-white" @submit.prevent="handleCreate">
       <div class="flex min-w-0 flex-col gap-1.5">
-        <label :class="labelClass" for="enrollment-student">Student</label>
-        <AppDropdown id="enrollment-student" v-model="form.studentId" :options="studentOptions" placeholder="Choose a student" />
+        <label :class="labelClass" for="enrollment-student">{{ t('Student') }}</label>
+        <AppDropdown id="enrollment-student" v-model="form.studentId" :options="studentOptions" :placeholder="t('Choose a student')" />
       </div>
       <div class="flex min-w-0 flex-col gap-1.5">
-        <label :class="labelClass" for="enrollment-course">Course</label>
-        <AppDropdown id="enrollment-course" v-model="form.courseId" :options="courseOptions" placeholder="Choose a course" />
+        <label :class="labelClass" for="enrollment-course">{{ t('Course') }}</label>
+        <AppDropdown id="enrollment-course" v-model="form.courseId" :options="courseOptions" :placeholder="t('Choose a course')" />
       </div>
       <div class="flex min-w-0 flex-col gap-1.5">
-        <label :class="labelClass" for="enrollment-amount">Amount ($)</label>
+        <label :class="labelClass" for="enrollment-amount">{{ t('Amount ($)') }}</label>
         <input id="enrollment-amount" v-model.number="form.amount" type="number" min="0" step="0.01" class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900">
       </div>
       <button type="submit" class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-[10px] border border-brand-500/40 bg-brand-500 px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50" :disabled="!canCreate">
         <Loader2 v-if="creating" :size="16" class="animate-spin" />
-        Enroll
+        {{ t('Enroll') }}
       </button>
     </form>
 
@@ -30,20 +30,20 @@
 
     <div v-else-if="error" class="rounded-[20px] border border-white/10 bg-white/5 px-5 py-12 text-center light:border-slate-200 light:bg-white">
       <AlertCircle :size="36" class="mx-auto text-rose-400" />
-      <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">{{ getErrorMessage(error, 'Unable to load enrollments') }}</p>
+      <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">{{ getErrorMessage(error, t('Unable to load enrollments')) }}</p>
     </div>
 
-    <p v-else-if="!enrollments.length" class="rounded-[20px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">No enrollments yet.</p>
+    <p v-else-if="!enrollments.length" class="rounded-[20px] border border-white/10 bg-white/5 px-5 py-12 text-center text-[13px] text-white/45 light:border-slate-200 light:bg-white light:text-slate-500">{{ t('No enrollments yet.') }}</p>
 
-    <DataTableFrame v-else label="Enrollments" :scroll-key="tableScrollKey">
+    <DataTableFrame v-else :label="t('Enrollments')" :scroll-key="tableScrollKey">
       <table class="w-full min-w-160 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
-            <th class="px-4 py-3 font-semibold">Student</th>
-            <th class="px-4 py-3 font-semibold">Course</th>
-            <th class="px-4 py-3 font-semibold">Date</th>
-            <th class="px-4 py-3 font-semibold">Amount</th>
-            <th class="px-4 py-3 text-right font-semibold">Actions</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Student') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Course') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Date') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Amount') }}</th>
+            <th class="px-4 py-3 text-right font-semibold">{{ t('Actions') }}</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
@@ -56,7 +56,7 @@
             <td class="px-4 py-3 font-semibold text-emerald-400 light:text-emerald-700">${{ Number(item.amount).toFixed(2) }}</td>
             <td class="px-4 py-3 text-right">
               <button type="button" class="cursor-pointer rounded-lg border border-rose-500/30 bg-rose-500/10 px-2.5 py-1.5 text-xs font-semibold text-rose-400 transition-colors hover:bg-rose-500/20 light:border-rose-200 light:bg-rose-50 light:text-rose-600" @click="pendingDelete = item">
-                Remove
+                {{ t('Remove') }}
               </button>
             </td>
           </tr>
@@ -69,8 +69,8 @@
 
     <ConfirmDeleteModal
       :is-open="pendingDelete !== null"
-      title="Remove Enrollment"
-      description="The learner loses access to this course, and its revenue totals are reduced. Use a refund instead if they paid through checkout."
+      :title="t('Remove Enrollment')"
+      :description="t('The learner loses access to this course, and its revenue totals are reduced. Use a refund instead if they paid through checkout.')"
       :item-name="pendingDelete ? `${pendingDelete.studentName} — ${pendingDelete.courseTitle}` : ''"
       :loading="deleting"
       @close="pendingDelete = null"
@@ -91,8 +91,10 @@ import { useAppToast } from '~/composables/useAppToast'
 import { useStudentAdmin } from '~/composables/useStudentAdmin'
 import { getErrorMessage } from '~/utils/apiError'
 
+const { t } = useT()
+
 definePageMeta({ requiresAdmin: true })
-useHead({ title: 'Enrollments' })
+useHead({ title: t('Enrollments') })
 
 const toast = useAppToast()
 const { fetchEnrollments, createEnrollment, deleteEnrollment } = useStudentAdmin()
@@ -120,12 +122,12 @@ async function handleCreate() {
   creating.value = true
   try {
     const created = await createEnrollment({ ...form, amount: Number(form.amount) || 0 })
-    toast.success('Student Enrolled', `${created.studentName} can now open ${created.courseTitle}.`)
+    toast.success(t('Student Enrolled'), `${created.studentName} can now open ${created.courseTitle}.`)
     form.courseId = 0
     form.amount = 0
     await refresh()
   } catch (err) {
-    toast.error('Enrollment Failed', getErrorMessage(err, 'Unable to enroll this student'))
+    toast.error(t('Enrollment Failed'), getErrorMessage(err, t('Unable to enroll this student')))
   } finally {
     creating.value = false
   }
@@ -138,11 +140,11 @@ async function handleDelete() {
   deleting.value = true
   try {
     await deleteEnrollment(target.id)
-    toast.success('Enrollment Removed')
+    toast.success(t('Enrollment Removed'))
     pendingDelete.value = null
     await refresh()
   } catch (err) {
-    toast.error('Enrollment Not Removed', getErrorMessage(err, 'Unable to remove this enrollment'))
+    toast.error(t('Enrollment Not Removed'), getErrorMessage(err, t('Unable to remove this enrollment')))
   } finally {
     deleting.value = false
   }

@@ -15,7 +15,7 @@
             class="group inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.75 text-xs font-semibold text-white/70 no-underline transition-all duration-200 hover:border-brand-500/40 hover:bg-brand-500/12 hover:text-white light:border-slate-200 light:bg-white light:text-slate-600 light:hover:border-brand-300 light:hover:bg-brand-50 light:hover:text-brand-700"
           >
             <ArrowLeft :size="14" class="transition-transform duration-200 group-hover:-translate-x-0.5" />
-            {{ auth.isAuthenticated ? 'Back to app' : 'Back to sign in' }}
+            {{ auth.isAuthenticated ? t('Back to app') : t('Back to sign in') }}
           </NuxtLink>
         </div>
       </div>
@@ -27,8 +27,8 @@
           <component :is="icon" :size="22" class="text-brand-300 light:text-brand-600" />
         </div>
         <div class="min-w-0">
-          <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-3xl light:text-slate-900">{{ title }}</h1>
-          <p class="mt-1.5 text-sm text-white/55 light:text-slate-500">{{ subtitle }}</p>
+          <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-3xl light:text-slate-900">{{ t(title) }}</h1>
+          <p class="mt-1.5 text-sm text-white/55 light:text-slate-500">{{ t(subtitle) }}</p>
         </div>
       </div>
 
@@ -42,13 +42,13 @@
         >
           <h2 class="flex items-center gap-2.5 text-[15px] font-bold text-slate-100 light:text-slate-900">
             <span class="flex size-6 items-center justify-center rounded-md bg-brand-500/15 text-[11px] font-bold text-brand-300 transition-colors duration-300 group-hover:bg-brand-500/25 light:text-brand-700">{{ i + 1 }}</span>
-            {{ section.heading }}
+            {{ t(section.heading) }}
           </h2>
-          <p class="mt-2.5 text-[13.5px] leading-relaxed text-white/60 light:text-slate-600">{{ section.body }}</p>
+          <p class="mt-2.5 text-[13.5px] leading-relaxed text-white/60 light:text-slate-600">{{ t(section.body) }}</p>
         </section>
       </div>
 
-      <p v-if="updated" class="mt-8 text-center text-xs text-white/35 light:text-slate-400">Last updated {{ updated }}</p>
+      <p v-if="updated" class="mt-8 text-center text-xs text-white/35 light:text-slate-400">{{ t('Last updated {date}', { date: t(updated) }) }}</p>
     </main>
   </div>
 </template>
@@ -69,6 +69,7 @@ defineProps<{
   updated?: string
 }>()
 
+const { t } = useT()
 const auth = useAuth()
 const homeLink = computed(() => auth.isAuthenticated ? auth.homeRoute : '/auth/login')
 </script>

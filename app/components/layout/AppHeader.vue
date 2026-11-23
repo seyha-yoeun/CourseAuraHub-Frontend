@@ -5,15 +5,15 @@
       <button
         type="button"
         class="group flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border md:hidden border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-brand-500/40 hover:bg-white/8 hover:text-white active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-brand-300 light:hover:bg-slate-200 light:hover:text-slate-900"
-        aria-label="Open sidebar"
-        title="Open sidebar (Ctrl+B)"
+        :aria-label="t('Open sidebar')"
+        :title="t('Open sidebar (Ctrl+B)')"
         @click="emit('toggle-sidebar')"
       >
         <Menu :size="20" :stroke-width="1.5" class="transition-transform duration-200 ease-out group-hover:scale-110" />
       </button>
 
       <!-- Breadcrumb with CourseAuraHub Academy branding and high contrast -->
-      <nav aria-label="Breadcrumb" class="hidden min-w-0 items-center overflow-hidden whitespace-nowrap sm:flex">
+      <nav :aria-label="t('Breadcrumb')" class="hidden min-w-0 items-center overflow-hidden whitespace-nowrap sm:flex">
         <UBreadcrumb
           :items="breadcrumbItems"
           :ui="{
@@ -33,12 +33,12 @@
             >
               <span v-if="index === 0" class="inline-flex items-center gap-1.5">
                 <span class="font-bold tracking-tight text-slate-100 light:text-slate-900">CourseAuraHub</span>
-                <span class="rounded-full border border-brand-500/25 bg-brand-500/12 px-1.5 py-px text-[10px] font-bold tracking-wider text-brand-300 uppercase light:border-brand-300 light:bg-brand-50 light:text-brand-700">Academy</span>
+                <span class="rounded-full border border-brand-500/25 bg-brand-500/12 px-1.5 py-px text-[10px] font-bold tracking-wider text-brand-300 uppercase light:border-brand-300 light:bg-brand-50 light:text-brand-700">{{ t('Academy') }}</span>
               </span>
-              <span v-else>{{ item.label }}</span>
+              <span v-else>{{ t(item.label) }}</span>
             </NuxtLink>
             <span v-else class="text-[13px] font-semibold text-slate-50 light:text-slate-900">
-              {{ item.label }}
+              {{ t(item.label) }}
             </span>
           </template>
         </UBreadcrumb>
@@ -54,7 +54,7 @@
             ref="searchInputRef"
             v-model="searchQuery"
             type="text"
-            placeholder="Search platform... (Ctrl+K)"
+            :placeholder="t('Search platform... (Ctrl+K)')"
             class="h-9 w-55 rounded-lg border border-white/8 bg-white/4 py-1.75 pr-7 pl-8 text-[13px] text-white/85 outline-none transition-all duration-200 placeholder:text-white/30 focus:w-65 focus:border-brand-500/60 focus:bg-white/8 focus:ring-2 focus:ring-brand-500/20 light:border-slate-200 light:bg-slate-50 light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600 light:focus:bg-white"
             @focus="isSearchFocused = true"
             @keydown.esc="closeSearch"
@@ -63,7 +63,7 @@
             v-if="searchQuery"
             type="button"
             class="absolute right-2 flex cursor-pointer items-center justify-center rounded p-0.5 text-white/40 transition-colors hover:text-white light:text-slate-400 light:hover:text-slate-900"
-            aria-label="Clear search"
+            :aria-label="t('Clear search')"
             @click="clearSearch"
           >
             <X :size="13" />
@@ -125,7 +125,7 @@
               <div v-if="filteredPages.length > 0" class="flex flex-col gap-1">
                 <div class="flex items-center gap-1.5 px-2 py-1 text-[11px] font-bold tracking-wider text-white/45 uppercase light:text-slate-500">
                   <Compass :size="13" class="text-emerald-400" />
-                  <span>Navigation Pages</span>
+                  <span>{{ t('Navigation Pages') }}</span>
                 </div>
                 <button
                   v-for="page in filteredPages"
@@ -136,8 +136,8 @@
                 >
                   <component :is="page.icon" :size="15" class="text-brand-400" />
                   <div class="min-w-0 flex-1">
-                    <span class="block truncate text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ page.name }}</span>
-                    <span class="mt-px block truncate text-[11px] text-white/45 light:text-slate-500">{{ page.desc }}</span>
+                    <span class="block truncate text-[13px] font-semibold text-slate-100 light:text-slate-900">{{ t(page.name) }}</span>
+                    <span class="mt-px block truncate text-[11px] text-white/45 light:text-slate-500">{{ t(page.desc) }}</span>
                   </div>
                 </button>
               </div>
@@ -149,16 +149,19 @@
               >
                 <SearchX :size="20" class="text-white/40 light:text-slate-400" />
                 <p>No results found for "{{ searchQuery }}"</p>
-                <span class="text-xs text-white/40 light:text-slate-500">Try searching for "Nuxt", "Vue", "Alex", or "Analytics"</span>
+                <span class="text-xs text-white/40 light:text-slate-500">{{ t('Try searching for "Nuxt", "Vue", "Alex", or "Analytics"') }}</span>
               </div>
             </div>
           </div>
         </Transition>
       </div>
 
-      <!-- Language and Theme (Dark / Light Mode) Toggles -->
+      <!-- Language and Theme toggles. On phones, signed-in users find Appearance in the
+           account menu, so the theme switch only shows from sm up for them. -->
       <LanguageToggle />
-      <ThemeToggle />
+      <div :class="auth.isAuthenticated ? 'hidden sm:contents' : 'contents'">
+        <ThemeToggle />
+      </div>
 
       <!-- Cart -->
       <NuxtLink
@@ -178,10 +181,10 @@
           type="button"
           class="group relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-brand-500/40 hover:bg-white/8 hover:text-white active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-brand-300 light:hover:bg-slate-200 light:hover:text-slate-900"
           :class="{ 'border-brand-500/40 bg-white/8 text-white light:bg-slate-200 light:text-slate-900': isNotifOpen }"
-          aria-label="Notifications"
+          :aria-label="t('Notifications')"
           :aria-expanded="isNotifOpen"
           aria-haspopup="dialog"
-          title="Notifications"
+          :title="t('Notifications')"
           @click="toggleNotif"
         >
           <Bell
@@ -216,7 +219,7 @@
               :class="notifPanelClass"
               role="dialog"
               :aria-modal="isMobileNotif ? 'true' : undefined"
-              aria-label="Notifications"
+              :aria-label="t('Notifications')"
             >
               <NotificationPanel
                 :notifications="notifications"
@@ -238,15 +241,18 @@
         </Teleport>
       </div>
 
-      <!-- Help with Modal Trigger -->
+      <!-- Help with Modal Trigger (on phones, signed-in users open help from the account menu) -->
       <button
         type="button"
         class="group relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all duration-200 ease-out hover:-translate-y-px hover:border-brand-500/40 hover:bg-white/8 hover:text-white active:translate-y-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:border-brand-300 light:hover:bg-slate-200 light:hover:text-slate-900"
-        :class="{ 'border-brand-500/40 bg-white/8 text-white light:bg-slate-200 light:text-slate-900': isHelpOpen }"
-        aria-label="Help & About Platform"
+        :class="[
+          { 'border-brand-500/40 bg-white/8 text-white light:bg-slate-200 light:text-slate-900': isHelpOpen },
+          auth.isAuthenticated && 'max-sm:hidden'
+        ]"
+        :aria-label="t('Help & About Platform')"
         :aria-expanded="isHelpOpen"
         aria-haspopup="dialog"
-        title="Help & Platform Guide (Ctrl+H or ?)"
+        :title="t('Help & Platform Guide (Ctrl+H or ?)')"
         @click="openHelp"
       >
         <HelpCircle :size="18" :stroke-width="1.5" class="transition-transform duration-300 ease-out group-hover:rotate-12 group-hover:scale-110" />
@@ -257,7 +263,7 @@
         :to="{ path: '/auth/login', query: { redirect: route.fullPath } }"
         class="inline-flex shrink-0 items-center gap-1.5 rounded-[10px] border border-brand-500/40 bg-brand-500 px-3.5 py-2 text-xs font-semibold text-white no-underline transition-all hover:bg-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60"
       >
-        Sign in
+        {{ t('Sign in') }}
       </NuxtLink>
 
       <!-- Avatar with User Dropdown -->
@@ -267,7 +273,7 @@
           class="relative block size-9 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-brand-500/50 p-0 transition-all duration-200 ease-out hover:scale-105 hover:border-brand-500 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 light:border-brand-300 light:focus-visible:ring-offset-white"
           :class="{ 'scale-105 border-brand-500 light:border-brand-600': isAvatarOpen }"
           :title="`${auth.userName} (${auth.roleLabel})`"
-          aria-label="Open account menu"
+          :aria-label="t('Open account menu')"
           aria-haspopup="true"
           :aria-expanded="isAvatarOpen"
           @click="toggleAvatar"
@@ -309,8 +315,8 @@
                 @click="isAvatarOpen = false"
               >
                 <ShieldAlert :size="15" class="text-brand-400" />
-                <span>Admin Console</span>
-                <span class="ml-auto rounded-full border border-emerald-400/25 bg-emerald-400/12 px-1.5 py-px text-[10px] font-bold text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700">Live</span>
+                <span>{{ t('Admin Console') }}</span>
+                <span class="ml-auto rounded-full border border-emerald-400/25 bg-emerald-400/12 px-1.5 py-px text-[10px] font-bold text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700">{{ t('Live') }}</span>
               </NuxtLink>
 
               <NuxtLink
@@ -319,7 +325,7 @@
                 @click="isAvatarOpen = false"
               >
                 <BookOpen :size="15" class="text-blue-400" />
-                <span>Course Catalog</span>
+                <span>{{ t('Course Catalog') }}</span>
               </NuxtLink>
 
               <template v-if="!auth.isAdmin">
@@ -329,7 +335,7 @@
                   @click="isAvatarOpen = false"
                 >
                   <GraduationCap :size="15" class="text-brand-400" />
-                  <span>My Learning</span>
+                  <span>{{ t('My Learning') }}</span>
                 </NuxtLink>
 
                 <NuxtLink
@@ -338,7 +344,7 @@
                   @click="isAvatarOpen = false"
                 >
                   <Heart :size="15" class="text-rose-400" />
-                  <span>Wishlist</span>
+                  <span>{{ t('Wishlist') }}</span>
                 </NuxtLink>
 
                 <NuxtLink
@@ -347,7 +353,7 @@
                   @click="isAvatarOpen = false"
                 >
                   <UserCog :size="15" class="text-brand-400" />
-                  <span>Profile & Security</span>
+                  <span>{{ t('Profile & Security') }}</span>
                 </NuxtLink>
               </template>
 
@@ -358,7 +364,7 @@
                 @click="isAvatarOpen = false"
               >
                 <Users :size="15" class="text-emerald-400" />
-                <span>Students Roster</span>
+                <span>{{ t('Students Roster') }}</span>
               </NuxtLink>
 
               <NuxtLink
@@ -368,7 +374,7 @@
                 @click="isAvatarOpen = false"
               >
                 <BarChart3 :size="15" class="text-amber-400" />
-                <span>Sales Analytics</span>
+                <span>{{ t('Sales Analytics') }}</span>
               </NuxtLink>
 
               <NuxtLink
@@ -378,7 +384,7 @@
                 @click="isAvatarOpen = false"
               >
                 <Settings :size="15" class="text-brand-400" />
-                <span>Platform Settings</span>
+                <span>{{ t('Platform Settings') }}</span>
               </NuxtLink>
 
               <NuxtLink
@@ -387,7 +393,7 @@
                 @click="isAvatarOpen = false"
               >
                 <ShieldCheck :size="15" class="text-emerald-400" />
-                <span>Account Security</span>
+                <span>{{ t('Account Security') }}</span>
               </NuxtLink>
 
               <button
@@ -396,7 +402,7 @@
                 @click="handleOpenHelp"
               >
                 <HelpCircle :size="15" class="text-teal-400" />
-                <span>Platform Help & Guide</span>
+                <span>{{ t('Platform Help & Guide') }}</span>
               </button>
             </div>
 
@@ -405,8 +411,8 @@
             <!-- Quick Theme Switch Row inside Dropdown -->
             <div class="flex items-center justify-between px-2.5 py-2">
               <div class="min-w-0">
-                <span class="block text-xs font-medium text-white/55 light:text-slate-600">Appearance</span>
-                <span class="mt-0.5 block text-[10px] text-white/30 light:text-slate-400">Dark / Light</span>
+                <span class="block text-xs font-medium text-white/55 light:text-slate-600">{{ t('Appearance') }}</span>
+                <span class="mt-0.5 block text-[10px] text-white/30 light:text-slate-400">{{ t('Dark / Light') }}</span>
               </div>
               <ThemeToggle />
             </div>
@@ -420,7 +426,7 @@
               @click="handleLogout"
             >
               <LogOut :size="15" class="text-rose-400 light:text-rose-600" />
-              <span>Log Out</span>
+              <span>{{ t('Log Out') }}</span>
             </button>
           </div>
         </Transition>
@@ -516,14 +522,14 @@ const breadcrumbItems = computed(() => {
   if (path === '/') {
     return [
       { label: 'CourseAuraHub', to: '/' },
-      { label: 'Dashboard' }
+      { label: t('Dashboard') }
     ]
   }
 
   if (path === '/courses') {
     return [
       { label: 'CourseAuraHub', to: '/' },
-      { label: 'Courses' }
+      { label: t('Courses') }
     ]
   }
 
@@ -532,7 +538,7 @@ const breadcrumbItems = computed(() => {
     const formatted = slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
     return [
       { label: 'CourseAuraHub', to: '/' },
-      { label: 'Courses', to: '/courses' },
+      { label: t('Courses'), to: '/courses' },
       { label: formatted }
     ]
   }
@@ -540,7 +546,7 @@ const breadcrumbItems = computed(() => {
   if (path === '/students') {
     return [
       { label: 'CourseAuraHub', to: '/' },
-      { label: 'Students' }
+      { label: t('Students') }
     ]
   }
 
@@ -548,17 +554,17 @@ const breadcrumbItems = computed(() => {
     const slug = (route.params.slug as string) || path.replace('/learn/', '')
     return [
       { label: 'CourseAuraHub', to: auth.homeRoute },
-      { label: 'My Learning', to: '/my-learning' },
+      { label: t('My Learning'), to: '/my-learning' },
       { label: slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) }
     ]
   }
 
   if (path === '/my-learning' || path === '/wishlist' || path === '/orders' || path === '/account') {
     const labels: Record<string, string> = {
-      '/my-learning': 'My Learning',
+      '/my-learning': t('My Learning'),
       '/wishlist': 'Wishlist',
-      '/orders': 'My Orders',
-      '/account': 'Profile & Security'
+      '/orders': t('My Orders'),
+      '/account': t('Profile & Security')
     }
     return [
       { label: 'CourseAuraHub', to: auth.homeRoute },
@@ -569,7 +575,7 @@ const breadcrumbItems = computed(() => {
   if (path === '/admin') {
     return [
       { label: 'CourseAuraHub', to: '/' },
-      { label: 'Admin Console' }
+      { label: t('Admin Console') }
     ]
   }
 
@@ -584,7 +590,7 @@ const breadcrumbItems = computed(() => {
   if (adminPages[path]) {
     return [
       { label: 'CourseAuraHub', to: '/' },
-      { label: 'Admin Console', to: '/admin' },
+      { label: t('Admin Console'), to: '/admin' },
       { label: adminPages[path] }
     ]
   }
@@ -592,30 +598,30 @@ const breadcrumbItems = computed(() => {
   if (path === '/analytics') {
     return [
       { label: 'CourseAuraHub', to: '/' },
-      { label: 'Analytics' }
+      { label: t('Analytics') }
     ]
   }
 
   if (path === '/settings') {
     return [
       { label: 'CourseAuraHub', to: '/' },
-      { label: 'Settings' }
+      { label: t('Settings') }
     ]
   }
 
   if (path === '/account/notifications') {
     return [
       { label: 'CourseAuraHub', to: '/' },
-      { label: 'Account' },
-      { label: 'Notifications' }
+      { label: t('Account') },
+      { label: t('Notifications') }
     ]
   }
 
   if (path === '/account/security') {
     return [
       { label: 'CourseAuraHub', to: '/' },
-      { label: 'Account' },
-      { label: 'Security' }
+      { label: t('Account') },
+      { label: t('Security') }
     ]
   }
 
@@ -692,8 +698,8 @@ function toggleNotif() {
 
 function markAllAsRead() {
   notificationCenter.markAllRead()
-    .then(() => info('Notifications Updated', 'All notifications marked as read'))
-    .catch(() => toastError('Notifications Not Updated', 'Please try again.'))
+    .then(() => info(t('Notifications Updated'), t('All notifications marked as read')))
+    .catch(() => toastError(t('Notifications Not Updated'), t('Please try again.')))
 }
 
 function findNotification(item: HeaderNotification) {
@@ -713,16 +719,16 @@ function markItemRead(item: HeaderNotification) {
 function removeNotification(item: HeaderNotification) {
   const notification = findNotification(item)
   if (notification) {
-    notificationCenter.remove(notification).catch(() => toastError('Notification Not Deleted', 'Please try again.'))
+    notificationCenter.remove(notification).catch(() => toastError(t('Notification Not Deleted'), t('Please try again.')))
   }
 }
 
 function filterNotifications(unreadOnly: boolean) {
-  notificationCenter.setUnreadOnly(unreadOnly).catch(() => toastError('Notifications Not Loaded', 'Please try again.'))
+  notificationCenter.setUnreadOnly(unreadOnly).catch(() => toastError(t('Notifications Not Loaded'), t('Please try again.')))
 }
 
 function loadOlderNotifications() {
-  notificationCenter.loadMore().catch(() => toastError('Notifications Not Loaded', 'Please try again.'))
+  notificationCenter.loadMore().catch(() => toastError(t('Notifications Not Loaded'), t('Please try again.')))
 }
 
 // Lock background scrolling while the mobile notification dialog is open
@@ -817,36 +823,36 @@ watch(() => auth.isAuthenticated, () => {
 watch(() => auth.isAdmin, loadSearchData)
 
 const quickPages = [
-  { name: 'Dashboard Overview', desc: 'Main sales KPIs, chart breakdowns, and metrics', to: '/', icon: BarChart3 },
-  { name: 'Course Catalog & CRUD', desc: 'Manage curriculum, edit pricing, and publish courses', to: '/courses', icon: BookOpen },
-  { name: 'Student Directory', desc: 'Active learners, enrollment dates, and lifetime spend', to: '/students', icon: Users },
-  { name: 'Sales & Analytics', desc: 'Detailed financial and performance reports', to: '/analytics', icon: TrendingUp },
-  { name: 'Platform Settings', desc: 'Storefront branding, preferences, and profile', to: '/settings', icon: Settings },
-  { name: 'Orders', desc: 'Review purchases and refund paid orders', to: '/admin/orders', icon: Receipt },
-  { name: 'Subscriptions', desc: 'All-access plans and their subscribers', to: '/admin/subscriptions', icon: Repeat },
-  { name: 'Discounts', desc: 'Schedule sale prices for courses', to: '/admin/discounts', icon: Tag },
-  { name: 'Payouts', desc: 'Approve and record instructor payouts', to: '/admin/payouts', icon: Wallet },
-  { name: 'Coupons', desc: 'Create discount codes for checkout', to: '/admin/coupons', icon: TicketPercent },
-  { name: 'Referrals', desc: 'Who invited whom, and the rewards paid', to: '/admin/referrals', icon: Users },
-  { name: 'Admin Console', desc: 'Full-page workspace for courses, learners, and platform ops', to: '/admin', icon: ShieldAlert },
-  { name: 'Notifications', desc: 'Connect Telegram and choose where updates reach you', to: '/account/notifications', icon: Bell },
-  { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
+  { name: t('Dashboard Overview'), desc: t('Main sales KPIs, chart breakdowns, and metrics'), to: '/', icon: BarChart3 },
+  { name: t('Course Catalog & CRUD'), desc: t('Manage curriculum, edit pricing, and publish courses'), to: '/courses', icon: BookOpen },
+  { name: t('Student Directory'), desc: t('Active learners, enrollment dates, and lifetime spend'), to: '/students', icon: Users },
+  { name: t('Sales & Analytics'), desc: t('Detailed financial and performance reports'), to: '/analytics', icon: TrendingUp },
+  { name: t('Platform Settings'), desc: t('Storefront branding, preferences, and profile'), to: '/settings', icon: Settings },
+  { name: 'Orders', desc: t('Review purchases and refund paid orders'), to: '/admin/orders', icon: Receipt },
+  { name: 'Subscriptions', desc: t('All-access plans and their subscribers'), to: '/admin/subscriptions', icon: Repeat },
+  { name: 'Discounts', desc: t('Schedule sale prices for courses'), to: '/admin/discounts', icon: Tag },
+  { name: 'Payouts', desc: t('Approve and record instructor payouts'), to: '/admin/payouts', icon: Wallet },
+  { name: 'Coupons', desc: t('Create discount codes for checkout'), to: '/admin/coupons', icon: TicketPercent },
+  { name: 'Referrals', desc: t('Who invited whom, and the rewards paid'), to: '/admin/referrals', icon: Users },
+  { name: t('Admin Console'), desc: t('Full-page workspace for courses, learners, and platform ops'), to: '/admin', icon: ShieldAlert },
+  { name: 'Notifications', desc: t('Connect Telegram and choose where updates reach you'), to: '/account/notifications', icon: Bell },
+  { name: t('Account Security'), desc: t('Password, two-factor authentication, and signed-in devices'), to: '/account/security', icon: ShieldCheck },
 ]
 
 const learnerPages = [
-  { name: 'Browse Courses', desc: 'Explore the course catalog', to: '/courses', icon: BookOpen },
-  { name: 'My Learning', desc: 'Enrolled courses and your progress', to: '/my-learning', icon: GraduationCap },
-  { name: 'Wishlist', desc: 'Courses saved for later', to: '/wishlist', icon: Heart },
+  { name: t('Browse Courses'), desc: t('Explore the course catalog'), to: '/courses', icon: BookOpen },
+  { name: t('My Learning'), desc: t('Enrolled courses and your progress'), to: '/my-learning', icon: GraduationCap },
+  { name: 'Wishlist', desc: t('Courses saved for later'), to: '/wishlist', icon: Heart },
   { name: 'Leaderboard', desc: 'XP rankings and your weekly goal', to: '/leaderboard', icon: BarChart3 },
-  { name: 'Your cart', desc: 'Courses ready for checkout', to: '/cart', icon: ShoppingCart },
-  { name: 'My Orders', desc: 'Your purchases and their status', to: '/orders', icon: Receipt },
-  { name: 'Subscription', desc: 'One plan for every course', to: '/subscription', icon: Repeat },
-  { name: 'Achievements', desc: 'Badges, streaks, and course certificates', to: '/achievements', icon: Trophy },
-  { name: 'Live Sessions', desc: 'Live classes in your courses and a calendar link', to: '/live-sessions', icon: Video },
-  { name: 'Profile', desc: 'Your name, avatar, and public details', to: '/account', icon: UserCog },
-  { name: 'Invite Friends', desc: 'Share your referral code and earn member card credit', to: '/referrals', icon: Users },
-  { name: 'Notifications', desc: 'Connect Telegram and choose where updates reach you', to: '/account/notifications', icon: Bell },
-  { name: 'Account Security', desc: 'Password, two-factor authentication, and signed-in devices', to: '/account/security', icon: ShieldCheck },
+  { name: t('Your cart'), desc: t('Courses ready for checkout'), to: '/cart', icon: ShoppingCart },
+  { name: t('My Orders'), desc: t('Your purchases and their status'), to: '/orders', icon: Receipt },
+  { name: 'Subscription', desc: t('One plan for every course'), to: '/subscription', icon: Repeat },
+  { name: 'Achievements', desc: t('Badges, streaks, and course certificates'), to: '/achievements', icon: Trophy },
+  { name: t('Live Sessions'), desc: t('Live classes in your courses and a calendar link'), to: '/live-sessions', icon: Video },
+  { name: 'Profile', desc: t('Your name, avatar, and public details'), to: '/account', icon: UserCog },
+  { name: t('Invite Friends'), desc: t('Share your referral code and earn member card credit'), to: '/referrals', icon: Users },
+  { name: 'Notifications', desc: t('Connect Telegram and choose where updates reach you'), to: '/account/notifications', icon: Bell },
+  { name: t('Account Security'), desc: t('Password, two-factor authentication, and signed-in devices'), to: '/account/security', icon: ShieldCheck },
 ]
 
 const filteredCourses = computed(() => {
@@ -878,7 +884,8 @@ const filteredPages = computed(() => {
   if (!q) return []
   return (auth.isAdmin ? quickPages : learnerPages)
     .filter(p =>
-      p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)
+      // Match the English and the translated text, so searching works in either language
+      [p.name, p.desc, t(p.name), t(p.desc)].some(text => text.toLowerCase().includes(q))
     )
     .slice(0, 3)
 })
@@ -951,7 +958,7 @@ function hasOpenModal() {
 function toggleTheme() {
   const nextMode = colorMode.value === 'dark' ? 'light' : 'dark'
   colorMode.preference = nextMode
-  info('Appearance Updated', `${nextMode === 'dark' ? 'Dark' : 'Light'} mode enabled`)
+  info(t('Appearance Updated'), nextMode === 'dark' ? t('Dark mode enabled') : t('Light mode enabled'))
 }
 
 function handleGlobalKeydown(e: KeyboardEvent) {

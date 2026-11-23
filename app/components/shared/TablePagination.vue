@@ -10,17 +10,19 @@
     </p>
 
     <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <label class="flex items-center gap-2">
-        <span class="whitespace-nowrap">{{ t('Rows per page') }}</span>
-        <select
-          :value="pageSize"
-          class="h-8 cursor-pointer rounded-lg border border-white/10 bg-white/5 pr-7 pl-2.5 text-[13px] text-slate-100 outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50 disabled:cursor-not-allowed light:border-slate-200 light:bg-white light:text-slate-800"
-          :disabled="disabled"
-          @change="changeSize(Number(($event.target as HTMLSelectElement).value))"
-        >
-          <option v-for="size in pageSizes" :key="size" :value="size">{{ size }}</option>
-        </select>
-      </label>
+      <div class="flex items-center gap-2">
+        <span :id="sizeLabelId" class="whitespace-nowrap">{{ t('Rows per page') }}</span>
+        <div class="w-[4.75rem]">
+          <AppDropdown
+            :model-value="pageSize"
+            :options="sizeOptions"
+            size="xs"
+            :disabled="disabled"
+            :aria-label="t('Rows per page')"
+            @update:model-value="changeSize(Number($event))"
+          />
+        </div>
+      </div>
 
       <nav class="flex items-center gap-1" :aria-label="t('Pagination')">
         <button
@@ -69,6 +71,7 @@
 
 <script setup lang="ts">
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import AppDropdown from '~/components/shared/AppDropdown.vue'
 
 const props = withDefaults(defineProps<{
   /** 0-based current page */
@@ -89,6 +92,9 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useT()
+
+const sizeLabelId = `rows-label-${useId()}`
+const sizeOptions = computed(() => props.pageSizes.map(size => ({ value: size, label: String(size) })))
 
 const navButton = 'inline-flex size-8 cursor-pointer items-center justify-center rounded-lg text-white/65 transition-colors hover:bg-white/6 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-transparent light:text-slate-600 light:hover:bg-slate-100 light:hover:text-slate-900'
 

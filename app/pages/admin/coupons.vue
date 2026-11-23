@@ -2,8 +2,8 @@
   <div class="flex flex-col gap-6">
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Coupons</h1>
-        <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Create discount codes that learners enter at checkout.</p>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ t('Coupons') }}</h1>
+        <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">{{ t('Create discount codes that learners enter at checkout.') }}</p>
       </div>
 
       <button
@@ -12,7 +12,7 @@
         @click="openCreate"
       >
         <Plus :size="16" />
-        <span>New Coupon</span>
+        <span>{{ t('New Coupon') }}</span>
       </button>
     </div>
 
@@ -22,37 +22,37 @@
 
     <div v-else-if="error" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-5 py-15 text-center light:border-slate-200 light:bg-white">
       <AlertCircle :size="40" class="text-rose-400" />
-      <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">{{ getErrorMessage(error, 'Unable to load coupons') }}</p>
+      <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">{{ getErrorMessage(error, t('Unable to load coupons')) }}</p>
     </div>
 
     <div v-else-if="!coupons.length" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center light:border-slate-200 light:bg-white">
       <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-brand-500/30 bg-brand-500/12">
         <TicketPercent :size="30" class="text-brand-300 light:text-brand-700" />
       </div>
-      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">No coupons yet</h3>
-      <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">Create a code to share with learners.</p>
+      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">{{ t('No coupons yet') }}</h3>
+      <p class="mt-1.5 max-w-90 text-[13px] text-white/45 light:text-slate-500">{{ t('Create a code to share with learners.') }}</p>
     </div>
 
-    <DataTableFrame v-else label="Coupons" :scroll-key="tableScrollKey">
+    <DataTableFrame v-else :label="t('Coupons')" :scroll-key="tableScrollKey">
       <table class="w-full min-w-200 border-collapse text-left text-[13px]">
         <thead>
           <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
-            <th class="px-4 py-3 font-semibold">Code</th>
-            <th class="px-4 py-3 font-semibold">Discount</th>
-            <th class="px-4 py-3 font-semibold">Course</th>
-            <th class="px-4 py-3 font-semibold">Uses</th>
-            <th class="px-4 py-3 font-semibold">Expires</th>
-            <th class="px-4 py-3 font-semibold">Status</th>
-            <th class="px-4 py-3 text-right font-semibold">Actions</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Code') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Discount') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Course') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Uses') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Expires') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('Status') }}</th>
+            <th class="px-4 py-3 text-right font-semibold">{{ t('Actions') }}</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/6 light:divide-slate-200">
           <tr v-for="coupon in tableItems" :key="coupon.id" class="transition-colors hover:bg-white/3 light:hover:bg-slate-50">
             <td class="px-4 py-3 font-mono font-semibold text-slate-100 light:text-slate-900">{{ coupon.code }}</td>
             <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ formatDiscount(coupon) }}</td>
-            <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ coupon.courseSlug || 'All courses' }}</td>
+            <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ coupon.courseSlug || t('All courses') }}</td>
             <td class="px-4 py-3 text-white/70 light:text-slate-600">{{ coupon.paidRedemptions }}{{ coupon.maxRedemptions ? ` / ${coupon.maxRedemptions}` : '' }}</td>
-            <td class="px-4 py-3 text-xs text-white/55 light:text-slate-500">{{ coupon.expiresAt ? formatDateTime(coupon.expiresAt) : 'Never' }}</td>
+            <td class="px-4 py-3 text-xs text-white/55 light:text-slate-500">{{ coupon.expiresAt ? formatDateTime(coupon.expiresAt) : t('Never') }}</td>
             <td class="px-4 py-3">
               <span
                 class="inline-flex rounded-full border px-2.5 py-0.75 text-[11px] font-semibold"
@@ -60,7 +60,7 @@
                   ? 'border-emerald-400/30 bg-emerald-400/12 text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700'
                   : 'border-slate-400/30 bg-slate-400/12 text-slate-400 light:border-slate-300 light:bg-slate-100 light:text-slate-600'"
               >
-                {{ coupon.active ? 'Active' : 'Inactive' }}
+                {{ coupon.active ? t('Active') : t('Inactive') }}
               </span>
             </td>
             <td class="px-4 py-3">
@@ -71,12 +71,12 @@
                   :disabled="busyId === coupon.id"
                   @click="toggleActive(coupon)"
                 >
-                  {{ coupon.active ? 'Deactivate' : 'Activate' }}
+                  {{ coupon.active ? t('Deactivate') : t('Activate') }}
                 </button>
                 <button
                   type="button"
                   class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/60 transition-all hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
-                  title="Edit coupon"
+                  :title="t('Edit coupon')"
                   :aria-label="`Edit coupon ${coupon.code}`"
                   @click="openEdit(coupon)"
                 >
@@ -117,8 +117,10 @@ import { formatDiscount } from '~/composables/useDiscounts'
 import { getErrorMessage } from '~/utils/apiError'
 import { formatDateTime } from '~/utils/dateTime'
 
+const { t } = useT()
+
 definePageMeta({ requiresAdmin: true })
-useHead({ title: 'Coupons' })
+useHead({ title: t('Coupons') })
 
 const toast = useAppToast()
 const { fetchCoupons, createCoupon, updateCoupon } = useCoupons()
@@ -150,10 +152,10 @@ async function handleCreate(body: CouponCreate) {
   try {
     await createCoupon(body)
     isFormOpen.value = false
-    toast.success('Coupon Created', body.code.toUpperCase())
+    toast.success(t('Coupon Created'), body.code.toUpperCase())
     await refresh()
   } catch (err) {
-    toast.error('Coupon Not Created', getErrorMessage(err, 'Unable to create coupon'))
+    toast.error(t('Coupon Not Created'), getErrorMessage(err, t('Unable to create coupon')))
   } finally {
     saving.value = false
   }
@@ -165,10 +167,10 @@ async function handleUpdate(body: CouponUpdate) {
   try {
     await updateCoupon(editing.value.id, body)
     isFormOpen.value = false
-    toast.success('Coupon Updated', editing.value.code)
+    toast.success(t('Coupon Updated'), editing.value.code)
     await refresh()
   } catch (err) {
-    toast.error('Coupon Not Updated', getErrorMessage(err, 'Unable to update coupon'))
+    toast.error(t('Coupon Not Updated'), getErrorMessage(err, t('Unable to update coupon')))
   } finally {
     saving.value = false
   }
@@ -180,7 +182,7 @@ async function toggleActive(coupon: Coupon) {
     await updateCoupon(coupon.id, { active: !coupon.active })
     await refresh()
   } catch (err) {
-    toast.error('Coupon Not Updated', getErrorMessage(err, 'Unable to update coupon'))
+    toast.error(t('Coupon Not Updated'), getErrorMessage(err, t('Unable to update coupon')))
   } finally {
     busyId.value = null
   }

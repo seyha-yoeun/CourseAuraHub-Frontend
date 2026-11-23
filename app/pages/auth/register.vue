@@ -7,10 +7,10 @@
         class="mb-3 inline-flex cursor-pointer items-center gap-1 rounded-sm text-[13px] font-medium text-white/55 transition-colors hover:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/40 light:text-slate-500 light:hover:text-slate-900"
         @click="goToDetailsStep"
       >
-        <ArrowLeft :size="14" aria-hidden="true" /> Back
+        <ArrowLeft :size="14" aria-hidden="true" /> {{ t('Back') }}
       </button>
     </Transition>
-    <h1 :class="authTitle">Create your account</h1>
+    <h1 :class="authTitle">{{ t('Create your account') }}</h1>
 
     <!-- Progress: two short steps keep the form inside one screen -->
     <div class="mt-3 flex items-center gap-3 short:mt-2">
@@ -22,13 +22,13 @@
         />
       </div>
       <span class="shrink-0 text-[12px] font-medium text-white/50 light:text-slate-500" aria-live="polite">
-        Step {{ step }} of 2 · {{ step === 1 ? 'Your details' : 'Secure your account' }}
+        {{ t('Step {step} of 2', { step }) }} · {{ step === 1 ? t('Your details') : t('Secure your account') }}
       </span>
     </div>
 
     <div v-if="referralCode" :class="[authAlertSuccess, 'mt-4 py-2.5 short:mt-3']">
       <Gift :size="16" class="mt-0.5 shrink-0" aria-hidden="true" />
-      <span>Invited by a friend: code <span class="font-mono font-bold">{{ referralCode }}</span> is applied once you're signed in.</span>
+      <span>{{ t('Invited by a friend: code') }} <span class="font-mono font-bold">{{ referralCode }}</span> {{ t('is applied once you\'re signed in.') }}</span>
     </div>
 
     <div v-if="pageError" :class="[authAlertError, 'mt-4 short:mt-3']" role="alert">
@@ -40,23 +40,23 @@
       <Transition :name="step === 2 ? 'auth-slide' : 'auth-slide-back'">
         <!-- Step 1: who you are -->
         <div v-if="step === 1" key="details">
-          <p :class="authSubtitle">Free to join, and it takes less than a minute.</p>
+          <p :class="authSubtitle">{{ t('Free to join, and it takes less than a minute.') }}</p>
 
           <div :class="authBodyGap">
-            <SocialLoginButtons :loading="loading" action-label="Sign up" @click="handleSocialLogin" />
+            <SocialLoginButtons :loading="loading" :action-label="t('Sign up')" @click="handleSocialLogin" />
           </div>
 
           <form :class="authForm" novalidate @submit.prevent="goToSecurityStep">
             <div class="grid grid-cols-2 gap-3">
               <div :class="[authField, 'min-w-0']">
-                <label for="firstName" :class="authLabel">First name</label>
+                <label for="firstName" :class="authLabel">{{ t('First name') }}</label>
                 <input
                   id="firstName"
                   ref="firstNameInput"
                   v-model="form.firstName"
                   type="text"
                   :class="errors.firstName ? authInputError : authInput"
-                  placeholder="Maya"
+                  :placeholder="t('Maya')"
                   autocomplete="given-name"
                   required
                   :disabled="loading"
@@ -67,13 +67,13 @@
               </div>
 
               <div :class="[authField, 'min-w-0']">
-                <label for="lastName" :class="authLabel">Last name</label>
+                <label for="lastName" :class="authLabel">{{ t('Last name') }}</label>
                 <input
                   id="lastName"
                   v-model="form.lastName"
                   type="text"
                   :class="errors.lastName ? authInputError : authInput"
-                  placeholder="Chen"
+                  :placeholder="t('Chen')"
                   autocomplete="family-name"
                   required
                   :disabled="loading"
@@ -85,7 +85,7 @@
             </div>
 
             <div :class="authField">
-              <label for="email" :class="authLabel">Email</label>
+              <label for="email" :class="authLabel">{{ t('Email') }}</label>
               <input
                 id="email"
                 v-model="form.email"
@@ -103,7 +103,7 @@
             </div>
 
             <button type="submit" :class="[authPrimaryButton, 'mt-1']" :disabled="loading">
-              <span>Continue</span>
+              <span>{{ t('Continue') }}</span>
               <ArrowRight :size="16" aria-hidden="true" />
             </button>
           </form>
@@ -112,7 +112,7 @@
         <!-- Step 2: password + consent -->
         <div v-else key="security">
           <p :class="[authSubtitle, 'truncate']">
-            Signing up as <strong class="font-semibold text-slate-100 light:text-slate-900">{{ form.email.trim() }}</strong>
+            {{ t('Signing up as') }} <strong class="font-semibold text-slate-100 light:text-slate-900">{{ form.email.trim() }}</strong>
           </p>
 
           <form :class="[authBodyGap, authForm]" novalidate @submit.prevent="handleRegister">
@@ -120,12 +120,12 @@
             <input type="email" :value="form.email.trim()" autocomplete="username" class="sr-only" tabindex="-1" aria-hidden="true" readonly>
 
             <div :class="authField">
-              <label for="password" :class="authLabel">Password</label>
+              <label for="password" :class="authLabel">{{ t('Password') }}</label>
               <PasswordInput
                 id="password"
                 ref="passwordInput"
                 v-model="form.password"
-                placeholder="Create a strong password"
+                :placeholder="t('Create a strong password')"
                 autocomplete="new-password"
                 :disabled="loading"
                 :invalid="Boolean(errors.password)"
@@ -136,12 +136,12 @@
             </div>
 
             <div :class="authField">
-              <label for="confirmPassword" :class="authLabel">Confirm password</label>
+              <label for="confirmPassword" :class="authLabel">{{ t('Confirm password') }}</label>
               <PasswordInput
                 id="confirmPassword"
                 ref="confirmPasswordInput"
                 v-model="form.confirmPassword"
-                placeholder="Re-enter your password"
+                :placeholder="t('Re-enter your password')"
                 autocomplete="new-password"
                 :disabled="loading"
                 :invalid="Boolean(errors.confirmPassword)"
@@ -149,7 +149,7 @@
               />
               <p v-if="errors.confirmPassword" id="confirmPassword-error" :class="authFieldError">{{ errors.confirmPassword }}</p>
               <p v-else-if="passwordsMatch" class="flex items-center gap-1.5 text-[12.5px] text-brand-400 light:text-brand-700">
-                <Check :size="13" aria-hidden="true" /> Passwords match
+                <Check :size="13" aria-hidden="true" /> {{ t('Passwords match') }}
               </p>
             </div>
 
@@ -166,10 +166,10 @@
                   :aria-describedby="errors.terms ? 'terms-error' : undefined"
                 >
                 <span>
-                  I agree to the
-                  <NuxtLink to="/terms" target="_blank" :class="authLink">Terms of Service</NuxtLink>
-                  and
-                  <NuxtLink to="/privacy" target="_blank" :class="authLink">Privacy Policy</NuxtLink>
+                  {{ t('I agree to the') }}
+                  <NuxtLink to="/terms" target="_blank" :class="authLink">{{ t('Terms of Service') }}</NuxtLink>
+                  {{ t('and') }}
+                  <NuxtLink to="/privacy" target="_blank" :class="authLink">{{ t('Privacy Policy') }}</NuxtLink>
                 </span>
               </label>
               <p v-if="errors.terms" id="terms-error" :class="authFieldError">{{ errors.terms }}</p>
@@ -180,10 +180,10 @@
             <button type="submit" :class="[authPrimaryButton, 'mt-1']" :aria-disabled="loading || undefined" :aria-busy="loading">
               <template v-if="loading">
                 <Loader2 :size="18" class="animate-spin" aria-hidden="true" />
-                <span>Creating account…</span>
+                <span>{{ t('Creating account…') }}</span>
               </template>
               <template v-else>
-                <span>Create account</span>
+                <span>{{ t('Create account') }}</span>
                 <ArrowRight :size="16" aria-hidden="true" />
               </template>
             </button>
@@ -193,8 +193,8 @@
     </div>
 
     <p :class="[authFooterText, 'mt-6 short:mt-4']">
-      Already have an account?
-      <NuxtLink :to="loginLink" :class="authStrongLink">Log in</NuxtLink>
+      {{ t('Already have an account?') }}
+      <NuxtLink :to="loginLink" :class="authStrongLink">{{ t('Log in') }}</NuxtLink>
     </p>
   </div>
 </template>
@@ -227,6 +227,8 @@ import {
 } from '~/utils/authUi'
 import { useReferral } from '~/composables/useReferral'
 import PasswordStrengthMeter from '~/components/auth/PasswordStrengthMeter.vue'
+
+const { t } = useT()
 
 const route = useRoute()
 const auth = useAuth()
@@ -294,26 +296,26 @@ function validateDetails() {
   errors.email = ''
 
   if (!form.firstName.trim()) {
-    errors.firstName = 'First name is required'
+    errors.firstName = t('First name is required')
     valid = false
   } else if (form.firstName.trim().length < 2) {
-    errors.firstName = 'At least 2 characters'
+    errors.firstName = t('At least 2 characters')
     valid = false
   }
 
   if (!form.lastName.trim()) {
-    errors.lastName = 'Last name is required'
+    errors.lastName = t('Last name is required')
     valid = false
   } else if (form.lastName.trim().length < 2) {
-    errors.lastName = 'At least 2 characters'
+    errors.lastName = t('At least 2 characters')
     valid = false
   }
 
   if (!form.email.trim()) {
-    errors.email = 'Email is required'
+    errors.email = t('Email is required')
     valid = false
   } else if (!EMAIL_PATTERN.test(form.email.trim())) {
-    errors.email = 'Please enter a valid email address'
+    errors.email = t('Please enter a valid email address')
     valid = false
   }
 
@@ -327,23 +329,23 @@ function validateSecurity() {
   errors.terms = ''
 
   if (!form.password) {
-    errors.password = 'Password is required'
+    errors.password = t('Password is required')
     valid = false
   } else if (!PASSWORD_PATTERN.test(form.password)) {
-    errors.password = 'Your password doesn\'t meet the rules marked below yet'
+    errors.password = t('Your password doesn\'t meet the rules marked below yet')
     valid = false
   }
 
   if (!form.confirmPassword) {
-    errors.confirmPassword = 'Please confirm your password'
+    errors.confirmPassword = t('Please confirm your password')
     valid = false
   } else if (form.password !== form.confirmPassword) {
-    errors.confirmPassword = 'Passwords do not match'
+    errors.confirmPassword = t('Passwords do not match')
     valid = false
   }
 
   if (!form.terms) {
-    errors.terms = 'You must agree to the terms and privacy policy'
+    errors.terms = t('You must agree to the terms and privacy policy')
     valid = false
   }
 
@@ -404,7 +406,7 @@ async function handleRegister() {
   try {
     await register(form.firstName, form.lastName, form.email, form.password)
   } catch (error) {
-    const apiError = toApiError(error, 'Registration failed')
+    const apiError = toApiError(error, t('Registration failed'))
 
     if (apiError.fieldErrors.firstName) errors.firstName = apiError.fieldErrors.firstName
     if (apiError.fieldErrors.lastName) errors.lastName = apiError.fieldErrors.lastName
@@ -415,7 +417,7 @@ async function handleRegister() {
     if (errors.firstName || errors.lastName || errors.email) step.value = 1
 
     if (apiError.status === 429) {
-      pageError.value = 'Too many registration attempts. Please wait a moment and try again.'
+      pageError.value = t('Too many registration attempts. Please wait a moment and try again.')
     } else if (!Object.keys(apiError.fieldErrors).length) {
       pageError.value = apiError.message
     }
@@ -427,9 +429,9 @@ function handleSocialLogin(provider: 'google' | 'facebook' | 'github') {
 }
 
 useHead({
-  title: 'Create Account',
+  title: t('Create Account'),
   meta: [
-    { name: 'description', content: 'Create your CourseAuraHub Academy account - Start learning from expert instructors' }
+    { name: 'description', content: t('Create your CourseAuraHub Academy account - Start learning from expert instructors') }
   ]
 })
 

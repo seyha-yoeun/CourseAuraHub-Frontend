@@ -3,9 +3,9 @@
     <!-- Header -->
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Account Security</h1>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ t('Account Security') }}</h1>
         <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">
-          Manage your password, two-factor authentication, and signed-in devices.
+          {{ t('Manage your password, two-factor authentication, and signed-in devices.') }}
         </p>
       </div>
 
@@ -14,7 +14,7 @@
         <span class="max-w-60 truncate text-[13px] font-medium text-slate-200 light:text-slate-800">{{ auth.userEmail }}</span>
         <span class="inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/12 px-1.5 py-px text-[10px] font-bold text-emerald-400 light:border-emerald-300 light:bg-emerald-50 light:text-emerald-700">
           <BadgeCheck :size="11" />
-          Verified
+          {{ t('Verified') }}
         </span>
       </div>
     </div>
@@ -41,10 +41,12 @@ import PrivacyCard from '~/components/account/PrivacyCard.vue'
 import TwoFactorCard from '~/components/account/TwoFactorCard.vue'
 import { useAuth } from '~/composables/useAuth'
 
+const { t } = useT()
+
 const auth = useAuth()
 const sessionsCard = ref<InstanceType<typeof ActiveSessionsCard> | null>(null)
 
 useHead({
-  title: 'Account Security',
+  title: t('Account Security'),
 })
 </script>

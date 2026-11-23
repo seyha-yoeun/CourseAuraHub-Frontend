@@ -8,13 +8,13 @@
               <AlertTriangle :size="24" class="text-rose-400" />
             </div>
             <div>
-              <h3 id="confirm-delete-title" class="text-lg leading-tight font-bold text-slate-50 light:text-slate-900">{{ title || 'Confirm Deletion' }}</h3>
-              <p class="mt-1.5 text-[13px] leading-relaxed text-white/50 light:text-slate-600">{{ description || 'Are you sure you want to delete this item? This action cannot be undone.' }}</p>
+              <h3 id="confirm-delete-title" class="text-lg leading-tight font-bold text-slate-50 light:text-slate-900">{{ title || t('Confirm Deletion') }}</h3>
+              <p class="mt-1.5 text-[13px] leading-relaxed text-white/50 light:text-slate-600">{{ description || t('Are you sure you want to delete this item? This action cannot be undone.') }}</p>
             </div>
           </div>
 
           <div v-if="itemName" class="my-4 flex flex-col gap-0.5 rounded-[10px] border border-white/6 bg-white/3 px-3.5 py-2.5 light:border-slate-200 light:bg-slate-50">
-            <span class="text-[11px] tracking-wider text-white/40 uppercase light:text-slate-500">Selected item:</span>
+            <span class="text-[11px] tracking-wider text-white/40 uppercase light:text-slate-500">{{ t('Selected item:') }}</span>
             <span class="text-sm font-semibold text-slate-200 light:text-slate-800">{{ itemName }}</span>
           </div>
 
@@ -25,7 +25,7 @@
               :disabled="loading"
               @click="$emit('close')"
             >
-              Cancel
+              {{ t('Cancel') }}
             </button>
             <button
               type="button"
@@ -34,7 +34,7 @@
               @click="$emit('confirm')"
             >
               <Loader2 v-if="loading" :size="16" class="animate-spin" />
-              <span>{{ loading ? 'Deleting...' : 'Delete Permanently' }}</span>
+              <span>{{ loading ? t('Deleting...') : t('Delete Permanently') }}</span>
             </button>
           </div>
         </div>
@@ -46,6 +46,8 @@
 <script setup lang="ts">
 import { AlertTriangle, Loader2 } from 'lucide-vue-next'
 import { useModalA11y } from '~/composables/useModalA11y'
+
+const { t } = useT()
 
 const props = defineProps<{
   isOpen: boolean

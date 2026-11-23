@@ -209,8 +209,8 @@ const neutralButton = 'inline-flex cursor-pointer items-center gap-1.5 rounded-[
 const iconButton = 'flex size-8 cursor-pointer items-center justify-center rounded-lg text-white/45 transition-colors hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50 disabled:cursor-wait light:text-slate-400 light:hover:bg-slate-100 light:hover:text-slate-800'
 
 const filters = [
-  { label: 'All', unreadOnly: false },
-  { label: 'Unread', unreadOnly: true },
+  { label: t('All'), unreadOnly: false },
+  { label: t('Unread'), unreadOnly: true },
 ]
 
 const markingAll = ref(false)

@@ -2,11 +2,11 @@
   <div class="flex flex-col gap-6">
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">Orders</h1>
-        <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">Review purchases and refund paid orders.</p>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">{{ t('Orders') }}</h1>
+        <p class="mt-1 text-[13px] text-white/45 light:text-slate-500">{{ t('Review purchases and refund paid orders.') }}</p>
       </div>
       <div class="w-full sm:w-52">
-        <AppDropdown v-model="status" :options="statusOptions" aria-label="Filter orders by status" />
+        <AppDropdown v-model="status" :options="statusOptions" :aria-label="t('Filter orders by status')" />
       </div>
     </div>
 
@@ -16,27 +16,27 @@
 
     <div v-else-if="error" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-5 py-15 text-center light:border-slate-200 light:bg-white">
       <AlertCircle :size="40" class="text-rose-400" />
-      <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">{{ getErrorMessage(error, 'Unable to load orders') }}</p>
+      <p class="mt-3 text-[13px] text-white/50 light:text-slate-500">{{ getErrorMessage(error, t('Unable to load orders')) }}</p>
     </div>
 
     <div v-else-if="!items.length" class="flex flex-col items-center justify-center rounded-[20px] border border-white/10 bg-white/5 px-6 py-15 text-center light:border-slate-200 light:bg-white">
       <div class="mb-4 flex size-16 items-center justify-center rounded-[18px] border border-brand-500/30 bg-brand-500/12">
         <Receipt :size="30" class="text-brand-300 light:text-brand-700" />
       </div>
-      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">No orders found</h3>
+      <h3 class="text-lg font-bold text-slate-100 light:text-slate-900">{{ t('No orders found') }}</h3>
     </div>
 
     <template v-else>
-      <DataTableFrame label="Orders" :scroll-key="`${page}:${pageSize}`" :class="pending && 'opacity-60 transition-opacity'">
+      <DataTableFrame :label="t('Orders')" :scroll-key="`${page}:${pageSize}`" :class="pending && 'opacity-60 transition-opacity'">
         <table class="w-full min-w-200 border-collapse text-left text-[13px]">
           <thead>
             <tr class="border-b border-white/8 text-[11px] tracking-wider text-white/40 uppercase light:border-slate-200 light:text-slate-500">
-              <th class="px-4 py-3 font-semibold">Order</th>
-              <th class="px-4 py-3 font-semibold">Course</th>
-              <th class="px-4 py-3 font-semibold">Student</th>
-              <th class="px-4 py-3 font-semibold">Amount</th>
-              <th class="px-4 py-3 font-semibold">Status</th>
-              <th class="px-4 py-3 text-right font-semibold">Actions</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Order') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Course') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Student') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Amount') }}</th>
+              <th class="px-4 py-3 font-semibold">{{ t('Status') }}</th>
+              <th class="px-4 py-3 text-right font-semibold">{{ t('Actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-white/6 light:divide-slate-200">
@@ -59,7 +59,7 @@
                   :disabled="downloading === item.order.orderNumber"
                   @click="receipt(item)"
                 >
-                  Receipt
+                  {{ t('Receipt') }}
                 </button>
                 <button
                   v-if="item.order.status === 'PAID' && Number(item.order.amount) > 0"
@@ -67,7 +67,7 @@
                   class="cursor-pointer rounded-lg border border-rose-500/30 bg-rose-500/10 px-2.5 py-1.5 text-xs font-semibold text-rose-400 transition-colors hover:bg-rose-500/20 light:border-rose-200 light:bg-rose-50 light:text-rose-600"
                   @click="pendingRefund = item"
                 >
-                  Refund
+                  {{ t('Refund') }}
                 </button>
               </td>
             </tr>
@@ -81,8 +81,8 @@
 
     <ConfirmDeleteModal
       :is-open="Boolean(pendingRefund)"
-      title="Refund Order"
-      description="The learner gets their money back and loses access to the course. This can't be undone."
+      :title="t('Refund Order')"
+      :description="t('The learner gets their money back and loses access to the course. This can\'t be undone.')"
       :item-name="pendingRefund ? `${pendingRefund.order.orderNumber} · $${Number(pendingRefund.order.amount).toFixed(2)}` : undefined"
       :loading="refunding"
       @close="pendingRefund = null"
@@ -105,8 +105,10 @@ import { useOrders } from '~/composables/useOrders'
 import { getErrorMessage } from '~/utils/apiError'
 import { formatDateTime } from '~/utils/dateTime'
 
+const { t } = useT()
+
 definePageMeta({ requiresAdmin: true })
-useHead({ title: 'Orders' })
+useHead({ title: t('Orders') })
 
 const toast = useAppToast()
 const { fetchAdminOrders, refundOrder, downloadReceipt } = useOrders()
@@ -118,7 +120,7 @@ async function receipt(item: AdminOrder) {
   try {
     await downloadReceipt(item.order.orderNumber, true)
   } catch (err) {
-    toast.error('Download Failed', getErrorMessage(err, 'Unable to download the receipt'))
+    toast.error(t('Download Failed'), getErrorMessage(err, t('Unable to download the receipt')))
   } finally {
     downloading.value = null
   }
@@ -129,12 +131,12 @@ const page = ref(0)
 const pageSize = ref(DEFAULT_PAGE_SIZE)
 
 const statusOptions = [
-  { value: 'all', label: 'All Statuses' },
-  { value: 'PENDING', label: 'Pending' },
-  { value: 'PAID', label: 'Paid' },
-  { value: 'FAILED', label: 'Failed' },
-  { value: 'CANCELLED', label: 'Cancelled' },
-  { value: 'REFUNDED', label: 'Refunded' }
+  { value: 'all', label: t('All Statuses') },
+  { value: 'PENDING', label: t('Pending') },
+  { value: 'PAID', label: t('Paid') },
+  { value: 'FAILED', label: t('Failed') },
+  { value: 'CANCELLED', label: t('Cancelled') },
+  { value: 'REFUNDED', label: t('Refunded') }
 ]
 
 const { data, pending, error, refresh } = await useAsyncData(
@@ -159,11 +161,11 @@ async function handleRefund() {
   refunding.value = true
   try {
     await refundOrder(pendingRefund.value.order.orderNumber)
-    toast.success('Order Refunded', pendingRefund.value.order.orderNumber)
+    toast.success(t('Order Refunded'), pendingRefund.value.order.orderNumber)
     pendingRefund.value = null
     await refresh()
   } catch (err) {
-    toast.error('Refund Failed', getErrorMessage(err, 'Unable to refund this order'))
+    toast.error(t('Refund Failed'), getErrorMessage(err, t('Unable to refund this order')))
   } finally {
     refunding.value = false
   }

@@ -234,7 +234,7 @@ const stats = computed(() => {
     { label: d.streak.longestDays > d.streak.currentDays ? `Day streak · best ${d.streak.longestDays}` : 'Day streak', value: d.streak.currentDays, icon: Flame, tone: 'bg-orange-500/15 text-orange-400 light:text-orange-600' },
     { label: 'Lessons completed', value: d.lessonsCompleted, icon: ListChecks, tone: 'bg-brand-500/15 text-brand-300 light:text-brand-600' },
     { label: 'Time learned', value: formatMinutes(d.minutesLearned), icon: Clock, tone: 'bg-sky-500/15 text-sky-300 light:text-sky-600' },
-    { label: 'Certificates', value: d.certificatesEarned, icon: Award, tone: 'bg-emerald-500/15 text-emerald-400 light:text-emerald-600' }
+    { label: t('Certificates'), value: d.certificatesEarned, icon: Award, tone: 'bg-emerald-500/15 text-emerald-400 light:text-emerald-600' }
   ]
 })
 
@@ -270,9 +270,9 @@ const courses = computed<MyCourse[]>(() => data.value ?? [])
 const activeTab = ref<'all' | 'in-progress' | 'completed'>('all')
 
 const tabs = computed(() => [
-  { value: 'all' as const, label: 'All', count: courses.value.length },
+  { value: 'all' as const, label: t('All'), count: courses.value.length },
   { value: 'in-progress' as const, label: 'In progress', count: courses.value.filter(c => !c.progress.completed).length },
-  { value: 'completed' as const, label: 'Completed', count: courses.value.filter(c => c.progress.completed).length }
+  { value: 'completed' as const, label: t('Completed'), count: courses.value.filter(c => c.progress.completed).length }
 ])
 
 const visibleCourses = computed(() => {

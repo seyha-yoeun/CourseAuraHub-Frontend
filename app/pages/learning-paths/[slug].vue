@@ -232,7 +232,7 @@ const primaryButton = 'inline-flex h-10 w-full cursor-pointer items-center justi
 type StepState = 'completed' | 'in-progress' | 'todo'
 
 const legend: { state: StepState, label: string }[] = [
-  { state: 'completed', label: 'Completed' },
+  { state: 'completed', label: t('Completed') },
   { state: 'in-progress', label: 'In progress' },
   { state: 'todo', label: 'Not started' },
 ]

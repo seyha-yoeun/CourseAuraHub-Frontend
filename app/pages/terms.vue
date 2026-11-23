@@ -13,7 +13,8 @@ import { ScrollText } from 'lucide-vue-next'
 import InfoPageShell from '~/components/shared/InfoPageShell.vue'
 
 definePageMeta({ layout: false })
-useHead({ title: 'Terms of Service' })
+const { t } = useT()
+useHead({ title: () => t('Terms of Service') })
 
 const sections = [
   { heading: 'Accepting these terms', body: 'By creating an account or using CourseAuraHub Academy, you agree to these terms. If you do not agree, please do not use the platform.' },

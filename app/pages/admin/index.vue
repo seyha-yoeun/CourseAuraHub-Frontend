@@ -13,7 +13,7 @@
           <div class="min-w-0">
             <div class="flex flex-wrap items-center gap-2">
               <h1 class="text-2xl font-extrabold tracking-tight text-slate-50 sm:text-[26px] light:text-slate-900">
-                Admin Console
+                {{ t('Admin Console') }}
               </h1>
               <span
                 class="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase"
@@ -25,18 +25,18 @@
                   class="size-1.5 rounded-full"
                   :class="loadError ? 'bg-rose-400' : 'animate-pulse bg-emerald-400'"
                 />
-                {{ loadError ? 'Sync Issue' : 'Live Data' }}
+                {{ loadError ? t('Sync Issue') : t('Live Data') }}
               </span>
             </div>
             <p class="mt-1 max-w-2xl text-[13px] text-white/50 light:text-slate-500">
-              Manage courses, students, and platform operations from one dedicated workspace.
+              {{ t('Manage courses, students, and platform operations from one dedicated workspace.') }}
             </p>
             <p class="mt-1.5 flex flex-wrap items-center gap-x-1.5 text-[11px] text-white/35 light:text-slate-400">
-              <span>Signed in as <strong class="font-semibold text-white/55 light:text-slate-600">{{ auth.userName }}</strong></span>
+              <span>{{ t('Signed in as') }} <strong class="font-semibold text-white/55 light:text-slate-600">{{ auth.userName }}</strong></span>
               <span class="hidden sm:inline">·</span>
               <span class="hidden sm:inline">{{ auth.roleLabel }}</span>
               <span class="hidden size-0.5 rounded-full bg-white/25 sm:inline-block light:bg-slate-300" />
-              <span> Last sync: {{ lastLoadedLabel }}</span>
+              <span> {{ t('Last sync: {lastLoadedLabel}', { lastLoadedLabel }) }}</span>
             </p>
           </div>
         </div>
@@ -49,7 +49,7 @@
             @click="handleRefresh"
           >
             <RefreshCw :size="15" :class="{ 'animate-spin': refreshing }" />
-            <span>{{ refreshing ? 'Syncing...' : 'Sync Data' }}</span>
+            <span>{{ refreshing ? t('Syncing...') : t('Sync Data') }}</span>
           </button>
 
           <button
@@ -59,7 +59,7 @@
             @click="exportSnapshot"
           >
             <Download :size="15" />
-            <span>Export</span>
+            <span>{{ t('Export') }}</span>
           </button>
 
           <button
@@ -68,7 +68,7 @@
             @click="openCreateCourse"
           >
             <Plus :size="16" />
-            <span>New Course</span>
+            <span>{{ t('New Course') }}</span>
           </button>
         </div>
       </div>
@@ -77,32 +77,32 @@
     <!-- Summary metrics -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
-        label="Total Courses"
+        :label="t('Total Courses')"
         :value="courses.length"
         :sub="`${publishedCoursesCount} published · ${draftCoursesCount} drafts`"
         :icon="BookOpen"
         accent-color="#8b5cf6"
       />
       <StatCard
-        label="Total Learners"
+        :label="t('Total Learners')"
         :value="students.length"
         :sub="`${activeStudentsCount} active · ${inactiveStudentsCount} inactive`"
         :icon="Users"
         accent-color="#3b82f6"
       />
       <StatCard
-        label="Platform Revenue"
+        :label="t('Platform Revenue')"
         :value="totalRevenue"
         format="currency"
-        sub="Lifetime course revenue"
+        :sub="t('Lifetime course revenue')"
         :icon="DollarSign"
         accent-color="#10b981"
       />
       <StatCard
-        label="Average Rating"
+        :label="t('Average Rating')"
         :value="averageRating"
         format="rating"
-        sub="Across the course catalog"
+        :sub="t('Across the course catalog')"
         :icon="Star"
         accent-color="#f59e0b"
       />
@@ -123,7 +123,7 @@
         class="shrink-0 cursor-pointer self-start rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/60 sm:self-auto light:border-red-200 light:bg-white light:hover:bg-red-100"
         @click="loadData({ silent: true })"
       >
-        Retry
+        {{ t('Retry') }}
       </button>
     </div>
 
@@ -159,7 +159,7 @@
         <span class="hidden items-center gap-1.5 text-[11px] text-white/35 sm:inline-flex light:text-slate-400">
           <AlertCircle v-if="loadError" :size="12" class="text-rose-400" />
           <CheckCircle2 v-else :size="12" class="text-emerald-400" />
-          {{ loadError ? 'Backend connection issue' : 'Connected to live backend' }}
+          {{ loadError ? t('Backend connection issue') : t('Connected to live backend') }}
         </span>
       </div>
 
@@ -180,14 +180,14 @@
                   <input
                     v-model="courseSearch"
                     type="text"
-                    placeholder="Search courses, instructors..."
+                    :placeholder="t('Search courses, instructors...')"
                     class="w-full rounded-[10px] border border-white/9 bg-white/4 py-2.25 pr-8 pl-9 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/60 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-slate-50 light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600 light:focus:bg-white"
                   >
                   <button
                     v-if="courseSearch"
                     type="button"
                     class="absolute top-1/2 right-2.5 flex -translate-y-1/2 cursor-pointer items-center justify-center rounded p-0.5 text-white/40 transition-colors hover:text-white light:text-slate-400 light:hover:text-slate-900"
-                    aria-label="Clear course search"
+                    :aria-label="t('Clear course search')"
                     @click="courseSearch = ''"
                   >
                     <X :size="13" />
@@ -196,7 +196,7 @@
 
                 <div class="flex items-center gap-2.5">
                   <span class="text-[11px] text-white/35 light:text-slate-400">
-                    {{ filteredCourses.length }} of {{ courses.length }} courses
+                    {{ t('{filteredCourses} of {courses} courses', { filteredCourses: filteredCourses.length, courses: courses.length }) }}
                   </span>
                   <button
                     type="button"
@@ -204,7 +204,7 @@
                     @click="openCreateCourse"
                   >
                     <Plus :size="14" />
-                    <span>New Course</span>
+                    <span>{{ t('New Course') }}</span>
                   </button>
                 </div>
               </div>
@@ -217,10 +217,10 @@
                   <BookOpen :size="20" class="text-brand-400" />
                 </span>
                 <span class="text-sm font-semibold text-slate-200 light:text-slate-800">
-                  {{ courseSearch ? 'No courses match your search' : 'No courses yet' }}
+                  {{ courseSearch ? t('No courses match your search') : t('No courses yet') }}
                 </span>
                 <span class="text-xs text-white/40 light:text-slate-500">
-                  {{ courseSearch ? 'Try a different title, category, or instructor.' : 'Create your first course to get started.' }}
+                  {{ courseSearch ? t('Try a different title, category, or instructor.') : t('Create your first course to get started.') }}
                 </span>
               </div>
 
@@ -248,7 +248,7 @@
                         <span class="size-0.5 rounded-full bg-white/25 light:bg-slate-300" />
                         <span>{{ course.instructor }}</span>
                         <span class="hidden size-0.5 rounded-full bg-white/25 sm:block light:bg-slate-300" />
-                        <span class="hidden sm:inline">{{ course.totalLessons }} lessons</span>
+                        <span class="hidden sm:inline">{{ t('{totalLessons} lessons', { totalLessons: course.totalLessons }) }}</span>
                       </div>
                     </div>
                   </div>
@@ -259,7 +259,7 @@
                         ${{ Number(course.price || 0).toFixed(2) }}
                       </span>
                       <span class="text-[11px] text-white/35 light:text-slate-400">
-                        {{ Number(course.totalStudents || 0).toLocaleString() }} enrolled
+                        {{ t('{totalStudents} enrolled', { totalStudents: Number(course.totalStudents || 0).toLocaleString() }) }}
                       </span>
                     </div>
 
@@ -271,9 +271,9 @@
                       :aria-label="`Status for ${course.title}`"
                       @change="updateCourseStatus(course, $event)"
                     >
-                      <option value="published">Published</option>
-                      <option value="draft">Draft</option>
-                      <option value="archived">Archived</option>
+                      <option value="published">{{ t('Published') }}</option>
+                      <option value="draft">{{ t('Draft') }}</option>
+                      <option value="archived">{{ t('Archived') }}</option>
                     </select>
 
                     <div class="flex items-center gap-1.5">
@@ -281,7 +281,7 @@
                         :to="`/courses/${course.slug}`"
                         class="flex size-7.5 items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/55 transition-all duration-200 hover:border-brand-500/30 hover:bg-brand-500/15 hover:text-brand-300 light:border-slate-200 light:bg-slate-50 light:text-slate-600 light:hover:bg-brand-50 light:hover:text-brand-700"
                         :aria-label="`View ${course.title}`"
-                        title="View course"
+                        :title="t('View course')"
                       >
                         <ExternalLink :size="13" />
                       </NuxtLink>
@@ -289,7 +289,7 @@
                         type="button"
                         class="flex size-7.5 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-white/55 transition-all duration-200 hover:border-brand-500/30 hover:bg-brand-500/15 hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-50 light:text-slate-600 light:hover:bg-brand-50 light:hover:text-brand-700"
                         :aria-label="`Edit ${course.title}`"
-                        title="Edit course"
+                        :title="t('Edit course')"
                         @click="openEditCourse(course)"
                       >
                         <Pencil :size="13" />
@@ -298,7 +298,7 @@
                         type="button"
                         class="flex size-7.5 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-rose-400 transition-all duration-200 hover:border-rose-500/30 hover:bg-rose-500/15 hover:text-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:border-slate-200 light:bg-slate-50 light:text-rose-600 light:hover:bg-rose-50 light:hover:text-rose-700"
                         :aria-label="`Delete ${course.title}`"
-                        title="Delete course"
+                        :title="t('Delete course')"
                         @click="askDeleteCourse(course)"
                       >
                         <Trash2 :size="13" />
@@ -317,14 +317,14 @@
                   <input
                     v-model="studentSearch"
                     type="text"
-                    placeholder="Search students, emails, countries..."
+                    :placeholder="t('Search students, emails, countries...')"
                     class="w-full rounded-[10px] border border-white/9 bg-white/4 py-2.25 pr-8 pl-9 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/60 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-slate-50 light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600 light:focus:bg-white"
                   >
                   <button
                     v-if="studentSearch"
                     type="button"
                     class="absolute top-1/2 right-2.5 flex -translate-y-1/2 cursor-pointer items-center justify-center rounded p-0.5 text-white/40 transition-colors hover:text-white light:text-slate-400 light:hover:text-slate-900"
-                    aria-label="Clear student search"
+                    :aria-label="t('Clear student search')"
                     @click="studentSearch = ''"
                   >
                     <X :size="13" />
@@ -333,7 +333,7 @@
 
                 <div class="flex items-center gap-2.5">
                   <span class="text-[11px] text-white/35 light:text-slate-400">
-                    {{ filteredStudents.length }} of {{ students.length }} learners
+                    {{ t('{filteredStudents} of {students} learners', { filteredStudents: filteredStudents.length, students: students.length }) }}
                   </span>
                   <button
                     type="button"
@@ -341,7 +341,7 @@
                     @click="showAddStudent = !showAddStudent"
                   >
                     <UserPlus :size="14" />
-                    <span>{{ showAddStudent ? 'Close Form' : 'Add Student' }}</span>
+                    <span>{{ showAddStudent ? t('Close Form') : t('Add Student') }}</span>
                   </button>
                 </div>
               </div>
@@ -349,28 +349,28 @@
               <div v-if="showAddStudent" class="rounded-xl border border-brand-500/25 bg-brand-500/6 p-4 light:border-brand-200 light:bg-brand-50/50">
                 <div class="mb-3 flex items-center gap-2">
                   <UserPlus :size="16" class="text-brand-400" />
-                  <h3 class="text-[13px] font-bold text-slate-100 light:text-slate-900">Quick add student</h3>
+                  <h3 class="text-[13px] font-bold text-slate-100 light:text-slate-900">{{ t('Quick add student') }}</h3>
                 </div>
                 <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
                   <input
                     v-model="newStudent.name"
                     type="text"
-                    placeholder="Full name *"
+                    :placeholder="t('Full name *')"
                     class="w-full rounded-lg border border-white/10 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600"
                   >
                   <input
                     v-model="newStudent.email"
                     type="email"
-                    placeholder="Email address *"
+                    :placeholder="t('Email address *')"
                     class="w-full rounded-lg border border-white/10 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600"
                   >
                   <input
                     v-model="newStudent.country"
                     type="text"
-                    placeholder="Country"
+                    :placeholder="t('Country')"
                     class="w-full rounded-lg border border-white/10 bg-white/4 px-3 py-2 text-[13px] text-slate-100 outline-none transition-all placeholder:text-white/30 focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600"
                   >
-                  <AppDropdown id="new-student-status" v-model="newStudent.status" :options="studentStatusOptions" size="sm" aria-label="Student status" />
+                  <AppDropdown id="new-student-status" v-model="newStudent.status" :options="studentStatusOptions" size="sm" :aria-label="t('Student status')" />
                 </div>
                 <div class="mt-3 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                   <button
@@ -378,7 +378,7 @@
                     class="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-medium text-white/60 transition-colors hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-slate-200 light:bg-slate-100 light:text-slate-600 light:hover:bg-slate-200 light:hover:text-slate-900"
                     @click="showAddStudent = false"
                   >
-                    Cancel
+                    {{ t('Cancel') }}
                   </button>
                   <button
                     type="button"
@@ -388,7 +388,7 @@
                   >
                     <Loader2 v-if="creatingStudent" :size="14" class="animate-spin" />
                     <UserPlus v-else :size="14" />
-                    <span>{{ creatingStudent ? 'Creating...' : 'Create Student' }}</span>
+                    <span>{{ creatingStudent ? t('Creating...') : t('Create Student') }}</span>
                   </button>
                 </div>
               </div>
@@ -401,10 +401,10 @@
                   <Users :size="20" class="text-blue-400" />
                 </span>
                 <span class="text-sm font-semibold text-slate-200 light:text-slate-800">
-                  {{ studentSearch ? 'No students match your search' : 'No students yet' }}
+                  {{ studentSearch ? t('No students match your search') : t('No students yet') }}
                 </span>
                 <span class="text-xs text-white/40 light:text-slate-500">
-                  {{ studentSearch ? 'Try a different name, email, or country.' : 'Add your first learner to get started.' }}
+                  {{ studentSearch ? t('Try a different name, email, or country.') : t('Add your first learner to get started.') }}
                 </span>
               </div>
 
@@ -431,7 +431,7 @@
                           <MapPin :size="11" class="shrink-0" />
                           {{ student.country }}
                         </span>
-                        <span class="hidden sm:inline">Joined {{ formatDate(student.joinedAt) }}</span>
+                        <span class="hidden sm:inline">{{ t('Joined {joinedAt}', { joinedAt: formatDate(student.joinedAt) }) }}</span>
                       </div>
                     </div>
                   </div>
@@ -442,7 +442,7 @@
                         ${{ Number(student.totalSpent || 0).toFixed(2) }}
                       </span>
                       <span class="text-[11px] text-white/35 light:text-slate-400">
-                        lifetime spend
+                        {{ t('lifetime spend') }}
                       </span>
                     </div>
 
@@ -454,14 +454,14 @@
                       :aria-label="`Toggle status for ${student.name}`"
                       @click="toggleStudentStatus(student)"
                     >
-                      {{ updatingStudentId === student.id ? 'Saving...' : student.status }}
+                      {{ updatingStudentId === student.id ? t('Saving...') : student.status }}
                     </button>
 
                     <button
                       type="button"
                       class="flex size-7.5 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/4 text-rose-400 transition-all duration-200 hover:border-rose-500/30 hover:bg-rose-500/15 hover:text-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 light:border-slate-200 light:bg-slate-50 light:text-rose-600 light:hover:bg-rose-50 light:hover:text-rose-700"
                       :aria-label="`Delete ${student.name}`"
-                      title="Delete student"
+                      :title="t('Delete student')"
                       @click="askDeleteStudent(student)"
                     >
                       <Trash2 :size="13" />
@@ -480,9 +480,9 @@
                   </span>
                   <span class="rounded-full border border-white/8 bg-white/4 px-2 py-0.5 text-[10px] font-semibold text-white/40 light:border-slate-200 light:bg-white light:text-slate-500">JSON</span>
                 </div>
-                <h3 class="mt-3 text-sm font-bold text-slate-100 light:text-slate-900">Export a data snapshot</h3>
+                <h3 class="mt-3 text-sm font-bold text-slate-100 light:text-slate-900">{{ t('Export a data snapshot') }}</h3>
                 <p class="mt-1 flex-1 text-xs leading-relaxed text-white/45 light:text-slate-500">
-                  Download a complete JSON snapshot of the current course and learner records.
+                  {{ t('Download a complete JSON snapshot of the current course and learner records.') }}
                 </p>
                 <button
                   type="button"
@@ -491,7 +491,7 @@
                   @click="exportSnapshot"
                 >
                   <Download :size="14" />
-                  <span>Download Snapshot</span>
+                  <span>{{ t('Download Snapshot') }}</span>
                 </button>
               </div>
 
@@ -500,11 +500,11 @@
                   <span class="flex size-10 items-center justify-center rounded-xl border border-emerald-500/25 bg-emerald-500/10">
                     <RefreshCw :size="19" class="text-emerald-400" />
                   </span>
-                  <span class="rounded-full border border-white/8 bg-white/4 px-2 py-0.5 text-[10px] font-semibold text-white/40 light:border-slate-200 light:bg-white light:text-slate-500">Live API</span>
+                  <span class="rounded-full border border-white/8 bg-white/4 px-2 py-0.5 text-[10px] font-semibold text-white/40 light:border-slate-200 light:bg-white light:text-slate-500">{{ t('Live API') }}</span>
                 </div>
-                <h3 class="mt-3 text-sm font-bold text-slate-100 light:text-slate-900">Refresh console data</h3>
+                <h3 class="mt-3 text-sm font-bold text-slate-100 light:text-slate-900">{{ t('Refresh console data') }}</h3>
                 <p class="mt-1 flex-1 text-xs leading-relaxed text-white/45 light:text-slate-500">
-                  Re-sync courses and students from the backend to see the latest activity.
+                  {{ t('Re-sync courses and students from the backend to see the latest activity.') }}
                 </p>
                 <button
                   type="button"
@@ -513,7 +513,7 @@
                   @click="handleRefresh"
                 >
                   <RefreshCw :size="14" :class="{ 'animate-spin': refreshing }" />
-                  <span>{{ refreshing ? 'Syncing...' : 'Sync Now' }}</span>
+                  <span>{{ refreshing ? t('Syncing...') : t('Sync Now') }}</span>
                 </button>
               </div>
 
@@ -522,18 +522,18 @@
                   <span class="flex size-10 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10">
                     <Settings :size="19" class="text-brand-400" />
                   </span>
-                  <span class="rounded-full border border-white/8 bg-white/4 px-2 py-0.5 text-[10px] font-semibold text-white/40 light:border-slate-200 light:bg-white light:text-slate-500">Config</span>
+                  <span class="rounded-full border border-white/8 bg-white/4 px-2 py-0.5 text-[10px] font-semibold text-white/40 light:border-slate-200 light:bg-white light:text-slate-500">{{ t('Config') }}</span>
                 </div>
-                <h3 class="mt-3 text-sm font-bold text-slate-100 light:text-slate-900">Platform settings</h3>
+                <h3 class="mt-3 text-sm font-bold text-slate-100 light:text-slate-900">{{ t('Platform settings') }}</h3>
                 <p class="mt-1 flex-1 text-xs leading-relaxed text-white/45 light:text-slate-500">
-                  Update branding, notification preferences, and the administrator profile.
+                  {{ t('Update branding, notification preferences, and the administrator profile.') }}
                 </p>
                 <NuxtLink
                   to="/settings"
                   class="mt-4 inline-flex w-fit items-center justify-center gap-1.5 rounded-lg border border-brand-500/30 bg-brand-500/10 px-3.5 py-2 text-xs font-semibold text-brand-300 no-underline transition-all hover:bg-brand-500/20 hover:text-brand-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60 light:border-brand-200 light:bg-brand-50 light:text-brand-700 light:hover:bg-brand-100"
                 >
                   <Settings :size="14" />
-                  <span>Open Settings</span>
+                  <span>{{ t('Open Settings') }}</span>
                 </NuxtLink>
               </div>
             </div>
@@ -596,10 +596,12 @@ import ConfirmDeleteModal from '~/components/shared/ConfirmDeleteModal.vue'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
 import { useAppToast } from '~/composables/useAppToast'
 
+const { t } = useT()
+
 definePageMeta({ requiresAdmin: true })
 
 useHead({
-  title: 'Admin Console'
+  title: t('Admin Console')
 })
 
 const auth = useAuth()
@@ -611,8 +613,8 @@ type DeleteTarget =
   | { kind: 'student'; item: Student }
 
 const studentStatusOptions = [
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' }
+  { value: 'active', label: t('Active') },
+  { value: 'inactive', label: t('Inactive') }
 ]
 
 const activeTab = ref<AdminTab>('courses')
@@ -653,9 +655,9 @@ const tabFade = {
 }
 
 const tabs = computed(() => [
-  { id: 'courses' as const, label: 'Courses', icon: BookOpen, count: courses.value.length },
-  { id: 'students' as const, label: 'Students', icon: Users, count: students.value.length },
-  { id: 'ops' as const, label: 'Quick Ops', icon: SlidersHorizontal, count: null }
+  { id: 'courses' as const, label: t('Courses'), icon: BookOpen, count: courses.value.length },
+  { id: 'students' as const, label: t('Students'), icon: Users, count: students.value.length },
+  { id: 'ops' as const, label: t('Quick Ops'), icon: SlidersHorizontal, count: null }
 ])
 
 const publishedCoursesCount = computed(() =>
@@ -681,7 +683,7 @@ const averageRating = computed(() => {
 })
 
 const lastLoadedLabel = computed(() => {
-  if (!lastLoadedAt.value) return 'Not synced yet'
+  if (!lastLoadedAt.value) return t('Not synced yet')
   return lastLoadedAt.value.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit'
@@ -715,13 +717,13 @@ const deleteItemName = computed(() => {
 })
 
 const deleteTitle = computed(() =>
-  deleteTarget.value?.kind === 'course' ? 'Delete this course?' : 'Remove this student?'
+  deleteTarget.value?.kind === 'course' ? t('Delete this course?') : t('Remove this student?')
 )
 
 const deleteDescription = computed(() =>
   deleteTarget.value?.kind === 'course'
-    ? 'This permanently removes the course and its catalog data. This action cannot be undone.'
-    : 'This permanently removes the learner record from the platform. This action cannot be undone.'
+    ? t('This permanently removes the course and its catalog data. This action cannot be undone.')
+    : t('This permanently removes the learner record from the platform. This action cannot be undone.')
 )
 
 function formatDate(value?: string) {
@@ -765,9 +767,9 @@ async function loadData(options: { silent?: boolean } = {}) {
     students.value = Array.isArray(studentData) ? studentData : []
     lastLoadedAt.value = new Date()
   } catch (err: unknown) {
-    const message = (err as Error).message || 'Could not load admin records from the backend.'
+    const message = (err as Error).message || t('Could not load admin records from the backend.')
     loadError.value = message
-    error('Admin Data Failed', message)
+    error(t('Admin Data Failed'), message)
   } finally {
     loading.value = false
     refreshing.value = false
@@ -779,7 +781,7 @@ async function handleRefresh() {
 
   if (!loadError.value) {
     info(
-      'Admin Console Synced',
+      t('Admin Console Synced'),
       `${courses.value.length} courses and ${students.value.length} learners loaded.`
     )
   }
@@ -801,7 +803,7 @@ async function updateCourseStatus(course: Course, event: Event) {
     crud('status', 'Course', course.title)
   } catch (err: unknown) {
     select.value = course.status
-    error('Status Update Failed', (err as Error).message || 'Failed to update course status')
+    error(t('Status Update Failed'), (err as Error).message || t('Failed to update course status'))
   } finally {
     updatingCourseSlug.value = null
   }
@@ -819,7 +821,7 @@ async function toggleStudentStatus(student: Student) {
     student.status = status
     crud('status', 'Student', student.name)
   } catch (err: unknown) {
-    error('Student Status Failed', (err as Error).message || 'Failed to update student status')
+    error(t('Student Status Failed'), (err as Error).message || t('Failed to update student status'))
   } finally {
     updatingStudentId.value = null
   }
@@ -861,7 +863,7 @@ async function handleCourseSubmit(formData: CourseFormData) {
     closeCourseForm()
     await loadData({ silent: true })
   } catch (err: unknown) {
-    error('Course Action Failed', (err as Error).message || 'Failed to save course')
+    error(t('Course Action Failed'), (err as Error).message || t('Failed to save course'))
   } finally {
     formSubmitting.value = false
   }
@@ -869,7 +871,7 @@ async function handleCourseSubmit(formData: CourseFormData) {
 
 async function submitNewStudent() {
   if (!newStudent.name.trim() || !newStudent.email.trim()) {
-    error('Missing Fields', 'Please provide the student name and email address.')
+    error(t('Missing Fields'), t('Please provide the student name and email address.'))
     return
   }
 
@@ -893,7 +895,7 @@ async function submitNewStudent() {
     crud('create', 'Student', createdName)
     await loadData({ silent: true })
   } catch (err: unknown) {
-    error('Create Student Failed', (err as Error).message || 'Failed to create student')
+    error(t('Create Student Failed'), (err as Error).message || t('Failed to create student'))
   } finally {
     creatingStudent.value = false
   }
@@ -925,7 +927,7 @@ async function confirmDelete() {
     deleteTarget.value = null
     await loadData({ silent: true })
   } catch (err: unknown) {
-    error('Delete Failed', (err as Error).message || 'Failed to delete record')
+    error(t('Delete Failed'), (err as Error).message || t('Failed to delete record'))
   } finally {
     deleteLoading.value = false
   }
@@ -944,7 +946,7 @@ function exportSnapshot() {
   link.download = `courseaurahub-snapshot-${Date.now()}.json`
   link.click()
   URL.revokeObjectURL(url)
-  success('Snapshot Exported', 'The JSON backup has been downloaded.')
+  success(t('Snapshot Exported'), t('The JSON backup has been downloaded.'))
 }
 
 onMounted(() => {

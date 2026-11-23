@@ -1,10 +1,10 @@
 <template>
   <section v-if="quizLessons.length && students.length" class="rounded-[18px] border border-white/10 bg-white/5 p-5 light:border-slate-200 light:bg-white">
-    <h2 class="text-base font-bold text-slate-100 light:text-slate-900">Extra quiz attempts</h2>
-    <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">Give a learner one more try on a quiz with an attempt limit.</p>
+    <h2 class="text-base font-bold text-slate-100 light:text-slate-900">{{ t('Extra quiz attempts') }}</h2>
+    <p class="mt-0.5 text-xs text-white/45 light:text-slate-500">{{ t('Give a learner one more try on a quiz with an attempt limit.') }}</p>
 
     <div class="mt-3 max-w-sm">
-      <AppDropdown v-model="lessonId" :options="lessonOptions" aria-label="Quiz" />
+      <AppDropdown v-model="lessonId" :options="lessonOptions" :aria-label="t('Quiz')" />
     </div>
 
     <ul class="m-0 mt-3 flex list-none flex-col gap-2 p-0">
@@ -12,7 +12,7 @@
         <img :src="student.avatar" :alt="student.name" class="size-7 rounded-full bg-white/5">
         <span class="min-w-0 flex-1 truncate text-[13px] text-slate-100 light:text-slate-900">{{ student.name }}</span>
         <span v-if="granted[student.id] !== undefined" class="text-[11px] text-white/45 light:text-slate-500">
-          {{ granted[student.id] === null ? 'Unlimited' : `${granted[student.id]} left` }}
+          {{ granted[student.id] === null ? t('Unlimited') : `${granted[student.id]} left` }}
         </span>
         <button
           type="button"
@@ -20,7 +20,7 @@
           :disabled="!lessonId || busyId === student.id"
           @click="grant(student)"
         >
-          +1 attempt
+          {{ t('+1 attempt') }}
         </button>
       </li>
     </ul>
@@ -34,6 +34,8 @@ import { useAppToast } from '~/composables/useAppToast'
 import { flattenLessons, useCurriculum } from '~/composables/useCurriculum'
 import { useQuiz } from '~/composables/useQuiz'
 import { getErrorMessage } from '~/utils/apiError'
+
+const { t } = useT()
 
 /** Lets course staff grant a learner another attempt on one of the course's quizzes. */
 const props = defineProps<{ slug: string, students: InstructorStudent[] }>()
@@ -49,7 +51,7 @@ const busyId = ref<number | null>(null)
 const granted = ref<Record<number, number | null>>({})
 
 const lessonOptions = computed(() => [
-  { value: '', label: 'Choose a quiz' },
+  { value: '', label: t('Choose a quiz') },
   ...quizLessons.value.map(lesson => ({ value: lesson.id, label: lesson.title }))
 ])
 
@@ -63,9 +65,9 @@ async function grant(student: InstructorStudent) {
   try {
     const result = await grantAttempts(Number(lessonId.value), student.id)
     granted.value = { ...granted.value, [student.id]: result.attemptsRemaining }
-    toast.success('Attempt granted', student.name)
+    toast.success(t('Attempt granted'), student.name)
   } catch (err) {
-    toast.error('Not granted', getErrorMessage(err, 'Unable to grant an extra attempt'))
+    toast.error(t('Not granted'), getErrorMessage(err, t('Unable to grant an extra attempt')))
   } finally {
     busyId.value = null
   }

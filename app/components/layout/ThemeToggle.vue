@@ -3,7 +3,7 @@
     type="button"
     role="switch"
     :aria-checked="isDark"
-    aria-label="Toggle dark mode"
+    :aria-label="t('Toggle dark mode')"
     :title="isDark ? 'Switch to light mode (Ctrl/⌘+Shift+L)' : 'Switch to dark mode (Ctrl/⌘+Shift+L)'"
     class="group relative inline-flex h-9 w-[68px] shrink-0 cursor-pointer items-center rounded-full border p-0.5 transition-[transform,background-color,border-color,box-shadow] duration-300 ease-out hover:scale-[1.03] focus-visible:ring-2 focus-visible:ring-brand-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 focus-visible:outline-none active:scale-[0.96] light:focus-visible:ring-offset-white"
     :class="
@@ -51,6 +51,8 @@
 
 <script setup lang="ts">
 import { Moon, Sun } from "lucide-vue-next";
+
+const { t } = useT()
 
 const colorMode = useColorMode();
 const isDark = computed(() => colorMode.value === "dark");
