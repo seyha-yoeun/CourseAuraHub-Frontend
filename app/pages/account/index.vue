@@ -18,16 +18,24 @@
     <div v-else class="grid items-start gap-5 lg:grid-cols-[1fr_380px]">
       <!-- Profile -->
       <form class="rounded-[18px] border border-white/10 bg-white/5 p-5 sm:p-6 light:border-slate-200 light:bg-white" @submit.prevent="saveProfile">
-        <div class="mb-5 flex items-center gap-4">
-          <img :src="profileForm.imageUrl || auth.userAvatar" alt="" class="size-16 rounded-full border-2 border-brand-500/40 bg-brand-500/15 object-cover">
-          <div class="min-w-0">
-            <h2 class="truncate text-base font-bold text-slate-100 light:text-slate-900">{{ displayName }}</h2>
-            <p class="truncate text-xs text-white/45 light:text-slate-500">{{ profile.email }}</p>
-            <span class="mt-1 inline-block rounded-full border border-white/10 bg-white/5 px-2 py-px text-[10px] font-semibold tracking-wider text-white/55 uppercase light:border-slate-200 light:bg-slate-100 light:text-slate-600">
-              {{ profile.provider === 'LOCAL' ? t('Email account') : t('{provider} sign-in', { provider: profile.provider.toLowerCase() }) }}
-            </span>
-          </div>
-        </div>
+        <!-- Profile photo: click or drop an image on it; Change / Remove sit under the name -->
+        <ImageUploadField
+          v-model="profileForm.imageUrl"
+          v-model:busy="uploadingAvatar"
+          class="mb-5"
+          purpose="AVATAR"
+          shape="circle"
+          :saved-value="profile.imageUrl ?? ''"
+          upload-label="Upload photo"
+          change-label="Change photo"
+        >
+          <h2 class="truncate text-base font-bold text-slate-100 light:text-slate-900">{{ displayName }}</h2>
+          <p class="truncate text-xs text-white/45 light:text-slate-500">{{ profile.email }}</p>
+          <span class="mt-1 inline-block rounded-full border border-white/10 bg-white/5 px-2 py-px text-[10px] font-semibold tracking-wider text-white/55 uppercase light:border-slate-200 light:bg-slate-100 light:text-slate-600">
+            {{ profile.provider === 'LOCAL' ? t('Email account') : t('{provider} sign-in', { provider: profile.provider.toLowerCase() }) }}
+          </span>
+        </ImageUploadField>
+        <p v-if="fieldErrors.imageUrl" class="-mt-3 mb-4 text-[11px] text-rose-400">{{ fieldErrors.imageUrl }}</p>
 
         <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
           <div class="flex flex-col gap-1.5">
@@ -39,20 +47,6 @@
             <label :class="labelClass" for="last-name">{{ t('Last name') }}</label>
             <input id="last-name" v-model="profileForm.lastName" type="text" maxlength="100" :class="inputClass">
             <p v-if="fieldErrors.lastName" class="text-[11px] text-rose-400">{{ fieldErrors.lastName }}</p>
-          </div>
-          <div class="flex flex-col gap-1.5 sm:col-span-2">
-            <label :class="labelClass" for="image-url">{{ t('Avatar') }}</label>
-            <FileUploadButton
-              v-model:busy="uploadingAvatar"
-              class="mb-1"
-              purpose="AVATAR"
-              accept="image/jpeg,image/png,image/webp"
-              :label="t('Upload photo')"
-              hint="JPG, PNG or WebP, up to 5 MB"
-              @uploaded="profileForm.imageUrl = $event.url"
-            />
-            <input id="image-url" v-model="profileForm.imageUrl" type="url" maxlength="500" placeholder="https://…" :class="inputClass">
-            <p v-if="fieldErrors.imageUrl" class="text-[11px] text-rose-400">{{ fieldErrors.imageUrl }}</p>
           </div>
           <div class="flex flex-col gap-1.5 sm:col-span-2">
             <label :class="labelClass" for="bio">{{ t('Bio') }}</label>
@@ -128,7 +122,7 @@
 import { KeyRound, Loader2 } from 'lucide-vue-next'
 import type { LearnerProfile } from '~/types'
 import PasswordStrengthMeter from '~/components/auth/PasswordStrengthMeter.vue'
-import FileUploadButton from '~/components/shared/FileUploadButton.vue'
+import ImageUploadField from '~/components/shared/ImageUploadField.vue'
 import { useLearning } from '~/composables/useLearning'
 import { useAppToast } from '~/composables/useAppToast'
 import { getErrorMessage, toApiError } from '~/utils/apiError'

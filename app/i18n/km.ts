@@ -2496,4 +2496,16 @@ export const km: Record<string, string> = {
 
   // Placeholders
   'all-access-monthly': 'all-access-monthly',
+
+  // Image upload field
+  'Change image': 'ប្ដូររូបភាព',
+  'Change photo': 'ប្ដូររូបថត',
+  'Click or drop an image': 'ចុច ឬទម្លាក់រូបភាពនៅទីនេះ',
+  'JPG, PNG or WebP, up to {size} MB. You can also drag an image onto the preview.': 'JPG, PNG ឬ WebP ទំហំរហូតដល់ {size} MB។ អ្នកក៏អាចអូសរូបភាពមកដាក់លើរូបមើលជាមុនបានដែរ។',
+  'Not saved yet — save to keep this change.': 'មិនទាន់រក្សាទុក — សូមរក្សាទុកដើម្បីរក្សាការផ្លាស់ប្ដូរនេះ។',
+  'Use an image link instead': 'ប្រើតំណរូបភាពជំនួសវិញ',
+  'Image link': 'តំណរូបភាព',
+  'Choose a JPG, PNG or WebP image.': 'សូមជ្រើសរើសរូបភាព JPG, PNG ឬ WebP។',
+  'This image is larger than {size} MB. Choose a smaller one.': 'រូបភាពនេះធំជាង {size} MB។ សូមជ្រើសរើសរូបភាពតូចជាងនេះ។',
+  'The image could not be uploaded. Please try again.': 'មិនអាចផ្ទុករូបភាពឡើងបានទេ។ សូមព្យាយាមម្ដងទៀត។',
 }

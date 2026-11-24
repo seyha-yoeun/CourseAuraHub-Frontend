@@ -120,25 +120,14 @@
             <!-- Row: Thumbnail URL with preview -->
             <div class="flex flex-col gap-1.5">
               <label class="text-[11px] font-semibold tracking-wider text-white/60 uppercase light:text-slate-600">{{ t('Thumbnail Image') }}</label>
-              <div class="flex flex-col gap-2.5 sm:flex-row sm:items-center">
-                <input
-                  v-model="form.thumbnail"
-                  type="url"
-                  placeholder="https://images.unsplash.com/..."
-                  class="w-full rounded-[10px] border border-white/10 bg-white/4 px-3.5 py-2.5 text-[13px] text-slate-100 outline-none transition-all duration-200 placeholder:text-white/30 focus:border-brand-500/50 focus:bg-white/7 focus:ring-2 focus:ring-brand-500/15 light:border-slate-300 light:bg-white light:text-slate-900 light:placeholder:text-slate-400 light:focus:border-brand-600 light:focus:bg-white"
-                >
-                <FileUploadButton
-                  v-model:busy="uploading"
-                  class="shrink-0"
-                  purpose="COURSE_THUMBNAIL"
-                  accept="image/jpeg,image/png,image/webp"
-                  :label="t('Upload image')"
-                  @uploaded="form.thumbnail = $event.url"
-                />
-              </div>
-              <div v-if="form.thumbnail" class="mt-2 aspect-video max-w-55 overflow-hidden rounded-[10px] border border-white/10 light:border-slate-200">
-                <img :src="form.thumbnail" :alt="t('Preview')" class="size-full object-cover" >
-              </div>
+              <!-- Upload (or drop) an image; an external image link stays available for admins who need it -->
+              <ImageUploadField
+                v-model="form.thumbnail"
+                v-model:busy="uploading"
+                purpose="COURSE_THUMBNAIL"
+                shape="wide"
+                allow-link
+              />
             </div>
 
             <!-- Row: Description -->
@@ -193,7 +182,7 @@
 import { BookPlus, FileEdit, X, Loader2 } from 'lucide-vue-next'
 import { useModalA11y } from '~/composables/useModalA11y'
 import AppDropdown from '~/components/shared/AppDropdown.vue'
-import FileUploadButton from '~/components/shared/FileUploadButton.vue'
+import ImageUploadField from '~/components/shared/ImageUploadField.vue'
 import { useInstructor } from '~/composables/useInstructor'
 import type { Course, CourseFormData } from '~/types'
 
