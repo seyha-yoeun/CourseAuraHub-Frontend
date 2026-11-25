@@ -1,6 +1,6 @@
 {
   "name": "next-testing",
-  "version": "0.0.50",
+  "version": "0.0.60",
   "type": "module",
   "private": true,
   "scripts": {
@@ -15,6 +15,7 @@
     "@nuxt/eslint": "^1.17.0",
     "@nuxt/ui": "^4.11.3",
     "@pinia/nuxt": "^1.0.2",
+    "@stomp/stompjs": "^7.1.1",
     "@vueuse/core": "^15.0.0",
     "@vueuse/motion": "^3.0.3",
     "chart.js": "^4.5.1",
